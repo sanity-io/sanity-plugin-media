@@ -1,0 +1,17 @@
+{
+  "parts": [
+    {
+      "name": "part:sanity-plugin-media/asset-source",
+      "implements": "part:@sanity/form-builder/input/image/asset-source",
+      "path": "index.js"
+    },
+    {
+      "implements": "part:@sanity/base/tool",
+      "path": "index.js"
+    }
+  ],
+  "paths": {
+    "source": "./src",
+    "compiled": "./lib"
+  }
+}

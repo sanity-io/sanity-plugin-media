@@ -1,0 +1,73 @@
+{
+  "name": "sanity-plugin-media",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": {
+    "name": "Robin Pyon",
+    "email": "robin@robinpyon.com",
+    "url": "https://robinpyon.com"
+  },
+  "keywords": [
+    "sanity",
+    "cms",
+    "headless",
+    "realtime",
+    "content",
+    "sanity-plugin",
+    "asset",
+    "browser"
+  ],
+  "files": [
+    "lib/",
+    "sanity.json"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@sanity/components": "0.144.2",
+    "@types/pluralize": "0.0.29",
+    "date-fns": "2.7.0",
+    "filesize": "6.0.1",
+    "idx": "2.5.6",
+    "immer": "5.0.0",
+    "pluralize": "8.0.0",
+    "react-icons": "3.8.0",
+    "react-redux": "7.1.3",
+    "redux": "4.0.4",
+    "redux-observable": "1.2.0",
+    "rxjs": "6.5.3",
+    "styled-components": "5.0.0-rc.2",
+    "styled-system": "5.1.2",
+    "typesafe-actions": "5.1.0",
+    "use-deep-compare-effect": "1.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.7.0",
+    "@babel/core": "7.7.2",
+    "@babel/plugin-proposal-object-rest-spread": "7.6.2",
+    "@babel/preset-react": "7.7.0",
+    "@babel/preset-typescript": "7.7.2",
+    "@types/react": "16.9.11",
+    "@types/react-redux": "7.1.5",
+    "@types/styled-components": "4.4.0",
+    "@types/styled-system": "5.1.3",
+    "@types/styled-system__css": "5.0.4",
+    "@typescript-eslint/eslint-plugin": "2.7.0",
+    "@typescript-eslint/parser": "2.7.0",
+    "babel-eslint": "10.0.3",
+    "babel-plugin-styled-components": "1.10.6",
+    "eslint": "6.6.0",
+    "eslint-config-prettier": "6.6.0",
+    "eslint-plugin-import": "2.18.2",
+    "eslint-plugin-prettier": "3.1.1",
+    "eslint-plugin-react": "7.16.0",
+    "prettier": "1.19.1",
+    "redux-devtools-extension": "2.13.8",
+    "typescript": "3.7.2"
+  },
+  "peerDependencies": {
+    "react": "^16.8"
+  }
+}

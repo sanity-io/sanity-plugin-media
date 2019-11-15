@@ -1,0 +1,17 @@
+# Compiled files
+lib
+
+# Dependency directories
+/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Mac OS finder cache files
+.DS_Store
+
+# VS Code
+.vscode
