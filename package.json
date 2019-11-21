@@ -1,6 +1,6 @@
 {
   "name": "sanity-plugin-media",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "author": {
     "name": "Robin Pyon",
@@ -21,6 +21,10 @@
     "lib/",
     "sanity.json"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robinpyon/sanity-plugin-media.git"
+  },
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc"
