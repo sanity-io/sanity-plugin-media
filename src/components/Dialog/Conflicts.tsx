@@ -1,13 +1,11 @@
-import {IntentLink} from 'part:@sanity/base/router'
-import {List, Item as ListItem} from 'part:@sanity/components/lists/default'
 import React, {useCallback} from 'react'
 import {useDispatch} from 'react-redux'
-import MdInsertLink from 'react-icons/lib/md/insert-link'
 
-import Dialog from './Dialog'
 import {dialogClear} from '../../modules/dialog'
-import {Item} from '../../types'
 import Box from '../../styled/Box'
+import {Item} from '../../types'
+import DocumentList from '../DocumentList/DocumentList'
+import Dialog from './Dialog'
 
 type Props = {
   item: Item
@@ -53,26 +51,7 @@ const ConflictsDialog = (props: Props) => {
               </Box>
             </div>
 
-            <List>
-              {filteredDocuments.map((doc: any) => {
-                return (
-                  <ListItem key={doc._id}>
-                    <IntentLink
-                      intent="edit"
-                      params={{id: doc._id}}
-                      key={doc._id}
-                      // className={styles.intentLink}
-                    >
-                      <div>Preview goes here</div>
-                      {/* <Preview value={doc} type={schema.get(doc._type)} /> */}
-                      <span>
-                        <MdInsertLink /> Open
-                      </span>
-                    </IntentLink>
-                  </ListItem>
-                )
-              })}
-            </List>
+            <DocumentList documents={filteredDocuments} />
           </div>
         )
       }}

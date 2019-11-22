@@ -72,17 +72,18 @@ const TableItem = (props: Props) => {
     onDialogShowRefs(asset)
   }
 
+  const cellOpacity = updating ? 0.5 : 1
+
   return (
     <Row
       bg={picked ? 'whiteOverlay' : 'none'}
       color="gray"
       fontSize={1}
-      opacity={updating ? 0.5 : 1}
       userSelect="none"
       whiteSpace="nowrap"
     >
       {/* Checkbox */}
-      <Box>
+      <Box opacity={cellOpacity}>
         <Checkbox checked={picked} disabled={updating} onChange={handleCheckboxChange} mx="auto" />
       </Box>
 
@@ -91,7 +92,7 @@ const TableItem = (props: Props) => {
         <ResponsiveBox aspectRatio={4 / 3}>
           <Image
             draggable={false}
-            opacity={selected ? 0.15 : 1}
+            opacity={selected || updating ? 0.15 : 1}
             showCheckerboard={!isOpaque}
             src={imageDprUrl(asset, 100)}
           />
@@ -114,31 +115,41 @@ const TableItem = (props: Props) => {
 
           {/* Spinner */}
           {updating && (
-            <Box left={0} position="absolute" size="100%" top={0}>
-              <Spinner center />
+            <Box
+              alignItems="center"
+              color="white"
+              display="flex"
+              fontSize={2}
+              justifyContent="center"
+              left={0}
+              position="absolute"
+              size="100%"
+              top={0}
+            >
+              <Spinner />
             </Box>
           )}
         </ResponsiveBox>
       </Box>
 
       {/* Filename */}
-      <Box>
+      <Box opacity={cellOpacity}>
         <strong>{asset.originalFilename}</strong>
       </Box>
 
       {/* Dimensions */}
-      <Box>
+      <Box opacity={cellOpacity}>
         {dimensions.width || 'unknown'} x {dimensions.height || 'unknown'} px
       </Box>
 
       {/* File extension */}
-      <Box>{asset.extension.toUpperCase()}</Box>
+      <Box opacity={cellOpacity}>{asset.extension.toUpperCase()}</Box>
 
       {/* Size */}
-      <Box>{filesize(asset.size, {round: 0})}</Box>
+      <Box opacity={cellOpacity}>{filesize(asset.size, {round: 0})}</Box>
 
       {/* Last updated */}
-      <Box>{formatRelative(new Date(asset._updatedAt), new Date())}</Box>
+      <Box opacity={cellOpacity}>{formatRelative(new Date(asset._updatedAt), new Date())}</Box>
 
       {/* Error */}
       <Box>
@@ -150,7 +161,7 @@ const TableItem = (props: Props) => {
       </Box>
 
       {/* Actions */}
-      <Box textAlign={['left', 'right']}>
+      <Box opacity={cellOpacity} textAlign={['left', 'right']}>
         {onSelect && (
           <Button
             disabled={updating}
@@ -177,4 +188,4 @@ const TableItem = (props: Props) => {
   )
 }
 
-export default TableItem
+export default React.memo(TableItem)

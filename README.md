@@ -66,8 +66,6 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 
 - Batch deleting assets invokes multiple API requests - this is because [Sanity's transactions are atomic](https://www.sanity.io/docs/transactions). In other words, deleting 10 selected assets will use 10 API requests.
 
-## Known issues
-
 ## Roadmap
 
 - Display total image count (Contingent on query engine rewrite)
@@ -80,6 +78,7 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 - More detailed metadata views
 - Folder management
 - Fix typings across the board, consider using `typesafe-actions`
+- Remember browser options with local storage
 
 ## Contributing
 

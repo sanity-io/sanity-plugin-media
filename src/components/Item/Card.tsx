@@ -104,8 +104,18 @@ const CardItem = (props: Props) => {
 
         {/* Spinner */}
         {updating && (
-          <Box left={0} position="absolute" size="100%" top={0}>
-            <Spinner center />
+          <Box
+            alignItems="center"
+            color="white"
+            display="flex"
+            fontSize={3}
+            justifyContent="center"
+            left={0}
+            position="absolute"
+            size="100%"
+            top={0}
+          >
+            <Spinner />
           </Box>
         )}
 
