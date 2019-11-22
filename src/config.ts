@@ -1,4 +1,5 @@
-import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
+import MdFormatListBulleted from 'react-icons/lib/md/format-list-bulleted'
+import MdDashboard from 'react-icons/lib/md/dashboard'
 
 export const getFilters = (currentDocument: any) => {
   const items = [
@@ -43,12 +44,12 @@ export const ORDERS = [
 
 export const VIEWS = [
   {
-    icon: AiFillAppstore,
+    icon: MdDashboard,
     title: 'Grid',
     value: 'grid'
   },
   {
-    icon: AiOutlineBars,
+    icon: MdFormatListBulleted,
     title: 'Table',
     value: 'table'
   }

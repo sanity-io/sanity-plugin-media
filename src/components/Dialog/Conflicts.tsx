@@ -1,8 +1,8 @@
-import React, {useCallback} from 'react'
-import {useDispatch} from 'react-redux'
-import LinkIcon from 'part:@sanity/base/link-icon'
 import {IntentLink} from 'part:@sanity/base/router'
 import {List, Item as ListItem} from 'part:@sanity/components/lists/default'
+import React, {useCallback} from 'react'
+import {useDispatch} from 'react-redux'
+import MdInsertLink from 'react-icons/lib/md/insert-link'
 
 import Dialog from './Dialog'
 import {dialogClear} from '../../modules/dialog'
@@ -66,7 +66,7 @@ const ConflictsDialog = (props: Props) => {
                       <div>Preview goes here</div>
                       {/* <Preview value={doc} type={schema.get(doc._type)} /> */}
                       <span>
-                        <LinkIcon /> Open
+                        <MdInsertLink /> Open
                       </span>
                     </IntentLink>
                   </ListItem>

@@ -1,10 +1,12 @@
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React from 'react'
-import {IoMdCheckmarkCircleOutline, IoIosReturnRight, IoMdClose} from 'react-icons/io'
+import IoIosArrowThinRight from 'react-icons/lib/io/ios-arrow-thin-right'
+import IoIosCloseEmpty from 'react-icons/lib/io/ios-close-empty'
+import IoIosCheckmarkOutline from 'react-icons/lib/io/ios-checkmark-outline'
+import MdError from 'react-icons/lib/md/error'
+import MdInsertLink from 'react-icons/lib/md/insert-link'
 import Button from 'part:@sanity/components/buttons/default'
-import ErrorIcon from 'part:@sanity/base/error-icon'
-import LinkIcon from 'part:@sanity/base/link-icon'
 import Spinner from 'part:@sanity/components/loading/spinner'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
@@ -106,7 +108,7 @@ const TableItem = (props: Props) => {
               size="100%"
               top={0}
             >
-              <IoMdCheckmarkCircleOutline size={16} />
+              <IoIosCheckmarkOutline size={16} />
             </Box>
           )}
 
@@ -142,29 +144,31 @@ const TableItem = (props: Props) => {
       <Box>
         {errorCode && (
           <IconButton color="red" fontSize={3} onClick={handleDialogConflicts}>
-            <ErrorIcon />
+            <MdError />
           </IconButton>
         )}
       </Box>
 
       {/* Actions */}
       <Box textAlign={['left', 'right']}>
+        {onSelect && (
+          <Button
+            disabled={updating}
+            icon={IoIosArrowThinRight.bind(null, {size: 26})}
+            kind="simple"
+            onClick={handleSelect}
+          />
+        )}
         <Button
           disabled={updating}
-          icon={IoIosReturnRight.bind(null, {size: 18})}
-          kind="simple"
-          onClick={handleSelect}
-        />
-        <Button
-          disabled={updating}
-          icon={LinkIcon.bind(null, {size: 16})}
+          icon={MdInsertLink.bind(null, {size: 16})}
           kind="simple"
           onClick={handleShowRefs}
         />
         <Button
           color="danger"
           disabled={updating}
-          icon={IoMdClose.bind(null, {size: 18})}
+          icon={IoIosCloseEmpty.bind(null, {size: 24})}
           kind="simple"
           onClick={handleDeleteAsset}
         />

@@ -1,10 +1,10 @@
 import filesize from 'filesize'
-import React from 'react'
-import {MdDeleteForever} from 'react-icons/md'
-import {IoIosReturnRight} from 'react-icons/io'
-import LinkIcon from 'part:@sanity/base/link-icon'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
 import Button from 'part:@sanity/components/buttons/default'
+import React from 'react'
+import MdDelete from 'react-icons/lib/md/delete'
+import MdInsertLink from 'react-icons/lib/md/insert-link'
+import IoIosArrowThinRight from 'react-icons/lib/io/ios-arrow-thin-right'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
@@ -12,7 +12,7 @@ import Box from '../../styled/Box'
 import {Asset} from '../../types'
 
 const Footer = () => {
-  const {onDeletePicked, onDialogShowConflicts, onSelect} = useAssetBrowserActions()
+  const {onDeletePicked, onDialogShowRefs, onSelect} = useAssetBrowserActions()
   const {fetching, items} = useAssetBrowserState()
 
   const picked = items && items.filter(item => item.picked)
@@ -38,7 +38,7 @@ const Footer = () => {
         {onSelect && singlePickedAsset && (
           <Button
             bleed={true}
-            icon={IoIosReturnRight.bind(null, {size: 18})}
+            icon={IoIosArrowThinRight.bind(null, {size: 22})}
             kind="simple"
             onClick={() => {
               onSelect([
@@ -112,13 +112,13 @@ const Footer = () => {
             <Button
               bleed={true}
               kind="simple"
-              onClick={onDialogShowConflicts.bind(null, singlePickedAsset)}
+              onClick={onDialogShowRefs.bind(null, singlePickedAsset)}
               ripple={false}
               style={{
                 borderRadius: 0
               }}
             >
-              <LinkIcon size={16} />
+              <MdInsertLink size={16} />
             </Button>
           )}
 
@@ -126,7 +126,7 @@ const Footer = () => {
             <Button
               bleed={true}
               color="danger"
-              icon={MdDeleteForever.bind(null, {size: 18})}
+              icon={MdDelete.bind(null, {size: 18})}
               kind="simple"
               onClick={onDeletePicked}
               ripple={false}

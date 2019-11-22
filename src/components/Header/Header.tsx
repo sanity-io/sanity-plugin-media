@@ -1,11 +1,11 @@
 import React from 'react'
-import {IoIosClose} from 'react-icons/io'
+import IoIosCloseEmpty from 'react-icons/lib/io/ios-close-empty'
 import pluralize from 'pluralize'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
-// import FileInputButton from 'part:@sanity/components/fileinput/button'
-// import UploadIcon from 'part:@sanity/base/upload-icon'
 import DropDownButton from 'part:@sanity/components/buttons/dropdown'
 import Button from 'part:@sanity/components/buttons/default'
+// import FileInputButton from 'part:@sanity/components/fileinput/button'
+// import FaUpload from 'react-icons/lib/fa/upload'
 
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS} from '../../config'
@@ -47,7 +47,7 @@ const Header = (props: Props) => {
           <FileInputButton
             color="primary"
             disabled={true}
-            icon={UploadIcon}
+            icon={FaUpload}
             inverted
             onSelect={() => {}}
             style={{
@@ -72,7 +72,7 @@ const Header = (props: Props) => {
         <Box alignItems="center" display="flex" flex="1" height="100%">
           {onClose && (
             <Button bleed={true} kind="simple" onClick={onClose} ripple={false}>
-              <IoIosClose size={30} />
+              <IoIosCloseEmpty size={30} />
             </Button>
           )}
 
@@ -113,7 +113,7 @@ const Header = (props: Props) => {
                       opacity: selected ? 1 : 0.5
                     }}
                   >
-                    {view.icon({size: 18})}
+                    {new view.icon({size: 18})}
                   </Button>
                 )
               })}

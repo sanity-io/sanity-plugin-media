@@ -1,7 +1,6 @@
 import produce from 'immer'
 import React, {useRef, useState} from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
-import Spinner from 'part:@sanity/components/loading/spinner'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
@@ -164,13 +163,6 @@ const Browser = (props: Props) => {
 
       {/* Footer */}
       <Footer />
-
-      {/* Spinner */}
-      {fetching && (
-        <Box bottom="20px" right="32px" pointerEvents="none" position="fixed">
-          <Spinner />
-        </Box>
-      )}
     </Box>
   )
 }
