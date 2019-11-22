@@ -1,13 +1,13 @@
 import React from 'react'
 import IoIosCloseEmpty from 'react-icons/lib/io/ios-close-empty'
-import pluralize from 'pluralize'
+// import pluralize from 'pluralize'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
 import DropDownButton from 'part:@sanity/components/buttons/dropdown'
 import Button from 'part:@sanity/components/buttons/default'
 // import FileInputButton from 'part:@sanity/components/fileinput/button'
 // import FaUpload from 'react-icons/lib/fa/upload'
 
-import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
+// import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS} from '../../config'
 import Box from '../../styled/Box'
 import {BrowserOptions, Filter, Item} from '../../types'
@@ -23,7 +23,7 @@ type Props = {
 
 const Header = (props: Props) => {
   const {browserOptions, filters, onClose, onUpdateBrowserOptions} = props
-  const {totalCount} = useAssetBrowserState()
+  // const {totalCount} = useAssetBrowserState()
 
   return (
     <Box
@@ -77,6 +77,7 @@ const Header = (props: Props) => {
           )}
 
           {/* Total image count / picked count */}
+          {/*
           <Box pl={2}>
             {totalCount === -1 ? (
               'Loading..'
@@ -88,6 +89,7 @@ const Header = (props: Props) => {
               </span>
             )}
           </Box>
+          */}
         </Box>
 
         {/* Center */}

@@ -4,11 +4,11 @@ import {Item} from '../types'
 import {RootReducerState} from '../modules/types'
 
 type ContextProps = {
+  fetchCount: number
   fetching: boolean
-  // TODO: use correct type
   fetchingError: any
   items: Item[]
-  totalCount: number
+  // totalCount: number
 }
 
 type Props = {
@@ -22,15 +22,23 @@ export const AssetBrowserStateProvider = (props: Props) => {
 
   const useSelector: TypedUseSelectorHook<RootReducerState> = useReduxSelector
 
-  const {allIds, byIds, fetching, fetchingError, totalCount} = useSelector(state => state.assets)
+  const {
+    allIds,
+    byIds,
+    fetchCount,
+    fetching,
+    fetchingError
+    // totalCount
+  } = useSelector(state => state.assets)
   // TODO: correctly type redux store
   const items = allIds.map(id => byIds[id])
 
   const contextValue = {
+    fetchCount,
     fetching,
     fetchingError,
-    items,
-    totalCount
+    items
+    // totalCount
   }
 
   return (

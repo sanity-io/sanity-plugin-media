@@ -36,6 +36,18 @@ export enum AssetsActionTypes {
  ***********/
 
 /**
+ * NOTE:
+ * `fetchCount` returns the number of items retrieved in the most recent fetch.
+ * This is a temporary workaround to be able to determine when there are no more items to retrieve.
+ * Typically this would be done by deriving the total number of assets upfront, but currently such
+ * queries in GROQ aren't fast enough to use on large datasets (1000s of entries).
+ *
+ * TODO:
+ * When the query engine has been improved and above queries are faster, remove all instances of
+ * of `fetchCount` and reinstate `totalCount` across the board.
+ */
+
+/**
  * `allIds` is an ordered array of all assetIds
  * `byIds` is an object literal that contains all normalised assets (with asset IDs as keys)
  */
@@ -43,9 +55,10 @@ export enum AssetsActionTypes {
 const INITIAL_STATE = {
   allIds: [],
   byIds: {},
+  fetchCount: -1,
   fetching: false,
-  fetchingError: null,
-  totalCount: -1
+  fetchingError: null
+  // totalCount: -1
 }
 
 export default function assetsReducerState(
@@ -64,7 +77,7 @@ export default function assetsReducerState(
         const deleteIndex = draft.allIds.indexOf(assetId)
         draft.allIds.splice(deleteIndex, 1)
         delete draft.byIds[assetId]
-        draft.totalCount -= 1
+        // draft.totalCount -= 1
         break
       }
       /**
@@ -99,8 +112,8 @@ export default function assetsReducerState(
        * - Add all fetched assets as normalised objects, and store asset IDs in a separate ordered array.
        */
       case AssetsActionTypes.FETCH_COMPLETE: {
-        const assets = action.payload?.assets
-        const totalCount = action.payload?.totalCount
+        const assets = action.payload?.assets || []
+        // const totalCount = action.payload?.totalCount
 
         if (assets) {
           assets.forEach(asset => {
@@ -114,8 +127,9 @@ export default function assetsReducerState(
         }
 
         draft.fetching = false
+        draft.fetchCount = assets.length || 0
         draft.fetchingError = null
-        draft.totalCount = totalCount
+        // draft.totalCount = totalCount
         break
       }
       /**
@@ -198,7 +212,6 @@ export const assetsDeleteComplete = (asset: Asset) => ({
 })
 
 // Delete error
-// TODO: use correct type
 export const assetsDeleteError = (asset: Asset, error: any, handleTarget: DeleteHandleTarget) => ({
   payload: {
     asset,
@@ -243,7 +256,7 @@ export const assetsFetch = ({
   const query = `//groq
     {
       "items": *[${filter}] ${projections} ${pipe} ${sort} ${selector},
-      "totalCount": count(*[${filter}] {})
+      // "totalCount": count(*[${filter}] {})
     }
   `
 
@@ -258,17 +271,20 @@ export const assetsFetch = ({
 }
 
 // Fetch complete
-export const assetsFetchComplete = (assets: Asset[], replace: boolean, totalCount: number) => ({
+export const assetsFetchComplete = (
+  assets: Asset[],
+  replace: boolean
+  // totalCount: number
+) => ({
   payload: {
     assets,
-    replace,
-    totalCount
+    replace
+    // totalCount
   },
   type: AssetsActionTypes.FETCH_COMPLETE
 })
 
 // Fetch failed
-// TODO: use correct type
 export const assetsFetchError = (error: any) => ({
   payload: {
     error
@@ -367,10 +383,14 @@ export const assetsFetchEpic = (action$: any) =>
           return from(client.fetch(query, params))
         }),
         mergeMap((result: any) => {
-          const {items, totalCount} = result
+          const {
+            items
+            // totalCount
+          } = result
 
           const replace = action.payload?.replace
-          return of(assetsFetchComplete(items, replace, totalCount))
+          // return of(assetsFetchComplete(items, replace, totalCount))
+          return of(assetsFetchComplete(items, replace))
         }),
         catchError(error => of(assetsFetchError(error)))
       )

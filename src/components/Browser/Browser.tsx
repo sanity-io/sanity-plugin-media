@@ -16,7 +16,6 @@ import ViewportObserver from '../ViewportObserver/ViewportObserver'
 const PER_PAGE = 20
 
 type Props = {
-  // TODO: use correct type
   document?: any
   onClose?: () => void
   selectedAssets?: Asset[]
@@ -30,7 +29,12 @@ const Browser = (props: Props) => {
   const viewRef = useRef<HTMLDivElement | null>(null)
 
   const {onFetch} = useAssetBrowserActions()
-  const {fetching, items, totalCount} = useAssetBrowserState()
+  const {
+    fetchCount,
+    fetching,
+    items
+    // totalCount
+  } = useAssetBrowserState()
   const [browserOptions, setBrowserOptions] = useState<BrowserOptions>({
     filter: filters[0],
     order: ORDERS[0],
@@ -39,7 +43,8 @@ const Browser = (props: Props) => {
     view: VIEWS[0]
   })
 
-  const hasFetchedOnce = totalCount >= 0
+  // const hasFetchedOnce = totalCount >= 0
+  const hasFetchedOnce = fetchCount >= 0
 
   const fetchPage = (index: number, replace: boolean) => {
     const {filter, order} = browserOptions
@@ -93,7 +98,14 @@ const Browser = (props: Props) => {
     }
   }, [browserOptions])
 
-  const hasMore = (browserOptions.pageIndex + 1) * PER_PAGE < totalCount
+  // NOTE: The below is a workaround and can be inaccurate in certain cases.
+  // e.g. if PER_PAGE is 10 and you have fetched 10 items, `hasMore` will still be true
+  // and another fetch will invoked on next page (which will return 0 items).
+  // This is currently how the default asset source in Sanity works.
+  // TODO: When it's performant enough to get total asset count across large datasets, revert
+  // to using `totalCount` across the board.
+  const hasMore = fetchCount === PER_PAGE
+  // const hasMore = (browserOptions.pageIndex + 1) * PER_PAGE < totalCount
 
   const handleFetchNextPage = () => {
     setBrowserOptions(

@@ -6,10 +6,10 @@ import {Asset, Item, DeleteHandleTarget} from '../../types'
 export type AssetsReducerState = {
   allIds: string[]
   byIds: Record<string, Item>
+  fetchCount: number
   fetching: boolean
-  // TODO: use correct type
   fetchingError: any
-  totalCount: number
+  // totalCount: number
 }
 
 // Actions
@@ -47,7 +47,7 @@ export type AssetsFetchCompleteAction = {
   payload: {
     assets: Asset[]
     replace: boolean
-    totalCount: number
+    // totalCount: number
   }
   type: AssetsActionTypes.FETCH_COMPLETE
 }
