@@ -1,12 +1,12 @@
 import produce from 'immer'
-import React, {useRef, useState} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS, getFilters} from '../../config'
 import Box from '../../styled/Box'
-import {BrowserOptions, Filter, Asset} from '../../types'
+import {BrowserQueryOptions, Filter, Asset, BrowserView} from '../../types'
 import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import CardView from '../View/Card'
@@ -35,19 +35,19 @@ const Browser = (props: Props) => {
     items
     // totalCount
   } = useAssetBrowserState()
-  const [browserOptions, setBrowserOptions] = useState<BrowserOptions>({
+  const [browserQueryOptions, setBrowserQueryOptions] = useState<BrowserQueryOptions>({
     filter: filters[0],
     order: ORDERS[0],
     pageIndex: 0,
-    replaceOnFetch: false,
-    view: VIEWS[0]
+    replaceOnFetch: false
   })
+  const [browserView, setBrowserView] = useState<BrowserView>(VIEWS[0])
 
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
 
   const fetchPage = (index: number, replace: boolean) => {
-    const {filter, order} = browserOptions
+    const {filter, order} = browserQueryOptions
 
     const start = index * PER_PAGE
     const end = start + PER_PAGE
@@ -86,9 +86,9 @@ const Browser = (props: Props) => {
     }
   }
 
-  // Fetch items on mount and when options have changed
+  // Fetch items on mount and when query options have changed
   useDeepCompareEffect(() => {
-    const {pageIndex, replaceOnFetch} = browserOptions
+    const {pageIndex, replaceOnFetch} = browserQueryOptions
 
     fetchPage(pageIndex, replaceOnFetch)
 
@@ -96,7 +96,12 @@ const Browser = (props: Props) => {
     if (replaceOnFetch) {
       scrollToTop()
     }
-  }, [browserOptions])
+  }, [browserQueryOptions])
+
+  // Scroll to top when browser view has changed
+  useEffect(() => {
+    scrollToTop()
+  }, [browserView])
 
   // NOTE: The below is a workaround and can be inaccurate in certain cases.
   // e.g. if PER_PAGE is 10 and you have fetched 10 items, `hasMore` will still be true
@@ -105,10 +110,10 @@ const Browser = (props: Props) => {
   // TODO: When it's performant enough to get total asset count across large datasets, revert
   // to using `totalCount` across the board.
   const hasMore = fetchCount === PER_PAGE
-  // const hasMore = (browserOptions.pageIndex + 1) * PER_PAGE < totalCount
+  // const hasMore = (browserQueryOptions.pageIndex + 1) * PER_PAGE < totalCount
 
   const handleFetchNextPage = () => {
-    setBrowserOptions(
+    setBrowserQueryOptions(
       produce(draft => {
         draft.pageIndex += 1
         draft.replaceOnFetch = false
@@ -116,8 +121,8 @@ const Browser = (props: Props) => {
     )
   }
 
-  const handleUpdateBrowserOptions = (field: string, value: Record<string, any>) => {
-    setBrowserOptions(
+  const handleUpdateBrowserQueryOptions = (field: string, value: Record<string, any>) => {
+    setBrowserQueryOptions(
       produce(draft => {
         draft[field] = value
         draft.pageIndex = 0
@@ -126,15 +131,21 @@ const Browser = (props: Props) => {
     )
   }
 
+  const handleUpdateBrowserView = (view: BrowserView) => {
+    setBrowserView(view)
+  }
+
   return (
     <Box bg="darkerGray" fontSize={1} justifyContent="space-between" minHeight="100%">
       {/* Header */}
       <Header
-        browserOptions={browserOptions}
+        browserQueryOptions={browserQueryOptions}
+        browserView={browserView}
         filters={filters}
         items={items}
         onClose={onClose}
-        onUpdateBrowserOptions={handleUpdateBrowserOptions}
+        onUpdateBrowserQueryOptions={handleUpdateBrowserQueryOptions}
+        onUpdateBrowserView={handleUpdateBrowserView}
       />
 
       {/* Items */}
@@ -150,14 +161,14 @@ const Browser = (props: Props) => {
         width="100%"
       >
         {/* View: Grid */}
-        {browserOptions.view?.value === 'grid' && (
+        {browserView.value === 'grid' && (
           <Box m={2}>
             <CardView items={items} selectedAssets={selectedAssets} />
           </Box>
         )}
 
         {/* View: Table */}
-        {browserOptions.view?.value === 'table' && (
+        {browserView.value === 'table' && (
           <TableView items={items} selectedAssets={selectedAssets} />
         )}
 

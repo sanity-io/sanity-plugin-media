@@ -63,7 +63,7 @@ export type BoxProps = AlignItemsProps &
     zIndex?: any
   }
 
-export type BrowserOptions = {
+export type BrowserQueryOptions = {
   filter: Filter
   order: {
     title: string
@@ -71,11 +71,12 @@ export type BrowserOptions = {
   }
   pageIndex: number
   replaceOnFetch: boolean
-  view: {
-    icon: Function
-    title: string
-    value: string
-  }
+}
+
+export type BrowserView = {
+  icon: Function
+  title: string
+  value: string
 }
 
 export type DeleteHandleTarget = 'dialog' | 'snackbar'

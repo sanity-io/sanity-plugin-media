@@ -10,19 +10,27 @@ import Button from 'part:@sanity/components/buttons/default'
 // import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS} from '../../config'
 import Box from '../../styled/Box'
-import {BrowserOptions, Filter, Item} from '../../types'
+import {BrowserQueryOptions, Filter, Item, BrowserView} from '../../types'
 
 type Props = {
-  //
-  browserOptions: BrowserOptions
+  browserQueryOptions: BrowserQueryOptions
+  browserView: BrowserView
   filters: Filter[]
   items: Item[]
   onClose?: () => void
-  onUpdateBrowserOptions: (field: string, value: Record<string, any>) => void
+  onUpdateBrowserQueryOptions: (field: string, value: Record<string, any>) => void
+  onUpdateBrowserView: (view: BrowserView) => void
 }
 
 const Header = (props: Props) => {
-  const {browserOptions, filters, onClose, onUpdateBrowserOptions} = props
+  const {
+    browserQueryOptions,
+    browserView,
+    filters,
+    onClose,
+    onUpdateBrowserQueryOptions,
+    onUpdateBrowserView
+  } = props
   // const {totalCount} = useAssetBrowserState()
 
   return (
@@ -100,14 +108,14 @@ const Header = (props: Props) => {
           <ButtonGroup>
             {VIEWS &&
               VIEWS.map((view, index) => {
-                const selected = browserOptions.view.value === view.value
+                const selected = browserView.value === view.value
                 return (
                   <Button
                     bleed={true}
                     bg="primary"
                     kind="simple"
                     key={index}
-                    onClick={() => onUpdateBrowserOptions('view', view)}
+                    onClick={() => onUpdateBrowserView(view)}
                     ripple={false}
                     style={{
                       borderRadius: 0,
@@ -125,20 +133,22 @@ const Header = (props: Props) => {
             items={filters}
             kind="simple"
             onAction={(value: Record<string, string>) => {
-              onUpdateBrowserOptions('filter', value)
+              onUpdateBrowserQueryOptions('filter', value)
             }}
             ripple={false}
           >
-            {browserOptions.filter.title}
+            {browserQueryOptions.filter.title}
           </DropDownButton>
           <DropDownButton
             bleed={true}
             items={ORDERS}
             kind="simple"
-            onAction={(value: Record<string, string>) => onUpdateBrowserOptions('order', value)}
+            onAction={(value: Record<string, string>) =>
+              onUpdateBrowserQueryOptions('order', value)
+            }
             ripple={false}
           >
-            {browserOptions.order.title}
+            {browserQueryOptions.order.title}
           </DropDownButton>
         </Box>
       </Box>
