@@ -70,6 +70,7 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 ## Roadmap
 
 - Display total image count (Contingent on query engine rewrite)
+- Filter images by the current document
 - More keyboard shortcuts
 - Delete confirmation dialog
 - Display current document title

@@ -15,10 +15,14 @@ export const getFilters = (currentDocument?: Document) => {
   ]
 
   if (currentDocument && currentDocument._id) {
+    /*
+    // This query is horribly inefficient and slow as molasses on large datasets.
+    // TODO: Re-enable with a more performant GROQ query
     items.splice(1, 0, {
       title: 'Images in current entry',
       value: `_type == "sanity.imageAsset" && $documentId in *[references(^._id)]._id`
     })
+    */
   }
 
   return items
