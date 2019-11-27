@@ -13,7 +13,7 @@ import {Asset} from '../../types'
 
 const Footer = () => {
   const {onDeletePicked, onDialogShowRefs, onSelect} = useAssetBrowserActions()
-  const {fetching, items} = useAssetBrowserState()
+  const {items} = useAssetBrowserState()
 
   const picked = items && items.filter(item => item.picked)
   const singlePickedAsset: Asset | undefined =
@@ -57,13 +57,7 @@ const Footer = () => {
 
       {/* Center */}
       <Box height="headerHeight" order={[0, 1]} overflow="hidden" px={2} width={['100%', 'auto']}>
-        {fetching && (
-          <Box alignItems="center" color="gray" display="flex" height="headerHeight">
-            Loading...
-          </Box>
-        )}
-
-        {!fetching && singlePickedAsset && (
+        {singlePickedAsset && (
           <Box
             alignItems="center"
             display="flex"
@@ -98,7 +92,7 @@ const Footer = () => {
           </Box>
         )}
 
-        {!fetching && picked.length > 1 && (
+        {picked.length > 1 && (
           <Box alignItems="center" color="lightGray" display="flex" height="headerHeight">
             {picked.length} selected
           </Box>

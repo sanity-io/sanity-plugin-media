@@ -1,6 +1,6 @@
 {
   "name": "sanity-plugin-media",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "MIT",
   "author": {
     "name": "Robin Pyon",
@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@sanity/components": "0.144.2",
+    "@tanem/react-nprogress": "3.0.8",
     "date-fns": "2.7.0",
     "filesize": "6.0.1",
     "idx": "2.5.6",
@@ -73,6 +74,12 @@
     "typescript": "3.7.2"
   },
   "peerDependencies": {
-    "react": "^16.8"
+    "@sanity/client": "^0.146.0",
+    "@sanity/base": "^0.146.0",
+    "@sanity/components": "^0.146.0",
+    "@sanity/core": "^0.146.0",
+    "@sanity/desk-tool": "^0.146.0",
+    "@sanity/form-builder": "^0.146.0",
+    "react": "^16.9"
   }
 }

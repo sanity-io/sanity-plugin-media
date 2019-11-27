@@ -57,6 +57,7 @@ export type BoxProps = AlignItemsProps &
     pointerEvents?: string
     textOverflow?: string
     transform?: string
+    transition?: string
     userSelect?: string
     whiteSpace?: string
     // TODO: document
