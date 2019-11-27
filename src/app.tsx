@@ -10,9 +10,10 @@ import Dialogs from './components/Dialogs/Dialogs'
 import Snackbars from './components/Snackbars/Snackbars'
 import useKeyPress from './hooks/useKeyPress'
 import Box from './styled/Box'
-import {Asset} from './types'
+import {Asset, Document} from './types'
 
 type Props = {
+  document?: Document
   onClose: () => void
   onSelect: () => void
   selectedAssets: Asset[]
@@ -34,7 +35,7 @@ const Container = styled(Box)<ContainerProps>`
 `
 
 const AssetBrowser = (props: Props) => {
-  const {onClose, onSelect, selectedAssets} = props
+  const {document, onClose, onSelect, selectedAssets} = props
 
   // Close on escape key press
   useKeyPress('Escape', onClose)
@@ -47,7 +48,7 @@ const AssetBrowser = (props: Props) => {
           <Container fullscreen={!!onSelect} size="100%">
             <Snackbars />
             <Dialogs />
-            <Browser onClose={onClose} selectedAssets={selectedAssets} />
+            <Browser document={document} onClose={onClose} selectedAssets={selectedAssets} />
           </Container>
         </AssetBrowserStateProvider>
       </AssetBrowserDispatchProvider>

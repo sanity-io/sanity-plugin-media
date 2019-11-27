@@ -6,7 +6,7 @@ import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS, getFilters} from '../../config'
 import Box from '../../styled/Box'
-import {BrowserQueryOptions, Filter, Asset, BrowserView} from '../../types'
+import {Asset, BrowserQueryOptions, BrowserView, Document, Filter} from '../../types'
 import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import CardView from '../View/Card'
@@ -16,7 +16,7 @@ import ViewportObserver from '../ViewportObserver/ViewportObserver'
 const PER_PAGE = 20
 
 type Props = {
-  document?: any
+  document?: Document
   onClose?: () => void
   selectedAssets?: Asset[]
 }
@@ -45,6 +45,7 @@ const Browser = (props: Props) => {
 
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
+  const hasItems = items.length > 0
 
   const fetchPage = (index: number, replace: boolean) => {
     const {filter, order} = browserQueryOptions
@@ -161,19 +162,26 @@ const Browser = (props: Props) => {
         width="100%"
       >
         {/* View: Grid */}
-        {browserView.value === 'grid' && (
+        {hasItems && browserView.value === 'grid' && (
           <Box m={2}>
             <CardView items={items} selectedAssets={selectedAssets} />
           </Box>
         )}
 
         {/* View: Table */}
-        {browserView.value === 'table' && (
+        {hasItems && browserView.value === 'table' && (
           <TableView items={items} selectedAssets={selectedAssets} />
         )}
 
+        {/* No results */}
+        {!hasItems && hasFetchedOnce && !fetching && (
+          <Box color="lightGray" fontSize={1} p={3}>
+            No results for the current query
+          </Box>
+        )}
+
         {/* Viewport observer */}
-        {hasFetchedOnce && !fetching && (
+        {hasItems && hasFetchedOnce && !fetching && (
           <ViewportObserver
             onVisible={() => {
               if (hasMore) {

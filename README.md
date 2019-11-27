@@ -17,12 +17,13 @@ It can also be used as a [custom asset source](https://www.sanity.io/docs/custom
 ## Features
 
 - Easily access media from the menu
-- View file metadata
-- Select and delete multiple assets
 - Grid / table views
+- Select and delete multiple assets (shift selection supported in the grid view)
 - Display currently selected assets
-- Basic filename / date sorting
 - Display unused assets
+- Display assets referenced in the current document
+- Basic filename / date sorting
+- View basic file metadata
 - Integration with Sanity's snackbar notifications
 
 When `sanity-plugin-media` is accessed via a custom asset source, you'll have the option to insert assets as well as view the currently selected image for that field.
@@ -69,14 +70,13 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 ## Roadmap
 
 - Display total image count (Contingent on query engine rewrite)
-- Filter images by the current document
 - More keyboard shortcuts
 - Delete confirmation dialog
-- Display current document info
+- Display current document title
 - Image uploads
 - Multiple selection / insertion
 - More detailed metadata views
-- Folder management
+- Folder management (!)
 - Fix typings across the board, consider using `typesafe-actions`
 - Remember browser options with local storage
 - Virtualize displays and improve render performance across large datasets

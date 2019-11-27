@@ -82,6 +82,13 @@ export type BrowserView = {
 
 export type DeleteHandleTarget = 'dialog' | 'snackbar'
 
+export type Document = {
+  _id: string
+  _type: string
+  _updatedAt: string
+  title?: string
+}
+
 export type FetchOptions = {
   filter?: string
   params?: Record<string, string>

@@ -1,7 +1,8 @@
 import MdFormatListBulleted from 'react-icons/lib/md/format-list-bulleted'
 import MdDashboard from 'react-icons/lib/md/dashboard'
+import {Document} from './types'
 
-export const getFilters = (currentDocument: any) => {
+export const getFilters = (currentDocument?: Document) => {
   const items = [
     {
       title: 'All images',
