@@ -7,10 +7,11 @@ import Button from 'part:@sanity/components/buttons/default'
 // import FileInputButton from 'part:@sanity/components/fileinput/button'
 // import FaUpload from 'react-icons/lib/fa/upload'
 
-// import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
+import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS} from '../../config'
 import Box from '../../styled/Box'
 import {BrowserQueryOptions, Filter, Item, BrowserView} from '../../types'
+import Progress from '../Progress/Progress'
 
 type Props = {
   browserQueryOptions: BrowserQueryOptions
@@ -31,7 +32,11 @@ const Header = (props: Props) => {
     onUpdateBrowserQueryOptions,
     onUpdateBrowserView
   } = props
-  // const {totalCount} = useAssetBrowserState()
+
+  const {
+    fetching
+    // totalCount
+  } = useAssetBrowserState()
 
   return (
     <Box
@@ -48,6 +53,9 @@ const Header = (props: Props) => {
       width="100%"
       zIndex="header"
     >
+      {/* Progress bar */}
+      <Progress key={browserQueryOptions.pageIndex} loading={fetching} />
+
       {/* File upload */}
       {/*
       <Box alignItems="center" display="flex" p={2}>

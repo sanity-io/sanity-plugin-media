@@ -79,6 +79,7 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 - Folder management
 - Fix typings across the board, consider using `typesafe-actions`
 - Remember browser options with local storage
+- Virtualize displays and improve render performance across large datasets
 
 ## Contributing
 

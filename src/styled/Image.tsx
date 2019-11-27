@@ -6,7 +6,7 @@ type Props = ColorProps & {
 }
 
 const Image = styled.img<Props>`
-  --checkerboard-color: rgba(255, 255, 255, 0.04);
+  --checkerboard-color: rgba(255, 255, 255, 0.1);
 
   transition: opacity 250ms;
   display: block;
