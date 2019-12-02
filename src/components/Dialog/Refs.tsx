@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import {useDispatch} from 'react-redux'
-import MdDelete from 'react-icons/lib/md/delete'
+import {MdDeleteForever} from 'react-icons/md'
 
 import {assetsDelete} from '../../modules/assets'
 import {dialogClear} from '../../modules/dialog'
@@ -30,7 +30,7 @@ const RefsDialog = (props: Props) => {
       callback: () => handleDelete(item.asset),
       disabled: item.updating,
       color: 'danger' as const,
-      icon: MdDelete,
+      icon: MdDeleteForever,
       title: 'Delete'
     },
     {

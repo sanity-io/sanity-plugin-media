@@ -1,5 +1,5 @@
 import React from 'react'
-import IoIosCloseEmpty from 'react-icons/lib/io/ios-close-empty'
+import {IoIosClose} from 'react-icons/io'
 // import pluralize from 'pluralize'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
 import DropDownButton from 'part:@sanity/components/buttons/dropdown'
@@ -88,7 +88,7 @@ const Header = (props: Props) => {
         <Box alignItems="center" display="flex" flex="1" height="100%">
           {onClose && (
             <Button bleed={true} kind="simple" onClick={onClose} ripple={false}>
-              <IoIosCloseEmpty size={30} />
+              <IoIosClose size={30} />
             </Button>
           )}
 
@@ -131,7 +131,7 @@ const Header = (props: Props) => {
                       opacity: selected ? 1 : 0.5
                     }}
                   >
-                    {new view.icon({size: 18})}
+                    {view.icon({size: 18})}
                   </Button>
                 )
               })}

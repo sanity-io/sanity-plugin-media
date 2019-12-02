@@ -1,11 +1,8 @@
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React from 'react'
-import IoIosArrowThinRight from 'react-icons/lib/io/ios-arrow-thin-right'
-import IoIosCloseEmpty from 'react-icons/lib/io/ios-close-empty'
-import IoIosCheckmarkOutline from 'react-icons/lib/io/ios-checkmark-outline'
-import MdError from 'react-icons/lib/md/error'
-import MdInsertLink from 'react-icons/lib/md/insert-link'
+import {IoIosClose, IoIosLink, IoIosReturnRight, IoMdCheckmarkCircleOutline} from 'react-icons/io'
+import {MdError} from 'react-icons/md'
 import Button from 'part:@sanity/components/buttons/default'
 import Spinner from 'part:@sanity/components/loading/spinner'
 
@@ -109,7 +106,7 @@ const TableItem = (props: Props) => {
               size="100%"
               top={0}
             >
-              <IoIosCheckmarkOutline size={16} />
+              <IoMdCheckmarkCircleOutline size={16} />
             </Box>
           )}
 
@@ -165,21 +162,21 @@ const TableItem = (props: Props) => {
         {onSelect && (
           <Button
             disabled={updating}
-            icon={IoIosArrowThinRight.bind(null, {size: 26})}
+            icon={IoIosReturnRight.bind(null, {size: 20})}
             kind="simple"
             onClick={handleSelect}
           />
         )}
         <Button
           disabled={updating}
-          icon={MdInsertLink.bind(null, {size: 16})}
+          icon={IoIosLink.bind(null, {size: 16})}
           kind="simple"
           onClick={handleShowRefs}
         />
         <Button
           color="danger"
           disabled={updating}
-          icon={IoIosCloseEmpty.bind(null, {size: 24})}
+          icon={IoIosClose.bind(null, {size: 24})}
           kind="simple"
           onClick={handleDeleteAsset}
         />

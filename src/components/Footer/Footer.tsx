@@ -2,9 +2,7 @@ import filesize from 'filesize'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
 import Button from 'part:@sanity/components/buttons/default'
 import React from 'react'
-import MdDelete from 'react-icons/lib/md/delete'
-import MdInsertLink from 'react-icons/lib/md/insert-link'
-import IoIosArrowThinRight from 'react-icons/lib/io/ios-arrow-thin-right'
+import {IoIosClose, IoIosLink, IoIosReturnRight} from 'react-icons/io'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
@@ -38,7 +36,7 @@ const Footer = () => {
         {onSelect && singlePickedAsset && (
           <Button
             bleed={true}
-            icon={IoIosArrowThinRight.bind(null, {size: 22})}
+            icon={IoIosReturnRight.bind(null, {size: 22})}
             kind="simple"
             onClick={() => {
               onSelect([
@@ -112,7 +110,7 @@ const Footer = () => {
                 borderRadius: 0
               }}
             >
-              <MdInsertLink size={16} />
+              <IoIosLink size={16} />
             </Button>
           )}
 
@@ -120,7 +118,7 @@ const Footer = () => {
             <Button
               bleed={true}
               color="danger"
-              icon={MdDelete.bind(null, {size: 18})}
+              icon={IoIosClose.bind(null, {size: 24})}
               kind="simple"
               onClick={onDeletePicked}
               ripple={false}

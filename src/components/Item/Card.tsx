@@ -1,5 +1,5 @@
 import React from 'react'
-import IoIosCheckmarkOutline from 'react-icons/lib/io/ios-checkmark-outline'
+import {IoMdCheckmarkCircleOutline} from 'react-icons/io'
 import styled from 'styled-components'
 import Button from 'part:@sanity/components/buttons/default'
 import ErrorIcon from 'part:@sanity/base/error-icon'
@@ -98,7 +98,7 @@ const CardItem = (props: Props) => {
             size="100%"
             top={0}
           >
-            <IoIosCheckmarkOutline size={24} />
+            <IoMdCheckmarkCircleOutline size={24} />
           </Box>
         )}
 
