@@ -4,6 +4,7 @@ import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {IoIosClose, IoIosLink, IoIosReturnRight, IoMdCheckmarkCircleOutline} from 'react-icons/io'
 import {MdError} from 'react-icons/md'
 import Spinner from 'part:@sanity/components/loading/spinner'
+import Button from 'part:@sanity/components/buttons/default'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import Checkbox from '../../styled/Checkbox'
@@ -14,7 +15,6 @@ import Row from '../../styled/Row'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
 import {Item} from '../../types'
 import imageDprUrl from '../../util/imageDprUrl'
-import SanityButton from '../SanityButton/SanityButton'
 
 type Props = {
   item: Item
@@ -166,20 +166,20 @@ const TableItem = (props: Props) => {
       {/* Actions */}
       <Box opacity={cellOpacity} textAlign={['left', 'right']}>
         {onSelect && (
-          <SanityButton
+          <Button
             disabled={updating}
             icon={IoIosReturnRight.bind(null, {size: 20})}
             kind="simple"
             onClick={handleSelect}
           />
         )}
-        <SanityButton
+        <Button
           disabled={updating}
           icon={IoIosLink.bind(null, {size: 16})}
           kind="simple"
           onClick={handleShowRefs}
         />
-        <SanityButton
+        <Button
           color="danger"
           disabled={updating}
           icon={IoIosClose.bind(null, {size: 24})}

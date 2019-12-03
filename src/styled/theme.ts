@@ -1,6 +1,6 @@
 const headerHeight = ['100px', '50px']
 const tableHeaderHeight = '34px'
-const tableRowHeight = ['200px', '100px']
+const tableRowHeight = ['150px', '100px']
 
 const sizes: string[] & {
   [key: string]: any
@@ -19,7 +19,7 @@ space.tableRowHeight = tableRowHeight
 export default {
   // Remember that em units in media queries are always relative to 16px / the user setting
   // and NOT the html font size!
-  breakpoints: ['35em'] as string[],
+  breakpoints: ['35em', '50em'] as string[],
   colors: {
     // grayscale
     white: '#ffffff',

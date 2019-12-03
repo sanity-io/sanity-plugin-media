@@ -66,7 +66,6 @@ const TableView = forwardRef((props: Props, ref: Ref<any>) => {
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
 
-  /*
   const innerElementType = ({children, ...rest}: {children: ReactNode}) => {
     return (
       <>
@@ -99,13 +98,12 @@ const TableView = forwardRef((props: Props, ref: Ref<any>) => {
       </>
     )
   }
-  */
 
   return (
     <Box height={height} width={width}>
       <FixedSizeList
         height={height}
-        // innerElementType={innerElementType}
+        innerElementType={innerElementType}
         itemData={{
           items,
           selectedIds
