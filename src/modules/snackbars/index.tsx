@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {ReactNode} from 'react'
 import idx from 'idx'
 import pluralize from 'pluralize'
 import produce from 'immer'
@@ -57,13 +57,7 @@ export default function snackbarsReducer(
  *******************/
 
 // Add error snackbar
-export const snackbarsAddError = ({
-  subtitle,
-  title
-}: {
-  subtitle?: string
-  title: React.ReactNode
-}) => ({
+export const snackbarsAddError = ({subtitle, title}: {subtitle?: string; title: ReactNode}) => ({
   payload: {
     kind: 'error',
     subtitle,
@@ -74,13 +68,7 @@ export const snackbarsAddError = ({
 })
 
 // Add success snackbar
-export const snackbarsAddSuccess = ({
-  subtitle,
-  title
-}: {
-  subtitle?: string
-  title: React.ReactNode
-}) => ({
+export const snackbarsAddSuccess = ({subtitle, title}: {subtitle?: string; title: ReactNode}) => ({
   payload: {
     kind: 'success',
     subtitle,

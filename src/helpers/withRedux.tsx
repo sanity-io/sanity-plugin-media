@@ -1,14 +1,14 @@
-import React from 'react'
+import React, {Component, ComponentType} from 'react'
 import {Provider} from 'react-redux'
 import {applyMiddleware, createStore} from 'redux'
 import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly'
 import {createEpicMiddleware} from 'redux-observable'
 import {rootEpic, rootReducer} from '../modules'
 
-function withRedux<T>(ComposedComponent: React.ComponentType<T>) {
+function withRedux<T>(ComposedComponent: ComponentType<T>) {
   const displayName = ComposedComponent.displayName || ComposedComponent.name || 'Component'
 
-  return class WithReduxComponent extends React.Component<T> {
+  return class WithReduxComponent extends Component<T> {
     static displayName = `withRedux(${displayName})`
     store: any
 

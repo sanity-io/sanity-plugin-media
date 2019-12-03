@@ -1,9 +1,8 @@
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
-import React from 'react'
+import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {IoIosClose, IoIosLink, IoIosReturnRight, IoMdCheckmarkCircleOutline} from 'react-icons/io'
 import {MdError} from 'react-icons/md'
-import Button from 'part:@sanity/components/buttons/default'
 import Spinner from 'part:@sanity/components/loading/spinner'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
@@ -15,14 +14,16 @@ import Row from '../../styled/Row'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
 import {Item} from '../../types'
 import imageDprUrl from '../../util/imageDprUrl'
+import SanityButton from '../SanityButton/SanityButton'
 
 type Props = {
   item: Item
   selected: boolean
+  style?: CSSProperties
 }
 
 const TableItem = (props: Props) => {
-  const {item, selected} = props
+  const {item, selected, style} = props
   const {
     onDelete,
     onDialogShowConflicts,
@@ -51,7 +52,7 @@ const TableItem = (props: Props) => {
     onDelete(asset)
   }
 
-  const handleDialogConflicts = (e: React.MouseEvent) => {
+  const handleDialogConflicts = (e: MouseEvent) => {
     e.stopPropagation()
     onDialogShowConflicts(asset)
   }
@@ -71,11 +72,16 @@ const TableItem = (props: Props) => {
 
   const cellOpacity = updating ? 0.5 : 1
 
+  const imageUrl = imageDprUrl(asset, 100)
+  const imageOpacity = selected || updating ? 0.15 : 1
+
   return (
     <Row
       bg={picked ? 'whiteOverlay' : 'none'}
       color="gray"
       fontSize={1}
+      height={['tableRowHeight.0', 'tableRowHeight.1']}
+      style={style}
       userSelect="none"
       whiteSpace="nowrap"
     >
@@ -89,9 +95,9 @@ const TableItem = (props: Props) => {
         <ResponsiveBox aspectRatio={4 / 3}>
           <Image
             draggable={false}
-            opacity={selected || updating ? 0.15 : 1}
+            opacity={imageOpacity}
             showCheckerboard={!isOpaque}
-            src={imageDprUrl(asset, 100)}
+            src={imageUrl}
           />
 
           {/* Selected checkmark */}
@@ -160,20 +166,20 @@ const TableItem = (props: Props) => {
       {/* Actions */}
       <Box opacity={cellOpacity} textAlign={['left', 'right']}>
         {onSelect && (
-          <Button
+          <SanityButton
             disabled={updating}
             icon={IoIosReturnRight.bind(null, {size: 20})}
             kind="simple"
             onClick={handleSelect}
           />
         )}
-        <Button
+        <SanityButton
           disabled={updating}
           icon={IoIosLink.bind(null, {size: 16})}
           kind="simple"
           onClick={handleShowRefs}
         />
-        <Button
+        <SanityButton
           color="danger"
           disabled={updating}
           icon={IoIosClose.bind(null, {size: 24})}
@@ -185,4 +191,4 @@ const TableItem = (props: Props) => {
   )
 }
 
-export default React.memo(TableItem)
+export default memo(TableItem)

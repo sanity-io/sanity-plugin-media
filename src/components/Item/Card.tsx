@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {IoMdCheckmarkCircleOutline} from 'react-icons/io'
 import styled from 'styled-components'
 import Button from 'part:@sanity/components/buttons/default'
@@ -6,7 +6,6 @@ import ErrorIcon from 'part:@sanity/base/error-icon'
 import Spinner from 'part:@sanity/components/loading/spinner'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
-import useKeyPress from '../../hooks/useKeyPress'
 import Box from '../../styled/Box'
 import IconButton from '../../styled/IconButton'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
@@ -18,6 +17,8 @@ type Props = {
   focused: boolean
   item: Item
   selected: boolean
+  shiftPressed: boolean
+  style?: CSSProperties
 }
 
 const Container = styled(Box)`
@@ -25,7 +26,7 @@ const Container = styled(Box)`
 `
 
 const CardItem = (props: Props) => {
-  const {focused, item, selected} = props
+  const {focused, item, selected, shiftPressed, style} = props
 
   const asset = item?.asset
   const errorCode = item?.errorCode
@@ -34,9 +35,6 @@ const CardItem = (props: Props) => {
   const updating = item?.updating
 
   const {onDialogShowConflicts, onPick, onPickClear, onSelect} = useAssetBrowserActions()
-
-  // TODO: check perf implications, causing unnecessary renders?
-  const shiftPressed = useKeyPress('Shift')
 
   // Short circuit if no asset is available
   if (!asset) {
@@ -53,7 +51,7 @@ const CardItem = (props: Props) => {
     }
   }
 
-  const handleDialogConflicts = (e: React.MouseEvent) => {
+  const handleDialogConflicts = (e: MouseEvent) => {
     e.stopPropagation()
     onDialogShowConflicts(asset)
   }
@@ -67,23 +65,30 @@ const CardItem = (props: Props) => {
     ])
   }
 
+  const imageUrl = imageDprUrl(asset, 250)
+  const imageOpacity = updating ? 0.15 : selected && !picked ? 0.15 : 1
+
   return (
     <Container
+      alignItems="center"
       bg={picked ? 'whiteOverlay' : 'none'}
       borderRadius="4px"
-      display="block"
+      display="flex"
+      justifyContent="center"
       onClick={handleAssetPick}
       p={2}
       position="relative"
+      style={style}
       userSelect="none"
     >
       {/* Image */}
       <ResponsiveBox aspectRatio={4 / 3}>
         <Image
           draggable={false}
-          opacity={updating ? 0.15 : selected && !picked ? 0.15 : 1}
+          opacity={imageOpacity}
           showCheckerboard={!isOpaque}
-          src={imageDprUrl(asset, 200)}
+          src={imageUrl}
+          transition="opacity 1000ms"
         />
 
         {/* Selected checkmark */}
@@ -98,7 +103,7 @@ const CardItem = (props: Props) => {
             size="100%"
             top={0}
           >
-            <IoMdCheckmarkCircleOutline size={24} />
+            <IoMdCheckmarkCircleOutline size={18} />
           </Box>
         )}
 
@@ -154,4 +159,4 @@ const CardItem = (props: Props) => {
   )
 }
 
-export default React.memo(CardItem)
+export default memo(CardItem)

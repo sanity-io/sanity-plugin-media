@@ -2,7 +2,7 @@ import filesize from 'filesize'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
 import Button from 'part:@sanity/components/buttons/default'
 import React from 'react'
-import {IoIosClose, IoIosLink, IoIosReturnRight} from 'react-icons/io'
+import {IoIosLink, IoIosReturnRight} from 'react-icons/io'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
@@ -25,14 +25,14 @@ const Footer = () => {
       color="lightGray"
       display="flex"
       flexWrap="wrap"
-      height={['headerHeight2x', 'headerHeight']}
+      height={['headerHeight.0', 'headerHeight.1']}
       justifyContent="space-between"
       left={0}
       position="fixed"
       width="100%"
     >
       {/* LHS */}
-      <Box flex="3 0" height="headerHeight" order={[2, 0]}>
+      <Box flex="3 0" height="headerHeight.1" order={[2, 0]}>
         {onSelect && singlePickedAsset && (
           <Button
             bleed={true}
@@ -54,7 +54,7 @@ const Footer = () => {
       </Box>
 
       {/* Center */}
-      <Box height="headerHeight" order={[0, 1]} overflow="hidden" px={2} width={['100%', 'auto']}>
+      <Box height="headerHeight.1" order={[0, 1]} overflow="hidden" px={2} width={['100%', 'auto']}>
         {singlePickedAsset && (
           <Box
             alignItems="center"
@@ -91,14 +91,20 @@ const Footer = () => {
         )}
 
         {picked.length > 1 && (
-          <Box alignItems="center" color="lightGray" display="flex" height="headerHeight">
+          <Box alignItems="center" color="lightGray" display="flex" height="headerHeight.1">
             {picked.length} selected
           </Box>
         )}
       </Box>
 
       {/* RHS */}
-      <Box display="flex" flex="3 0" height="headerHeight" justifyContent="flex-end" order={[2, 2]}>
+      <Box
+        display="flex"
+        flex="3 0"
+        height="headerHeight.1"
+        justifyContent="flex-end"
+        order={[2, 2]}
+      >
         <ButtonGroup>
           {singlePickedAsset && (
             <Button
@@ -118,7 +124,6 @@ const Footer = () => {
             <Button
               bleed={true}
               color="danger"
-              icon={IoIosClose.bind(null, {size: 24})}
               kind="simple"
               onClick={onDeletePicked}
               ripple={false}

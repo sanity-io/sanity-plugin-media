@@ -3,6 +3,7 @@ import {color, ColorProps} from 'styled-system'
 
 type Props = ColorProps & {
   showCheckerboard?: boolean
+  transition?: string
 }
 
 const Image = styled.img<Props>`

@@ -1,10 +1,10 @@
-import React from 'react'
+import React, {ReactNode, memo} from 'react'
 import styled from 'styled-components'
 import Box from '../../styled/Box'
 
 type Props = {
   aspectRatio: number
-  children: React.ReactNode
+  children: ReactNode
 }
 
 const Container = styled(Box)<Props>`
@@ -30,4 +30,4 @@ const ResponsiveBox = (props: Props) => {
   )
 }
 
-export default ResponsiveBox
+export default memo(ResponsiveBox)

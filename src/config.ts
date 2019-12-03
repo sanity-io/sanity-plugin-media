@@ -1,6 +1,7 @@
 import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
 import {Document} from './types'
 
+// Filters to display in header dropdown
 export const getFilters = (currentDocument?: Document) => {
   const items = [
     {
@@ -14,19 +15,17 @@ export const getFilters = (currentDocument?: Document) => {
   ]
 
   if (currentDocument && currentDocument._id) {
-    /*
-    // This query is horribly inefficient and slow as molasses on large datasets.
-    // TODO: Re-enable with a more performant GROQ query
+    // This query is very slow (!) on larger datasets
     items.splice(1, 0, {
-      title: 'Images in current entry',
-      value: `_type == "sanity.imageAsset" && $documentId in *[references(^._id)]._id`
+      title: 'Current entry (slow)',
+      value: `_type == "sanity.imageAsset" && defined(*[_id == $documentId && references(^._id)][0])`
     })
-    */
   }
 
   return items
 }
 
+// Sort order dropdown options
 export const ORDERS = [
   {
     title: 'Latest first',
@@ -46,6 +45,7 @@ export const ORDERS = [
   }
 ]
 
+// View buttons
 export const VIEWS = [
   {
     icon: AiFillAppstore,

@@ -1,4 +1,4 @@
-import React, {createContext, useContext} from 'react'
+import React, {ReactNode, createContext, useContext} from 'react'
 import {useSelector as useReduxSelector, TypedUseSelectorHook} from 'react-redux'
 import {Item} from '../types'
 import {RootReducerState} from '../modules/types'
@@ -12,7 +12,7 @@ type ContextProps = {
 }
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 const AssetBrowserStateContext = createContext<ContextProps | undefined>(undefined)

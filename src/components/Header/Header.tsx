@@ -42,7 +42,7 @@ const Header = (props: Props) => {
     <Box
       bg="darkestGray"
       color="lightGray"
-      height="headerHeight"
+      height="headerHeight.1"
       display="flex"
       flexDirection="column"
       justifyContent="center"

@@ -1,4 +1,4 @@
-import React, {createContext, useContext} from 'react'
+import React, {ReactNode, createContext, useContext} from 'react'
 import {useDispatch} from 'react-redux'
 import {
   assetsDelete,
@@ -24,7 +24,7 @@ type ContextProps = {
 }
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
   onSelect: (assets: SelectedAsset[]) => void
 }
 

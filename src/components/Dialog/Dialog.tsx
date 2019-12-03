@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {ReactNode, useCallback} from 'react'
 import SanityDialog from 'part:@sanity/components/dialogs/default'
 import DialogContent from 'part:@sanity/components/dialogs/content'
 import Spinner from 'part:@sanity/components/loading/spinner'
@@ -11,11 +11,11 @@ type Props = {
   actions: {
     callback: () => void
     disabled?: boolean
-    icon?: React.ReactNode
+    icon?: ReactNode
     title: string
   }[]
   asset: Asset
-  children: (filteredDocuments: any) => React.ReactNode
+  children: (filteredDocuments: any) => ReactNode
   color?: 'default' | 'danger' | 'info' | 'success' | 'warning'
   onClose: () => void
   title: string

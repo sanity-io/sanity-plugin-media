@@ -1,24 +1,25 @@
-const HEADER_HEIGHT = '3.0625rem' // 49px
-const HEADER_HEIGHT_2X = `${3.0625 * 2}rem` // 49px * 2
+const headerHeight = ['100px', '50px']
+const tableHeaderHeight = '34px'
+const tableRowHeight = ['200px', '100px']
 
 const sizes: string[] & {
-  headerHeight?: string
-  headerHeight2x?: string
+  [key: string]: any
 } = []
-sizes.headerHeight = HEADER_HEIGHT
-sizes.headerHeight2x = HEADER_HEIGHT_2X
+sizes.headerHeight = headerHeight
+sizes.tableHeaderHeight = tableHeaderHeight
+sizes.tableRowHeight = tableRowHeight
 
 const space: string[] & {
-  headerHeight?: string
-  headerHeight2x?: string
+  [key: string]: any
 } = ['0.0rem', '0.3rem', '0.6rem', '1.2rem', '2.4rem', '4.8rem']
-space.headerHeight = HEADER_HEIGHT
-space.headerHeight2x = HEADER_HEIGHT_2X
+space.headerHeight = headerHeight
+space.tableHeaderHeight = tableHeaderHeight
+space.tableRowHeight = tableRowHeight
 
 export default {
   // Remember that em units in media queries are always relative to 16px / the user setting
   // and NOT the html font size!
-  breakpoints: ['35em'],
+  breakpoints: ['35em'] as string[],
   colors: {
     // grayscale
     white: '#ffffff',
@@ -38,6 +39,7 @@ export default {
   fontSizes: ['0.563rem', '0.75rem', '1.0rem', '1.333rem'],
   sizes,
   space,
+  tableRowHeight,
   zIndices: {
     header: 1
   }

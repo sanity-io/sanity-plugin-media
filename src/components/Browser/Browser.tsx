@@ -1,5 +1,8 @@
 import produce from 'immer'
-import React, {useRef, useState, useEffect} from 'react'
+import React, {Ref, useRef, useState, useEffect} from 'react'
+import AutoSizer from 'react-virtualized-auto-sizer'
+import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
+import InfiniteLoader from 'react-window-infinite-loader'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
@@ -11,7 +14,6 @@ import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import CardView from '../View/Card'
 import TableView from '../View/Table'
-import ViewportObserver from '../ViewportObserver/ViewportObserver'
 
 const PER_PAGE = 20
 
@@ -21,11 +23,18 @@ type Props = {
   selectedAssets?: Asset[]
 }
 
+type InfiniteLoaderRenderProps = {
+  onItemsRendered: (props: ListOnItemsRenderedProps) => any
+  ref: Ref<any>
+}
+
 const Browser = (props: Props) => {
   const {document: currentDocument, onClose, selectedAssets} = props
 
+  // Get available filters, depending on whether the `document` prop is available or not.
   const filters: Filter[] = getFilters(currentDocument)
 
+  // Ref used to scroll to the top of the page on filter changes
   const viewRef = useRef<HTMLDivElement | null>(null)
 
   const {onFetch} = useAssetBrowserActions()
@@ -136,6 +145,23 @@ const Browser = (props: Props) => {
     setBrowserView(view)
   }
 
+  // Every row is loaded except for our loading indicator row.
+  const isItemLoaded = (index: number) => {
+    return index < items.length
+  }
+
+  // Only load 1 page of items at a time.
+  // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
+  const handleLoadMoreItems = () => {
+    if (!fetching) {
+      handleFetchNextPage()
+    }
+    return new Promise(() => {})
+  }
+
+  // If there are more items to be loaded then add an extra placeholder row to trigger additional page loads.
+  const itemCount = hasMore ? items.length + 1 : items.length
+
   return (
     <Box bg="darkerGray" fontSize={1} justifyContent="space-between" minHeight="100%">
       {/* Header */}
@@ -151,26 +177,83 @@ const Browser = (props: Props) => {
 
       {/* Items */}
       <Box
-        bottom={[0, 'headerHeight']}
-        mb={['headerHeight', 0]}
+        bottom={[0, 'headerHeight.1']}
+        mb={['headerHeight.1', 0]}
         mx="auto"
         overflowX="hidden"
-        overflowY="scroll"
         position="absolute"
         ref={viewRef}
-        top="headerHeight"
+        top="headerHeight.1"
         width="100%"
       >
-        {/* View: Grid */}
-        {hasItems && browserView.value === 'grid' && (
-          <Box m={2}>
-            <CardView items={items} selectedAssets={selectedAssets} />
-          </Box>
-        )}
+        {hasItems && (browserView.value === 'grid' || 'table') && (
+          <AutoSizer>
+            {({height, width}) => {
+              return (
+                <InfiniteLoader
+                  isItemLoaded={isItemLoaded}
+                  itemCount={itemCount}
+                  loadMoreItems={handleLoadMoreItems}
+                >
+                  {({onItemsRendered, ref}: InfiniteLoaderRenderProps) => {
+                    // View: Table
+                    if (browserView.value === 'table') {
+                      return (
+                        <TableView
+                          height={height}
+                          items={items}
+                          itemCount={itemCount}
+                          onItemsRendered={onItemsRendered}
+                          ref={ref}
+                          selectedAssets={selectedAssets}
+                          width={width}
+                        />
+                      )
+                    }
 
-        {/* View: Table */}
-        {hasItems && browserView.value === 'table' && (
-          <TableView items={items} selectedAssets={selectedAssets} />
+                    // View: Grid
+                    if (browserView.value === 'grid') {
+                      // The `onItemsRendered` method signature for `react-window` grids is different and
+                      // requires an adaptor, below.
+                      // Source: https://github.com/bvaughn/react-window-infinite-loader/issues/3
+                      const newItemsRendered = (gridData: GridOnItemsRenderedProps) => {
+                        const {
+                          overscanRowStartIndex,
+                          overscanRowStopIndex,
+                          overscanColumnStopIndex
+                        } = gridData
+
+                        const endCol = overscanColumnStopIndex + 1
+                        const startRow = overscanRowStartIndex
+                        const endRow = overscanRowStopIndex
+                        const visibleStartIndex = startRow * endCol
+                        const visibleStopIndex = endRow * endCol
+
+                        onItemsRendered({
+                          overscanStartIndex: 0,
+                          overscanStopIndex: 0,
+                          visibleStartIndex,
+                          visibleStopIndex
+                        })
+                      }
+
+                      return (
+                        <CardView
+                          height={height}
+                          items={items}
+                          itemCount={itemCount}
+                          onItemsRendered={newItemsRendered}
+                          ref={ref}
+                          selectedAssets={selectedAssets}
+                          width={width}
+                        />
+                      )
+                    }
+                  }}
+                </InfiniteLoader>
+              )
+            }}
+          </AutoSizer>
         )}
 
         {/* No results */}
@@ -178,17 +261,6 @@ const Browser = (props: Props) => {
           <Box color="lightGray" fontSize={1} p={3}>
             No results for the current query
           </Box>
-        )}
-
-        {/* Viewport observer */}
-        {hasItems && hasFetchedOnce && !fetching && (
-          <ViewportObserver
-            onVisible={() => {
-              if (hasMore) {
-                handleFetchNextPage()
-              }
-            }}
-          />
         )}
       </Box>
 

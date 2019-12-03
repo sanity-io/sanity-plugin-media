@@ -1,3 +1,4 @@
+import {ReactNode} from 'react'
 import {SnackbarsActionTypes} from './index'
 import {Asset} from '../../types'
 
@@ -8,7 +9,7 @@ type Snackbar = {
   kind: string
   subtitle?: string
   timeout?: number
-  title?: React.ReactNode
+  title?: ReactNode
 }
 
 // Reducer
