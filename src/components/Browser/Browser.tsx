@@ -55,6 +55,10 @@ const Browser = (props: Props) => {
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
   const hasItems = items.length > 0
+  const picked = items.filter(item => item.picked)
+  const hasPicked = picked.length > 0
+
+  const currentDocumentTitle = currentDocument?.title
 
   const fetchPage = (index: number, replace: boolean) => {
     const {filter, order} = browserQueryOptions
@@ -65,8 +69,8 @@ const Browser = (props: Props) => {
     const sort = `order(${order.value})`
     const selector = `[${start}...${end}]`
 
-    // Can be null when operating on pristine / unsaved drafts
-    const currentDocumentId = currentDocument && currentDocument._id
+    // ID can be null when operating on pristine / unsaved drafts
+    const currentDocumentId = currentDocument?._id
 
     onFetch({
       filter: filter.value,
@@ -168,6 +172,7 @@ const Browser = (props: Props) => {
       <Header
         browserQueryOptions={browserQueryOptions}
         browserView={browserView}
+        currentDocumentTitle={currentDocumentTitle}
         filters={filters}
         items={items}
         onClose={onClose}
@@ -177,13 +182,12 @@ const Browser = (props: Props) => {
 
       {/* Items */}
       <Box
-        bottom={[0, 'headerHeight.1']}
-        mb={['headerHeight.1', 0]}
+        bottom={[hasPicked ? 'headerHeight.0' : 0, hasPicked ? 'headerHeight.1' : 0]}
         mx="auto"
         overflowX="hidden"
         position="absolute"
         ref={viewRef}
-        top="headerHeight.1"
+        top={[currentDocumentTitle ? 'headerHeight.0' : 'headerHeight.1', 'headerHeight.1']}
         width="100%"
       >
         {hasItems && (browserView.value === 'grid' || 'table') && (
@@ -265,7 +269,7 @@ const Browser = (props: Props) => {
       </Box>
 
       {/* Footer */}
-      <Footer />
+      {hasPicked && <Footer />}
     </Box>
   )
 }

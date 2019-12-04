@@ -1,5 +1,5 @@
-import React from 'react'
-import styled, {ThemeProvider, css} from 'styled-components'
+import React, {useLayoutEffect, useState, useEffect} from 'react'
+import {ThemeProvider} from 'styled-components'
 
 import theme from './styled/theme'
 import {AssetBrowserDispatchProvider} from './contexts/AssetBrowserDispatchContext'
@@ -19,37 +19,38 @@ type Props = {
   selectedAssets: Asset[]
 }
 
-type ContainerProps = {
-  fullscreen?: boolean
-}
-
-const Container = styled(Box)<ContainerProps>`
-  ${props =>
-    props.fullscreen &&
-    css`
-      z-index: 1000;
-      position: fixed;
-      top: 0;
-      left: 0;
-    `}
-`
-
 const AssetBrowser = (props: Props) => {
   const {document, onClose, onSelect, selectedAssets} = props
+  const [headerHeight, setHeaderHeight] = useState<number>(0)
 
   // Close on escape key press
   useKeyPress('Escape', onClose)
+
+  useLayoutEffect(() => {
+    const navBar = window.document.querySelectorAll('[class^=DefaultLayout_navBar]')[0]
+    if (navBar) {
+      const height = navBar.getBoundingClientRect().height
+      setHeaderHeight(height)
+    }
+  }, [])
+
+  useEffect(() => {
+    window.document.body.style.overflowY = 'hidden'
+    return () => {
+      window.document.body.style.overflowY = 'auto'
+    }
+  }, [])
 
   // TODO: preload selectedAssets in redux store rather than prop drilling
   return (
     <ThemeProvider theme={theme}>
       <AssetBrowserDispatchProvider onSelect={onSelect}>
         <AssetBrowserStateProvider>
-          <Container fullscreen={!!onSelect} size="100%">
+          <Box left={0} position="fixed" size="100%" top={onSelect ? 0 : headerHeight} zIndex="app">
             <Snackbars />
             <Dialogs />
             <Browser document={document} onClose={onClose} selectedAssets={selectedAssets} />
-          </Container>
+          </Box>
         </AssetBrowserStateProvider>
       </AssetBrowserDispatchProvider>
     </ThemeProvider>

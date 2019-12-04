@@ -16,6 +16,7 @@ import Progress from '../Progress/Progress'
 type Props = {
   browserQueryOptions: BrowserQueryOptions
   browserView: BrowserView
+  currentDocumentTitle?: string
   filters: Filter[]
   items: Item[]
   onClose?: () => void
@@ -27,6 +28,7 @@ const Header = (props: Props) => {
   const {
     browserQueryOptions,
     browserView,
+    currentDocumentTitle,
     filters,
     onClose,
     onUpdateBrowserQueryOptions,
@@ -40,103 +42,95 @@ const Header = (props: Props) => {
 
   return (
     <Box
+      alignItems="center"
       bg="darkestGray"
       color="lightGray"
-      height="headerHeight.1"
       display="flex"
-      flexDirection="column"
-      justifyContent="center"
+      flexDirection={['column', 'row']}
+      flexWrap="wrap"
+      height={[currentDocumentTitle ? 'headerHeight.0' : 'headerHeight.1', 'headerHeight.1']}
+      justifyContent="space-between"
       overflow="hidden"
       position="absolute"
       top={0}
       whiteSpace="nowrap"
       width="100%"
-      zIndex="header"
     >
       {/* Progress bar */}
       <Progress key={browserQueryOptions.pageIndex} loading={fetching} />
 
-      {/* File upload */}
-      {/*
-      <Box alignItems="center" display="flex" p={2}>
-        <Box fontSize={2}>
-          <FileInputButton
-            color="primary"
-            disabled={true}
-            icon={FaUpload}
-            inverted
-            onSelect={() => {}}
-            style={{
-              padding: '0 1.5em'
-            }}
+      {currentDocumentTitle && (
+        <Box
+          alignItems="center"
+          display="flex"
+          flex="3 0"
+          height="headerHeight.1"
+          justifyContent="space-between"
+          overflow="hidden"
+          textAlign="left"
+          width={['100%', 'auto']}
+        >
+          <Box
+            bg="darkGray"
+            borderRadius="2px"
+            color="lightGray"
+            fontSize={1}
+            fontWeight={500}
+            maxWidth="500px"
+            mx={2}
+            overflow="hidden"
+            px={2}
+            py={1}
+            textOverflow="ellipsis"
           >
-            Upload
-          </FileInputButton>
+            <Box color="gray" fontSize={0} display="inline" mr={2} py={1} textTransform="uppercase">
+              document
+            </Box>
+            {currentDocumentTitle}
+          </Box>
+
+          {onClose && (
+            <Box display={['block', 'none']} height="100%">
+              <Button bleed={true} onClick={onClose} ripple={false}>
+                <IoIosClose size={25} />
+              </Button>
+            </Box>
+          )}
         </Box>
-      </Box>
-      */}
+      )}
 
       <Box
-        alignItems="center"
         display="flex"
-        flexDirection="row"
-        height="100%"
-        justifyContent="space-between"
-        width="100%"
+        height="headerHeight.1"
+        justifyContent={['space-between', 'flex-end']}
+        textAlign="right"
+        width={['100%', 'auto']}
       >
-        {/* LHS: View toggles */}
-        <Box alignItems="center" display="flex" flex="1" height="100%">
-          {onClose && (
-            <Button bleed={true} kind="simple" onClick={onClose} ripple={false}>
-              <IoIosClose size={28} />
-            </Button>
-          )}
+        <ButtonGroup>
+          {VIEWS &&
+            VIEWS.map((view, index) => {
+              const selected = browserView.value === view.value
+              return (
+                <Button
+                  bleed={true}
+                  bg="primary"
+                  kind="simple"
+                  key={index}
+                  onClick={() => onUpdateBrowserView(view)}
+                  ripple={false}
+                  style={{
+                    borderRadius: 0,
+                    color: selected ? 'white' : 'currentColor',
+                    opacity: selected ? 1 : 0.5
+                  }}
+                >
+                  {view.icon({size: 18})}
+                </Button>
+              )
+            })}
+        </ButtonGroup>
 
-          {/* Total image count / picked count */}
-          {/*
-          <Box pl={2}>
-            {totalCount === -1 ? (
-              'Loading..'
-            ) : (
-              <span>
-                {totalCount > 0
-                  ? `${totalCount} ${pluralize('image', totalCount)}`
-                  : 'No images found'}
-              </span>
-            )}
-          </Box>
-          */}
-        </Box>
-
-        {/* Center */}
-        <Box></Box>
-
-        {/* RHS: Filters + order dropdowns */}
-        <Box display="flex" height="100%" textAlign="right">
-          <ButtonGroup>
-            {VIEWS &&
-              VIEWS.map((view, index) => {
-                const selected = browserView.value === view.value
-                return (
-                  <Button
-                    bleed={true}
-                    bg="primary"
-                    kind="simple"
-                    key={index}
-                    onClick={() => onUpdateBrowserView(view)}
-                    ripple={false}
-                    style={{
-                      borderRadius: 0,
-                      color: selected ? 'white' : 'currentColor',
-                      opacity: selected ? 1 : 0.5
-                    }}
-                  >
-                    {view.icon({size: 18})}
-                  </Button>
-                )
-              })}
-          </ButtonGroup>
-
+        <ButtonGroup>
           <DropDownButton
             items={filters}
             kind="simple"
@@ -158,7 +152,15 @@ const Header = (props: Props) => {
           >
             {browserQueryOptions.order.title}
           </DropDownButton>
-        </Box>
+        </ButtonGroup>
+
+        {onClose && (
+          <Box display={[currentDocumentTitle ? 'none' : 'block', 'block']} height="100%">
+            <Button bleed={true} onClick={onClose} ripple={false}>
+              <IoIosClose size={25} />
+            </Button>
+          </Box>
+        )}
       </Box>
     </Box>
   )

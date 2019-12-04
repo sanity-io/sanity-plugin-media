@@ -26,7 +26,7 @@ export default {
     lighterGray: '#eee',
     lightGray: '#ccc',
     gray: '#999',
-    darkGray: '#555',
+    darkGray: '#303030',
     darkerGray: '#222',
     darkestGray: '#1C1C1C',
     black: '#000',
@@ -38,7 +38,7 @@ export default {
   },
   gridTemplateColumns: {
     tableSmall: '8rem auto 1.5rem',
-    tableLarge: '6rem auto 5.25rem 2.5rem 3.25rem 8.5rem 1.5rem'
+    tableLarge: '6rem auto 5.5rem 2.75rem 3.5rem 8.5rem 2rem'
   },
   // Perfect fourth / 1.333
   fontSizes: ['0.563rem', '0.75rem', '1.0rem', '1.333rem'],
@@ -46,6 +46,7 @@ export default {
   space,
   tableRowHeight,
   zIndices: {
+    app: 1000,
     header: 1
   }
 }
