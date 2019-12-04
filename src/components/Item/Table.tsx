@@ -57,9 +57,8 @@ const TableItem = (props: Props) => {
 
   return (
     <Box
-      // alignItems={['flex-start', 'center']}
       alignItems="center"
-      bg={picked ? 'whiteOverlay' : 'none'}
+      bg={picked ? 'overlayTableRow' : 'none'}
       color="gray"
       display="grid"
       fontSize={1}

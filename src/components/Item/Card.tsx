@@ -66,7 +66,7 @@ const CardItem = (props: Props) => {
   return (
     <Box
       alignItems="center"
-      bg={picked ? 'whiteOverlay' : 'none'}
+      bg={picked ? 'overlayCard' : 'none'}
       borderRadius="4px"
       display="flex"
       justifyContent="center"

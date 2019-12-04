@@ -33,7 +33,8 @@ export default {
     // colors
     red: '#e66666',
     // alpha
-    whiteOverlay: 'rgba(255, 255, 255, 0.075)'
+    overlayCard: 'rgba(255, 255, 255, 0.075)',
+    overlayTableRow: 'rgba(255, 255, 255, 0.035)'
   },
   gridTemplateColumns: {
     tableSmall: '8rem auto 1.5rem',

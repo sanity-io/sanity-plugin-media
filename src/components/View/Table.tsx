@@ -22,6 +22,41 @@ type VirtualRowProps = {
   style: CSSProperties
 }
 
+const innerElementType = (props: {children: ReactNode; style: CSSProperties}) => {
+  const {children, style} = props
+  return (
+    <>
+      <Box
+        alignItems="center"
+        bg="darkestGray"
+        color="lightGray"
+        display={['none', 'grid']}
+        gridColumnGap={2}
+        gridTemplateColumns="tableLarge"
+        height="tableHeaderHeight"
+        letterSpacing="0.025em"
+        position="sticky"
+        px={[0, 2]}
+        textTransform="uppercase"
+        top={0}
+        width="100%"
+        zIndex="header"
+      >
+        <Box textAlign="left"></Box>
+        <Box textAlign="left">Original filename</Box>
+        <Box textAlign="left">Dimensions</Box>
+        <Box textAlign="left">Type</Box>
+        <Box textAlign="left">Size</Box>
+        <Box textAlign="left">Last updated</Box>
+        <Box textAlign="left"></Box>
+      </Box>
+      <Box position="absolute" top={[0, 'tableHeaderHeight']} width="100%">
+        <div style={style}>{children}</div>
+      </Box>
+    </>
+  )
+}
+
 const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
   if (!data) {
     return null
@@ -30,12 +65,19 @@ const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
   const item = items[index]
   const assetId = item?.asset?._id
 
+  // Add padding to virtual rows
+  const rowStyle = {
+    ...style,
+    top: Number(style.top) + 2,
+    height: Number(style.height) - 2
+  }
+
   return (
     <TableItem
       item={item}
       selected={selectedIds.includes(assetId)}
       shiftPressed={shiftPressed}
-      style={style}
+      style={rowStyle}
     />
   )
 }, areEqual)
@@ -48,40 +90,6 @@ const TableView = forwardRef((props: Props, ref: Ref<any>) => {
   const tableRowHeight = useThemeBreakpointValue('tableRowHeight')
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
-
-  const innerElementType = ({children, ...rest}: {children: ReactNode}) => {
-    return (
-      <>
-        <Box
-          alignItems="center"
-          bg="darkestGray"
-          color="lightGray"
-          display={['none', 'grid']}
-          gridColumnGap={2}
-          gridTemplateColumns="tableLarge"
-          height="tableHeaderHeight"
-          letterSpacing="0.025em"
-          position="sticky"
-          px={[0, 2]}
-          textTransform="uppercase"
-          top={0}
-          width="100%"
-          zIndex="header"
-        >
-          <Box textAlign="left"></Box>
-          <Box textAlign="left">Original filename</Box>
-          <Box textAlign="left">Dimensions</Box>
-          <Box textAlign="left">Type</Box>
-          <Box textAlign="left">Size</Box>
-          <Box textAlign="left">Last updated</Box>
-          <Box textAlign="left"></Box>
-        </Box>
-        <Box position="absolute" top={[0, 'tableHeaderHeight']} width="100%">
-          <div {...rest}>{children}</div>
-        </Box>
-      </>
-    )
-  }
 
   return (
     <Box height={height} width={width}>
