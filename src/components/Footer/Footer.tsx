@@ -32,7 +32,7 @@ const Footer = () => {
       height={['headerHeight.0', 'headerHeight.1']}
       justifyContent="space-between"
       left={0}
-      position="absolute"
+      position="fixed"
       width="100%"
     >
       {/* LHS */}

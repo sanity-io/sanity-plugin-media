@@ -20,8 +20,8 @@ const Progress = (props: Props) => {
       <Box
         bg="lightGray"
         height="1px"
-        left={0}
         position="absolute"
+        left={0}
         top={0}
         transition={`width ${animationDuration}ms linear`}
         width={`${progress * 100}%`}
