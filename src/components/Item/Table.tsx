@@ -1,17 +1,14 @@
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
-import {IoIosClose, IoIosLink, IoIosReturnRight, IoMdCheckmarkCircleOutline} from 'react-icons/io'
+import {IoMdCheckmarkCircleOutline} from 'react-icons/io'
 import {MdError} from 'react-icons/md'
 import Spinner from 'part:@sanity/components/loading/spinner'
-import Button from 'part:@sanity/components/buttons/default'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
-import Checkbox from '../../styled/Checkbox'
 import IconButton from '../../styled/IconButton'
 import Image from '../../styled/Image'
 import Box from '../../styled/Box'
-import Row from '../../styled/Row'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
 import {Item} from '../../types'
 import imageDprUrl from '../../util/imageDprUrl'
@@ -19,18 +16,13 @@ import imageDprUrl from '../../util/imageDprUrl'
 type Props = {
   item: Item
   selected: boolean
+  shiftPressed: boolean
   style?: CSSProperties
 }
 
 const TableItem = (props: Props) => {
-  const {item, selected, style} = props
-  const {
-    onDelete,
-    onDialogShowConflicts,
-    onDialogShowRefs,
-    onPick,
-    onSelect
-  } = useAssetBrowserActions()
+  const {item, selected, shiftPressed, style} = props
+  const {onDialogShowConflicts, onPick, onPickClear} = useAssetBrowserActions()
 
   const asset = item?.asset
   const dimensions = item?.asset?.metadata?.dimensions
@@ -44,12 +36,13 @@ const TableItem = (props: Props) => {
     return null
   }
 
-  const handleCheckboxChange = () => {
-    onPick(asset._id, !picked)
-  }
-
-  const handleDeleteAsset = () => {
-    onDelete(asset)
+  const handleAssetPick = () => {
+    if (!shiftPressed) {
+      onPickClear()
+      onPick(asset._id, true)
+    } else {
+      onPick(asset._id, !picked)
+    }
   }
 
   const handleDialogConflicts = (e: MouseEvent) => {
@@ -57,41 +50,33 @@ const TableItem = (props: Props) => {
     onDialogShowConflicts(asset)
   }
 
-  const handleSelect = () => {
-    onSelect([
-      {
-        kind: 'assetDocumentId',
-        value: asset._id
-      }
-    ])
-  }
-
-  const handleShowRefs = () => {
-    onDialogShowRefs(asset)
-  }
-
   const cellOpacity = updating ? 0.5 : 1
 
   const imageUrl = imageDprUrl(asset, 100)
-  const imageOpacity = selected || updating ? 0.15 : 1
+  const imageOpacity = selected || updating ? 0.25 : 1
 
   return (
-    <Row
+    <Box
+      // alignItems={['flex-start', 'center']}
+      alignItems="center"
       bg={picked ? 'whiteOverlay' : 'none'}
       color="gray"
+      display="grid"
       fontSize={1}
+      gridColumnGap={[3, 2]}
+      gridTemplateColumns={['tableSmall', 'tableLarge']}
+      gridTemplateRows={['auto', '1fr']}
       height={['tableRowHeight.0', 'tableRowHeight.1']}
+      onClick={handleAssetPick}
+      px={[3, 2]}
+      py={[2, 0]}
       style={style}
+      transition="background 250ms"
       userSelect="none"
       whiteSpace="nowrap"
     >
-      {/* Checkbox */}
-      <Box opacity={cellOpacity}>
-        <Checkbox checked={picked} disabled={updating} onChange={handleCheckboxChange} mx="auto" />
-      </Box>
-
       {/* Preview image + spinner */}
-      <Box>
+      <Box gridColumn={[1, 1]} gridRowStart={['1', 'auto']} gridRowEnd={['span 5', 'auto']}>
         <ResponsiveBox aspectRatio={4 / 3}>
           <Image
             draggable={false}
@@ -136,58 +121,45 @@ const TableItem = (props: Props) => {
       </Box>
 
       {/* Filename */}
-      <Box opacity={cellOpacity}>
+      <Box
+        gridColumn={[2, 2]}
+        gridRow={[1, 'auto']}
+        opacity={cellOpacity}
+        overflow="hidden"
+        textOverflow="ellipsis"
+      >
         <strong>{asset.originalFilename}</strong>
       </Box>
 
       {/* Dimensions */}
-      <Box opacity={cellOpacity}>
-        {dimensions.width || 'unknown'} x {dimensions.height || 'unknown'} px
+      <Box gridColumn={[2, 3]} gridRow={[2, 'auto']} opacity={cellOpacity}>
+        {dimensions.width || '??'} x {dimensions.height || '??'}
       </Box>
 
       {/* File extension */}
-      <Box opacity={cellOpacity}>{asset.extension.toUpperCase()}</Box>
+      <Box gridColumn={[2, 4]} gridRow={[3, 'auto']} opacity={cellOpacity}>
+        {asset.extension.toUpperCase()}
+      </Box>
 
       {/* Size */}
-      <Box opacity={cellOpacity}>{filesize(asset.size, {round: 0})}</Box>
+      <Box gridColumn={[2, 5]} gridRow={[4, 'auto']} opacity={cellOpacity}>
+        {filesize(asset.size, {round: 0})}
+      </Box>
 
       {/* Last updated */}
-      <Box opacity={cellOpacity}>{formatRelative(new Date(asset._updatedAt), new Date())}</Box>
+      <Box gridColumn={[2, 6]} gridRow={[5, 'auto']} opacity={cellOpacity}>
+        {formatRelative(new Date(asset._updatedAt), new Date())}
+      </Box>
 
       {/* Error */}
-      <Box>
+      <Box gridColumn={[3, 7]} gridRowStart="1" gridRowEnd={['span 5', 'auto']} mx="auto">
         {errorCode && (
           <IconButton color="red" fontSize={3} onClick={handleDialogConflicts}>
             <MdError />
           </IconButton>
         )}
       </Box>
-
-      {/* Actions */}
-      <Box opacity={cellOpacity} textAlign={['left', 'right']}>
-        {onSelect && (
-          <Button
-            disabled={updating}
-            icon={IoIosReturnRight.bind(null, {size: 20})}
-            kind="simple"
-            onClick={handleSelect}
-          />
-        )}
-        <Button
-          disabled={updating}
-          icon={IoIosLink.bind(null, {size: 16})}
-          kind="simple"
-          onClick={handleShowRefs}
-        />
-        <Button
-          color="danger"
-          disabled={updating}
-          icon={IoIosClose.bind(null, {size: 24})}
-          kind="simple"
-          onClick={handleDeleteAsset}
-        />
-      </Box>
-    </Row>
+    </Box>
   )
 }
 

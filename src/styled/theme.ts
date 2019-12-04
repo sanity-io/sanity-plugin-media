@@ -1,6 +1,6 @@
 const headerHeight = ['100px', '50px']
 const tableHeaderHeight = '34px'
-const tableRowHeight = ['150px', '100px']
+const tableRowHeight = ['115px', '100px']
 
 const sizes: string[] & {
   [key: string]: any
@@ -19,7 +19,7 @@ space.tableRowHeight = tableRowHeight
 export default {
   // Remember that em units in media queries are always relative to 16px / the user setting
   // and NOT the html font size!
-  breakpoints: ['35em', '50em'] as string[],
+  breakpoints: ['55em'] as string[],
   colors: {
     // grayscale
     white: '#ffffff',
@@ -34,6 +34,10 @@ export default {
     red: '#e66666',
     // alpha
     whiteOverlay: 'rgba(255, 255, 255, 0.075)'
+  },
+  gridTemplateColumns: {
+    tableSmall: '8rem auto 1.5rem',
+    tableLarge: '6rem auto 5.25rem 2.5rem 3.25rem 8.5rem 1.5rem'
   },
   // Perfect fourth / 1.333
   fontSizes: ['0.563rem', '0.75rem', '1.0rem', '1.333rem'],

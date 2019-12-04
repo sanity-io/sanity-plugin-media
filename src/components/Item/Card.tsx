@@ -1,6 +1,5 @@
 import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {IoMdCheckmarkCircleOutline} from 'react-icons/io'
-import styled from 'styled-components'
 import Button from 'part:@sanity/components/buttons/default'
 import ErrorIcon from 'part:@sanity/base/error-icon'
 import Spinner from 'part:@sanity/components/loading/spinner'
@@ -20,10 +19,6 @@ type Props = {
   shiftPressed: boolean
   style?: CSSProperties
 }
-
-const Container = styled(Box)`
-  transition: background 250ms;
-`
 
 const CardItem = (props: Props) => {
   const {focused, item, selected, shiftPressed, style} = props
@@ -66,10 +61,10 @@ const CardItem = (props: Props) => {
   }
 
   const imageUrl = imageDprUrl(asset, 250)
-  const imageOpacity = updating ? 0.15 : selected && !picked ? 0.15 : 1
+  const imageOpacity = updating ? 0.25 : selected && !picked ? 0.25 : 1
 
   return (
-    <Container
+    <Box
       alignItems="center"
       bg={picked ? 'whiteOverlay' : 'none'}
       borderRadius="4px"
@@ -79,6 +74,7 @@ const CardItem = (props: Props) => {
       p={2}
       position="relative"
       style={style}
+      transition="background 250ms"
       userSelect="none"
     >
       {/* Image */}
@@ -155,7 +151,7 @@ const CardItem = (props: Props) => {
           </IconButton>
         )}
       </ResponsiveBox>
-    </Container>
+    </Box>
   )
 }
 

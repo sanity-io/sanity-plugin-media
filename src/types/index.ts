@@ -52,10 +52,13 @@ export type BoxProps = AlignItemsProps &
   TypographyProps & {
     boxSizing?: string
     cursor?: string
+    gridRowEnd?: string | string[]
+    gridRowStart?: string | string[]
     onClick?: Function
     order?: any
     pointerEvents?: string
     textOverflow?: string
+    textTransform?: string
     transform?: string
     transition?: string
     userSelect?: string

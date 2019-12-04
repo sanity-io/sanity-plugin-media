@@ -1,13 +1,9 @@
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {areEqual, FixedSizeList, ListOnItemsRenderedProps} from 'react-window'
-import styled from 'styled-components'
-import {layout} from 'styled-system'
 
-import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import TableItem from '../Item/Table'
+import useKeyPress from '../../hooks/useKeyPress'
 import Box from '../../styled/Box'
-import Checkbox from '../../styled/Checkbox'
-import Row from '../../styled/Row'
 import {Asset, Item} from '../../types'
 import useThemeBreakpointValue from '../../hooks/useThemeBreakpointValue'
 
@@ -30,68 +26,56 @@ const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
   if (!data) {
     return null
   }
-  const {items, selectedIds} = data
+  const {items, selectedIds, shiftPressed} = data
   const item = items[index]
   const assetId = item?.asset?._id
 
-  return <TableItem item={item} selected={selectedIds.includes(assetId)} style={style} />
+  return (
+    <TableItem
+      item={item}
+      selected={selectedIds.includes(assetId)}
+      shiftPressed={shiftPressed}
+      style={style}
+    />
+  )
 }, areEqual)
-
-const Header = styled(Row)`
-  position: sticky;
-  border-spacing: 0;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-
-  ${layout};
-`
 
 const TableView = forwardRef((props: Props, ref: Ref<any>) => {
   const {height, items, itemCount, onItemsRendered, selectedAssets, width} = props
-  const {onPickAll, onPickClear} = useAssetBrowserActions()
+
+  const shiftPressed = useKeyPress('Shift')
 
   const tableRowHeight = useThemeBreakpointValue('tableRowHeight')
-
-  const picked = items && items.filter(item => item.picked)
-  const allPicked = picked.length === items.length
-
-  const handleCheckboxChange = () => {
-    if (allPicked) {
-      onPickClear()
-    } else {
-      onPickAll()
-    }
-  }
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
 
   const innerElementType = ({children, ...rest}: {children: ReactNode}) => {
     return (
       <>
-        <Header
+        <Box
+          alignItems="center"
           bg="darkestGray"
-          color="gray"
+          color="lightGray"
           display={['none', 'grid']}
+          gridColumnGap={2}
+          gridTemplateColumns="tableLarge"
           height="tableHeaderHeight"
-          position="fixed"
+          letterSpacing="0.025em"
+          position="sticky"
+          px={[0, 2]}
+          textTransform="uppercase"
           top={0}
+          width="100%"
           zIndex="header"
         >
-          <Box textAlign="left">
-            {items && items.length > 0 && (
-              <Checkbox checked={allPicked} onChange={handleCheckboxChange} mx="auto" />
-            )}
-          </Box>
           <Box textAlign="left"></Box>
-          <Box textAlign="left">Filename</Box>
+          <Box textAlign="left">Original filename</Box>
           <Box textAlign="left">Dimensions</Box>
           <Box textAlign="left">Type</Box>
           <Box textAlign="left">Size</Box>
           <Box textAlign="left">Last updated</Box>
           <Box textAlign="left"></Box>
-          <Box textAlign="right">Actions</Box>
-        </Header>
+        </Box>
         <Box position="absolute" top={[0, 'tableHeaderHeight']} width="100%">
           <div {...rest}>{children}</div>
         </Box>
@@ -106,7 +90,8 @@ const TableView = forwardRef((props: Props, ref: Ref<any>) => {
         innerElementType={innerElementType}
         itemData={{
           items,
-          selectedIds
+          selectedIds,
+          shiftPressed
         }}
         itemCount={itemCount}
         itemSize={parseInt(tableRowHeight)}

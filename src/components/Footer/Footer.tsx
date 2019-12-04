@@ -2,7 +2,7 @@ import filesize from 'filesize'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
 import Button from 'part:@sanity/components/buttons/default'
 import React from 'react'
-import {IoIosLink, IoIosReturnRight} from 'react-icons/io'
+import {IoIosDownload, IoIosLink, IoIosReturnRight} from 'react-icons/io'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
@@ -16,6 +16,10 @@ const Footer = () => {
   const picked = items && items.filter(item => item.picked)
   const singlePickedAsset: Asset | undefined =
     picked && picked.length === 1 ? picked[0]?.asset : undefined
+
+  const handleDownloadOriginal = (asset: Asset) => {
+    window.location.href = `${asset.url}?dl`
+  }
 
   return (
     <Box
@@ -36,7 +40,7 @@ const Footer = () => {
         {onSelect && singlePickedAsset && (
           <Button
             bleed={true}
-            icon={IoIosReturnRight.bind(null, {size: 22})}
+            icon={IoIosReturnRight.bind(null, {size: 20})}
             kind="simple"
             onClick={() => {
               onSelect([
@@ -48,51 +52,101 @@ const Footer = () => {
             }}
             ripple={false}
           >
-            <strong>Insert</strong>
+            <strong>Select</strong>
           </Button>
         )}
       </Box>
 
       {/* Center */}
-      <Box height="headerHeight.1" order={[0, 1]} overflow="hidden" px={2} width={['100%', 'auto']}>
+      <Box height="headerHeight.1" order={[0, 1]} overflow="hidden" width={['100%', 'auto']}>
         {singlePickedAsset && (
           <Box
             alignItems="center"
             display="flex"
             height="100%"
-            justifyContent="center"
-            whiteSpace="nowrap"
+            justifyContent={['space-between', 'center']}
+            width="100%"
           >
             <Box
-              borderColor="gray"
-              borderStyle="solid"
-              borderWidth="1px"
-              borderRadius="2px"
-              color="gray"
-              fontSize={1}
-              px={1}
+              alignItems="center"
+              display="flex"
+              flexDirection="row"
+              ml={[2, 0]}
+              minWidth={0}
+              whiteSpace="nowrap"
             >
-              {singlePickedAsset.extension.toUpperCase()}
+              {/* Original filename */}
+              <Box
+                color="lightGray"
+                maxWidth={['200px', '420px']}
+                mx={2}
+                overflow="hidden"
+                textOverflow="ellipsis"
+              >
+                <strong>{singlePickedAsset.originalFilename}</strong>
+              </Box>
+
+              {/* Dimensions */}
+              {singlePickedAsset.metadata?.dimensions && (
+                <Box color="gray" mx={2}>
+                  {singlePickedAsset.metadata.dimensions.width} x{' '}
+                  {singlePickedAsset.metadata.dimensions.height}
+                </Box>
+              )}
+
+              {/* Filesize */}
+              <Box color="gray" mx={2}>
+                {filesize(singlePickedAsset.size, {round: 0})}
+              </Box>
+
+              {/* File extension */}
+              <Box
+                borderColor="gray"
+                borderStyle="solid"
+                borderWidth="1px"
+                borderRadius="2px"
+                color="gray"
+                display={['none', 'block']}
+                fontSize={1}
+                mx={2}
+                px={1}
+              >
+                {singlePickedAsset.extension.toUpperCase()}
+              </Box>
             </Box>
 
-            <Box ml={2}>{singlePickedAsset.originalFilename}</Box>
-
-            {singlePickedAsset.metadata?.dimensions && (
-              <Box color="darkGray" ml={3}>
-                {singlePickedAsset.metadata.dimensions.width} x{' '}
-                {singlePickedAsset.metadata.dimensions.height}
-              </Box>
-            )}
-
-            <Box color="darkGray" ml={3}>
-              {filesize(singlePickedAsset.size, {round: 0})}
+            <Box display="flex" height="100%">
+              <ButtonGroup>
+                {/* Show references */}
+                <Button
+                  kind="simple"
+                  onClick={onDialogShowRefs.bind(null, singlePickedAsset)}
+                  ripple={false}
+                  style={{
+                    borderRadius: 0
+                  }}
+                >
+                  <IoIosLink size={16} />
+                </Button>
+                {/* Download original */}
+                <Button
+                  kind="simple"
+                  onClick={handleDownloadOriginal.bind(null, singlePickedAsset)}
+                  ripple={false}
+                  style={{
+                    borderRadius: 0
+                  }}
+                >
+                  <IoIosDownload size={16} />
+                </Button>
+              </ButtonGroup>
             </Box>
           </Box>
         )}
 
         {picked.length > 1 && (
-          <Box alignItems="center" color="lightGray" display="flex" height="headerHeight.1">
-            {picked.length} selected
+          <Box alignItems="center" color="lightGray" display="flex" height="headerHeight.1" mx={3}>
+            {picked.length} images selected
           </Box>
         )}
       </Box>
@@ -106,20 +160,6 @@ const Footer = () => {
         order={[2, 2]}
       >
         <ButtonGroup>
-          {singlePickedAsset && (
-            <Button
-              bleed={true}
-              kind="simple"
-              onClick={onDialogShowRefs.bind(null, singlePickedAsset)}
-              ripple={false}
-              style={{
-                borderRadius: 0
-              }}
-            >
-              <IoIosLink size={16} />
-            </Button>
-          )}
-
           {picked.length > 0 && (
             <Button
               bleed={true}

@@ -88,7 +88,7 @@ const Header = (props: Props) => {
         <Box alignItems="center" display="flex" flex="1" height="100%">
           {onClose && (
             <Button bleed={true} kind="simple" onClick={onClose} ripple={false}>
-              <IoIosClose size={30} />
+              <IoIosClose size={28} />
             </Button>
           )}
 

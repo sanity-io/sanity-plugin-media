@@ -27,9 +27,28 @@ const Box = styled.div<BoxProps>`
     boxShadow: true,
     boxSizing: true,
     cursor: true,
+    gridColumnGap: {
+      property: 'gridColumnGap',
+      scale: 'space'
+    },
+    gridGap: {
+      property: 'gridGap',
+      scale: 'space'
+    },
+    gridRowGap: {
+      property: 'gridRowGap',
+      scale: 'space'
+    },
+    gridRowEnd: true,
+    gridRowStart: true,
+    gridTemplateColumns: {
+      property: 'gridTemplateColumns',
+      scale: 'gridTemplateColumns'
+    },
     overflowY: true,
     pointerEvents: true,
     textOverflow: true,
+    textTransform: true,
     transform: true,
     transition: true,
     userSelect: true,
