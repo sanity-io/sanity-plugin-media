@@ -65,7 +65,7 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 
 ## Good to know
 
-- Displaying assets referenced in the currrent can be slow on large datasets (with thousands of images). This may be improved in future with changes to the GROQ query engine.
+- Displaying unused assets and assets referenced in the currrent document can be slow on large datasets (with thousands of images). This may be improved in future with changes to the GROQ query engine.
 
 - Batch deleting assets invokes multiple API requests - this is because [Sanity's transactions are atomic](https://www.sanity.io/docs/transactions). In other words, deleting 10 selected assets will use 10 API requests.
 

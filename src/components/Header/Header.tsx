@@ -10,13 +10,13 @@ import Button from 'part:@sanity/components/buttons/default'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS} from '../../config'
 import Box from '../../styled/Box'
-import {BrowserQueryOptions, Filter, Item, BrowserView} from '../../types'
+import {BrowserQueryOptions, BrowserView, Document, Filter, Item} from '../../types'
 import Progress from '../Progress/Progress'
 
 type Props = {
   browserQueryOptions: BrowserQueryOptions
   browserView: BrowserView
-  currentDocumentTitle?: string
+  currentDocument?: Document
   filters: Filter[]
   items: Item[]
   onClose?: () => void
@@ -28,7 +28,7 @@ const Header = (props: Props) => {
   const {
     browserQueryOptions,
     browserView,
-    currentDocumentTitle,
+    currentDocument,
     filters,
     onClose,
     onUpdateBrowserQueryOptions,
@@ -48,7 +48,7 @@ const Header = (props: Props) => {
       display="flex"
       flexDirection={['column', 'row']}
       flexWrap="wrap"
-      height={[currentDocumentTitle ? 'headerHeight.0' : 'headerHeight.1', 'headerHeight.1']}
+      height={[currentDocument ? 'headerHeight.0' : 'headerHeight.1', 'headerHeight.1']}
       justifyContent="space-between"
       overflow="hidden"
       position="absolute"
@@ -59,7 +59,7 @@ const Header = (props: Props) => {
       {/* Progress bar */}
       <Progress key={browserQueryOptions.pageIndex} loading={fetching} />
 
-      {currentDocumentTitle && (
+      {currentDocument && (
         <Box
           alignItems="center"
           display="flex"
@@ -91,9 +91,9 @@ const Header = (props: Props) => {
               py={1}
               textTransform="uppercase"
             >
-              document
+              {currentDocument._type}
             </Box>
-            {currentDocumentTitle}
+            {currentDocument.title || <em>Untitled</em>}
           </Box>
 
           {onClose && (
@@ -162,7 +162,7 @@ const Header = (props: Props) => {
         </ButtonGroup>
 
         {onClose && (
-          <Box display={[currentDocumentTitle ? 'none' : 'block', 'block']} height="100%">
+          <Box display={[currentDocument ? 'none' : 'block', 'block']} height="100%">
             <Button bleed={true} onClick={onClose} ripple={false}>
               <IoIosClose size={25} />
             </Button>
