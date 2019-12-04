@@ -36,7 +36,7 @@ In your Sanity project folder:
 sanity install media
 ```
 
-This will add the Media button to your studio menu. If this is akkkkkkkkkkkkkl you're after – that's all you need to do!
+This will add the Media button to your studio menu. If this is all you're after – that's all you need to do!
 
 ### Enabling it as a global custom asset source
 
