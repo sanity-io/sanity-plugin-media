@@ -2,29 +2,29 @@
 
 Alternative media management for [Sanity](https://www.sanity.io/).
 
-⚠ This plugin is currently in alpha. Use at your own risk! ⚠
-
 ![example](https://user-images.githubusercontent.com/209129/69345186-a013b680-0c68-11ea-9aae-0425c54bbe86.jpg)
 
 ## Background
 
 This plugin provides a dedicated media browser for managing images within Sanity.
 
-Out of the box, it provides a link in the menu where you can view all dataset images from anywhere within your studio.
+Out of the box, it provides a link in the menu where you can view all dataset images from anywhere within the studio.
 
 It can also be used as a [custom asset source](https://www.sanity.io/docs/custom-asset-sources) for image fields.
 
 ## Features
 
-- Easily access media from the menu
+- Adds a menu item / tool for easy access from anywhere in the studio
 - Grid / table views
-- Select and delete multiple assets (shift selection supported in the grid view)
-- Display currently selected assets
-- Display unused assets
-- Display assets referenced in the current document
+- Multiple selection (hold down the shift key) and deletion
+- Displays the selected assets on the current field
+- Custom filters to display unused assets and those referenced in the current document
 - Basic filename / date sorting
-- View basic file metadata
+- If using as a custom asset source: displays the current document title that you're inserting into
+- View basic file metadata: original file name and size, dimensions and MIME type
 - Integration with Sanity's snackbar notifications
+- Single click to download high quality versions of your assets
+- Virtualized displays (with `react-window`) for speedy browsing of large datasets
 
 When `sanity-plugin-media` is accessed via a custom asset source, you'll have the option to insert assets as well as view the currently selected image for that field.
 
@@ -36,7 +36,7 @@ In your Sanity project folder:
 sanity install media
 ```
 
-This will add the Media button to your studio menu. If this is all you're after – that's all you need to do!
+This will add the Media button to your studio menu. If this is akkkkkkkkkkkkkl you're after – that's all you need to do!
 
 ### Enabling it as a global custom asset source
 
@@ -65,22 +65,21 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 
 ## Good to know
 
+- Displaying assets referenced in the currrent can be slow on large datasets (with thousands of images). This may be improved in future with changes to the GROQ query engine.
+
 - Batch deleting assets invokes multiple API requests - this is because [Sanity's transactions are atomic](https://www.sanity.io/docs/transactions). In other words, deleting 10 selected assets will use 10 API requests.
 
 ## Roadmap
 
 - Display total image count (Contingent on query engine rewrite)
-- Filter images by the current document
 - More keyboard shortcuts
 - Delete confirmation dialog
-- Display current document title
 - Image uploads
-- Multiple selection / insertion
+- Multiple insertion into documents
 - More detailed metadata views
 - Folder management (!)
 - Fix typings across the board, consider using `typesafe-actions`
 - Remember browser options with local storage
-- Virtualize displays and improve render performance across large datasets
 
 ## Contributing
 
