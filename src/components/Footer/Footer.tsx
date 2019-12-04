@@ -78,7 +78,7 @@ const Footer = () => {
               {/* Original filename */}
               <Box
                 color="gray"
-                maxWidth={['200px', '420px']}
+                maxWidth={[null, '420px']}
                 mx={2}
                 overflow="hidden"
                 textOverflow="ellipsis"
