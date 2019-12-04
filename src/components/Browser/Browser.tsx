@@ -15,7 +15,7 @@ import Header from '../Header/Header'
 import CardView from '../View/Card'
 import TableView from '../View/Table'
 
-const PER_PAGE = 20
+const PER_PAGE = 50
 
 type Props = {
   document?: Document
@@ -234,8 +234,8 @@ const Browser = (props: Props) => {
                         const visibleStopIndex = endRow * endCol
 
                         onItemsRendered({
-                          overscanStartIndex: 0,
-                          overscanStopIndex: 0,
+                          overscanStartIndex: visibleStartIndex - 10,
+                          overscanStopIndex: visibleStopIndex + 10,
                           visibleStartIndex,
                           visibleStopIndex
                         })

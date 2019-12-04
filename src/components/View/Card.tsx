@@ -41,8 +41,10 @@ const VirtualCell = memo(({columnIndex, data, rowIndex, style}: VirtualCellProps
   // Add padding to virtual cells
   const cellStyle = {
     ...style,
-    left: Number(style.left) + 6,
-    top: Number(style.top) + 6,
+    left: Number(style.left) + 3,
+    right: Number(style.left) + 3,
+    top: Number(style.top) + 3,
+    bottom: Number(style.top) + 3,
     width: Number(style.width) - 6,
     height: Number(style.height) - 6
   }

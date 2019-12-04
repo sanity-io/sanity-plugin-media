@@ -46,7 +46,15 @@ const AssetBrowser = (props: Props) => {
     <ThemeProvider theme={theme}>
       <AssetBrowserDispatchProvider onSelect={onSelect}>
         <AssetBrowserStateProvider>
-          <Box left={0} position="fixed" size="100%" top={onSelect ? 0 : headerHeight} zIndex="app">
+          <Box
+            bottom={0}
+            height="auto"
+            left={0}
+            position="fixed"
+            width="100%"
+            top={onSelect ? 0 : headerHeight}
+            zIndex="app"
+          >
             <Snackbars />
             <Dialogs />
             <Browser document={document} onClose={onClose} selectedAssets={selectedAssets} />
