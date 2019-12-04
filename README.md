@@ -2,7 +2,7 @@
 
 Alternative media management for [Sanity](https://www.sanity.io/).
 
-![example](https://user-images.githubusercontent.com/209129/69345186-a013b680-0c68-11ea-9aae-0425c54bbe86.jpg)
+![example](https://user-images.githubusercontent.com/209129/70153124-56828d00-16a6-11ea-9d18-3c08e859dfdb.jpg)
 
 ## Background
 
@@ -36,7 +36,7 @@ In your Sanity project folder:
 sanity install media
 ```
 
-This will add the Media button to your studio menu. If this is akkkkkkkkkkkkkl you're after – that's all you need to do!
+This will add the Media button to your studio menu. If this is all you're after – that's all you need to do!
 
 ### Enabling it as a global custom asset source
 
