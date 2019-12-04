@@ -58,8 +58,6 @@ const Browser = (props: Props) => {
   const picked = items.filter(item => item.picked)
   const hasPicked = picked.length > 0
 
-  const currentDocumentTitle = currentDocument?.title
-
   const fetchPage = (index: number, replace: boolean) => {
     const {filter, order} = browserQueryOptions
 
@@ -172,7 +170,7 @@ const Browser = (props: Props) => {
       <Header
         browserQueryOptions={browserQueryOptions}
         browserView={browserView}
-        currentDocumentTitle={currentDocumentTitle}
+        currentDocument={currentDocument}
         filters={filters}
         items={items}
         onClose={onClose}
@@ -187,7 +185,7 @@ const Browser = (props: Props) => {
         overflow="hidden"
         position="absolute"
         ref={viewRef}
-        top={[currentDocumentTitle ? 'headerHeight.0' : 'headerHeight.1', 'headerHeight.1']}
+        top={[currentDocument ? 'headerHeight.0' : 'headerHeight.1', 'headerHeight.1']}
         width="100%"
       >
         {hasItems && (browserView.value === 'grid' || 'table') && (

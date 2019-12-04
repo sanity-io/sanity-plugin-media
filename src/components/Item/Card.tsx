@@ -52,12 +52,14 @@ const CardItem = (props: Props) => {
   }
 
   const handleSelect = () => {
-    onSelect([
-      {
-        kind: 'assetDocumentId',
-        value: asset._id
-      }
-    ])
+    if (onSelect) {
+      onSelect([
+        {
+          kind: 'assetDocumentId',
+          value: asset._id
+        }
+      ])
+    }
   }
 
   const imageUrl = imageDprUrl(asset, 250)

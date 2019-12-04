@@ -14,14 +14,17 @@ import {Asset, Document} from './types'
 
 type Props = {
   document?: Document
-  onClose: () => void
-  onSelect: () => void
+  onClose?: () => void
+  onSelect?: () => void
   selectedAssets: Asset[]
 }
 
 const AssetBrowser = (props: Props) => {
   const {document, onClose, onSelect, selectedAssets} = props
   const [headerHeight, setHeaderHeight] = useState<number>(0)
+
+  // Both `onClose` and `onSelect` are undefined when directly accessed as a tool
+  const isTool = onClose && onSelect
 
   // Close on escape key press
   useKeyPress('Escape', onClose)
@@ -35,9 +38,18 @@ const AssetBrowser = (props: Props) => {
   }, [])
 
   useEffect(() => {
-    window.document.body.style.overflowY = 'hidden'
+    // Scroll to top if browser is being used as a tool.
+    // We do this as we lock body scroll when the plugin is active, and due to overscroll
+    // on mobile devices, the menu may not always be positioned at the top of the page.
+    if (isTool) {
+      window.scrollTo(0, 0)
+    }
+
+    // Diable scrolling on the body element whilst the plugin is active, re-enable on close
+    // Note that this has no effect on iOS < 13
+    window.document.body.style.overflow = 'hidden'
     return () => {
-      window.document.body.style.overflowY = 'auto'
+      window.document.body.style.overflow = 'auto'
     }
   }, [])
 
@@ -46,7 +58,7 @@ const AssetBrowser = (props: Props) => {
     <ThemeProvider theme={theme}>
       <AssetBrowserDispatchProvider onSelect={onSelect}>
         <AssetBrowserStateProvider>
-          {/* 'Global' styles */}
+          {/* Global styles */}
           <GlobalStyle />
 
           <Box
@@ -55,7 +67,7 @@ const AssetBrowser = (props: Props) => {
             left={0}
             position="fixed"
             width="100%"
-            top={onSelect ? 0 : headerHeight}
+            top={isTool ? 0 : headerHeight}
             zIndex="app"
           >
             <Snackbars />

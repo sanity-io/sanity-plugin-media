@@ -20,12 +20,12 @@ type ContextProps = {
   onPick: (assetId: string, value: boolean) => void
   onPickAll: () => void
   onPickClear: () => void
-  onSelect: (assets: SelectedAsset[]) => void
+  onSelect?: (assets: SelectedAsset[]) => void
 }
 
 type Props = {
   children: ReactNode
-  onSelect: (assets: SelectedAsset[]) => void
+  onSelect?: (assets: SelectedAsset[]) => void
 }
 
 const AssetBrowserDispatchContext = createContext<ContextProps | undefined>(undefined)
