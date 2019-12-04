@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {ThemeProvider} from 'styled-components'
 
 import theme, {GlobalStyle} from './styled/theme'
@@ -21,18 +21,9 @@ type Props = {
 
 const AssetBrowser = (props: Props) => {
   const {document, onClose, onSelect, selectedAssets} = props
-  const [headerHeight, setHeaderHeight] = useState<number>(0)
 
   // Close on escape key press
   useKeyPress('Escape', onClose)
-
-  useLayoutEffect(() => {
-    const navBar = window.document.querySelectorAll('[class^=DefaultLayout_navBar]')[0]
-    if (navBar) {
-      const height = navBar.getBoundingClientRect().height
-      setHeaderHeight(height)
-    }
-  }, [])
 
   useEffect(() => {
     window.document.body.style.overflowY = 'hidden'
@@ -46,16 +37,17 @@ const AssetBrowser = (props: Props) => {
     <ThemeProvider theme={theme}>
       <AssetBrowserDispatchProvider onSelect={onSelect}>
         <AssetBrowserStateProvider>
-          {/* 'Global' styles */}
+          {/* Global styles */}
           <GlobalStyle />
 
           <Box
             bottom={0}
             height="auto"
             left={0}
-            position="fixed"
+            overflow="hidden"
+            position={onSelect ? 'fixed' : 'absolute'}
             width="100%"
-            top={onSelect ? 0 : headerHeight}
+            top={0}
             zIndex="app"
           >
             <Snackbars />
