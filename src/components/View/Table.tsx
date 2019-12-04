@@ -29,7 +29,7 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
       <Box
         alignItems="center"
         bg="darkestGray"
-        color="lightGray"
+        color="lighterGray"
         display={['none', 'grid']}
         gridColumnGap={2}
         gridTemplateColumns="tableLarge"

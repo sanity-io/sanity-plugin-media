@@ -26,7 +26,7 @@ const Footer = () => {
       alignItems="center"
       bg="darkestGray"
       bottom={0}
-      color="lightGray"
+      color="lighterGray"
       display="flex"
       flexWrap="wrap"
       height={['headerHeight.0', 'headerHeight.1']}
@@ -77,7 +77,7 @@ const Footer = () => {
             >
               {/* Original filename */}
               <Box
-                color="gray"
+                color="lightGray"
                 maxWidth={[null, '420px']}
                 mx={2}
                 overflow="hidden"
@@ -88,24 +88,24 @@ const Footer = () => {
 
               {/* Dimensions */}
               {singlePickedAsset.metadata?.dimensions && (
-                <Box color="gray" mx={2}>
+                <Box color="lightGray" mx={2}>
                   {singlePickedAsset.metadata.dimensions.width} x{' '}
                   {singlePickedAsset.metadata.dimensions.height}
                 </Box>
               )}
 
               {/* Filesize */}
-              <Box color="gray" mx={2}>
+              <Box color="lightGray" mx={2}>
                 {filesize(singlePickedAsset.size, {round: 0})}
               </Box>
 
               {/* File extension */}
               <Box
-                borderColor="gray"
+                borderColor="lightGray"
                 borderStyle="solid"
                 borderWidth="1px"
                 borderRadius="2px"
-                color="gray"
+                color="lightGray"
                 display={['none', 'block']}
                 fontSize={1}
                 mx={2}
@@ -145,7 +145,13 @@ const Footer = () => {
         )}
 
         {picked.length > 1 && (
-          <Box alignItems="center" color="lightGray" display="flex" height="headerHeight.1" mx={3}>
+          <Box
+            alignItems="center"
+            color="lighterGray"
+            display="flex"
+            height="headerHeight.1"
+            mx={3}
+          >
             {picked.length} images selected
           </Box>
         )}

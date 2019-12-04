@@ -1,7 +1,7 @@
 import React, {useLayoutEffect, useState, useEffect} from 'react'
 import {ThemeProvider} from 'styled-components'
 
-import theme from './styled/theme'
+import theme, {GlobalStyle} from './styled/theme'
 import {AssetBrowserDispatchProvider} from './contexts/AssetBrowserDispatchContext'
 import {AssetBrowserStateProvider} from './contexts/AssetBrowserStateContext'
 import withRedux from './helpers/withRedux'
@@ -46,6 +46,9 @@ const AssetBrowser = (props: Props) => {
     <ThemeProvider theme={theme}>
       <AssetBrowserDispatchProvider onSelect={onSelect}>
         <AssetBrowserStateProvider>
+          {/* 'Global' styles */}
+          <GlobalStyle />
+
           <Box
             bottom={0}
             height="auto"

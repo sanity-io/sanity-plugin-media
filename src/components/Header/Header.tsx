@@ -44,7 +44,7 @@ const Header = (props: Props) => {
     <Box
       alignItems="center"
       bg="darkestGray"
-      color="lightGray"
+      color="lighterGray"
       display="flex"
       flexDirection={['column', 'row']}
       flexWrap="wrap"
@@ -73,7 +73,7 @@ const Header = (props: Props) => {
           <Box
             bg="darkGray"
             borderRadius="2px"
-            color="lightGray"
+            color="lighterGray"
             fontSize={1}
             fontWeight={500}
             maxWidth="500px"
@@ -83,7 +83,14 @@ const Header = (props: Props) => {
             py={1}
             textOverflow="ellipsis"
           >
-            <Box color="gray" fontSize={0} display="inline" mr={2} py={1} textTransform="uppercase">
+            <Box
+              color="lightGray"
+              fontSize={0}
+              display="inline"
+              mr={2}
+              py={1}
+              textTransform="uppercase"
+            >
               document
             </Box>
             {currentDocumentTitle}

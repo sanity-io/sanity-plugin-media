@@ -18,7 +18,7 @@ const Progress = (props: Props) => {
   return (
     <Box opacity={isFinished ? 0 : 1} transition={`opacity ${animationDuration}ms linear`}>
       <Box
-        bg="gray"
+        bg="lightGray"
         height="1px"
         position="absolute"
         top={0}

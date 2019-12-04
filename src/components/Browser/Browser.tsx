@@ -184,7 +184,7 @@ const Browser = (props: Props) => {
       <Box
         bottom={[hasPicked ? 'headerHeight.0' : 0, hasPicked ? 'headerHeight.1' : 0]}
         mx="auto"
-        overflowX="hidden"
+        overflow="hidden"
         position="absolute"
         ref={viewRef}
         top={[currentDocumentTitle ? 'headerHeight.0' : 'headerHeight.1', 'headerHeight.1']}
@@ -262,7 +262,7 @@ const Browser = (props: Props) => {
 
         {/* No results */}
         {!hasItems && hasFetchedOnce && !fetching && (
-          <Box color="lightGray" fontSize={1} p={3}>
+          <Box color="lighterGray" fontSize={1} p={3}>
             No results for the current query
           </Box>
         )}

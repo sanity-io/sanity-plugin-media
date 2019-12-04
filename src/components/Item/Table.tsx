@@ -59,7 +59,7 @@ const TableItem = (props: Props) => {
     <Box
       alignItems="center"
       bg={picked ? 'overlayTableRow' : 'none'}
-      color="gray"
+      color="lightGray"
       display="grid"
       fontSize={1}
       gridColumnGap={[3, 2]}

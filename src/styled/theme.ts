@@ -1,3 +1,12 @@
+import {createGlobalStyle} from 'styled-components'
+
+// Extend DefaultTheme interface
+declare module 'styled-components' {
+  export interface DefaultTheme {
+    colors: Record<string, string>
+  }
+}
+
 const headerHeight = ['100px', '50px']
 const tableHeaderHeight = '34px'
 const tableRowHeight = ['115px', '100px']
@@ -16,22 +25,22 @@ space.headerHeight = headerHeight
 space.tableHeaderHeight = tableHeaderHeight
 space.tableRowHeight = tableRowHeight
 
-export default {
+const theme = {
   // Remember that em units in media queries are always relative to 16px / the user setting
   // and NOT the html font size!
   breakpoints: ['55em'] as string[],
   colors: {
     // grayscale
-    white: '#ffffff',
-    lighterGray: '#eee',
-    lightGray: '#ccc',
-    gray: '#999',
+    white: '#FFFFFF',
+    lighterGray: '#CCCCCC',
+    lightGray: '#999',
+    gray: '#555',
     darkGray: '#303030',
     darkerGray: '#222',
     darkestGray: '#1C1C1C',
     black: '#000',
     // colors
-    red: '#e66666',
+    red: '#E66666',
     // alpha
     overlayCard: 'rgba(255, 255, 255, 0.075)',
     overlayTableRow: 'rgba(255, 255, 255, 0.035)'
@@ -50,3 +59,29 @@ export default {
     header: 1
   }
 }
+
+export const GlobalStyle = createGlobalStyle`
+  ::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+  }
+  ::-webkit-scrollbar-button {
+    width: 0px;
+    height: 0px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.colors.darkGray};
+    border: none;
+    border-radius: 0px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${props => props.theme.colors.gray};
+  }
+  ::-webkit-scrollbar-track {
+    background: ${props => props.theme.colors.darkestGray};
+    border: none;
+    border-radius: 0px;
+  }
+`
+
+export default theme
