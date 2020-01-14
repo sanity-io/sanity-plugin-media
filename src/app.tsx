@@ -49,6 +49,13 @@ const AssetBrowser = (props: Props) => {
       const height = navBarEl.getBoundingClientRect().height
       setHeaderHeight(height)
     }
+
+    // HACK: Revert overflow on parent dialog content container.
+    return () => {
+      if (dialogContentEl instanceof HTMLElement) {
+        dialogContentEl.style.overflow = 'auto'
+      }
+    }
   }, [])
 
   useEffect(() => {

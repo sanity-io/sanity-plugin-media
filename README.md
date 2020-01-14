@@ -17,7 +17,6 @@ It can also be used as a [custom asset source](https://www.sanity.io/docs/custom
 - Adds a menu item / tool for easy access from anywhere in the studio
 - Grid / table views
 - Multiple selection (hold down the shift key) and deletion
-- Displays the selected assets on the current field
 - Custom filters to display unused assets and those referenced in the current document
 - Basic filename / date sorting
 - If using as a custom asset source: displays the current document title that you're inserting into
