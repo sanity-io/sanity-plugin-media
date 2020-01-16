@@ -94,6 +94,7 @@ const TableView = forwardRef((props: Props, ref: Ref<any>) => {
   return (
     <Box height={height} width={width}>
       <FixedSizeList
+        className="sanity-media-custom-scrollbar"
         height={height}
         innerElementType={innerElementType}
         itemData={{
