@@ -76,6 +76,7 @@ const CardView = forwardRef((props: Props, ref: Ref<any>) => {
 
   return (
     <VariableSizeGrid
+      className="sanity-media-custom-scrollbar"
       columnCount={columnCount}
       columnWidth={() => cardWidth}
       height={height}

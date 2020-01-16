@@ -1,6 +1,6 @@
 {
   "name": "sanity-plugin-media",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "license": "MIT",
   "author": {
     "name": "Robin Pyon",
@@ -62,6 +62,7 @@
     "@babel/preset-typescript": "7.7.2",
     "@types/pluralize": "0.0.29",
     "@types/react": "16.9.11",
+    "@types/react-dom": "16.9.4",
     "@types/react-icons": "2.2.7",
     "@types/react-redux": "7.1.5",
     "@types/styled-components": "4.4.0",
@@ -77,6 +78,8 @@
     "eslint-plugin-prettier": "3.1.1",
     "eslint-plugin-react": "7.16.0",
     "prettier": "1.19.1",
+    "react": ">= 16.9",
+    "react-dom": ">=16.9",
     "typescript": "3.7.2"
   },
   "peerDependencies": {
@@ -86,6 +89,7 @@
     "@sanity/core": ">= 0.146.0",
     "@sanity/desk-tool": ">= 0.146.3",
     "@sanity/form-builder": ">= 0.146.0",
-    "react": ">= 16.9"
+    "react": ">= 16.9",
+    "react-dom": ">=16.9"
   }
 }

@@ -7,6 +7,7 @@ import {AssetBrowserStateProvider} from './contexts/AssetBrowserStateContext'
 import withRedux from './helpers/withRedux'
 import Browser from './components/Browser/Browser'
 import Dialogs from './components/Dialogs/Dialogs'
+import {Portal} from './components/Portal/Portal'
 import Snackbars from './components/Snackbars/Snackbars'
 import useKeyPress from './hooks/useKeyPress'
 import Box from './styled/Box'
@@ -79,22 +80,24 @@ const AssetBrowser = (props: Props) => {
     <ThemeProvider theme={theme}>
       <AssetBrowserDispatchProvider onSelect={onSelect}>
         <AssetBrowserStateProvider>
-          {/* Global styles */}
-          <GlobalStyle />
+          <Portal>
+            {/* Global styles */}
+            <GlobalStyle />
 
-          <Box
-            bottom={0}
-            height="auto"
-            left={0}
-            position="fixed"
-            width="100%"
-            top={isTool ? 0 : headerHeight}
-            zIndex="app"
-          >
-            <Snackbars />
-            <Dialogs />
-            <Browser document={document} onClose={onClose} selectedAssets={selectedAssets} />
-          </Box>
+            <Box
+              bottom={0}
+              height="auto"
+              left={0}
+              position="fixed"
+              width="100%"
+              top={isTool ? 0 : headerHeight}
+              zIndex="app"
+            >
+              <Snackbars />
+              <Dialogs />
+              <Browser document={document} onClose={onClose} selectedAssets={selectedAssets} />
+            </Box>
+          </Portal>
         </AssetBrowserStateProvider>
       </AssetBrowserDispatchProvider>
     </ThemeProvider>

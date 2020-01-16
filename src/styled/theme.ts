@@ -4,6 +4,7 @@ import {createGlobalStyle} from 'styled-components'
 declare module 'styled-components' {
   export interface DefaultTheme {
     colors: Record<string, string>
+    zIndices: Record<string, number>
   }
 }
 
@@ -55,32 +56,52 @@ const theme = {
   space,
   tableRowHeight,
   zIndices: {
-    app: 1000,
+    dialog: 5010,
+    app: 5000,
     header: 1
   }
 }
 
 export const GlobalStyle = createGlobalStyle`
-  ::-webkit-scrollbar {
-    width: 14px;
-    height: 14px;
+  /* Custom scrollbar for the main browser viewport */
+  .sanity-media-custom-scrollbar {
+    ::-webkit-scrollbar {
+      width: 14px;
+      height: 14px;
+    }
+    ::-webkit-scrollbar-button {
+      width: 0px;
+      height: 0px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: ${props => props.theme.colors.darkGray};
+      border: none;
+      border-radius: 0px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: ${props => props.theme.colors.gray};
+    }
+    ::-webkit-scrollbar-track {
+      background: ${props => props.theme.colors.darkestGray};
+      border: none;
+      border-radius: 0px;
+    }
   }
-  ::-webkit-scrollbar-button {
-    width: 0px;
-    height: 0px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.colors.darkGray};
-    border: none;
-    border-radius: 0px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: ${props => props.theme.colors.gray};
-  }
-  ::-webkit-scrollbar-track {
-    background: ${props => props.theme.colors.darkestGray};
-    border: none;
-    border-radius: 0px;
+
+  /*
+    Override Sanity's default z-index for dialogs.
+
+    It's possible that sanity-media is invoked from an existing dialog - such as an object within portable text.
+    Since sanity-media needs to sit above any dialog that may invoke it, future dialogs invoked by this plugin
+    need to in-turn sit on a higher stacking order.
+
+    E.g.
+    - sanity's default dialog z-index: 1060
+    - this plugin: 5000
+    - dialogs opened by this plugin: 5010
+  */
+  .sanity-media-dialog {
+    z-index: ${props => props.theme.zIndices.dialog};
   }
 `
 
