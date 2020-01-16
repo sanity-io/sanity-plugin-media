@@ -56,8 +56,8 @@ const theme = {
   space,
   tableRowHeight,
   zIndices: {
-    dialog: 5010,
-    app: 5000,
+    dialog: 3600,
+    app: 3500,
     header: 1
   }
 }
