@@ -56,6 +56,7 @@ const theme = {
   space,
   tableRowHeight,
   zIndices: {
+    dropdowns: 3700,
     dialog: 3600,
     app: 3500,
     header: 1
@@ -102,6 +103,19 @@ export const GlobalStyle = createGlobalStyle`
   */
   .sanity-media-dialog {
     z-index: ${props => props.theme.zIndices.dialog};
+  }
+
+  /*
+    The most horrible of hacks, don't judge me...
+
+    Here we manually set a higher z-index for Sanity's button dropdowns, which by default set at the
+    same stacking order as dialogs.
+    This is problematic for the reasons listed above - this plugin needs to sit above existing dialogs / portals,
+    but also needs to allow other dialogs / dropdowns to appear above it.
+    At this point it may be worth not using any of Sanity's existing parts within this plugin and keep it completely separate.
+  */
+  div[class^="Poppable_portal"] {
+    z-index: ${props => props.theme.zIndices.dropdowns};
   }
 `
 
