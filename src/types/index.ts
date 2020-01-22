@@ -34,6 +34,13 @@ export type Asset = {
   url: string
 }
 
+export type Block = {
+  _type: string
+  _key: string
+  children: Span[]
+  markDefs: MarkDef[]
+}
+
 export type BoxProps = AlignItemsProps &
   AlignSelfProps &
   BorderProps &
@@ -89,6 +96,7 @@ export type Document = {
   _id: string
   _type: string
   _updatedAt: string
+  name?: string
   title?: string
 }
 
@@ -113,8 +121,16 @@ export type Item = {
   updating: boolean
 }
 
+export type MarkDef = {_key: string; _type: string}
+
 export type SelectedAsset = {
   assetDocumentProps?: {originalFilename?: string; source?: string; sourceId?: string}
   kind: 'assetDocumentId' | 'base64' | 'file' | 'url'
   value: string | File
+}
+
+export type Span = {
+  _key: string
+  text: string
+  marks: string[]
 }

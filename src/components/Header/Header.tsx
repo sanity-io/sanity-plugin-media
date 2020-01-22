@@ -10,6 +10,7 @@ import Button from 'part:@sanity/components/buttons/default'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS} from '../../config'
 import Box from '../../styled/Box'
+import blocksToText from '../../util/blocksToText'
 import {BrowserQueryOptions, BrowserView, Document, Filter, Item} from '../../types'
 import Progress from '../Progress/Progress'
 
@@ -39,6 +40,11 @@ const Header = (props: Props) => {
     fetching
     // totalCount
   } = useAssetBrowserState()
+
+  // Try and infer title from `name` and `title` fields, in that order.
+  // Convert blocks to plain text and trim extra whitespace.
+  // If no title is found, the current document ID will be displayed instead.
+  const currentDocumentTitle = blocksToText(currentDocument?.name || currentDocument?.title)?.trim()
 
   return (
     <Box
@@ -83,6 +89,7 @@ const Header = (props: Props) => {
             py={1}
             textOverflow="ellipsis"
           >
+            {/* Conditionally display current document title or ID */}
             <Box
               color="lightGray"
               fontSize={0}
@@ -91,9 +98,10 @@ const Header = (props: Props) => {
               py={1}
               textTransform="uppercase"
             >
-              {currentDocument._type}
+              {currentDocument._type} {!currentDocumentTitle && 'id'}
             </Box>
-            {currentDocument.title || <em>Untitled</em>}
+
+            {currentDocumentTitle ? currentDocumentTitle : currentDocument._id}
           </Box>
 
           {onClose && (
