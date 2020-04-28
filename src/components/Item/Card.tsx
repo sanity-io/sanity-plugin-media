@@ -134,7 +134,7 @@ const CardItem = (props: Props) => {
             top={0}
           >
             <Button color="white" onClick={handleSelect}>
-              Insert image
+              Select image
             </Button>
           </Box>
         )}
