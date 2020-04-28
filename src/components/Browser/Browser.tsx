@@ -246,6 +246,7 @@ const Browser = (props: Props) => {
                           itemCount={itemCount}
                           onItemsRendered={newItemsRendered}
                           ref={ref}
+                          focusedId={picked.length === 1 ? picked[0].asset._id : undefined}
                           selectedAssets={selectedAssets}
                           width={width}
                         />
