@@ -133,7 +133,11 @@ const CardItem = (props: Props) => {
             size="100%"
             top={0}
           >
-            <Button color="white" onClick={handleSelect}>
+            <Button
+              color="white"
+              style={{boxShadow: '2px 2px 3px rgba(0,0,0,0.4)'}}
+              onClick={handleSelect}
+            >
               Select image
             </Button>
           </Box>
