@@ -13,7 +13,7 @@ const Footer = () => {
   const {onDeletePicked, onDialogShowRefs, onSelect} = useAssetBrowserActions()
   const {items} = useAssetBrowserState()
 
-  const picked = items && items.filter(item => item.picked)
+  const picked = items && items.filter((item) => item.picked)
   const singlePickedAsset: Asset | undefined =
     picked && picked.length === 1 ? picked[0]?.asset : undefined
 
@@ -36,24 +36,26 @@ const Footer = () => {
       width="100%"
     >
       {/* LHS */}
-      <Box flex="3 0" height="headerHeight.1" order={[2, 0]}>
+      <Box alignItems="center" display="flex" flex="3 0" height="headerHeight.1" order={[2, 0]}>
         {onSelect && singlePickedAsset && (
-          <Button
-            bleed={true}
-            icon={IoIosReturnRight.bind(null, {size: 20})}
-            kind="simple"
-            onClick={() => {
-              onSelect([
-                {
-                  kind: 'assetDocumentId',
-                  value: singlePickedAsset._id
-                }
-              ])
-            }}
-            ripple={false}
-          >
-            <strong>Select</strong>
-          </Button>
+          <ButtonGroup>
+            <Button
+              bleed={true}
+              icon={IoIosReturnRight.bind(null, {size: 20})}
+              kind="simple"
+              onClick={() => {
+                onSelect([
+                  {
+                    kind: 'assetDocumentId',
+                    value: singlePickedAsset._id,
+                  },
+                ])
+              }}
+              ripple={false}
+            >
+              <strong>Select</strong>
+            </Button>
+          </ButtonGroup>
         )}
       </Box>
 
@@ -115,7 +117,7 @@ const Footer = () => {
               </Box>
             </Box>
 
-            <Box display="flex" height="100%">
+            <Box alignItems="center" display="flex" height="100%">
               <ButtonGroup>
                 {/* Show references */}
                 <Button
@@ -123,7 +125,7 @@ const Footer = () => {
                   onClick={onDialogShowRefs.bind(null, singlePickedAsset)}
                   ripple={false}
                   style={{
-                    borderRadius: 0
+                    borderRadius: 0,
                   }}
                 >
                   <IoIosLink size={16} />
@@ -134,7 +136,7 @@ const Footer = () => {
                   onClick={handleDownloadOriginal.bind(null, singlePickedAsset)}
                   ripple={false}
                   style={{
-                    borderRadius: 0
+                    borderRadius: 0,
                   }}
                 >
                   <IoIosDownload size={16} />
@@ -159,14 +161,15 @@ const Footer = () => {
 
       {/* RHS */}
       <Box
+        alignItems="center"
         display="flex"
         flex="3 0"
         height="headerHeight.1"
         justifyContent="flex-end"
         order={[2, 2]}
       >
-        <ButtonGroup>
-          {picked.length > 0 && (
+        {picked.length > 0 && (
+          <ButtonGroup>
             <Button
               bleed={true}
               color="danger"
@@ -174,13 +177,13 @@ const Footer = () => {
               onClick={onDeletePicked}
               ripple={false}
               style={{
-                borderRadius: 0
+                borderRadius: 0,
               }}
             >
               <strong>Delete{picked.length > 1 ? ` ${picked.length} images` : ''}</strong>
             </Button>
-          )}
-        </ButtonGroup>
+          </ButtonGroup>
+        )}
       </Box>
     </Box>
   )
