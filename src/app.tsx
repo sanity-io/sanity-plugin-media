@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState, useEffect} from 'react'
+import React, {MouseEvent, useLayoutEffect, useState, useEffect} from 'react'
 import {ThemeProvider} from 'styled-components'
 
 import theme, {GlobalStyle} from './styled/theme'
@@ -75,6 +75,13 @@ const AssetBrowser = (props: Props) => {
     }
   }, [])
 
+  // Stop propagation and prevent document mouse events from firing.
+  // This is a bit of a hack to make this work with `editModal = 'popover'` and prevent Sanity's <Popover /> component from
+  // prematurely closing, as it attaches events on `document` to detect outside clicks.
+  const handleStopPropagation = (e: MouseEvent) => {
+    e.nativeEvent.stopImmediatePropagation()
+  }
+
   // TODO: preload selectedAssets in redux store rather than prop drilling
   return (
     <ThemeProvider theme={theme}>
@@ -88,6 +95,7 @@ const AssetBrowser = (props: Props) => {
               bottom={0}
               height="auto"
               left={0}
+              onMouseUp={handleStopPropagation}
               position="fixed"
               width="100%"
               top={isTool ? 0 : headerHeight}
