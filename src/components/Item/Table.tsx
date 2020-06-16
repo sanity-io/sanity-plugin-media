@@ -1,12 +1,12 @@
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
-import {IoMdCheckmarkCircleOutline} from 'react-icons/io'
-import {MdError} from 'react-icons/md'
+import {IoMdCheckmarkCircle} from 'react-icons/io'
+import ErrorIcon from 'part:@sanity/base/error-icon'
+import Button from 'part:@sanity/components/buttons/default'
 import Spinner from 'part:@sanity/components/loading/spinner'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
-import IconButton from '../../styled/IconButton'
 import Image from '../../styled/Image'
 import Box from '../../styled/Box'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
@@ -96,7 +96,7 @@ const TableItem = (props: Props) => {
               size="100%"
               top={0}
             >
-              <IoMdCheckmarkCircleOutline size={16} />
+              <IoMdCheckmarkCircle size={16} />
             </Box>
           )}
 
@@ -153,9 +153,14 @@ const TableItem = (props: Props) => {
       {/* Error */}
       <Box gridColumn={[3, 7]} gridRowStart="1" gridRowEnd={['span 5', 'auto']} mx="auto">
         {errorCode && (
-          <IconButton color="red" fontSize={3} onClick={handleDialogConflicts}>
-            <MdError />
-          </IconButton>
+          <Button
+            color="danger"
+            fontSize={0}
+            icon={ErrorIcon.bind(null, {size: 20})}
+            onClick={handleDialogConflicts}
+            kind="simple"
+            ripple={false}
+          />
         )}
       </Box>
     </Box>

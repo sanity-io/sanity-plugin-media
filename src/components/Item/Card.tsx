@@ -1,12 +1,11 @@
 import React, {CSSProperties, MouseEvent, memo} from 'react'
-import {IoMdCheckmarkCircleOutline} from 'react-icons/io'
+import {IoIosCheckmarkCircle, IoIosCheckmarkCircleOutline} from 'react-icons/io'
 import Button from 'part:@sanity/components/buttons/default'
 import ErrorIcon from 'part:@sanity/base/error-icon'
 import Spinner from 'part:@sanity/components/loading/spinner'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import Box from '../../styled/Box'
-import IconButton from '../../styled/IconButton'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
 import Image from '../../styled/Image'
 import {Item} from '../../types'
@@ -88,20 +87,19 @@ const CardItem = (props: Props) => {
           src={imageUrl}
           transition="opacity 1000ms"
         />
-
         {/* Selected checkmark */}
         {selected && (
-          <Box
-            alignItems="center"
-            color="white"
-            display="flex"
-            justifyContent="center"
-            left={0}
-            position="absolute"
-            size="100%"
-            top={0}
-          >
-            <IoMdCheckmarkCircleOutline size={18} />
+          <Box bottom={0} color="white" position="absolute" right={0}>
+            <Button
+              color="white"
+              fontSize={0}
+              icon={IoIosCheckmarkCircle.bind(null, {size: 20})}
+              kind="simple"
+              ripple={false}
+              style={{
+                pointerEvents: 'none'
+              }}
+            />
           </Box>
         )}
 
@@ -122,39 +120,38 @@ const CardItem = (props: Props) => {
           </Box>
         )}
 
-        {/* Insert image button */}
-        {focused && onSelect && (
+        {/* Select button */}
+        {focused && onSelect && !selected && (
           <Box
-            alignItems="center"
-            display="flex"
-            justifyContent="center"
-            left={0}
+            bottom={0}
+            color="white"
+            onClick={handleDialogConflicts}
             position="absolute"
-            size="100%"
-            top={0}
+            right={0}
           >
             <Button
               color="white"
-              style={{boxShadow: '2px 2px 3px rgba(0,0,0,0.4)'}}
+              fontSize={0}
+              icon={IoIosCheckmarkCircleOutline.bind(null, {size: 20})}
               onClick={handleSelect}
-            >
-              Select image
-            </Button>
+              kind="simple"
+              ripple={false}
+            />
           </Box>
         )}
 
         {/* Error button */}
         {errorCode && (
-          <IconButton
-            bottom={2}
-            color="red"
-            fontSize={3}
-            onClick={handleDialogConflicts}
-            position="absolute"
-            right={2}
-          >
-            <ErrorIcon />
-          </IconButton>
+          <Box bottom={0} color="white" position="absolute" right={0} top={0}>
+            <Button
+              color="danger"
+              fontSize={0}
+              icon={ErrorIcon.bind(null, {size: 20})}
+              onClick={handleDialogConflicts}
+              kind="simple"
+              ripple={false}
+            />
+          </Box>
         )}
       </ResponsiveBox>
     </Box>

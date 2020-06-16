@@ -2,7 +2,7 @@ import filesize from 'filesize'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
 import Button from 'part:@sanity/components/buttons/default'
 import React from 'react'
-import {IoIosDownload, IoIosLink, IoIosReturnRight} from 'react-icons/io'
+import {IoIosDownload, IoIosLink} from 'react-icons/io'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
@@ -13,7 +13,7 @@ const Footer = () => {
   const {onDeletePicked, onDialogShowRefs, onSelect} = useAssetBrowserActions()
   const {items} = useAssetBrowserState()
 
-  const picked = items && items.filter((item) => item.picked)
+  const picked = items && items.filter(item => item.picked)
   const singlePickedAsset: Asset | undefined =
     picked && picked.length === 1 ? picked[0]?.asset : undefined
 
@@ -41,14 +41,13 @@ const Footer = () => {
           <ButtonGroup>
             <Button
               bleed={true}
-              icon={IoIosReturnRight.bind(null, {size: 20})}
               kind="simple"
               onClick={() => {
                 onSelect([
                   {
                     kind: 'assetDocumentId',
-                    value: singlePickedAsset._id,
-                  },
+                    value: singlePickedAsset._id
+                  }
                 ])
               }}
               ripple={false}
@@ -73,7 +72,7 @@ const Footer = () => {
               alignItems="center"
               display="flex"
               flexDirection="row"
-              ml={[2, 0]}
+              ml={[1, 0]}
               minWidth={0}
               whiteSpace="nowrap"
             >
@@ -125,7 +124,7 @@ const Footer = () => {
                   onClick={onDialogShowRefs.bind(null, singlePickedAsset)}
                   ripple={false}
                   style={{
-                    borderRadius: 0,
+                    borderRadius: 0
                   }}
                 >
                   <IoIosLink size={16} />
@@ -136,7 +135,7 @@ const Footer = () => {
                   onClick={handleDownloadOriginal.bind(null, singlePickedAsset)}
                   ripple={false}
                   style={{
-                    borderRadius: 0,
+                    borderRadius: 0
                   }}
                 >
                   <IoIosDownload size={16} />
@@ -177,7 +176,7 @@ const Footer = () => {
               onClick={onDeletePicked}
               ripple={false}
               style={{
-                borderRadius: 0,
+                borderRadius: 0
               }}
             >
               <strong>Delete{picked.length > 1 ? ` ${picked.length} images` : ''}</strong>
