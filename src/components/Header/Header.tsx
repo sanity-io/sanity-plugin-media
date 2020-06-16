@@ -33,11 +33,11 @@ const Header = (props: Props) => {
     filters,
     onClose,
     onUpdateBrowserQueryOptions,
-    onUpdateBrowserView,
+    onUpdateBrowserView
   } = props
 
   const {
-    fetching,
+    fetching
     // totalCount
   } = useAssetBrowserState()
 
@@ -105,8 +105,16 @@ const Header = (props: Props) => {
           </Box>
 
           {onClose && (
-            <Box display={['block', 'none']} height="100%">
-              <Button bleed={true} onClick={onClose} ripple={false}>
+            <Box bg="darkGray" display={['block', 'none']} height="100%">
+              <Button
+                bleed={true}
+                kind="simple"
+                onClick={onClose}
+                ripple={false}
+                style={{
+                  alignItems: 'center'
+                }}
+              >
                 <IoIosClose size={25} />
               </Button>
             </Box>
@@ -137,7 +145,7 @@ const Header = (props: Props) => {
                   style={{
                     borderRadius: 0,
                     color: selected ? 'white' : 'currentColor',
-                    opacity: selected ? 1 : 0.5,
+                    opacity: selected ? 1 : 0.5
                   }}
                 >
                   {view.icon({size: 18})}
@@ -170,14 +178,15 @@ const Header = (props: Props) => {
           </DropDownButton>
         </ButtonGroup>
 
-        {onClose && currentDocument && (
-          <Box height="100%">
+        {onClose && (
+          <Box bg="darkGray" display={[currentDocument ? 'none' : 'flex', 'flex']} height="100%">
             <Button
               bleed={true}
+              kind="simple"
               onClick={onClose}
               ripple={false}
               style={{
-                alignItems: 'center',
+                alignItems: 'center'
               }}
             >
               <IoIosClose size={25} />
