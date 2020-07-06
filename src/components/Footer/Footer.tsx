@@ -37,22 +37,19 @@ const Footer = () => {
     >
       {/* LHS */}
       <Box alignItems="center" display="flex" flex="3 0" height="headerHeight.1" order={[2, 0]}>
-        {onSelect && singlePickedAsset && (
+        {picked.length > 0 && (
           <ButtonGroup>
             <Button
               bleed={true}
+              color="danger"
               kind="simple"
-              onClick={() => {
-                onSelect([
-                  {
-                    kind: 'assetDocumentId',
-                    value: singlePickedAsset._id
-                  }
-                ])
-              }}
+              onClick={onDeletePicked}
               ripple={false}
+              style={{
+                borderRadius: 0
+              }}
             >
-              <strong>Select</strong>
+              <strong>Delete{picked.length > 1 ? ` ${picked.length} images` : ''}</strong>
             </Button>
           </ButtonGroup>
         )}
@@ -161,25 +158,28 @@ const Footer = () => {
       {/* RHS */}
       <Box
         alignItems="center"
+        justifyContent="flex-end"
         display="flex"
         flex="3 0"
         height="headerHeight.1"
-        justifyContent="flex-end"
         order={[2, 2]}
       >
-        {picked.length > 0 && (
+        {onSelect && singlePickedAsset && (
           <ButtonGroup>
             <Button
               bleed={true}
-              color="danger"
               kind="simple"
-              onClick={onDeletePicked}
-              ripple={false}
-              style={{
-                borderRadius: 0
+              onClick={() => {
+                onSelect([
+                  {
+                    kind: 'assetDocumentId',
+                    value: singlePickedAsset._id
+                  }
+                ])
               }}
+              ripple={false}
             >
-              <strong>Delete{picked.length > 1 ? ` ${picked.length} images` : ''}</strong>
+              <strong>Select</strong>
             </Button>
           </ButtonGroup>
         )}
