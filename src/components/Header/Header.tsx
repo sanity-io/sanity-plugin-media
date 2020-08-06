@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {ChangeEvent, SyntheticEvent} from 'react'
 import {IoIosClose} from 'react-icons/io'
 // import pluralize from 'pluralize'
 import ButtonGroup from 'part:@sanity/components/buttons/button-group'
 import DropDownButton from 'part:@sanity/components/buttons/dropdown'
+import Search from 'part:@sanity/components/textfields/search'
 import Button from 'part:@sanity/components/buttons/default'
 // import FileInputButton from 'part:@sanity/components/fileinput/button'
 // import FaUpload from 'react-icons/lib/fa/upload'
@@ -21,7 +22,7 @@ type Props = {
   filters: Filter[]
   items: Item[]
   onClose?: () => void
-  onUpdateBrowserQueryOptions: (field: string, value: Record<string, any>) => void
+  onUpdateBrowserQueryOptions: (field: string, value: Record<string, any> | string) => void
   onUpdateBrowserView: (view: BrowserView) => void
 }
 
@@ -103,7 +104,6 @@ const Header = (props: Props) => {
 
             {currentDocumentTitle ? currentDocumentTitle : currentDocument._id}
           </Box>
-
           {onClose && (
             <Box bg="darkGray" display={['block', 'none']} height="100%">
               <Button
@@ -130,6 +130,14 @@ const Header = (props: Props) => {
         textAlign="right"
         width={['100%', 'auto']}
       >
+        <Search
+          label=""
+          onChange={(event: SyntheticEvent<HTMLInputElement, ChangeEvent>) => {
+            onUpdateBrowserQueryOptions('q', event.currentTarget.value)
+          }}
+          placeholder="Search media"
+          value={browserQueryOptions.q}
+        ></Search>
         <ButtonGroup>
           {VIEWS &&
             VIEWS.map((view, index) => {
@@ -153,7 +161,6 @@ const Header = (props: Props) => {
               )
             })}
         </ButtonGroup>
-
         <ButtonGroup>
           <DropDownButton
             items={filters}
@@ -177,7 +184,6 @@ const Header = (props: Props) => {
             {browserQueryOptions.order.title}
           </DropDownButton>
         </ButtonGroup>
-
         {onClose && (
           <Box bg="darkGray" display={[currentDocument ? 'none' : 'flex', 'flex']} height="100%">
             <Button

@@ -27,7 +27,8 @@
   },
   "scripts": {
     "prepare": "npm run build",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc -w"
   },
   "dependencies": {
     "@sanity/components": "0.144.2",
@@ -37,6 +38,7 @@
     "@types/react-window-infinite-loader": "1.0.2",
     "date-fns": "2.7.0",
     "filesize": "6.0.1",
+    "groq": "^1.149.16",
     "idx": "2.5.6",
     "immer": "5.0.0",
     "pluralize": "8.0.0",

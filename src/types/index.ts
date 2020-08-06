@@ -75,6 +75,7 @@ export type BoxProps = AlignItemsProps &
   }
 
 export type BrowserQueryOptions = {
+  q: string
   filter: Filter
   order: {
     title: string
