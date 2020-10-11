@@ -1,5 +1,4 @@
 import React, {ReactNode} from 'react'
-import idx from 'idx'
 import pluralize from 'pluralize'
 import produce from 'immer'
 import {ofType} from 'redux-observable'
@@ -116,7 +115,7 @@ export const snackbarsAddDeleteErrorsEpic = (action$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.DELETE_ERROR),
     filter((action: any) => {
-      const handleTarget = idx(action, _ => _.payload.handleTarget)
+      const handleTarget = action?.payload?.handleTarget
       return handleTarget === 'snackbar'
     }),
     bufferTime(1000),
