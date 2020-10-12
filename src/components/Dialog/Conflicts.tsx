@@ -3,7 +3,7 @@ import {useDispatch} from 'react-redux'
 
 import {dialogClear} from '../../modules/dialog'
 import Box from '../../styled/Box'
-import {Item} from '../../types'
+import {DialogAction, Item} from '../../types'
 import DocumentList from '../DocumentList/DocumentList'
 import Dialog from './Dialog'
 
@@ -20,7 +20,7 @@ const ConflictsDialog = (props: Props) => {
     dispatch(dialogClear())
   }, [])
 
-  const dialogActions = [
+  const dialogActions: DialogAction[] = [
     {
       callback: handleClose,
       title: 'Close'
@@ -31,9 +31,9 @@ const ConflictsDialog = (props: Props) => {
     <Dialog
       actions={dialogActions}
       asset={item.asset}
-      color="danger"
       onClose={handleClose}
       title="Could not delete assets"
+      variant="danger"
     >
       {filteredDocuments => {
         return (

@@ -94,7 +94,7 @@ const TableView = forwardRef((props: Props, ref: Ref<any>) => {
   return (
     <Box height={height} width={width}>
       <FixedSizeList
-        className="sanity-media-custom-scrollbar"
+        className="custom-scrollbar"
         height={height}
         innerElementType={innerElementType}
         itemData={{
@@ -106,6 +106,9 @@ const TableView = forwardRef((props: Props, ref: Ref<any>) => {
         itemSize={parseInt(tableRowHeight)}
         onItemsRendered={onItemsRendered}
         ref={ref}
+        style={{
+          overflowX: 'hidden'
+        }}
         width={width}
       >
         {VirtualRow}

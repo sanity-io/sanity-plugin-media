@@ -1,10 +1,9 @@
 import React, {useCallback} from 'react'
 import {useDispatch} from 'react-redux'
-import {MdDeleteForever} from 'react-icons/md'
 
 import {assetsDelete} from '../../modules/assets'
 import {dialogClear} from '../../modules/dialog'
-import {Item} from '../../types'
+import {DialogAction, Item} from '../../types'
 import DocumentList from '../DocumentList/DocumentList'
 import Dialog from './Dialog'
 
@@ -25,13 +24,12 @@ const RefsDialog = (props: Props) => {
     dispatch(assetsDelete(_asset, 'dialog'))
   }, [])
 
-  const dialogActions = [
+  const dialogActions: DialogAction[] = [
     {
       callback: () => handleDelete(item.asset),
       disabled: item.updating,
-      color: 'danger' as const,
-      icon: MdDeleteForever,
-      title: 'Delete'
+      title: 'Delete',
+      variant: 'danger'
     },
     {
       callback: handleClose,

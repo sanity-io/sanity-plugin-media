@@ -48,7 +48,7 @@ const Footer = () => {
                 ])
               }}
             >
-              <strong>Select</strong>
+              Select
             </Button>
           </Box>
         )}

@@ -1,47 +1,85 @@
-import React, {ReactNode, useCallback} from 'react'
-import SanityDialog from 'part:@sanity/components/dialogs/default'
-import DialogContent from 'part:@sanity/components/dialogs/content'
 import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'
+import React, {ReactNode} from 'react'
+import {IoIosAlert, IoIosClose} from 'react-icons/io'
 
-import {Asset} from '../../types'
+import {Asset, DialogAction} from '../../types'
 import Box from '../../styled/Box'
-import Spinner from '../Spinner/Spinner'
+import Image from '../../styled/Image'
+import imageDprUrl from '../../util/imageDprUrl'
+import Button from '../Button/Button'
+import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
+
+type Variant = 'default' | 'danger'
 
 type Props = {
-  actions: {
-    callback: () => void
-    disabled?: boolean
-    icon?: ReactNode
-    title: string
-  }[]
+  actions: DialogAction[]
   asset: Asset
   children: (filteredDocuments: any) => ReactNode
-  color?: 'default' | 'danger' | 'info' | 'success' | 'warning'
   onClose: () => void
   title: string
+  variant?: Variant
 }
 
 const Dialog = (props: Props) => {
-  const {actions, asset, children, color, onClose, title} = props
+  const {actions, asset, children, onClose, title, variant = 'default'} = props
 
-  const handleDialogAction = useCallback(action => {
-    if (action.callback) {
-      action.callback()
-    }
-  }, [])
+  const imageUrl = imageDprUrl(asset, 250)
+  const isDanger = variant === 'danger'
 
   return (
-    <SanityDialog
-      actions={actions}
-      color={color}
-      onAction={handleDialogAction}
-      onClose={onClose}
-      title={title}
+    <Box
+      display="flex"
+      flexDirection="column"
+      maxHeight="calc(100% - 100px)"
+      maxWidth="560px"
+      overflow="hidden"
+      width="100%"
     >
-      <DialogContent size="medium">
-        <Box display="grid" gridGap="1rem" gridTemplateColumns={['none', 'max-content 1fr']}>
-          <img src={`${asset.url}?w=200`} style={{maxWidth: '200px'}} />
+      {/* Header */}
+      <Box
+        alignItems="center"
+        bg="darkestGray"
+        fontSize={1}
+        display="flex"
+        height="headerHeight.1"
+        justifyContent="space-between"
+        pl={3}
+        textColor="lighterGray"
+      >
+        {/* Title */}
+        <Box alignItems="center" display="flex" textColor={isDanger ? 'red' : 'inherit'}>
+          {isDanger && (
+            <Box mr={1}>
+              <IoIosAlert size={18} style={{display: 'block'}} />
+            </Box>
+          )}
+          <strong>{title}</strong>
+        </Box>
 
+        {/* Close */}
+        <Button icon={IoIosClose({size: 25})} onClick={onClose} />
+      </Box>
+
+      <Box
+        // alignItems="center"
+        bg="darkestGray"
+        className="custom-scrollbar"
+        display="grid"
+        // gridGap="1rem"
+        gridTemplateColumns={['none', 'max-content 1fr']}
+        justifyItems={['center', 'flex-start']}
+        overflowY="auto"
+        textColor="lightGray"
+      >
+        {/* Image */}
+        <Box width="200px">
+          <ResponsiveBox aspectRatio={asset?.metadata?.dimensions?.aspectRatio}>
+            <Image draggable={false} showCheckerboard={!asset?.metadata?.isOpaque} src={imageUrl} />
+          </ResponsiveBox>
+        </Box>
+
+        {/* Content */}
+        <Box fontSize={1} overflow="hidden" position="relative" px={3} py={[3, 2]} width="100%">
           <WithReferringDocuments id={asset._id}>
             {({isLoading, referringDocuments}: {isLoading: boolean; referringDocuments: any}) => {
               const drafts = referringDocuments.reduce(
@@ -55,19 +93,43 @@ const Dialog = (props: Props) => {
               )
 
               if (isLoading) {
-                return <Spinner />
+                return <Box>Loading...</Box>
               }
 
               if (filteredDocuments.length === 0) {
-                return <div>No documents are referencing this asset</div>
+                return <Box>No documents are referencing this asset</Box>
               }
 
               return <div>{children(filteredDocuments)}</div>
             }}
           </WithReferringDocuments>
         </Box>
-      </DialogContent>
-    </SanityDialog>
+      </Box>
+
+      {/* Footer */}
+      <Box
+        alignItems="center"
+        bg="darkestGray"
+        fontSize={1}
+        display="flex"
+        height="headerHeight.1"
+        justifyContent="space-between"
+      >
+        {actions.map((action, index) => {
+          console.log('action', action)
+          return (
+            <Button
+              icon={action?.icon}
+              key={index}
+              onClick={action?.callback}
+              variant={action.variant}
+            >
+              {action.title}
+            </Button>
+          )
+        })}
+      </Box>
+    </Box>
   )
 }
 

@@ -1,3 +1,4 @@
+import {ReactElement} from 'react'
 import {
   AlignItemsProps,
   AlignSelfProps,
@@ -15,7 +16,9 @@ import {
   PositionProps,
   SpaceProps,
   TextColorProps,
-  TypographyProps
+  TypographyProps,
+  JustifyItemsProps,
+  JustifySelfProps
 } from 'styled-system'
 
 // Styled-system patch for the color prop fixing "Types of property 'color' are incompatible"
@@ -60,6 +63,8 @@ export type BoxProps = AlignItemsProps &
   FlexWrapProps &
   GridProps &
   JustifyContentProps &
+  JustifyItemsProps &
+  JustifySelfProps &
   LayoutProps &
   OverflowProps &
   PositionProps &
@@ -99,7 +104,17 @@ export type BrowserView = {
   value: string
 }
 
+export type ButtonVariant = 'danger' | 'default' | 'secondary'
+
 export type DeleteHandleTarget = 'dialog' | 'snackbar'
+
+export type DialogAction = {
+  callback: () => void
+  disabled?: boolean
+  icon?: ReactElement
+  title: string
+  variant?: ButtonVariant
+}
 
 export type Document = {
   _id: string

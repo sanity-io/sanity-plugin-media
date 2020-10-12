@@ -1,8 +1,7 @@
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
-import {IoMdCheckmarkCircle} from 'react-icons/io'
-import ErrorIcon from 'part:@sanity/base/error-icon'
+import {IoIosAlert, IoMdCheckmarkCircle} from 'react-icons/io'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import Image from '../../styled/Image'
@@ -153,13 +152,7 @@ const TableItem = (props: Props) => {
       {/* Error */}
       <Box gridColumn={[3, 7]} gridRowStart="1" gridRowEnd={['span 5', 'auto']} mx="auto">
         {errorCode && (
-          <Button
-            // color="danger"
-            // icon={ErrorIcon.bind(null, {size: 20})}
-            onClick={handleDialogConflicts}
-          >
-            <ErrorIcon size={20} />
-          </Button>
+          <Button icon={IoIosAlert({size: 20})} onClick={handleDialogConflicts} variant="danger" />
         )}
       </Box>
     </Box>

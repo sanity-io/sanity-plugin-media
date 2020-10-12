@@ -37,7 +37,7 @@ const theme: DefaultTheme = {
     darkestGray: '#1C1C1C',
     black: '#000',
     // colors
-    red: '#E66666',
+    red: '#F03E31',
     // alpha
     overlayCard: 'rgba(255, 255, 255, 0.075)',
     overlayTableRow: 'rgba(255, 255, 255, 0.035)'
@@ -52,14 +52,15 @@ const theme: DefaultTheme = {
   space,
   tableRowHeight,
   zIndices: {
+    modal: 1001,
     app: 1000,
     header: 1
   }
 }
 
 export const GlobalStyle = createGlobalStyle`
-  /* Custom scrollbar for the main browser viewport */
-  .sanity-media-custom-scrollbar {
+  /* Custom scrollbar for the react-window and dialog viewports */
+  .custom-scrollbar {
     ::-webkit-scrollbar {
       width: 14px;
       height: 14px;

@@ -4,44 +4,46 @@ import styled from 'styled-components'
 import {variant} from 'styled-system'
 
 import Box from '../../styled/Box'
-import {BoxProps} from '../../types'
-
-type Variant = 'danger' | 'default' | 'secondary'
+import {BoxProps, ButtonVariant} from '../../types'
 
 type Props = BoxProps & {
   children?: ReactNode
   disabled?: boolean
   icon?: ReactElement
   onClick?: (e: MouseEvent) => void
-  variant?: Variant
+  variant?: ButtonVariant
 }
 
-const Container = styled(Box)<{variant: Variant}>`
+const Container = styled(Box)<{variant: ButtonVariant}>`
   transition: background 250ms;
 
   ${props =>
     variant({
       variants: {
         danger: {
-          '--bg': rgba(props.theme.colors?.red, 0.1),
+          '--bg': rgba(props.theme.colors?.red, 0.025),
+          '--bg-hover': rgba(props.theme.colors?.red, 0.1),
           '--text-color': props.theme.colors?.red
         },
         default: {
-          '--bg': rgba(props.theme.colors?.white, 0.04),
+          '--bg': 'transparent',
+          '--bg-hover': rgba(props.theme.colors?.white, 0.04),
           '--text-color': props.theme.colors?.white
         },
         secondary: {
-          '--bg': rgba(props.theme.colors?.white, 0.04),
+          '--bg': 'transparent',
+          '--bg-hover': rgba(props.theme.colors?.white, 0.04),
           '--text-color': props.theme.colors?.gray
         }
       }
     })}
 
+  background-color: var(--bg);
   color: var(--text-color);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: var(--bg);
+      background-color: var(--bg-hover);
     }
   }
 
@@ -74,18 +76,18 @@ const Button = (props: Props) => {
       {icon && (
         <Box
           alignItems="center"
-          // border="1px solid lime"
-          size="50px"
           display="flex"
           justifyContent="center"
+          pl={children ? 3 : 0}
+          width={children ? 'auto' : '50px'}
         >
           {icon}
         </Box>
       )}
 
       {children && (
-        <Box pl={icon ? 2 : 3} pr={3}>
-          {children}
+        <Box alignItems="center" display="flex" pl={icon ? 1 : 3} pr={3}>
+          <strong>{children}</strong>
         </Box>
       )}
     </Container>
