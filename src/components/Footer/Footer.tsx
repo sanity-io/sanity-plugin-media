@@ -1,6 +1,4 @@
 import filesize from 'filesize'
-import ButtonGroup from 'part:@sanity/components/buttons/button-group'
-import Button from 'part:@sanity/components/buttons/default'
 import React from 'react'
 import {IoIosDownload, IoIosLink} from 'react-icons/io'
 
@@ -8,6 +6,7 @@ import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import Box from '../../styled/Box'
 import {Asset} from '../../types'
+import Button from '../Button/Button'
 
 const Footer = () => {
   const {onDeletePicked, onDialogShowRefs, onSelect} = useAssetBrowserActions()
@@ -26,22 +25,20 @@ const Footer = () => {
       alignItems="center"
       bg="darkestGray"
       bottom={0}
-      color="lighterGray"
       display="flex"
       flexWrap="wrap"
       height={['headerHeight.0', 'headerHeight.1']}
       justifyContent="space-between"
       left={0}
       position="fixed"
+      textColor="lighterGray"
       width="100%"
     >
       {/* LHS */}
       <Box alignItems="center" display="flex" flex="3 0" height="headerHeight.1" order={[2, 0]}>
         {onSelect && singlePickedAsset && (
-          <ButtonGroup>
+          <Box display="flex">
             <Button
-              bleed={true}
-              kind="simple"
               onClick={() => {
                 onSelect([
                   {
@@ -50,11 +47,10 @@ const Footer = () => {
                   }
                 ])
               }}
-              ripple={false}
             >
               <strong>Select</strong>
             </Button>
-          </ButtonGroup>
+          </Box>
         )}
       </Box>
 
@@ -78,10 +74,10 @@ const Footer = () => {
             >
               {/* Original filename */}
               <Box
-                color="lightGray"
                 maxWidth={[null, '420px']}
                 mx={2}
                 overflow="hidden"
+                textColor="lightGray"
                 textOverflow="ellipsis"
               >
                 <strong>{singlePickedAsset.originalFilename}</strong>
@@ -106,41 +102,27 @@ const Footer = () => {
                 borderStyle="solid"
                 borderWidth="1px"
                 borderRadius="2px"
-                color="lightGray"
                 display={['none', 'block']}
                 fontSize={1}
                 mx={2}
                 px={1}
+                textColor="lightGray"
               >
                 {singlePickedAsset.extension.toUpperCase()}
               </Box>
             </Box>
 
-            <Box alignItems="center" display="flex" height="100%">
-              <ButtonGroup>
-                {/* Show references */}
-                <Button
-                  kind="simple"
-                  onClick={onDialogShowRefs.bind(null, singlePickedAsset)}
-                  ripple={false}
-                  style={{
-                    borderRadius: 0
-                  }}
-                >
-                  <IoIosLink size={16} />
-                </Button>
-                {/* Download original */}
-                <Button
-                  kind="simple"
-                  onClick={handleDownloadOriginal.bind(null, singlePickedAsset)}
-                  ripple={false}
-                  style={{
-                    borderRadius: 0
-                  }}
-                >
-                  <IoIosDownload size={16} />
-                </Button>
-              </ButtonGroup>
+            <Box alignItems="center" display="flex" height="100%" ml={[0, 2]}>
+              {/* Show references */}
+              <Button
+                icon={IoIosLink({size: 16})}
+                onClick={onDialogShowRefs.bind(null, singlePickedAsset)}
+              />
+              {/* Download original */}
+              <Button
+                icon={IoIosDownload({size: 16})}
+                onClick={handleDownloadOriginal.bind(null, singlePickedAsset)}
+              />
             </Box>
           </Box>
         )}
@@ -148,10 +130,10 @@ const Footer = () => {
         {picked.length > 1 && (
           <Box
             alignItems="center"
-            color="lighterGray"
             display="flex"
             height="headerHeight.1"
             mx={3}
+            textColor="lighterGray"
           >
             {picked.length} images selected
           </Box>
@@ -168,20 +150,11 @@ const Footer = () => {
         order={[2, 2]}
       >
         {picked.length > 0 && (
-          <ButtonGroup>
-            <Button
-              bleed={true}
-              color="danger"
-              kind="simple"
-              onClick={onDeletePicked}
-              ripple={false}
-              style={{
-                borderRadius: 0
-              }}
-            >
+          <Box display="flex" height="100%">
+            <Button onClick={onDeletePicked} variant="danger">
               <strong>Delete{picked.length > 1 ? ` ${picked.length} images` : ''}</strong>
             </Button>
-          </ButtonGroup>
+          </Box>
         )}
       </Box>
     </Box>

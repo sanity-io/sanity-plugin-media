@@ -1,34 +1,30 @@
-import {createGlobalStyle} from 'styled-components'
-
-// Extend DefaultTheme interface
-declare module 'styled-components' {
-  export interface DefaultTheme {
-    colors: Record<string, string>
-    zIndices: Record<string, number>
-  }
-}
+import {DefaultTheme, createGlobalStyle} from 'styled-components'
 
 const headerHeight = ['100px', '50px']
 const tableHeaderHeight = '34px'
 const tableRowHeight = ['115px', '100px']
 
-const sizes: string[] & {
-  [key: string]: any
-} = []
+const sizes: string[] & Record<string, any> = []
 sizes.headerHeight = headerHeight
 sizes.tableHeaderHeight = tableHeaderHeight
 sizes.tableRowHeight = tableRowHeight
 
-const space: string[] & {
-  [key: string]: any
-} = ['0.0rem', '0.3rem', '0.6rem', '1.2rem', '2.4rem', '4.8rem']
+const space: string[] & Record<string, any> = [
+  '0.0rem',
+  '0.3rem',
+  '0.6rem',
+  '1.2rem',
+  '2.4rem',
+  '4.8rem'
+]
 space.headerHeight = headerHeight
 space.tableHeaderHeight = tableHeaderHeight
 space.tableRowHeight = tableRowHeight
 
-const theme = {
+const theme: DefaultTheme = {
   // Remember that em units in media queries are always relative to 16px / the user setting
   // and NOT the html font size!
+  borders: {},
   breakpoints: ['55em'] as string[],
   colors: {
     // grayscale
@@ -102,7 +98,7 @@ export const GlobalStyle = createGlobalStyle`
     - dialogs opened by this plugin: 5010
   */
   .sanity-media-dialog {
-    z-index: ${props => props.theme.zIndices.dialog};
+    z-index: ${props => props.theme.zIndices?.dialog};
   }
 
   /*
@@ -115,7 +111,7 @@ export const GlobalStyle = createGlobalStyle`
     At this point it may be worth not using any of Sanity's existing parts within this plugin and keep it completely separate.
   */
   div[class^="Poppable_portal"] {
-    z-index: ${props => props.theme.zIndices.dropdowns};
+    z-index: ${props => props.theme.zIndices?.dropdowns};
   }
 `
 

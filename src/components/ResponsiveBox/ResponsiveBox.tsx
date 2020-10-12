@@ -1,33 +1,40 @@
-import React, {ReactNode, memo} from 'react'
+import React, {ReactNode} from 'react'
 import styled from 'styled-components'
-import Box from '../../styled/Box'
+import {system} from 'styled-system'
 
-type Props = {
-  aspectRatio: number
+import Box from '../../styled/Box'
+import {BoxProps} from '../../types'
+
+type Props = BoxProps & {
+  aspectRatio: number | number[]
   children: ReactNode
 }
 
-const Container = styled(Box)<Props>`
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-bottom: ${props => `${100 / props.aspectRatio}%`};
-`
-
-const Content = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
+const Container = styled(Box)<{aspectRatio: number | number[]}>`
+  ${system({
+    aspectRatio: {
+      property: 'paddingBottom',
+      transform: val => `${100 / val}%`
+    }
+  })}
 `
 
 const ResponsiveBox = (props: Props) => {
-  const {children} = props
+  const {aspectRatio, children, ...boxProps} = props
 
   return (
-    <Container {...props}>
-      <Content>{children}</Content>
+    <Container
+      aspectRatio={aspectRatio} //
+      height={0}
+      position="relative"
+      width="100%"
+      {...boxProps}
+    >
+      <Box position="absolute" size="100%">
+        {children}
+      </Box>
     </Container>
   )
 }
 
-export default memo(ResponsiveBox)
+export default ResponsiveBox

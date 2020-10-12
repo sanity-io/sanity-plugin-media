@@ -29,7 +29,6 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
       <Box
         alignItems="center"
         bg="darkestGray"
-        color="lighterGray"
         display={['none', 'grid']}
         gridColumnGap={2}
         gridTemplateColumns="tableLarge"
@@ -37,6 +36,7 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
         letterSpacing="0.025em"
         position="sticky"
         px={[0, 2]}
+        textColor="lighterGray"
         textTransform="uppercase"
         top={0}
         width="100%"

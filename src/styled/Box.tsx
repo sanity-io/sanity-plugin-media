@@ -6,11 +6,19 @@ import {
   layout,
   position,
   space,
+  style,
   system,
   typography
 } from 'styled-system'
 import styled from 'styled-components'
+
 import {BoxProps} from '../types'
+
+const textColor = style({
+  prop: 'textColor',
+  cssProperty: 'color',
+  key: 'colors'
+})
 
 const Box = styled.div<BoxProps>`
   box-sizing: border-box;
@@ -21,6 +29,7 @@ const Box = styled.div<BoxProps>`
   ${layout};
   ${position};
   ${space};
+  ${textColor};
   ${typography};
 
   ${system({
@@ -45,6 +54,7 @@ const Box = styled.div<BoxProps>`
       property: 'gridTemplateColumns',
       scale: 'gridTemplateColumns'
     },
+    outline: true,
     overflowY: true,
     pointerEvents: true,
     textOverflow: true,

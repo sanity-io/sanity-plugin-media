@@ -14,8 +14,16 @@ import {
   OverflowProps,
   PositionProps,
   SpaceProps,
+  TextColorProps,
   TypographyProps
 } from 'styled-system'
+
+// Styled-system patch for the color prop fixing "Types of property 'color' are incompatible"
+// when applying props to component that extend ColorProps.
+// Source: https://stackoverflow.com/questions/53711454/styled-system-props-typing-with-typescript
+export interface CustomColorProps extends Omit<ColorProps, 'color'> {
+  textColor?: TextColorProps['color']
+}
 
 export type Asset = {
   _id: string
@@ -44,7 +52,7 @@ export type Block = {
 export type BoxProps = AlignItemsProps &
   AlignSelfProps &
   BorderProps &
-  ColorProps &
+  CustomColorProps &
   FlexDirectionProps &
   FlexGrowProps &
   FlexProps &
@@ -57,12 +65,13 @@ export type BoxProps = AlignItemsProps &
   PositionProps &
   SpaceProps &
   TypographyProps & {
+    as?: keyof JSX.IntrinsicElements | React.ComponentType<any>
     boxSizing?: string
     cursor?: string
     gridRowEnd?: string | string[]
     gridRowStart?: string | string[]
-    onClick?: Function
     order?: any
+    outline?: string
     pointerEvents?: string
     textOverflow?: string
     textTransform?: string

@@ -1,18 +1,14 @@
 import React from 'react'
 import {IoIosClose} from 'react-icons/io'
-// import pluralize from 'pluralize'
-import ButtonGroup from 'part:@sanity/components/buttons/button-group'
-import DropDownButton from 'part:@sanity/components/buttons/dropdown'
-import Button from 'part:@sanity/components/buttons/default'
-// import FileInputButton from 'part:@sanity/components/fileinput/button'
-// import FaUpload from 'react-icons/lib/fa/upload'
 
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS, VIEWS} from '../../config'
 import Box from '../../styled/Box'
 import blocksToText from '../../util/blocksToText'
 import {BrowserQueryOptions, BrowserView, Document, Filter, Item} from '../../types'
+import Button from '../Button/Button'
 import Progress from '../Progress/Progress'
+import Select from '../Select/Select'
 
 type Props = {
   browserQueryOptions: BrowserQueryOptions
@@ -21,7 +17,7 @@ type Props = {
   filters: Filter[]
   items: Item[]
   onClose?: () => void
-  onUpdateBrowserQueryOptions: (field: string, value: Record<string, any>) => void
+  onUpdateBrowserQueryOptions: (field: string, value: string) => void
   onUpdateBrowserView: (view: BrowserView) => void
 }
 
@@ -50,7 +46,6 @@ const Header = (props: Props) => {
     <Box
       alignItems="center"
       bg="darkestGray"
-      color="lighterGray"
       display="flex"
       flexDirection={['column', 'row']}
       flexWrap="wrap"
@@ -58,6 +53,7 @@ const Header = (props: Props) => {
       justifyContent="space-between"
       overflow="hidden"
       position="absolute"
+      textColor="lighterGray"
       top={0}
       whiteSpace="nowrap"
       width="100%"
@@ -79,7 +75,6 @@ const Header = (props: Props) => {
           <Box
             bg="darkGray"
             borderRadius="2px"
-            color="lighterGray"
             fontSize={1}
             fontWeight={500}
             maxWidth="500px"
@@ -87,15 +82,16 @@ const Header = (props: Props) => {
             overflow="hidden"
             px={2}
             py={1}
+            textColor="lighterGray"
             textOverflow="ellipsis"
           >
             {/* Conditionally display current document title or ID */}
             <Box
-              color="lightGray"
               fontSize={0}
               display="inline"
               mr={2}
               py={1}
+              textColor="lightGray"
               textTransform="uppercase"
             >
               {currentDocument._type} {!currentDocumentTitle && 'id'}
@@ -105,18 +101,8 @@ const Header = (props: Props) => {
           </Box>
 
           {onClose && (
-            <Box bg="darkGray" display={['block', 'none']} height="100%">
-              <Button
-                bleed={true}
-                kind="simple"
-                onClick={onClose}
-                ripple={false}
-                style={{
-                  alignItems: 'center'
-                }}
-              >
-                <IoIosClose size={25} />
-              </Button>
+            <Box bg="darkerGray" display={['block', 'none']} height="100%">
+              <Button icon={IoIosClose({size: 25})} onClick={onClose} />
             </Box>
           )}
         </Box>
@@ -130,67 +116,38 @@ const Header = (props: Props) => {
         textAlign="right"
         width={['100%', 'auto']}
       >
-        <ButtonGroup>
+        <Box display="flex" height="100%">
           {VIEWS &&
             VIEWS.map((view, index) => {
               const selected = browserView.value === view.value
+
               return (
                 <Button
-                  bleed={true}
-                  bg="primary"
-                  kind="simple"
+                  icon={view.icon({size: 18})}
                   key={index}
                   onClick={() => onUpdateBrowserView(view)}
-                  ripple={false}
-                  style={{
-                    borderRadius: 0,
-                    color: selected ? 'white' : 'currentColor',
-                    opacity: selected ? 1 : 0.5
-                  }}
-                >
-                  {view.icon({size: 18})}
-                </Button>
+                  pointerEvents={selected ? 'none' : 'auto'}
+                  variant={selected ? 'default' : 'secondary'}
+                />
               )
             })}
-        </ButtonGroup>
+        </Box>
 
-        <ButtonGroup>
-          <DropDownButton
+        <Box display="flex" height="100%">
+          <Select
             items={filters}
-            kind="simple"
-            onAction={(value: Record<string, string>) => {
-              onUpdateBrowserQueryOptions('filter', value)
-            }}
-            ripple={false}
-          >
-            {browserQueryOptions.filter.title}
-          </DropDownButton>
-          <DropDownButton
-            bleed={true}
+            onChange={(value: string) => onUpdateBrowserQueryOptions('filter', value)}
+          />
+
+          <Select
             items={ORDERS}
-            kind="simple"
-            onAction={(value: Record<string, string>) =>
-              onUpdateBrowserQueryOptions('order', value)
-            }
-            ripple={false}
-          >
-            {browserQueryOptions.order.title}
-          </DropDownButton>
-        </ButtonGroup>
+            onChange={(value: string) => onUpdateBrowserQueryOptions('order', value)}
+          />
+        </Box>
 
         {onClose && (
-          <Box bg="darkGray" display={[currentDocument ? 'none' : 'flex', 'flex']} height="100%">
-            <Button
-              bleed={true}
-              kind="simple"
-              onClick={onClose}
-              ripple={false}
-              style={{
-                alignItems: 'center'
-              }}
-            >
-              <IoIosClose size={25} />
-            </Button>
+          <Box bg="darkerGray" display={[currentDocument ? 'none' : 'flex', 'flex']} height="100%">
+            <Button icon={IoIosClose({size: 25})} onClick={onClose} />
           </Box>
         )}
       </Box>

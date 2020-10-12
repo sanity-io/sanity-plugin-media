@@ -133,7 +133,7 @@ const Browser = (props: Props) => {
     )
   }
 
-  const handleUpdateBrowserQueryOptions = (field: string, value: Record<string, any>) => {
+  const handleUpdateBrowserQueryOptions = (field: string, value: string) => {
     setBrowserQueryOptions(
       produce(draft => {
         draft[field] = value
@@ -261,7 +261,7 @@ const Browser = (props: Props) => {
 
         {/* No results */}
         {!hasItems && hasFetchedOnce && !fetching && (
-          <Box color="lighterGray" fontSize={1} p={3}>
+          <Box fontSize={1} p={3} textColor="lighterGray">
             No results for the current query
           </Box>
         )}
