@@ -18,14 +18,13 @@ type Props = {
   onClose?: () => void
   onSelect?: () => void
   selectedAssets: Asset[]
+  tool?: string
 }
 
-const AssetBrowser = (props: Props) => {
-  const {document, onClose, onSelect, selectedAssets} = props
-  const [headerHeight, setHeaderHeight] = useState<number>(0)
+const HEADER_HEIGHT = '48px'
 
-  // Both `onClose` and `onSelect` are undefined when directly accessed as a tool
-  const isTool = onClose && onSelect
+const AssetBrowser = (props: Props) => {
+  const {document, onClose, onSelect, selectedAssets, tool} = props
 
   // Close on escape key press
   useKeyPress('Escape', onClose)
@@ -43,14 +42,6 @@ const AssetBrowser = (props: Props) => {
       dialogContentEl.style.overflow = 'hidden'
     }
 
-    // Measure the height of the studio navbar and adjust positioning.
-    // This is required when we access the plugin as a tool (with the navbar visible).
-    const navBarEl = window.document.querySelector('[class^=DefaultLayout_navBar]')
-    if (navBarEl) {
-      const height = navBarEl.getBoundingClientRect().height
-      setHeaderHeight(height)
-    }
-
     // HACK: Revert overflow on parent dialog content container.
     return () => {
       if (dialogContentEl instanceof HTMLElement) {
@@ -63,7 +54,7 @@ const AssetBrowser = (props: Props) => {
     // Scroll to top if browser is being used as a tool.
     // We do this as we lock body scroll when the plugin is active, and due to overscroll
     // on mobile devices, the menu may not always be positioned at the top of the page.
-    if (isTool) {
+    if (tool) {
       window.scrollTo(0, 0)
     }
 
@@ -98,7 +89,7 @@ const AssetBrowser = (props: Props) => {
               onMouseUp={handleStopPropagation}
               position="fixed"
               width="100%"
-              top={isTool ? 0 : headerHeight}
+              top={tool ? HEADER_HEIGHT : 0}
               zIndex="app"
             >
               <Snackbars />

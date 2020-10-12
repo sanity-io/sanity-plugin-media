@@ -52,9 +52,7 @@ const theme: DefaultTheme = {
   space,
   tableRowHeight,
   zIndices: {
-    dropdowns: 3700,
-    dialog: 3600,
-    app: 3500,
+    app: 1000,
     header: 1
   }
 }
@@ -83,35 +81,6 @@ export const GlobalStyle = createGlobalStyle`
       border: none;
       border-radius: 0px;
     }
-  }
-
-  /*
-    Override Sanity's default z-index for dialogs.
-
-    It's possible that sanity-media is invoked from an existing dialog - such as an object within portable text.
-    Since sanity-media needs to sit above any dialog that may invoke it, future dialogs invoked by this plugin
-    need to in-turn sit on a higher stacking order.
-
-    E.g.
-    - sanity's default dialog z-index: 1060
-    - this plugin: 5000
-    - dialogs opened by this plugin: 5010
-  */
-  .sanity-media-dialog {
-    z-index: ${props => props.theme.zIndices?.dialog};
-  }
-
-  /*
-    The most horrible of hacks, don't judge me...
-
-    Here we manually set a higher z-index for Sanity's button dropdowns, which by default set at the
-    same stacking order as dialogs.
-    This is problematic for the reasons listed above - this plugin needs to sit above existing dialogs / portals,
-    but also needs to allow other dialogs / dropdowns to appear above it.
-    At this point it may be worth not using any of Sanity's existing parts within this plugin and keep it completely separate.
-  */
-  div[class^="Poppable_portal"] {
-    z-index: ${props => props.theme.zIndices?.dropdowns};
   }
 `
 

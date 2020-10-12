@@ -33,7 +33,6 @@ const Dialog = (props: Props) => {
   return (
     <SanityDialog
       actions={actions}
-      className="sanity-media-dialog"
       color={color}
       onAction={handleDialogAction}
       onClose={onClose}

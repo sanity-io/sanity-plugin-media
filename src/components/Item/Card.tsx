@@ -1,6 +1,5 @@
 import React, {CSSProperties, MouseEvent, memo} from 'react'
-import {IoIosCheckmarkCircle, IoIosCheckmarkCircleOutline} from 'react-icons/io'
-import ErrorIcon from 'part:@sanity/base/error-icon'
+import {IoIosAlert, IoIosCheckmarkCircle, IoIosCheckmarkCircleOutline} from 'react-icons/io'
 import Spinner from 'part:@sanity/components/loading/spinner'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
@@ -127,9 +126,11 @@ const CardItem = (props: Props) => {
         {/* Error button */}
         {errorCode && (
           <Box bottom={0} color="white" position="absolute" right={0} top={0}>
-            <Button onClick={handleDialogConflicts} textColor="red">
-              <ErrorIcon size={20} />
-            </Button>
+            <Button
+              icon={IoIosAlert({size: 20})}
+              onClick={handleDialogConflicts}
+              variant="danger"
+            />
           </Box>
         )}
       </ResponsiveBox>
