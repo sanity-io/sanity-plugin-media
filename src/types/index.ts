@@ -78,6 +78,7 @@ export type BoxProps = AlignItemsProps &
     order?: any
     outline?: string
     pointerEvents?: string
+    ref?: any
     textOverflow?: string
     textTransform?: string
     transform?: string

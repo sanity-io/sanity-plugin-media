@@ -1,5 +1,5 @@
 import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'
-import React, {ReactNode} from 'react'
+import React, {ReactNode, useRef} from 'react'
 import {IoIosAlert, IoIosClose} from 'react-icons/io'
 
 import {Asset, DialogAction} from '../../types'
@@ -8,6 +8,7 @@ import Image from '../../styled/Image'
 import imageDprUrl from '../../util/imageDprUrl'
 import Button from '../Button/Button'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
+import useClickOutside from '../../hooks/useClickOutside'
 
 type Variant = 'default' | 'danger'
 
@@ -26,6 +27,13 @@ const Dialog = (props: Props) => {
   const imageUrl = imageDprUrl(asset, 250)
   const isDanger = variant === 'danger'
 
+  const refContainer = useRef<HTMLElement>(null)
+
+  // Close when clicked outside dialog container
+  useClickOutside(refContainer, () => {
+    onClose()
+  })
+
   return (
     <Box
       display="flex"
@@ -33,6 +41,7 @@ const Dialog = (props: Props) => {
       maxHeight="calc(100% - 100px)"
       maxWidth="560px"
       overflow="hidden"
+      ref={refContainer}
       width="100%"
     >
       {/* Header */}
@@ -116,7 +125,6 @@ const Dialog = (props: Props) => {
         justifyContent="space-between"
       >
         {actions.map((action, index) => {
-          console.log('action', action)
           return (
             <Button
               icon={action?.icon}
