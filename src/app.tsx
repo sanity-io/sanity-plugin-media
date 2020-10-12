@@ -1,4 +1,4 @@
-import React, {MouseEvent, useLayoutEffect, useState, useEffect} from 'react'
+import React, {MouseEvent, useLayoutEffect, useEffect} from 'react'
 import {ThemeProvider} from 'styled-components'
 
 import theme, {GlobalStyle} from './styled/theme'

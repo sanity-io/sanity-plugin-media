@@ -7,6 +7,7 @@ import Box from '../../styled/Box'
 import blocksToText from '../../util/blocksToText'
 import {BrowserQueryOptions, BrowserView, Document, Filter, Item} from '../../types'
 import Button from '../Button/Button'
+import Label from '../Label/Label'
 import Progress from '../Progress/Progress'
 import Select from '../Select/Select'
 
@@ -72,34 +73,13 @@ const Header = (props: Props) => {
           textAlign="left"
           width={['100%', 'auto']}
         >
-          <Box
-            bg="darkGray"
-            borderRadius="2px"
-            fontSize={1}
-            fontWeight={500}
-            maxWidth="500px"
-            mx={2}
-            overflow="hidden"
-            px={2}
-            py={1}
-            textColor="lighterGray"
-            textOverflow="ellipsis"
-          >
-            {/* Conditionally display current document title or ID */}
-            <Box
-              fontSize={0}
-              display="inline"
-              mr={2}
-              py={1}
-              textColor="lightGray"
-              textTransform="uppercase"
-            >
-              {currentDocument._type} {!currentDocumentTitle && 'id'}
-            </Box>
+          {/* Label */}
+          <Label
+            title={currentDocumentTitle ? currentDocumentTitle : currentDocument._id}
+            type={`${currentDocument._type} ${!currentDocumentTitle ? 'id' : ''}`}
+          />
 
-            {currentDocumentTitle ? currentDocumentTitle : currentDocument._id}
-          </Box>
-
+          {/* Close (small breakpoint) */}
           {onClose && (
             <Box bg="darkerGray" display={['block', 'none']} height="100%">
               <Button icon={IoIosClose({size: 25})} onClick={onClose} />
@@ -145,6 +125,7 @@ const Header = (props: Props) => {
           />
         </Box>
 
+        {/* Close (large breakpoint) */}
         {onClose && (
           <Box bg="darkerGray" display={[currentDocument ? 'none' : 'flex', 'flex']} height="100%">
             <Button icon={IoIosClose({size: 25})} onClick={onClose} />
