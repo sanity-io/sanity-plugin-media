@@ -20,17 +20,17 @@ const Label = (props: Props) => {
       fontWeight={500}
       maxWidth="500px"
       mx={2}
-      overflow="hidden"
       px={2}
       py={1}
       textColor="lighterGray"
-      textOverflow="ellipsis"
     >
       <Box fontSize={0} mr={2} textColor="lightGray" textTransform="uppercase">
         {type}
       </Box>
 
-      {title}
+      <Box overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+        {title}
+      </Box>
     </Box>
   )
 }
