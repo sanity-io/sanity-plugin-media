@@ -1,11 +1,11 @@
 import React, {ReactNode, useCallback} from 'react'
 import SanityDialog from 'part:@sanity/components/dialogs/default'
 import DialogContent from 'part:@sanity/components/dialogs/content'
-import Spinner from 'part:@sanity/components/loading/spinner'
 import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'
 
 import {Asset} from '../../types'
 import Box from '../../styled/Box'
+import Spinner from '../Spinner/Spinner'
 
 type Props = {
   actions: {
@@ -55,7 +55,7 @@ const Dialog = (props: Props) => {
               )
 
               if (isLoading) {
-                return <Spinner>Loading…</Spinner>
+                return <Spinner />
               }
 
               if (filteredDocuments.length === 0) {

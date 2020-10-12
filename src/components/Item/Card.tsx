@@ -1,6 +1,5 @@
 import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {IoIosAlert, IoIosCheckmarkCircle, IoIosCheckmarkCircleOutline} from 'react-icons/io'
-import Spinner from 'part:@sanity/components/loading/spinner'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import Box from '../../styled/Box'
@@ -9,6 +8,7 @@ import {Item} from '../../types'
 import imageDprUrl from '../../util/imageDprUrl'
 import Button from '../Button/Button'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
+import Spinner from '../Spinner/Spinner'
 
 type Props = {
   focused: boolean
