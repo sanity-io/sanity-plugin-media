@@ -51,9 +51,24 @@ const theme: DefaultTheme = {
   sizes,
   space,
   tableRowHeight,
+  /*
+    We have two z-index values for the app wrapper:
+    - 'appInline' (when selecting an image within a document)
+    - 'appTool' (if you click the media plugin from the navbar).
+
+    When this plugin is invoked in an 'inline' context, it's always displayed fullscreen and we need to make sure it
+    sits above any popover (since it's possible for the plugin to be invoked from such - e.g. a nested object in an array)
+
+    When the plugin is invoked as a tool, the navbar is always visible and we need to make sure it sits underneath, to allow
+    navbar specific dropdowns to display correctly.
+
+    Sanity's z-index values:
+    https://github.com/sanity-io/sanity/blob/next/packages/%40sanity/base/src/styles/variables/layers.css
+  */
   zIndices: {
-    modal: 1001,
-    app: 1000,
+    modal: 1081,
+    appInline: 1080,
+    appTool: 900,
     header: 1
   }
 }

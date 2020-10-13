@@ -90,7 +90,7 @@ const AssetBrowser = (props: Props) => {
               position="fixed"
               width="100%"
               top={tool ? HEADER_HEIGHT : 0}
-              zIndex="app"
+              zIndex={tool ? 'appTool' : 'appInline'}
             >
               <Snackbars />
               <Dialogs />
