@@ -4,6 +4,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 import useDeepCompareEffect from 'use-deep-compare-effect'
+import groq from 'groq'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
@@ -45,12 +46,16 @@ const Browser = (props: Props) => {
     // totalCount
   } = useAssetBrowserState()
   const [browserQueryOptions, setBrowserQueryOptions] = useState<BrowserQueryOptions>({
+    q: '',
     filter: filters[0],
     order: ORDERS[0],
     pageIndex: 0,
     replaceOnFetch: false
   })
   const [browserView, setBrowserView] = useState<BrowserView>(VIEWS[0])
+
+  const orientationRegExp = /orientation:(landscape|square|portrait)/i
+  const extensionRegExp = /extension:(.+\s?)/i
 
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
@@ -59,21 +64,54 @@ const Browser = (props: Props) => {
   const hasPicked = picked.length > 0
 
   const fetchPage = (index: number, replace: boolean) => {
-    const {filter, order} = browserQueryOptions
+    const {filter, order, q} = browserQueryOptions
 
     const start = index * PER_PAGE
     const end = start + PER_PAGE
 
-    const sort = `order(${order.value})`
-    const selector = `[${start}...${end}]`
+    const sort = groq`order(${order.value})`
+    const selector = groq`[${start}...${end}]`
 
     // ID can be null when operating on pristine / unsaved drafts
     const currentDocumentId = currentDocument?._id
 
+    let filterResult
+
+    if (q) {
+      const textQuery = q.replace(orientationRegExp, '').replace(extensionRegExp, '')
+      filterResult = groq`${filter.value} && originalFilename match '*${textQuery}*'`
+
+      const orientation = q.match(orientationRegExp)
+      if (orientation) {
+        const orientationVal = orientation[1]
+        let orientationFilterVal
+        switch (orientationVal) {
+          case 'landscape':
+            orientationFilterVal = 'metadata.dimensions.aspectRatio > 1'
+            break
+          case 'square':
+            orientationFilterVal = 'metadata.dimensions.aspectRatio == 1'
+            break
+          case 'portrait':
+          default:
+            orientationFilterVal = 'metadata.dimensions.aspectRatio < 1'
+            break
+        }
+        filterResult = groq`${filterResult} && ${orientationFilterVal}`
+      }
+
+      const extension = q.match(extensionRegExp)
+      if (extension) {
+        filterResult = groq`${filterResult} && extension == '${extension[1]}'`
+      }
+    } else {
+      filterResult = filter.value
+    }
+
     onFetch({
-      filter: filter.value,
+      filter: filterResult,
       ...(currentDocumentId ? {params: {documentId: currentDocumentId}} : {}),
-      projections: `{
+      projections: groq`{
         _id,
         _updatedAt,
         extension,
@@ -133,7 +171,7 @@ const Browser = (props: Props) => {
     )
   }
 
-  const handleUpdateBrowserQueryOptions = (field: string, value: Filter) => {
+  const handleUpdateBrowserQueryOptions = (field: string, value: Filter | string) => {
     setBrowserQueryOptions(
       produce(draft => {
         draft[field] = value

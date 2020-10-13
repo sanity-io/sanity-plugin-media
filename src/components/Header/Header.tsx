@@ -1,4 +1,5 @@
-import React from 'react'
+import Search from 'part:@sanity/components/textfields/search'
+import React, {ChangeEvent, SyntheticEvent} from 'react'
 import {IoIosClose} from 'react-icons/io'
 
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
@@ -18,7 +19,7 @@ type Props = {
   filters: Filter[]
   items: Item[]
   onClose?: () => void
-  onUpdateBrowserQueryOptions: (field: string, value: Filter) => void
+  onUpdateBrowserQueryOptions: (field: string, value: Filter | string) => void
   onUpdateBrowserView: (view: BrowserView) => void
 }
 
@@ -97,6 +98,14 @@ const Header = (props: Props) => {
         width={['100%', 'auto']}
       >
         <Box display="flex" height="100%">
+          <Search
+            label=""
+            onChange={(event: SyntheticEvent<HTMLInputElement, ChangeEvent>) => {
+              onUpdateBrowserQueryOptions('q', event.currentTarget.value)
+            }}
+            placeholder="Search media"
+            value={browserQueryOptions.q}
+          />
           {VIEWS &&
             VIEWS.map((view, index) => {
               const selected = browserView.value === view.value

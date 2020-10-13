@@ -27,13 +27,15 @@
   },
   "scripts": {
     "prepare": "npm run build",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc -w"
   },
   "dependencies": {
     "@sanity/components": "2.0.2",
     "@tanem/react-nprogress": "3.0.8",
     "date-fns": "2.7.0",
     "filesize": "6.0.1",
+    "groq": "1.149.16",
     "immer": "5.0.0",
     "pluralize": "8.0.0",
     "polished": "4.0.2",

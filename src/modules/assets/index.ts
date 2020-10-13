@@ -11,6 +11,7 @@ import {
   AssetsDeleteRequestAction
   // AssetsDeletePickedAction
 } from './types'
+import groq from 'groq'
 // import {RootReducerState} from '../types'
 
 /***********
@@ -238,9 +239,9 @@ export const assetsDeletePicked = () => ({
  * @param {String} [options.sort] - GROQ sort
  */
 export const assetsFetch = ({
-  filter = `_type == "sanity.imageAsset"`,
+  filter = groq`_type == "sanity.imageAsset"`,
   params = {},
-  projections = `{
+  projections = groq`{
     _id,
     metadata {dimensions},
     originalFilename,
@@ -248,15 +249,14 @@ export const assetsFetch = ({
   }`,
   replace = true,
   selector = ``,
-  sort = `order(_updatedAt desc)`
+  sort = groq`order(_updatedAt desc)`
 }: FetchOptions) => {
   const pipe = sort || selector ? '|' : ''
 
   // Construct query
-  const query = `//groq
+  const query = groq`
     {
       "items": *[${filter}] ${projections} ${pipe} ${sort} ${selector},
-      // "totalCount": count(*[${filter}] {})
     }
   `
 
