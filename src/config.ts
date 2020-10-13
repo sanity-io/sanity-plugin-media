@@ -1,9 +1,9 @@
 import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
-import {Document} from './types'
+import {Document, Filter} from './types'
 
 // Filters to display in header dropdown
 export const getFilters = (currentDocument?: Document) => {
-  const items = [
+  const items: Filter[] = [
     {
       title: 'All images',
       value: `_type == "sanity.imageAsset"`
@@ -26,7 +26,7 @@ export const getFilters = (currentDocument?: Document) => {
 }
 
 // Sort order dropdown options
-export const ORDERS = [
+export const ORDERS: Filter[] = [
   {
     title: 'Latest first',
     value: '_updatedAt desc'

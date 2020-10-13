@@ -154,6 +154,11 @@ export type SelectedAsset = {
   value: string | File
 }
 
+export type SelectItem = {
+  title: string
+  value: string
+}
+
 export type Span = {
   _key: string
   text: string

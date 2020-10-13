@@ -133,7 +133,7 @@ const Browser = (props: Props) => {
     )
   }
 
-  const handleUpdateBrowserQueryOptions = (field: string, value: string) => {
+  const handleUpdateBrowserQueryOptions = (field: string, value: Filter) => {
     setBrowserQueryOptions(
       produce(draft => {
         draft[field] = value

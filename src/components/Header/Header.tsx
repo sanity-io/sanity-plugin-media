@@ -18,7 +18,7 @@ type Props = {
   filters: Filter[]
   items: Item[]
   onClose?: () => void
-  onUpdateBrowserQueryOptions: (field: string, value: string) => void
+  onUpdateBrowserQueryOptions: (field: string, value: Filter) => void
   onUpdateBrowserView: (view: BrowserView) => void
 }
 
@@ -116,13 +116,10 @@ const Header = (props: Props) => {
         <Box display="flex" height="100%">
           <Select
             items={filters}
-            onChange={(value: string) => onUpdateBrowserQueryOptions('filter', value)}
+            onChange={value => onUpdateBrowserQueryOptions('filter', value)}
           />
 
-          <Select
-            items={ORDERS}
-            onChange={(value: string) => onUpdateBrowserQueryOptions('order', value)}
-          />
+          <Select items={ORDERS} onChange={value => onUpdateBrowserQueryOptions('order', value)} />
         </Box>
 
         {/* Close (large breakpoint) */}

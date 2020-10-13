@@ -3,16 +3,13 @@ import React, {ChangeEvent} from 'react'
 import styled from 'styled-components'
 
 import Box from '../../styled/Box'
-import {BoxProps} from '../../types'
+import {BoxProps, SelectItem} from '../../types'
 
 type Props = BoxProps & {
   bleed?: boolean
   disabled?: boolean
-  items: {
-    title: string
-    value: string
-  }[]
-  onChange: (value: string) => void
+  items: SelectItem[]
+  onChange: (item: SelectItem) => void
 }
 
 const Container = styled(Box)`
@@ -33,8 +30,8 @@ const Select = (props: Props) => {
   const {bleed, disabled, items, onChange, ...boxProps} = props
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value
-    onChange(value)
+    const selectedIndex = e.target.selectedIndex
+    onChange(items[selectedIndex])
   }
 
   return (
