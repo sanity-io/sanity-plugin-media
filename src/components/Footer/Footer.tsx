@@ -36,19 +36,11 @@ const Footer = () => {
     >
       {/* LHS */}
       <Box alignItems="center" display="flex" flex="3 0" height="headerHeight.1" order={[2, 0]}>
-        {onSelect && singlePickedAsset && (
-          <Box display="flex">
-            <Button
-              onClick={() => {
-                onSelect([
-                  {
-                    kind: 'assetDocumentId',
-                    value: singlePickedAsset._id
-                  }
-                ])
-              }}
-            >
-              Select
+        {/* Delete */}
+        {picked.length > 0 && (
+          <Box display="flex" height="100%">
+            <Button onClick={onDeletePicked} variant="danger">
+              <strong>Delete{picked.length > 1 ? ` ${picked.length} images` : ''}</strong>
             </Button>
           </Box>
         )}
@@ -149,10 +141,20 @@ const Footer = () => {
         justifyContent="flex-end"
         order={[2, 2]}
       >
-        {picked.length > 0 && (
-          <Box display="flex" height="100%">
-            <Button onClick={onDeletePicked} variant="danger">
-              <strong>Delete{picked.length > 1 ? ` ${picked.length} images` : ''}</strong>
+        {/* Select */}
+        {onSelect && singlePickedAsset && (
+          <Box display="flex">
+            <Button
+              onClick={() => {
+                onSelect([
+                  {
+                    kind: 'assetDocumentId',
+                    value: singlePickedAsset._id
+                  }
+                ])
+              }}
+            >
+              Select
             </Button>
           </Box>
         )}
