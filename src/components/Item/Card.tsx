@@ -71,6 +71,7 @@ const CardItem = (props: Props) => {
       display="flex"
       justifyContent="center"
       onClick={handleAssetPick}
+      onDoubleClick={selected ? undefined : handleSelect}
       p={2}
       position="relative"
       style={style}
