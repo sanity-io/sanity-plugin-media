@@ -223,7 +223,7 @@ const Browser = (props: Props) => {
         overflow="hidden"
         position="absolute"
         ref={viewRef}
-        top={[currentDocument ? 'headerHeight.0' : 'headerHeight.1', 'headerHeight.1']}
+        top={currentDocument ? 'headerHeight.0' : 'headerHeight.1'}
         width="100%"
       >
         {hasItems && (browserView.value === 'grid' || 'table') && (

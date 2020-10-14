@@ -60,7 +60,7 @@ const Footer = () => {
               alignItems="center"
               display="flex"
               flexDirection="row"
-              ml={[1, 0]}
+              ml={[2, 0]}
               minWidth={0}
               whiteSpace="nowrap"
             >

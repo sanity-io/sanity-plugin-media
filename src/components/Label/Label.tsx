@@ -1,14 +1,15 @@
 import React from 'react'
 
 import Box from '../../styled/Box'
+import {BoxProps} from '../../types'
 
-type Props = {
+type Props = BoxProps & {
   title: string
   type?: string
 }
 
 const Label = (props: Props) => {
-  const {title, type} = props
+  const {title, type, ...boxProps} = props
 
   return (
     <Box
@@ -18,11 +19,11 @@ const Label = (props: Props) => {
       display="flex"
       fontSize={1}
       fontWeight={500}
-      maxWidth="500px"
       mx={2}
       px={2}
       py={1}
       textColor="lighterGray"
+      {...boxProps}
     >
       <Box fontSize={0} mr={2} textColor="lightGray" textTransform="uppercase">
         {type}
