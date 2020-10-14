@@ -21,7 +21,7 @@ const Container = styled(Box)<{variant: ButtonVariant}>`
     variant({
       variants: {
         danger: {
-          '--bg': rgba(props.theme.colors?.red, 0.025),
+          '--bg': 'transparent',
           '--bg-hover': rgba(props.theme.colors?.red, 0.1),
           '--text-color': props.theme.colors?.red
         },
@@ -64,7 +64,8 @@ const Button = (props: Props) => {
       border="none"
       cursor={disabled ? 'default' : 'pointer'}
       display="flex"
-      height="50px"
+      fontSize={1}
+      height="headerRowHeight"
       justifyContent="center"
       onClick={onClick}
       outline="none"
@@ -79,7 +80,7 @@ const Button = (props: Props) => {
           display="flex"
           justifyContent="center"
           pl={children ? 3 : 0}
-          width={children ? 'auto' : '50px'}
+          width={children ? 'auto' : 'headerRowHeight'}
         >
           {icon}
         </Box>

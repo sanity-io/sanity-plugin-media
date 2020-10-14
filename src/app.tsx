@@ -84,6 +84,7 @@ const AssetBrowser = (props: Props) => {
 
             <Box
               bottom={0}
+              fontFamily="default"
               height="auto"
               left={0}
               onMouseUp={handleStopPropagation}

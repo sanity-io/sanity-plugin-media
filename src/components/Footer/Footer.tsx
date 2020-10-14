@@ -27,7 +27,6 @@ const Footer = () => {
       bottom={0}
       display="flex"
       flexWrap="wrap"
-      height={['headerHeight.0', 'headerHeight.1']}
       justifyContent="space-between"
       left={0}
       position="fixed"
@@ -35,19 +34,19 @@ const Footer = () => {
       width="100%"
     >
       {/* LHS */}
-      <Box alignItems="center" display="flex" flex="3 0" height="headerHeight.1" order={[2, 0]}>
+      <Box alignItems="center" display="flex" flex="3 0" height="headerRowHeight" order={[2, 0]}>
         {/* Delete */}
         {picked.length > 0 && (
           <Box display="flex" height="100%">
             <Button onClick={onDeletePicked} variant="danger">
-              <strong>Delete{picked.length > 1 ? ` ${picked.length} images` : ''}</strong>
+              Delete{picked.length > 1 ? ` ${picked.length} images` : ''}
             </Button>
           </Box>
         )}
       </Box>
 
       {/* Center */}
-      <Box height="headerHeight.1" order={[0, 1]} overflow="hidden" width={['100%', 'auto']}>
+      <Box height="headerRowHeight" order={[0, 1]} overflow="hidden" width={['100%', 'auto']}>
         {singlePickedAsset && (
           <Box
             alignItems="center"
@@ -123,7 +122,7 @@ const Footer = () => {
           <Box
             alignItems="center"
             display="flex"
-            height="headerHeight.1"
+            height="headerRowHeight"
             mx={3}
             textColor="lighterGray"
           >
@@ -137,7 +136,7 @@ const Footer = () => {
         alignItems="center"
         display="flex"
         flex="3 0"
-        height="headerHeight.1"
+        height="headerRowHeight"
         justifyContent="flex-end"
         order={[2, 2]}
       >

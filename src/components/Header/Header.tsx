@@ -48,7 +48,6 @@ const Header = (props: Props) => {
     <Box
       alignItems="center"
       bg="darkestGray"
-      height={currentDocument ? 'headerHeight.0' : 'headerHeight.1'}
       justifyContent="space-between"
       overflow="hidden"
       position="absolute"
@@ -62,7 +61,7 @@ const Header = (props: Props) => {
         <Box
           alignItems="center"
           display="flex"
-          height="headerHeight.1"
+          height="headerRowHeight"
           justifyContent="space-between"
           overflow="hidden"
           textAlign="left"
@@ -77,66 +76,81 @@ const Header = (props: Props) => {
 
           {/* Close */}
           {onClose && (
-            <Box bg="darkerGray" flexShrink={0} height="100%">
+            <Box
+              // bg="darkerGray"
+              flexShrink={0}
+              height="100%"
+            >
               <Button icon={IoIosClose({size: 25})} onClick={onClose} />
             </Box>
           )}
         </Box>
       )}
 
-      {/* Row: Filters / Search / Views */}
+      {/* Rows */}
       <Box
-        alignItems="center"
+        alignItems={['flex-start', 'center']}
         display="flex"
-        height="headerHeight.1"
+        flexDirection={['column', 'row']}
+        height={['headerRowHeight2x', 'headerRowHeight']}
         justifyContent="space-between"
         textAlign="right"
-        width={['100%', 'auto']}
+        width="100%"
       >
-        <Box alignItems="center" display="flex" height="100%">
-          {/* Views */}
-          {VIEWS &&
-            VIEWS.map((view, index) => {
-              const selected = browserView.value === view.value
-
-              return (
-                <Button
-                  icon={view.icon({size: 18})}
-                  key={index}
-                  onClick={() => onUpdateBrowserView(view)}
-                  pointerEvents={selected ? 'none' : 'auto'}
-                  variant={selected ? 'default' : 'secondary'}
-                />
-              )
-            })}
-        </Box>
-
+        {/* Search */}
         <Box
           alignItems="center"
           display="flex"
           flexGrow={1}
           height="100%"
-          justifyContent="flex-end"
+          justifyContent="flex-start"
+          width="100%"
         >
-          {/* Search */}
           <SearchInput
+            maxWidth={['none', '340px']}
             mx={2}
             onChange={e => onUpdateBrowserQueryOptions('q', e.currentTarget.value)}
-            placeholder="Search"
             value={browserQueryOptions.q}
           />
+        </Box>
 
-          <Select
-            items={filters}
-            mr={2}
-            onChange={value => onUpdateBrowserQueryOptions('filter', value)}
-          />
+        {/* Views + filters + orders*/}
+        <Box
+          alignItems="center"
+          display="flex"
+          height="100%"
+          justifyContent={['space-between', 'flex-end']}
+          width="100%"
+        >
+          <Box display="flex">
+            {VIEWS &&
+              VIEWS.map((view, index) => {
+                const selected = browserView.value === view.value
 
-          <Select
-            items={ORDERS}
-            mr={2}
-            onChange={value => onUpdateBrowserQueryOptions('order', value)}
-          />
+                return (
+                  <Button
+                    icon={view.icon({size: 18})}
+                    key={index}
+                    onClick={() => onUpdateBrowserView(view)}
+                    pointerEvents={selected ? 'none' : 'auto'}
+                    variant={selected ? 'default' : 'secondary'}
+                  />
+                )
+              })}
+          </Box>
+
+          <Box>
+            <Select
+              items={filters}
+              ml={2}
+              onChange={value => onUpdateBrowserQueryOptions('filter', value)}
+            />
+            <Select
+              items={ORDERS}
+              mx={2}
+              onChange={value => onUpdateBrowserQueryOptions('order', value)}
+            />
+          </Box>
         </Box>
       </Box>
 

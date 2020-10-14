@@ -10,15 +10,14 @@ import {BoxProps} from '../../types'
 
 type Props = BoxProps & {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
-  placeholder?: string
   value?: string
 }
 
 const SearchInput = (props: Props) => {
-  const {onChange, placeholder, value, ...boxProps} = props
+  const {onChange, value, ...boxProps} = props
 
   return (
-    <Box alignItems="center" display="flex" position="relative" {...boxProps}>
+    <Box alignItems="center" display="flex" position="relative" width="100%" {...boxProps}>
       {/* Search icon */}
       <Box left={0} position="absolute" pointerEvents="none" px="9px" textColor="lighterGray">
         <IoIosSearch size={16} />
@@ -26,11 +25,10 @@ const SearchInput = (props: Props) => {
 
       <FormInput
         as="input"
-        maxWidth="240px"
         onChange={onChange}
-        placeholder={placeholder}
+        placeholder="Search"
         pl="32px"
-        // pr="32px"
+        pr="32px"
         type="text"
         width="100%"
         value={value}

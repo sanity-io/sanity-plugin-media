@@ -218,12 +218,15 @@ const Browser = (props: Props) => {
 
       {/* Items */}
       <Box
-        bottom={[hasPicked ? 'headerHeight.0' : 0, hasPicked ? 'headerHeight.1' : 0]}
+        bottom={[hasPicked ? 'headerRowHeight2x' : 0, hasPicked ? 'headerRowHeight' : 0]}
         mx="auto"
         overflow="hidden"
         position="absolute"
         ref={viewRef}
-        top={currentDocument ? 'headerHeight.0' : 'headerHeight.1'}
+        top={[
+          currentDocument ? 'headerRowHeight3x' : 'headerRowHeight2x',
+          currentDocument ? 'headerRowHeight2x' : 'headerRowHeight'
+        ]}
         width="100%"
       >
         {hasItems && (browserView.value === 'grid' || 'table') && (

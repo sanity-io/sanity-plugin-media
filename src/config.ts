@@ -36,11 +36,11 @@ export const ORDERS: Filter[] = [
     value: '_updatedAt asc'
   },
   {
-    title: 'Filename: A ⟶ Z',
+    title: 'File: A to Z',
     value: 'originalFilename asc'
   },
   {
-    title: 'Filename: Z ⟶ A',
+    title: 'File: Z to A',
     value: 'originalFilename desc'
   }
 ]

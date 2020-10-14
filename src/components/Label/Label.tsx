@@ -14,22 +14,33 @@ const Label = (props: Props) => {
   return (
     <Box
       alignItems="center"
-      bg="darkGray"
+      bg="darkerGray"
       borderRadius="2px"
       display="flex"
-      fontSize={1}
-      fontWeight={500}
       mx={2}
       px={2}
       py={1}
       textColor="lighterGray"
       {...boxProps}
     >
-      <Box fontSize={0} mr={2} textColor="lightGray" textTransform="uppercase">
+      <Box
+        fontSize={0}
+        fontWeight={500}
+        lineHeight="1em"
+        mr={1}
+        textColor="lightGray"
+        textTransform="uppercase"
+      >
         {type}
       </Box>
 
-      <Box overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+      <Box
+        fontSize={1}
+        overflow="hidden"
+        lineHeight="1em"
+        textOverflow="ellipsis"
+        whiteSpace="nowrap"
+      >
         {title}
       </Box>
     </Box>

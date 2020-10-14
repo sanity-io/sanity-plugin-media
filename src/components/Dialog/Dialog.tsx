@@ -50,7 +50,7 @@ const Dialog = (props: Props) => {
         bg="darkestGray"
         fontSize={1}
         display="flex"
-        height="headerHeight.1"
+        height="headerRowHeight"
         justifyContent="space-between"
         pl={3}
         textColor="lighterGray"
@@ -119,9 +119,8 @@ const Dialog = (props: Props) => {
       <Box
         alignItems="center"
         bg="darkestGray"
-        fontSize={1}
         display="flex"
-        height="headerHeight.1"
+        height="headerRowHeight"
         justifyContent="space-between"
       >
         {actions.map((action, index) => {

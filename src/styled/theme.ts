@@ -1,11 +1,17 @@
 import {DefaultTheme, createGlobalStyle} from 'styled-components'
 
-const headerHeight = ['100px', '50px']
+const HEADER_ROW_HEIGHT = 50 // px
+
+const headerRowHeight = `${HEADER_ROW_HEIGHT}px`
+const headerRowHeight2x = `${HEADER_ROW_HEIGHT * 2}px`
+const headerRowHeight3x = `${HEADER_ROW_HEIGHT * 3}px`
 const tableHeaderHeight = '34px'
 const tableRowHeight = ['115px', '100px']
 
 const sizes: string[] & Record<string, any> = []
-sizes.headerHeight = headerHeight
+sizes.headerRowHeight = headerRowHeight
+sizes.headerRowHeight2x = headerRowHeight2x
+sizes.headerRowHeight3x = headerRowHeight3x
 sizes.tableHeaderHeight = tableHeaderHeight
 sizes.tableRowHeight = tableRowHeight
 
@@ -17,7 +23,9 @@ const space: string[] & Record<string, any> = [
   '2.4rem',
   '4.8rem'
 ]
-space.headerHeight = headerHeight
+space.headerRowHeight = headerRowHeight
+space.headerRowHeight2x = headerRowHeight2x
+space.headerRowHeight3x = headerRowHeight3x
 space.tableHeaderHeight = tableHeaderHeight
 space.tableRowHeight = tableRowHeight
 
@@ -46,8 +54,10 @@ const theme: DefaultTheme = {
     tableSmall: '8rem auto 1.5rem',
     tableLarge: '6rem auto 5.5rem 2.75rem 3.5rem 8.5rem 2rem'
   },
-  // Perfect fourth / 1.333
-  fontSizes: ['0.563rem', '0.75rem', '1.0rem', '1.333rem'],
+  fonts: {
+    default: `-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Droid Sans, Helvetica Neue, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif`
+  },
+  fontSizes: ['10px', '12px', '14px'],
   sizes,
   space,
   tableRowHeight,
@@ -97,6 +107,15 @@ export const GlobalStyle = createGlobalStyle`
       border: none;
       border-radius: 0px;
     }
+  }
+
+  /* Revert normalize.css' font-family changes */
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    font-family: inherit;
   }
 `
 
