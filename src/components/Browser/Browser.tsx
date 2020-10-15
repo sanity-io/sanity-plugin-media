@@ -6,8 +6,6 @@ import InfiniteLoader from 'react-window-infinite-loader'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 import groq from 'groq'
 
-import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
-import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import Box from '../../styled/Box'
 import {Asset, Document} from '../../types'
 import Footer from '../Footer/Footer'
@@ -15,7 +13,8 @@ import Header from '../Header/Header'
 import CardView from '../View/Card'
 import TableView from '../View/Table'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {browserSetFetchNextPage} from '../../modules/browser'
+import {browserFetchNextPage} from '../../modules/browser'
+import {assetsFetch} from '../../modules/assets'
 
 const PER_PAGE = 50
 
@@ -36,23 +35,20 @@ const Browser = (props: Props) => {
   // Ref used to scroll to the top of the page on filter changes
   const viewRef = useRef<HTMLDivElement | null>(null)
 
-  const {onFetch} = useAssetBrowserActions()
-  const {
-    fetchCount,
-    fetching,
-    items
-    // totalCount
-  } = useAssetBrowserState()
-
   // Redux
   const dispatch = useDispatch()
+  const {
+    allIds,
+    byIds,
+    fetchCount,
+    fetching
+    // totalCount
+  } = useTypedSelector(state => state.assets)
+  const {filter, order, pageIndex, replaceOnFetch, searchQuery, view} = useTypedSelector(
+    state => state.browser
+  )
 
-  const view = useTypedSelector(state => state.browser.view)
-  const filter = useTypedSelector(state => state.browser.filter)
-  const order = useTypedSelector(state => state.browser.order)
-  const searchQuery = useTypedSelector(state => state.browser.searchQuery)
-  const pageIndex = useTypedSelector(state => state.browser.pageIndex)
-  const replaceOnFetch = useTypedSelector(state => state.browser.replaceOnFetch)
+  const items = allIds.map(id => byIds[id])
 
   const orientationRegExp = /orientation:(landscape|square|portrait)/i
   const extensionRegExp = /extension:(.+\s?)/i
@@ -110,10 +106,11 @@ const Browser = (props: Props) => {
       filterResult = filter.value
     }
 
-    onFetch({
-      filter: filterResult,
-      ...(currentDocumentId ? {params: {documentId: currentDocumentId}} : {}),
-      projections: groq`{
+    dispatch(
+      assetsFetch({
+        filter: filterResult,
+        ...(currentDocumentId ? {params: {documentId: currentDocumentId}} : {}),
+        projections: groq`{
         _id,
         _updatedAt,
         extension,
@@ -125,10 +122,11 @@ const Browser = (props: Props) => {
         size,
         url
       }`,
-      replace,
-      selector,
-      sort
-    })
+        replace,
+        selector,
+        sort
+      })
+    )
   }
 
   const scrollToTop = () => {
@@ -171,7 +169,7 @@ const Browser = (props: Props) => {
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const handleLoadMoreItems = () => {
     if (!fetching) {
-      dispatch(browserSetFetchNextPage())
+      dispatch(browserFetchNextPage())
     }
     return new Promise(() => {})
   }

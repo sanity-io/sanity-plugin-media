@@ -2,6 +2,7 @@ import produce from 'immer'
 import {ofType} from 'redux-observable'
 import {of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
+
 import {AssetsActionTypes} from '../assets'
 import {DialogActions, DialogReducerState} from './types'
 import {Asset} from '../../types'

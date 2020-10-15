@@ -1,7 +1,10 @@
 import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {IoIosAlert, IoIosCheckmarkCircle, IoIosCheckmarkCircleOutline} from 'react-icons/io'
+import {useDispatch} from 'react-redux'
 
-import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
+import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
+import {assetsPick, assetsPickClear} from '../../modules/assets'
+import {dialogShowConflicts} from '../../modules/dialog'
 import Box from '../../styled/Box'
 import Image from '../../styled/Image'
 import {Item} from '../../types'
@@ -21,13 +24,16 @@ type Props = {
 const CardItem = (props: Props) => {
   const {focused, item, selected, shiftPressed, style} = props
 
+  // Redux
+  const dispatch = useDispatch()
+
   const asset = item?.asset
   const errorCode = item?.errorCode
   const isOpaque = item?.asset?.metadata?.isOpaque
   const picked = item?.picked
   const updating = item?.updating
 
-  const {onDialogShowConflicts, onPick, onPickClear, onSelect} = useAssetBrowserActions()
+  const {onSelect} = useAssetSourceActions()
 
   // Short circuit if no asset is available
   if (!asset) {
@@ -37,16 +43,16 @@ const CardItem = (props: Props) => {
   // Unpick all and pick current on click. If the shift key is held, toggle picked state only.
   const handleAssetPick = () => {
     if (!shiftPressed) {
-      onPickClear()
-      onPick(asset._id, true)
+      dispatch(assetsPickClear())
+      dispatch(assetsPick(asset._id, true))
     } else {
-      onPick(asset._id, !picked)
+      dispatch(assetsPick(asset._id, !picked))
     }
   }
 
   const handleDialogConflicts = (e: MouseEvent) => {
     e.stopPropagation()
-    onDialogShowConflicts(asset)
+    dispatch(dialogShowConflicts(asset))
   }
 
   const handleSelect = () => {

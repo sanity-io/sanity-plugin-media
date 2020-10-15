@@ -1,9 +1,7 @@
 import React, {MouseEvent, useLayoutEffect, useEffect} from 'react'
 import {ThemeProvider} from 'styled-components'
 
-import theme, {GlobalStyle} from './styled/theme'
-import {AssetBrowserDispatchProvider} from './contexts/AssetBrowserDispatchContext'
-import {AssetBrowserStateProvider} from './contexts/AssetBrowserStateContext'
+import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContext'
 import withRedux from './helpers/withRedux'
 import Browser from './components/Browser/Browser'
 import Dialogs from './components/Dialogs/Dialogs'
@@ -11,6 +9,7 @@ import {Portal} from './components/Portal/Portal'
 import Snackbars from './components/Snackbars/Snackbars'
 import useKeyPress from './hooks/useKeyPress'
 import Box from './styled/Box'
+import theme, {GlobalStyle} from './styled/theme'
 import {Asset, Document} from './types'
 
 type Props = {
@@ -77,28 +76,26 @@ const AssetBrowser = (props: Props) => {
   return (
     <ThemeProvider theme={theme}>
       <AssetBrowserDispatchProvider onSelect={onSelect}>
-        <AssetBrowserStateProvider>
-          <Portal>
-            {/* Global styles */}
-            <GlobalStyle />
+        <Portal>
+          {/* Global styles */}
+          <GlobalStyle />
 
-            <Box
-              bottom={0}
-              fontFamily="default"
-              height="auto"
-              left={0}
-              onMouseUp={handleStopPropagation}
-              position="fixed"
-              width="100%"
-              top={tool ? HEADER_HEIGHT : 0}
-              zIndex={tool ? 'appTool' : 'appInline'}
-            >
-              <Snackbars />
-              <Dialogs />
-              <Browser document={document} onClose={onClose} selectedAssets={selectedAssets} />
-            </Box>
-          </Portal>
-        </AssetBrowserStateProvider>
+          <Box
+            bottom={0}
+            fontFamily="default"
+            height="auto"
+            left={0}
+            onMouseUp={handleStopPropagation}
+            position="fixed"
+            width="100%"
+            top={tool ? HEADER_HEIGHT : 0}
+            zIndex={tool ? 'appTool' : 'appInline'}
+          >
+            <Snackbars />
+            <Dialogs />
+            <Browser document={document} onClose={onClose} selectedAssets={selectedAssets} />
+          </Box>
+        </Portal>
       </AssetBrowserDispatchProvider>
     </ThemeProvider>
   )

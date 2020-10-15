@@ -2,8 +2,10 @@ import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {IoIosAlert, IoMdCheckmarkCircle} from 'react-icons/io'
+import {useDispatch} from 'react-redux'
 
-import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
+import {assetsPick, assetsPickClear} from '../../modules/assets'
+import {dialogShowConflicts} from '../../modules/dialog'
 import Image from '../../styled/Image'
 import Box from '../../styled/Box'
 import Button from '../Button/Button'
@@ -21,7 +23,9 @@ type Props = {
 
 const TableItem = (props: Props) => {
   const {item, selected, shiftPressed, style} = props
-  const {onDialogShowConflicts, onPick, onPickClear} = useAssetBrowserActions()
+
+  // Redux
+  const dispatch = useDispatch()
 
   const asset = item?.asset
   const dimensions = item?.asset?.metadata?.dimensions
@@ -37,16 +41,16 @@ const TableItem = (props: Props) => {
 
   const handleAssetPick = () => {
     if (!shiftPressed) {
-      onPickClear()
-      onPick(asset._id, true)
+      dispatch(assetsPickClear())
+      dispatch(assetsPick(asset._id, true))
     } else {
-      onPick(asset._id, !picked)
+      dispatch(assetsPick(asset._id, !picked))
     }
   }
 
   const handleDialogConflicts = (e: MouseEvent) => {
     e.stopPropagation()
-    onDialogShowConflicts(asset)
+    dispatch(dialogShowConflicts(asset))
   }
 
   const cellOpacity = updating ? 0.5 : 1

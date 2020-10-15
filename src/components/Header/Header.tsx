@@ -3,7 +3,6 @@ import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
 import {IoIosClose} from 'react-icons/io'
 import {useDispatch} from 'react-redux'
 
-import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS} from '../../config'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {
@@ -32,15 +31,11 @@ const Header = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
+  const fetching = useTypedSelector(state => state.assets.fetching)
   const searchQuery = useTypedSelector(state => state.browser.searchQuery)
   const view = useTypedSelector(state => state.browser.view)
   const filters = useTypedSelector(state => state.browser.filters)
   const pageIndex = useTypedSelector(state => state.browser.pageIndex)
-
-  const {
-    fetching
-    // totalCount
-  } = useAssetBrowserState()
 
   // Try and infer title from `name` and `title` fields, in that order.
   // Convert blocks to plain text and trim extra whitespace.

@@ -15,8 +15,8 @@ export type BrowserReducerState = {
 
 // Actions
 
-export type BrowserSetFetchNextPageAction = {
-  type: BrowserActionTypes.SET_FETCH_NEXT_PAGE
+export type BrowserFetchNextPageAction = {
+  type: BrowserActionTypes.FETCH_NEXT_PAGE
 }
 
 export type BrowserSetFilterAction = {
@@ -50,7 +50,7 @@ export type BrowserSetViewAction = {
 // All actions
 
 export type BrowserActions =
-  | BrowserSetFetchNextPageAction
+  | BrowserFetchNextPageAction
   | BrowserSetFilterAction
   | BrowserSetOrderAction
   | BrowserSetSearchQueryAction

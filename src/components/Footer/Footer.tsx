@@ -1,16 +1,24 @@
 import filesize from 'filesize'
 import React from 'react'
 import {IoIosDownload, IoIosLink} from 'react-icons/io'
+import {useDispatch} from 'react-redux'
 
-import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
-import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
+import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
+import useTypedSelector from '../../hooks/useTypedSelector'
+import {assetsDeletePicked} from '../../modules/assets'
+import {dialogShowRefs} from '../../modules/dialog'
 import Box from '../../styled/Box'
 import {Asset} from '../../types'
 import Button from '../Button/Button'
 
 const Footer = () => {
-  const {onDeletePicked, onDialogShowRefs, onSelect} = useAssetBrowserActions()
-  const {items} = useAssetBrowserState()
+  const {onSelect} = useAssetSourceActions()
+
+  // Redux
+  const dispatch = useDispatch()
+  const byIds = useTypedSelector(state => state.assets.byIds)
+
+  const items = byIds ? Object.values(byIds) : []
 
   const picked = items && items.filter(item => item.picked)
   const singlePickedAsset: Asset | undefined =
@@ -38,7 +46,7 @@ const Footer = () => {
         {/* Delete */}
         {picked.length > 0 && (
           <Box display="flex" height="100%">
-            <Button onClick={onDeletePicked} variant="danger">
+            <Button onClick={() => dispatch(assetsDeletePicked())} variant="danger">
               Delete{picked.length > 1 ? ` ${picked.length} images` : ''}
             </Button>
           </Box>
@@ -107,7 +115,7 @@ const Footer = () => {
               {/* Show references */}
               <Button
                 icon={IoIosLink({size: 16})}
-                onClick={onDialogShowRefs.bind(null, singlePickedAsset)}
+                onClick={() => dispatch(dialogShowRefs(singlePickedAsset))}
               />
               {/* Download original */}
               <Button

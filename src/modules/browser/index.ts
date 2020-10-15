@@ -1,4 +1,6 @@
 import produce from 'immer'
+import {ofType} from 'redux-observable'
+import {ignoreElements, tap} from 'rxjs/operators'
 
 import {ORDERS} from '../../config'
 import {BrowserFilter, BrowserOrder, BrowserView} from '../../types'
@@ -9,8 +11,7 @@ import {BrowserActions, BrowserReducerState} from './types'
  ***********/
 
 export enum BrowserActionTypes {
-  // TODO: don't use SET_FETCH_NEXT_PAGE
-  SET_FETCH_NEXT_PAGE = 'BROWSER_SET_FETCH_NEXT_PAGE',
+  FETCH_NEXT_PAGE = 'BROWSER_FETCH_NEXT_PAGE',
   SET_FILTER = 'BROWSER_SET_FILTER',
   SET_ORDER = 'BROWSER_SET_ORDER',
   SET_SEARCH_QUERY = 'BROWSER_SET_SEARCH_QUERY',
@@ -38,7 +39,7 @@ export default function browserReducer(
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
-      case BrowserActionTypes.SET_FETCH_NEXT_PAGE:
+      case BrowserActionTypes.FETCH_NEXT_PAGE:
         draft.pageIndex += 1
         draft.replaceOnFetch = false
         break
@@ -69,18 +70,12 @@ export default function browserReducer(
  *******************/
 
 // TODO: use epic
-/**
- * Fetch next page
- */
-
-export const browserSetFetchNextPage = () => ({
-  type: BrowserActionTypes.SET_FETCH_NEXT_PAGE
+// Fetch next page
+export const browserFetchNextPage = () => ({
+  type: BrowserActionTypes.FETCH_NEXT_PAGE
 })
 
-/**
- * Set view mode
- */
-
+// Set view mode
 export const browserSetView = (view: BrowserView) => ({
   payload: {
     view
@@ -88,10 +83,7 @@ export const browserSetView = (view: BrowserView) => ({
   type: BrowserActionTypes.SET_VIEW
 })
 
-/**
- * Set filter
- */
-
+// Set filter
 export const browserSetFilter = (filter: BrowserFilter) => ({
   payload: {
     filter
@@ -99,10 +91,7 @@ export const browserSetFilter = (filter: BrowserFilter) => ({
   type: BrowserActionTypes.SET_FILTER
 })
 
-/**
- * Set order
- */
-
+// Set order
 export const browserSetOrder = (order: BrowserOrder) => ({
   payload: {
     order
@@ -110,13 +99,36 @@ export const browserSetOrder = (order: BrowserOrder) => ({
   type: BrowserActionTypes.SET_ORDER
 })
 
-/**
- * Set search query
- */
-
+// Set search query
 export const browserSetSearchQuery = (searchQuery: string) => ({
   payload: {
     searchQuery
   },
   type: BrowserActionTypes.SET_SEARCH_QUERY
 })
+
+/*********
+ * EPICS *
+ *********/
+
+export const browserFetchNextPageEpic = (action$: any) =>
+  action$.pipe(
+    ofType(BrowserActionTypes.FETCH_NEXT_PAGE),
+    tap(() => {
+      // console.log('fetch next page')
+    }),
+    ignoreElements()
+  )
+
+export const browserFetchPageEpic = (action$: any) =>
+  action$.pipe(
+    ofType(
+      BrowserActionTypes.SET_ORDER,
+      BrowserActionTypes.SET_FILTER,
+      BrowserActionTypes.SET_SEARCH_QUERY
+    ),
+    tap(() => {
+      // console.log('fetch from beginning')
+    }),
+    ignoreElements()
+  )
