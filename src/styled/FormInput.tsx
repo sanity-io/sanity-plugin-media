@@ -26,6 +26,11 @@ const FormInput = styled(Box)`
   ::placeholder {
     color: ${props => props.theme.colors.gray};
   }
+
+  ::selection {
+    background: ${props => props.theme.colors.black};
+    color: ${props => props.theme.colors.white};
+  }
 `
 
 FormInput.defaultProps = {
