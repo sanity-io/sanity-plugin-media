@@ -1,5 +1,12 @@
 import {AssetsActionTypes} from './index'
-import {Asset, Item, DeleteHandleTarget} from '../../types'
+import {
+  Asset,
+  BrowserFilter,
+  BrowserOrder,
+  BrowserView,
+  Item,
+  DeleteHandleTarget
+} from '../../types'
 
 // Reducer
 
@@ -9,6 +16,13 @@ export type AssetsReducerState = {
   fetchCount: number
   fetching: boolean
   fetchingError: any
+  filter?: BrowserFilter
+  filters?: BrowserFilter[]
+  order: BrowserOrder
+  pageIndex: number
+  replaceOnFetch: boolean
+  searchQuery?: string
+  view: BrowserView
   // totalCount: number
 }
 
@@ -65,6 +79,10 @@ export type AssetsFetchRequestAction = {
   type: AssetsActionTypes.FETCH_REQUEST
 }
 
+export type AssetsFetchNextPageAction = {
+  type: AssetsActionTypes.FETCH_NEXT_PAGE
+}
+
 export type AssetsPickAction = {
   payload: {
     assetId: string
@@ -81,6 +99,34 @@ export type AssetsPickClearAction = {
   type: AssetsActionTypes.PICK_CLEAR
 }
 
+export type AssetsSetFilterAction = {
+  payload: {
+    filter: BrowserFilter
+  }
+  type: AssetsActionTypes.SET_FILTER
+}
+
+export type AssetsSetOrderAction = {
+  payload: {
+    order: BrowserFilter
+  }
+  type: AssetsActionTypes.SET_ORDER
+}
+
+export type AssetsSetSearchQueryAction = {
+  payload: {
+    searchQuery: string
+  }
+  type: AssetsActionTypes.SET_SEARCH_QUERY
+}
+
+export type AssetsSetViewAction = {
+  payload: {
+    view: BrowserView
+  }
+  type: AssetsActionTypes.SET_VIEW
+}
+
 // All actions
 
 export type AssetsActions =
@@ -89,7 +135,12 @@ export type AssetsActions =
   | AssetsDeleteRequestAction
   | AssetsFetchCompleteAction
   | AssetsFetchErrorAction
+  | AssetsFetchNextPageAction
   | AssetsFetchRequestAction
   | AssetsPickAction
   | AssetsPickAllAction
   | AssetsPickClearAction
+  | AssetsSetFilterAction
+  | AssetsSetOrderAction
+  | AssetsSetSearchQueryAction
+  | AssetsSetViewAction

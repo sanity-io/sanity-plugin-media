@@ -1,9 +1,19 @@
+import groq from 'groq'
 import produce from 'immer'
 import {ofType, ActionsObservable} from 'redux-observable'
 import {from, of, empty} from 'rxjs'
 import {catchError, mergeAll, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
 import client from 'part:@sanity/base/client'
-import {Asset, DeleteHandleTarget, FetchOptions} from '../../types'
+
+import {ORDERS} from '../../config'
+import {
+  Asset,
+  BrowserOrder,
+  BrowserFilter,
+  BrowserView,
+  DeleteHandleTarget,
+  FetchOptions
+} from '../../types'
 import {
   AssetsActions,
   AssetsReducerState,
@@ -11,7 +21,6 @@ import {
   AssetsDeleteRequestAction
   // AssetsDeletePickedAction
 } from './types'
-import groq from 'groq'
 // import {RootReducerState} from '../types'
 
 /***********
@@ -25,10 +34,16 @@ export enum AssetsActionTypes {
   DELETE_REQUEST = 'ASSETS_DELETE_REQUEST',
   FETCH_COMPLETE = 'ASSETS_FETCH_COMPLETE',
   FETCH_ERROR = 'ASSETS_FETCH_ERROR',
+  // TODO: rename?
+  FETCH_NEXT_PAGE = 'ASSETS_FETCH_NEXT_PAGE',
   FETCH_REQUEST = 'ASSETS_FETCH_REQUEST',
   PICK = 'ASSETS_PICK',
   PICK_ALL = 'ASSETS_PICK_ALL',
   PICK_CLEAR = 'ASSETS_PICK_CLEAR',
+  SET_FILTER = 'ASSETS_SET_FILTER',
+  SET_ORDER = 'ASSETS_SET_ORDER',
+  SET_SEARCH_QUERY = 'ASSETS_SET_SEARCH_QUERY',
+  SET_VIEW = 'ASSETS_SET_VIEW',
   UNCAUGHT_EXCEPTION = 'ASSETS_UNCAUGHT_EXCEPTION'
 }
 
@@ -53,17 +68,24 @@ export enum AssetsActionTypes {
  * `byIds` is an object literal that contains all normalised assets (with asset IDs as keys)
  */
 
-const INITIAL_STATE = {
+export const initialState: AssetsReducerState = {
   allIds: [],
   byIds: {},
   fetchCount: -1,
   fetching: false,
-  fetchingError: null
+  fetchingError: null,
+  filter: undefined,
+  filters: undefined,
+  order: ORDERS[0],
+  pageIndex: 0,
+  replaceOnFetch: false,
+  searchQuery: '',
+  view: 'grid'
   // totalCount: -1
 }
 
 export default function assetsReducerState(
-  state: AssetsReducerState = INITIAL_STATE,
+  state: AssetsReducerState = initialState,
   action: AssetsActions
 ) {
   return produce(state, draft => {
@@ -186,6 +208,29 @@ export default function assetsReducerState(
         Object.keys(draft.byIds).forEach(key => {
           draft.byIds[key].picked = false
         })
+        break
+
+      case AssetsActionTypes.FETCH_NEXT_PAGE:
+        draft.pageIndex += 1
+        draft.replaceOnFetch = false
+        break
+      case AssetsActionTypes.SET_FILTER:
+        draft.filter = action.payload?.filter
+        draft.pageIndex = 0
+        draft.replaceOnFetch = true
+        break
+      case AssetsActionTypes.SET_ORDER:
+        draft.order = action.payload?.order
+        draft.pageIndex = 0
+        draft.replaceOnFetch = true
+        break
+      case AssetsActionTypes.SET_SEARCH_QUERY:
+        draft.searchQuery = action.payload?.searchQuery
+        draft.pageIndex = 0
+        draft.replaceOnFetch = true
+        break
+      case AssetsActionTypes.SET_VIEW:
+        draft.view = action.payload?.view
         break
     }
   })
@@ -311,6 +356,44 @@ export const assetsPickClear = () => ({
   type: AssetsActionTypes.PICK_CLEAR
 })
 
+// TODO: use epic
+// Fetch next page
+export const assetsFetchNextPage = () => ({
+  type: AssetsActionTypes.FETCH_NEXT_PAGE
+})
+
+// Set view mode
+export const assetsSetView = (view: BrowserView) => ({
+  payload: {
+    view
+  },
+  type: AssetsActionTypes.SET_VIEW
+})
+
+// Set filter
+export const assetsSetFilter = (filter: BrowserFilter) => ({
+  payload: {
+    filter
+  },
+  type: AssetsActionTypes.SET_FILTER
+})
+
+// Set order
+export const assetsSetOrder = (order: BrowserOrder) => ({
+  payload: {
+    order
+  },
+  type: AssetsActionTypes.SET_ORDER
+})
+
+// Set search query
+export const assetsSetSearchQuery = (searchQuery: string) => ({
+  payload: {
+    searchQuery
+  },
+  type: AssetsActionTypes.SET_SEARCH_QUERY
+})
+
 /*********
  * EPICS *
  *********/
@@ -396,3 +479,27 @@ export const assetsFetchEpic = (action$: any) =>
       )
     })
   )
+
+/*
+export const browserFetchNextPageEpic = (action$: any) =>
+  action$.pipe(
+    ofType(BrowserActionTypes.FETCH_NEXT_PAGE),
+    tap(() => {
+      // console.log('fetch next page')
+    }),
+    ignoreElements()
+  )
+
+export const browserFetchPageEpic = (action$: any) =>
+  action$.pipe(
+    ofType(
+      BrowserActionTypes.SET_ORDER,
+      BrowserActionTypes.SET_FILTER,
+      BrowserActionTypes.SET_SEARCH_QUERY
+    ),
+    tap(() => {
+      // console.log('fetch from beginning')
+    }),
+    ignoreElements()
+  )
+  */

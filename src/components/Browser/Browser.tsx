@@ -13,8 +13,7 @@ import Header from '../Header/Header'
 import CardView from '../View/Card'
 import TableView from '../View/Table'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {browserFetchNextPage} from '../../modules/browser'
-import {assetsFetch} from '../../modules/assets'
+import {assetsFetch, assetsFetchNextPage} from '../../modules/assets'
 
 const PER_PAGE = 50
 
@@ -41,12 +40,15 @@ const Browser = (props: Props) => {
     allIds,
     byIds,
     fetchCount,
-    fetching
+    fetching,
+    filter,
+    order,
+    pageIndex,
+    replaceOnFetch,
+    searchQuery,
+    view
     // totalCount
   } = useTypedSelector(state => state.assets)
-  const {filter, order, pageIndex, replaceOnFetch, searchQuery, view} = useTypedSelector(
-    state => state.browser
-  )
 
   const items = allIds.map(id => byIds[id])
 
@@ -169,7 +171,7 @@ const Browser = (props: Props) => {
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const handleLoadMoreItems = () => {
     if (!fetching) {
-      dispatch(browserFetchNextPage())
+      dispatch(assetsFetchNextPage())
     }
     return new Promise(() => {})
   }

@@ -6,11 +6,11 @@ import {useDispatch} from 'react-redux'
 import {ORDERS} from '../../config'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {
-  browserSetFilter,
-  browserSetOrder,
-  browserSetSearchQuery,
-  browserSetView
-} from '../../modules/browser'
+  assetsSetFilter,
+  assetsSetOrder,
+  assetsSetSearchQuery,
+  assetsSetView
+} from '../../modules/assets'
 import Box from '../../styled/Box'
 import blocksToText from '../../util/blocksToText'
 import {Document, Item} from '../../types'
@@ -32,10 +32,10 @@ const Header = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
-  const searchQuery = useTypedSelector(state => state.browser.searchQuery)
-  const view = useTypedSelector(state => state.browser.view)
-  const filters = useTypedSelector(state => state.browser.filters)
-  const pageIndex = useTypedSelector(state => state.browser.pageIndex)
+  const searchQuery = useTypedSelector(state => state.assets.searchQuery)
+  const view = useTypedSelector(state => state.assets.view)
+  const filters = useTypedSelector(state => state.assets.filters)
+  const pageIndex = useTypedSelector(state => state.assets.pageIndex)
 
   // Try and infer title from `name` and `title` fields, in that order.
   // Convert blocks to plain text and trim extra whitespace.
@@ -107,7 +107,7 @@ const Header = (props: Props) => {
           <SearchInput
             maxWidth={['none', '340px']}
             mx={2}
-            onChange={e => dispatch(browserSetSearchQuery(e.currentTarget.value))}
+            onChange={e => dispatch(assetsSetSearchQuery(e.currentTarget.value))}
             value={searchQuery}
           />
         </Box>
@@ -123,14 +123,14 @@ const Header = (props: Props) => {
           <Box display="flex">
             <Button
               icon={AiFillAppstore({size: 18})}
-              onClick={() => dispatch(browserSetView('grid'))}
+              onClick={() => dispatch(assetsSetView('grid'))}
               pointerEvents={view === 'grid' ? 'none' : 'auto'}
               variant={view === 'grid' ? 'default' : 'secondary'}
             />
 
             <Button
               icon={AiOutlineBars({size: 18})}
-              onClick={() => dispatch(browserSetView('table'))}
+              onClick={() => dispatch(assetsSetView('table'))}
               pointerEvents={view === 'table' ? 'none' : 'auto'}
               variant={view === 'table' ? 'default' : 'secondary'}
             />
@@ -138,13 +138,9 @@ const Header = (props: Props) => {
 
           <Box>
             {filters && (
-              <Select
-                items={filters}
-                ml={2}
-                onChange={value => dispatch(browserSetFilter(value))}
-              />
+              <Select items={filters} ml={2} onChange={value => dispatch(assetsSetFilter(value))} />
             )}
-            <Select items={ORDERS} mx={2} onChange={value => dispatch(browserSetOrder(value))} />
+            <Select items={ORDERS} mx={2} onChange={value => dispatch(assetsSetOrder(value))} />
           </Box>
         </Box>
       </Box>

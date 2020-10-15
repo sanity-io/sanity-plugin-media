@@ -6,7 +6,7 @@ import {createEpicMiddleware} from 'redux-observable'
 
 import {getFilters} from '../config'
 import {rootEpic, rootReducer} from '../modules'
-import {initialState as browserInitialState} from '../modules/browser'
+import {initialState as assetsInitialState} from '../modules/assets'
 
 function withRedux<T>(ComposedComponent: ComponentType<T>) {
   const displayName = ComposedComponent.displayName || ComposedComponent.name || 'Component'
@@ -30,8 +30,8 @@ function withRedux<T>(ComposedComponent: ComponentType<T>) {
       this.store = createStore(
         rootReducer,
         {
-          browser: {
-            ...browserInitialState,
+          assets: {
+            ...assetsInitialState,
             filter: filters[0],
             filters
           }
