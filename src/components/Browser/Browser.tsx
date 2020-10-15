@@ -8,13 +8,14 @@ import groq from 'groq'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
-import {ORDERS, VIEWS, getFilters} from '../../config'
+import {ORDERS, getFilters} from '../../config'
 import Box from '../../styled/Box'
-import {Asset, BrowserQueryOptions, BrowserView, Document, Filter} from '../../types'
+import {Asset, BrowserQueryOptions, Document, Filter} from '../../types'
 import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import CardView from '../View/Card'
 import TableView from '../View/Table'
+import useTypedSelector from '../../hooks/useTypedSelector'
 
 const PER_PAGE = 50
 
@@ -52,7 +53,8 @@ const Browser = (props: Props) => {
     pageIndex: 0,
     replaceOnFetch: false
   })
-  const [browserView, setBrowserView] = useState<BrowserView>(VIEWS[0])
+
+  const view = useTypedSelector(state => state.browser.view)
 
   const orientationRegExp = /orientation:(landscape|square|portrait)/i
   const extensionRegExp = /extension:(.+\s?)/i
@@ -151,7 +153,7 @@ const Browser = (props: Props) => {
   // Scroll to top when browser view has changed
   useEffect(() => {
     scrollToTop()
-  }, [browserView])
+  }, [view])
 
   // NOTE: The below is a workaround and can be inaccurate in certain cases.
   // e.g. if PER_PAGE is 10 and you have fetched 10 items, `hasMore` will still be true
@@ -181,10 +183,6 @@ const Browser = (props: Props) => {
     )
   }
 
-  const handleUpdateBrowserView = (view: BrowserView) => {
-    setBrowserView(view)
-  }
-
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = (index: number) => {
     return index < items.length
@@ -207,13 +205,11 @@ const Browser = (props: Props) => {
       {/* Header */}
       <Header
         browserQueryOptions={browserQueryOptions}
-        browserView={browserView}
         currentDocument={currentDocument}
         filters={filters}
         items={items}
         onClose={onClose}
         onUpdateBrowserQueryOptions={handleUpdateBrowserQueryOptions}
-        onUpdateBrowserView={handleUpdateBrowserView}
       />
 
       {/* Items */}
@@ -229,7 +225,7 @@ const Browser = (props: Props) => {
         ]}
         width="100%"
       >
-        {hasItems && (browserView.value === 'grid' || 'table') && (
+        {hasItems && (view === 'grid' || 'table') && (
           <AutoSizer>
             {({height, width}) => {
               return (
@@ -240,7 +236,7 @@ const Browser = (props: Props) => {
                 >
                   {({onItemsRendered, ref}: InfiniteLoaderRenderProps) => {
                     // View: Table
-                    if (browserView.value === 'table') {
+                    if (view === 'table') {
                       return (
                         <TableView
                           height={height}
@@ -255,7 +251,7 @@ const Browser = (props: Props) => {
                     }
 
                     // View: Grid
-                    if (browserView.value === 'grid') {
+                    if (view === 'grid') {
                       // The `onItemsRendered` method signature for `react-window` grids is different and
                       // requires an adaptor, below.
                       // Source: https://github.com/bvaughn/react-window-infinite-loader/issues/3

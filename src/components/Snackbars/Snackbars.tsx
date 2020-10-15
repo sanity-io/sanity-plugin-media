@@ -1,13 +1,10 @@
-import React from 'react'
-import {useSelector as useReduxSelector, TypedUseSelectorHook} from 'react-redux'
 import Snackbar from 'part:@sanity/components/snackbar/default'
+import React from 'react'
 
-import {RootReducerState} from '../../modules/types'
+import useTypedSelector from '../../hooks/useTypedSelector'
 
 const Snackbars = () => {
-  const useSelector: TypedUseSelectorHook<RootReducerState> = useReduxSelector
-
-  const items = useSelector(state => state.snackbars.items)
+  const items = useTypedSelector(state => state.snackbars.items)
 
   return (
     <div>

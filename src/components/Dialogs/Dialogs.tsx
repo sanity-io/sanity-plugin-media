@@ -1,16 +1,13 @@
 import React from 'react'
-import {useSelector as useReduxSelector, TypedUseSelectorHook} from 'react-redux'
 
-import {RootReducerState} from '../../modules/types'
+import useTypedSelector from '../../hooks/useTypedSelector'
 import Box from '../../styled/Box'
 import RefsDialog from '../Dialog/Refs'
 import ConflictsDialog from '../Dialog/Conflicts'
 
 const Dialogs = () => {
-  const useSelector: TypedUseSelectorHook<RootReducerState> = useReduxSelector
-
-  const {asset, type} = useSelector(state => state.dialog)
-  const {byIds} = useSelector(state => state.assets)
+  const {asset, type} = useTypedSelector(state => state.dialog)
+  const {byIds} = useTypedSelector(state => state.assets)
 
   const currentItem = asset && byIds[asset._id]
 

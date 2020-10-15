@@ -1,4 +1,3 @@
-import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
 import {Document, Filter} from './types'
 
 // Filters to display in header dropdown
@@ -42,19 +41,5 @@ export const ORDERS: Filter[] = [
   {
     title: 'File: Z to A',
     value: 'originalFilename desc'
-  }
-]
-
-// View buttons
-export const VIEWS = [
-  {
-    icon: AiFillAppstore,
-    title: 'Grid',
-    value: 'grid'
-  },
-  {
-    icon: AiOutlineBars,
-    title: 'Table',
-    value: 'table'
   }
 ]

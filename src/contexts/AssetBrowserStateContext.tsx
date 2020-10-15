@@ -1,7 +1,7 @@
 import React, {ReactNode, createContext, useContext} from 'react'
-import {useSelector as useReduxSelector, TypedUseSelectorHook} from 'react-redux'
+
+import useTypedSelector from '../hooks/useTypedSelector'
 import {Item} from '../types'
-import {RootReducerState} from '../modules/types'
 
 type ContextProps = {
   fetchCount: number
@@ -20,8 +20,6 @@ const AssetBrowserStateContext = createContext<ContextProps | undefined>(undefin
 export const AssetBrowserStateProvider = (props: Props) => {
   const {children} = props
 
-  const useSelector: TypedUseSelectorHook<RootReducerState> = useReduxSelector
-
   const {
     allIds,
     byIds,
@@ -29,8 +27,8 @@ export const AssetBrowserStateProvider = (props: Props) => {
     fetching,
     fetchingError
     // totalCount
-  } = useSelector(state => state.assets)
-  // TODO: correctly type redux store
+  } = useTypedSelector(state => state.assets)
+
   const items = allIds.map(id => byIds[id])
 
   const contextValue = {

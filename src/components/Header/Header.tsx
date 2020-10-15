@@ -1,38 +1,42 @@
 import React from 'react'
+import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
 import {IoIosClose} from 'react-icons/io'
+import {useDispatch} from 'react-redux'
 
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
-import {ORDERS, VIEWS} from '../../config'
+import {ORDERS} from '../../config'
 import Box from '../../styled/Box'
 import blocksToText from '../../util/blocksToText'
-import {BrowserQueryOptions, BrowserView, Document, Filter, Item} from '../../types'
+import {BrowserQueryOptions, Document, Filter, Item} from '../../types'
 import Button from '../Button/Button'
 import Label from '../Label/Label'
 import Progress from '../Progress/Progress'
 import SearchInput from '../SearchInput/SearchInput'
 import Select from '../Select/Select'
+import useTypedSelector from '../../hooks/useTypedSelector'
+import {browserSetView} from '../../modules/browser'
 
 type Props = {
   browserQueryOptions: BrowserQueryOptions
-  browserView: BrowserView
   currentDocument?: Document
   filters: Filter[]
   items: Item[]
   onClose?: () => void
   onUpdateBrowserQueryOptions: (field: string, value: Filter | string) => void
-  onUpdateBrowserView: (view: BrowserView) => void
 }
 
 const Header = (props: Props) => {
   const {
     browserQueryOptions,
-    browserView,
     currentDocument,
     filters,
     onClose,
-    onUpdateBrowserQueryOptions,
-    onUpdateBrowserView
+    onUpdateBrowserQueryOptions
   } = props
+
+  // Redux
+  const dispatch = useDispatch()
+  const view = useTypedSelector(state => state.browser.view)
 
   const {
     fetching
@@ -123,20 +127,19 @@ const Header = (props: Props) => {
           width="100%"
         >
           <Box display="flex">
-            {VIEWS &&
-              VIEWS.map((view, index) => {
-                const selected = browserView.value === view.value
+            <Button
+              icon={AiFillAppstore({size: 18})}
+              onClick={() => dispatch(browserSetView('grid'))}
+              pointerEvents={view === 'grid' ? 'none' : 'auto'}
+              variant={view === 'grid' ? 'default' : 'secondary'}
+            />
 
-                return (
-                  <Button
-                    icon={view.icon({size: 18})}
-                    key={index}
-                    onClick={() => onUpdateBrowserView(view)}
-                    pointerEvents={selected ? 'none' : 'auto'}
-                    variant={selected ? 'default' : 'secondary'}
-                  />
-                )
-              })}
+            <Button
+              icon={AiOutlineBars({size: 18})}
+              onClick={() => dispatch(browserSetView('table'))}
+              pointerEvents={view === 'table' ? 'none' : 'auto'}
+              variant={view === 'table' ? 'default' : 'secondary'}
+            />
           </Box>
 
           <Box>

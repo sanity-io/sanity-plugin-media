@@ -100,11 +100,7 @@ export type BrowserQueryOptions = {
   replaceOnFetch: boolean
 }
 
-export type BrowserView = {
-  icon: Function
-  title: string
-  value: string
-}
+export type BrowserView = 'grid' | 'table'
 
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
 
