@@ -5,15 +5,10 @@ import {useDispatch} from 'react-redux'
 
 import {ORDERS} from '../../config'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {
-  assetsSetFilter,
-  assetsSetOrder,
-  assetsSetSearchQuery,
-  assetsSetView
-} from '../../modules/assets'
+import {assetsSetFilter, assetsSetOrder, assetsSetView} from '../../modules/assets'
 import Box from '../../styled/Box'
 import blocksToText from '../../util/blocksToText'
-import {Document, Item} from '../../types'
+import {Item} from '../../types'
 import Button from '../Button/Button'
 import Label from '../Label/Label'
 import Progress from '../Progress/Progress'
@@ -21,18 +16,17 @@ import SearchInput from '../SearchInput/SearchInput'
 import Select from '../Select/Select'
 
 type Props = {
-  currentDocument?: Document
   items: Item[]
   onClose?: () => void
 }
 
 const Header = (props: Props) => {
-  const {currentDocument, onClose} = props
+  const {onClose} = props
 
   // Redux
   const dispatch = useDispatch()
+  const currentDocument = useTypedSelector(state => state.document)
   const fetching = useTypedSelector(state => state.assets.fetching)
-  const searchQuery = useTypedSelector(state => state.assets.searchQuery)
   const view = useTypedSelector(state => state.assets.view)
   const filters = useTypedSelector(state => state.assets.filters)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
@@ -104,12 +98,7 @@ const Header = (props: Props) => {
           justifyContent="flex-start"
           width="100%"
         >
-          <SearchInput
-            maxWidth={['none', '340px']}
-            mx={2}
-            onChange={e => dispatch(assetsSetSearchQuery(e.currentTarget.value))}
-            value={searchQuery}
-          />
+          <SearchInput maxWidth={['none', '340px']} mx={2} />
         </Box>
 
         {/* Views + filters + orders*/}

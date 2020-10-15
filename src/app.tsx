@@ -10,10 +10,9 @@ import Snackbars from './components/Snackbars/Snackbars'
 import useKeyPress from './hooks/useKeyPress'
 import Box from './styled/Box'
 import theme, {GlobalStyle} from './styled/theme'
-import {Asset, Document} from './types'
+import {Asset} from './types'
 
 type Props = {
-  document?: Document
   onClose?: () => void
   onSelect?: () => void
   selectedAssets: Asset[]
@@ -23,7 +22,7 @@ type Props = {
 const HEADER_HEIGHT = '48px'
 
 const AssetBrowser = (props: Props) => {
-  const {document, onClose, onSelect, selectedAssets, tool} = props
+  const {onClose, onSelect, selectedAssets, tool} = props
 
   // Close on escape key press
   useKeyPress('Escape', onClose)
@@ -93,7 +92,7 @@ const AssetBrowser = (props: Props) => {
           >
             <Snackbars />
             <Dialogs />
-            <Browser document={document} onClose={onClose} selectedAssets={selectedAssets} />
+            <Browser onClose={onClose} selectedAssets={selectedAssets} />
           </Box>
         </Portal>
       </AssetBrowserDispatchProvider>

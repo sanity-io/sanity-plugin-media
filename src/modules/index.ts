@@ -1,8 +1,16 @@
 import {combineReducers} from 'redux'
 import {combineEpics} from 'redux-observable'
 
-import assets, {assetsDeleteEpic, assetsDeletePickedEpic, assetsFetchEpic} from './assets'
+import assets, {
+  assetsDeleteEpic,
+  assetsDeletePickedEpic,
+  assetsFetchEpic,
+  assetsFetchNextPageEpic,
+  assetsFetchPageEpic,
+  assetsFetchPageIndexEpic
+} from './assets'
 import dialog, {dialogClearEpic, dialogShowConflictsEpic} from './dialog'
+import document from './document'
 import snackbars, {
   snackbarsAddDeleteErrorsEpic,
   snackbarsAddFetchErrorEpic,
@@ -13,8 +21,9 @@ export const rootEpic = combineEpics(
   assetsDeleteEpic,
   assetsDeletePickedEpic,
   assetsFetchEpic,
-  // browserFetchNextPageEpic,
-  // browserFetchPageEpic,
+  assetsFetchNextPageEpic,
+  assetsFetchPageEpic,
+  assetsFetchPageIndexEpic,
   dialogClearEpic,
   dialogShowConflictsEpic,
   snackbarsAddDeleteErrorsEpic,
@@ -25,5 +34,6 @@ export const rootEpic = combineEpics(
 export const rootReducer = combineReducers({
   assets,
   dialog,
+  document,
   snackbars
 })

@@ -20,13 +20,17 @@ export type AssetsReducerState = {
   filters?: BrowserFilter[]
   order: BrowserOrder
   pageIndex: number
-  replaceOnFetch: boolean
+  pageSize: number
   searchQuery?: string
   view: BrowserView
   // totalCount: number
 }
 
 // Actions
+
+export type AssetsClearAction = {
+  type: AssetsActionTypes.CLEAR
+}
 
 export type AssetsDeleteErrorCompleteAction = {
   payload: {
@@ -60,7 +64,6 @@ export type AssetsDeleteRequestAction = {
 export type AssetsFetchCompleteAction = {
   payload: {
     assets: Asset[]
-    replace: boolean
     // totalCount: number
   }
   type: AssetsActionTypes.FETCH_COMPLETE
@@ -74,13 +77,19 @@ export type AssetsFetchRequestAction = {
   payload: {
     params: Record<string, string>
     query: string
-    replace: boolean
   }
   type: AssetsActionTypes.FETCH_REQUEST
 }
 
-export type AssetsFetchNextPageAction = {
-  type: AssetsActionTypes.FETCH_NEXT_PAGE
+export type AssetsLoadNextPageAction = {
+  type: AssetsActionTypes.LOAD_NEXT_PAGE
+}
+
+export type AssetsLoadPageIndexAction = {
+  payload: {
+    pageIndex: number
+  }
+  type: AssetsActionTypes.LOAD_PAGE_INDEX
 }
 
 export type AssetsPickAction = {
@@ -130,13 +139,15 @@ export type AssetsSetViewAction = {
 // All actions
 
 export type AssetsActions =
+  | AssetsClearAction
   | AssetsDeleteErrorCompleteAction
   | AssetsDeleteErrorAction
   | AssetsDeleteRequestAction
   | AssetsFetchCompleteAction
   | AssetsFetchErrorAction
-  | AssetsFetchNextPageAction
   | AssetsFetchRequestAction
+  | AssetsLoadNextPageAction
+  | AssetsLoadPageIndexAction
   | AssetsPickAction
   | AssetsPickAllAction
   | AssetsPickClearAction

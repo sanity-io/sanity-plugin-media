@@ -3,22 +3,17 @@ import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
-import useDeepCompareEffect from 'use-deep-compare-effect'
-import groq from 'groq'
 
+import useTypedSelector from '../../hooks/useTypedSelector'
+import {assetsLoadNextPage, assetsLoadPageIndex} from '../../modules/assets'
 import Box from '../../styled/Box'
-import {Asset, Document} from '../../types'
+import {Asset} from '../../types'
 import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import CardView from '../View/Card'
 import TableView from '../View/Table'
-import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsFetch, assetsFetchNextPage} from '../../modules/assets'
-
-const PER_PAGE = 50
 
 type Props = {
-  document?: Document
   onClose?: () => void
   selectedAssets?: Asset[]
 }
@@ -29,7 +24,7 @@ type InfiniteLoaderRenderProps = {
 }
 
 const Browser = (props: Props) => {
-  const {document: currentDocument, onClose, selectedAssets} = props
+  const {onClose, selectedAssets} = props
 
   // Ref used to scroll to the top of the page on filter changes
   const viewRef = useRef<HTMLDivElement | null>(null)
@@ -41,19 +36,14 @@ const Browser = (props: Props) => {
     byIds,
     fetchCount,
     fetching,
-    filter,
-    order,
-    pageIndex,
-    replaceOnFetch,
-    searchQuery,
+    pageSize,
+    // pageIndex,
     view
     // totalCount
   } = useTypedSelector(state => state.assets)
+  const currentDocument = useTypedSelector(state => state.document)
 
   const items = allIds.map(id => byIds[id])
-
-  const orientationRegExp = /orientation:(landscape|square|portrait)/i
-  const extensionRegExp = /extension:(.+\s?)/i
 
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
@@ -61,106 +51,19 @@ const Browser = (props: Props) => {
   const picked = items.filter(item => item.picked)
   const hasPicked = picked.length > 0
 
-  const fetchPage = (index: number, replace: boolean) => {
-    const start = index * PER_PAGE
-    const end = start + PER_PAGE
-
-    const sort = groq`order(${order.value})`
-    const selector = groq`[${start}...${end}]`
-
-    // ID can be null when operating on pristine / unsaved drafts
-    const currentDocumentId = currentDocument?._id
-
-    if (!filter) {
-      return
-    }
-
-    let filterResult
-
-    if (searchQuery) {
-      const textQuery = searchQuery.replace(orientationRegExp, '').replace(extensionRegExp, '')
-      filterResult = groq`${filter.value} && originalFilename match '*${textQuery}*'`
-
-      const orientation = searchQuery.match(orientationRegExp)
-      if (orientation) {
-        const orientationVal = orientation[1]
-        let orientationFilterVal
-        switch (orientationVal) {
-          case 'landscape':
-            orientationFilterVal = 'metadata.dimensions.aspectRatio > 1'
-            break
-          case 'square':
-            orientationFilterVal = 'metadata.dimensions.aspectRatio == 1'
-            break
-          case 'portrait':
-          default:
-            orientationFilterVal = 'metadata.dimensions.aspectRatio < 1'
-            break
-        }
-        filterResult = groq`${filterResult} && ${orientationFilterVal}`
-      }
-
-      const extension = searchQuery.match(extensionRegExp)
-      if (extension) {
-        filterResult = groq`${filterResult} && extension == '${extension[1]}'`
-      }
-    } else {
-      filterResult = filter.value
-    }
-
-    dispatch(
-      assetsFetch({
-        filter: filterResult,
-        ...(currentDocumentId ? {params: {documentId: currentDocumentId}} : {}),
-        projections: groq`{
-        _id,
-        _updatedAt,
-        extension,
-        metadata {
-          dimensions,
-          isOpaque,
-        },
-        originalFilename,
-        size,
-        url
-      }`,
-        replace,
-        selector,
-        sort
-      })
-    )
-  }
-
-  const scrollToTop = () => {
-    const viewEl = viewRef && viewRef.current
-    if (viewEl) {
-      viewEl.scrollTo(0, 0)
-    }
-  }
-
-  // Fetch items on mount and when query options have changed
-  useDeepCompareEffect(() => {
-    fetchPage(pageIndex, replaceOnFetch)
-
-    // Scroll to top when replacing items
-    if (replaceOnFetch) {
-      scrollToTop()
-    }
-  }, [filter, order, pageIndex, searchQuery])
-
-  // Scroll to top when browser view has changed
+  // Fetch items on mount
   useEffect(() => {
-    scrollToTop()
-  }, [view])
+    dispatch(assetsLoadPageIndex(0))
+  }, [])
 
   // NOTE: The below is a workaround and can be inaccurate in certain cases.
-  // e.g. if PER_PAGE is 10 and you have fetched 10 items, `hasMore` will still be true
+  // e.g. if `pageSize` is 10 and you have fetched 10 items, `hasMore` will still be true
   // and another fetch will invoked on next page (which will return 0 items).
   // This is currently how the default asset source in Sanity works.
   // TODO: When it's performant enough to get total asset count across large datasets, revert
   // to using `totalCount` across the board.
-  const hasMore = fetchCount === PER_PAGE
-  // const hasMore = (pageIndex + 1) * PER_PAGE < totalCount
+  const hasMore = fetchCount === pageSize
+  // const hasMore = (pageIndex + 1) * pageSize < totalCount
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = (index: number) => {
@@ -171,7 +74,7 @@ const Browser = (props: Props) => {
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const handleLoadMoreItems = () => {
     if (!fetching) {
-      dispatch(assetsFetchNextPage())
+      dispatch(assetsLoadNextPage())
     }
     return new Promise(() => {})
   }
@@ -182,7 +85,7 @@ const Browser = (props: Props) => {
   return (
     <Box bg="darkerGray" fontSize={1} justifyContent="space-between" minHeight="100%">
       {/* Header */}
-      <Header currentDocument={currentDocument} items={items} onClose={onClose} />
+      <Header items={items} onClose={onClose} />
 
       {/* Items */}
       <Box

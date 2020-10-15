@@ -14,29 +14,23 @@ import {
   DeleteHandleTarget,
   FetchOptions
 } from '../../types'
-import {
-  AssetsActions,
-  AssetsReducerState,
-  // AssetsFetchRequestAction,
-  AssetsDeleteRequestAction
-  // AssetsDeletePickedAction
-} from './types'
-// import {RootReducerState} from '../types'
+import {AssetsActions, AssetsReducerState, AssetsDeleteRequestAction} from './types'
 
 /***********
  * ACTIONS *
  ***********/
 
 export enum AssetsActionTypes {
+  CLEAR = 'ASSETS_CLEAR',
   DELETE_COMPLETE = 'ASSETS_DELETE_COMPLETE',
   DELETE_ERROR = 'ASSETS_DELETE_ERROR',
   DELETE_PICKED = 'ASSETS_DELETE_PICKED',
   DELETE_REQUEST = 'ASSETS_DELETE_REQUEST',
   FETCH_COMPLETE = 'ASSETS_FETCH_COMPLETE',
   FETCH_ERROR = 'ASSETS_FETCH_ERROR',
-  // TODO: rename?
-  FETCH_NEXT_PAGE = 'ASSETS_FETCH_NEXT_PAGE',
   FETCH_REQUEST = 'ASSETS_FETCH_REQUEST',
+  LOAD_NEXT_PAGE = 'ASSETS_LOAD_NEXT_PAGE',
+  LOAD_PAGE_INDEX = 'ASSETS_LOAD_PAGE_INDEX',
   PICK = 'ASSETS_PICK',
   PICK_ALL = 'ASSETS_PICK_ALL',
   PICK_CLEAR = 'ASSETS_PICK_CLEAR',
@@ -78,7 +72,7 @@ export const initialState: AssetsReducerState = {
   filters: undefined,
   order: ORDERS[0],
   pageIndex: 0,
-  replaceOnFetch: false,
+  pageSize: 50,
   searchQuery: '',
   view: 'grid'
   // totalCount: -1
@@ -91,6 +85,17 @@ export default function assetsReducerState(
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
+      /**
+       * Clear (not delete) all assets.
+       * This is currently fired when changing browser filters / views, etc.
+       * (May also be useful if we want more traditional paginated browsing, e.g going between pages
+       * which doesn't persist content).
+       */
+      case AssetsActionTypes.CLEAR:
+        draft.allIds = []
+        draft.byIds = {}
+        break
+
       /**
        * An asset has been successfully deleted via the client.
        * - Delete asset from the redux store (both the normalised object and ordered assetID).
@@ -165,22 +170,21 @@ export default function assetsReducerState(
         draft.fetchingError = true
         break
       }
+
       /**
        * A request to fetch asset has been made (and not yet completed)
-       * - If `replace` is true, we clear all existing assets (useful if we want more traditional
-       * paginated browsing, e.g going between pages doesn't persist content).
        * - Set fetching status
        * - Clear any previously stored error
        */
       case AssetsActionTypes.FETCH_REQUEST:
-        if (action.payload?.replace) {
-          draft.allIds = []
-          draft.byIds = {}
-        }
-
         draft.fetching = true
         draft.fetchingError = null
         break
+
+      case AssetsActionTypes.LOAD_NEXT_PAGE:
+        draft.pageIndex += 1
+        break
+
       /**
        * An asset as 'picked' or 'checked' for batch operations.
        * (We don't use the word 'select' as that's reserved for the action of inserting an image into an entry).
@@ -210,24 +214,17 @@ export default function assetsReducerState(
         })
         break
 
-      case AssetsActionTypes.FETCH_NEXT_PAGE:
-        draft.pageIndex += 1
-        draft.replaceOnFetch = false
-        break
       case AssetsActionTypes.SET_FILTER:
         draft.filter = action.payload?.filter
         draft.pageIndex = 0
-        draft.replaceOnFetch = true
         break
       case AssetsActionTypes.SET_ORDER:
         draft.order = action.payload?.order
         draft.pageIndex = 0
-        draft.replaceOnFetch = true
         break
       case AssetsActionTypes.SET_SEARCH_QUERY:
         draft.searchQuery = action.payload?.searchQuery
         draft.pageIndex = 0
-        draft.replaceOnFetch = true
         break
       case AssetsActionTypes.SET_VIEW:
         draft.view = action.payload?.view
@@ -239,6 +236,11 @@ export default function assetsReducerState(
 /*******************
  * ACTION CREATORS *
  *******************/
+
+// Clear all assets
+export const assetsClear = () => ({
+  type: AssetsActionTypes.CLEAR
+})
 
 // Delete started
 export const assetsDelete = (asset: Asset, handleTarget: DeleteHandleTarget = 'snackbar') => ({
@@ -279,7 +281,6 @@ export const assetsDeletePicked = () => ({
  * @param {String} [options.filter] - GROQ filter
  * @param {Object} [options.params] - Params to pass to GROQ query (in `client.fetch`)
  * @param {String} [options.projections] - GROQ projections (must be wrapped in braces)
- * @param {Boolean} [options.replace] - Whether the results of this should replace all existing assets
  * @param {String} [options.selector] - GROQ selector / range
  * @param {String} [options.sort] - GROQ sort
  */
@@ -292,7 +293,6 @@ export const assetsFetch = ({
     originalFilename,
     url
   }`,
-  replace = true,
   selector = ``,
   sort = groq`order(_updatedAt desc)`
 }: FetchOptions) => {
@@ -308,7 +308,6 @@ export const assetsFetch = ({
   return {
     payload: {
       params,
-      replace,
       query
     },
     type: AssetsActionTypes.FETCH_REQUEST
@@ -317,13 +316,11 @@ export const assetsFetch = ({
 
 // Fetch complete
 export const assetsFetchComplete = (
-  assets: Asset[],
-  replace: boolean
+  assets: Asset[]
   // totalCount: number
 ) => ({
   payload: {
-    assets,
-    replace
+    assets
     // totalCount
   },
   type: AssetsActionTypes.FETCH_COMPLETE
@@ -335,6 +332,19 @@ export const assetsFetchError = (error: any) => ({
     error
   },
   type: AssetsActionTypes.FETCH_ERROR
+})
+
+// Load page assets at page index
+export const assetsLoadPageIndex = (pageIndex: number) => ({
+  payload: {
+    pageIndex
+  },
+  type: AssetsActionTypes.LOAD_PAGE_INDEX
+})
+
+// Load next page
+export const assetsLoadNextPage = () => ({
+  type: AssetsActionTypes.LOAD_NEXT_PAGE
 })
 
 // Pick asset
@@ -354,12 +364,6 @@ export const assetsPickAll = () => ({
 // Unpick all assets
 export const assetsPickClear = () => ({
   type: AssetsActionTypes.PICK_CLEAR
-})
-
-// TODO: use epic
-// Fetch next page
-export const assetsFetchNextPage = () => ({
-  type: AssetsActionTypes.FETCH_NEXT_PAGE
 })
 
 // Set view mode
@@ -471,35 +475,130 @@ export const assetsFetchEpic = (action$: any) =>
             // totalCount
           } = result
 
-          const replace = action.payload?.replace
-          // return of(assetsFetchComplete(items, replace, totalCount))
-          return of(assetsFetchComplete(items, replace))
+          return of(assetsFetchComplete(items))
         }),
         catchError(error => of(assetsFetchError(error)))
       )
     })
   )
 
-/*
-export const browserFetchNextPageEpic = (action$: any) =>
+/**
+ * Listen for page load requests
+ * - Fetch assets
+ */
+export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
   action$.pipe(
-    ofType(BrowserActionTypes.FETCH_NEXT_PAGE),
-    tap(() => {
-      // console.log('fetch next page')
-    }),
-    ignoreElements()
+    ofType(AssetsActionTypes.LOAD_PAGE_INDEX),
+    withLatestFrom(state$),
+    switchMap(([action, state]) => {
+      const pageSize = state.assets.pageSize
+      const start = action.payload.pageIndex * pageSize
+      const end = start + pageSize
+
+      return of(
+        assetsFetch({
+          filter: constructFilter(state.assets.filter.value, state.assets.searchQuery),
+          // Document ID can be null when operating on pristine / unsaved drafts
+          ...(state?.document ? {params: {documentId: state?.document?._id}} : {}),
+          projections: groq`{
+            _id,
+            _updatedAt,
+            extension,
+            metadata {
+              dimensions,
+              isOpaque,
+            },
+            originalFilename,
+            size,
+            url
+          }`,
+          selector: groq`[${start}...${end}]`,
+          sort: groq`order(${state.assets.order.value})`
+        })
+      )
+    })
   )
 
-export const browserFetchPageEpic = (action$: any) =>
+/**
+ * Listen for changes to order, filter and search query
+ * - Clear assets
+ * - Load first page
+ */
+export const assetsFetchNextPageEpic = (action$: any, state$: any) =>
+  action$.pipe(
+    ofType(AssetsActionTypes.LOAD_NEXT_PAGE),
+    withLatestFrom(state$),
+    switchMap(([_, state]) => {
+      return of(assetsLoadPageIndex(state.assets.pageIndex))
+    })
+  )
+
+/**
+ * Listen for order, filter and search query changes
+ * - clear assets
+ * - fetch first page
+ */
+export const assetsFetchPageEpic = (action$: any) =>
   action$.pipe(
     ofType(
-      BrowserActionTypes.SET_ORDER,
-      BrowserActionTypes.SET_FILTER,
-      BrowserActionTypes.SET_SEARCH_QUERY
+      AssetsActionTypes.SET_ORDER,
+      AssetsActionTypes.SET_FILTER,
+      AssetsActionTypes.SET_SEARCH_QUERY
     ),
-    tap(() => {
-      // console.log('fetch from beginning')
-    }),
-    ignoreElements()
+    switchMap(() => {
+      return of(assetsClear(), assetsLoadPageIndex(0))
+    })
   )
-  */
+
+/*********
+ * UTILS *
+ *********/
+
+/**
+ * Construct GROQ filter based off custom search codes
+ */
+const constructFilter = (baseFilter: string, searchQuery?: string) => {
+  let constructedQuery = groq`${baseFilter}`
+
+  const REGEX_ORIENTATION = /orientation:(landscape|portrait|square)/i
+  const REGEX_EXTENSION = /extension:([A-Za-z]*)/i
+
+  if (searchQuery) {
+    // Strip extension / orientation codes and trim whitespace
+    const filenameQuery = searchQuery
+      .replace(REGEX_ORIENTATION, '')
+      .replace(REGEX_EXTENSION, '')
+      .trim()
+
+    // Append original filename search
+    constructedQuery += groq` && originalFilename match '*${filenameQuery}*'`
+
+    // Append orientation
+    const orientation = searchQuery.match(REGEX_ORIENTATION)?.[1]
+
+    if (orientation) {
+      switch (orientation) {
+        case 'landscape':
+          constructedQuery += groq` && metadata.dimensions.aspectRatio > 1`
+          break
+        case 'portrait':
+          constructedQuery += groq` && metadata.dimensions.aspectRatio < 1`
+          break
+        case 'square':
+          constructedQuery += groq` && metadata.dimensions.aspectRatio == 1`
+          break
+        default:
+          console.warn('Orientation must be of type (landscape | portrait | square)')
+          break
+      }
+    }
+
+    // Append file extension
+    const extension = searchQuery.match(REGEX_EXTENSION)?.[1]
+    if (extension) {
+      constructedQuery += groq` && extension == '${extension}'`
+    }
+  }
+
+  return constructedQuery
+}

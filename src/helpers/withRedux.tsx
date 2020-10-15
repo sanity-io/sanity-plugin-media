@@ -34,7 +34,10 @@ function withRedux<T>(ComposedComponent: ComponentType<T>) {
             ...assetsInitialState,
             filter: filters[0],
             filters
-          }
+          },
+          // TODO: correctly type
+          // @ts-ignore
+          document: props?.document
         },
         composeWithDevTools(applyMiddleware(epicMiddleware))
       )
