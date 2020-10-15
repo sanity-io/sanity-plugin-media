@@ -1,8 +1,8 @@
-import {Document, Filter} from './types'
+import {Document, BrowserFilter, BrowserOrder} from './types'
 
 // Filters to display in header dropdown
 export const getFilters = (currentDocument?: Document) => {
-  const items: Filter[] = [
+  const items: BrowserFilter[] = [
     {
       title: 'All images',
       value: `_type == "sanity.imageAsset"`
@@ -25,7 +25,7 @@ export const getFilters = (currentDocument?: Document) => {
 }
 
 // Sort order dropdown options
-export const ORDERS: Filter[] = [
+export const ORDERS: BrowserOrder[] = [
   {
     title: 'Latest first',
     value: '_updatedAt desc'

@@ -1,5 +1,5 @@
-import produce from 'immer'
-import React, {Ref, useRef, useState, useEffect} from 'react'
+import React, {Ref, useRef, useEffect} from 'react'
+import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
@@ -8,14 +8,14 @@ import groq from 'groq'
 
 import {useAssetBrowserActions} from '../../contexts/AssetBrowserDispatchContext'
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
-import {ORDERS, getFilters} from '../../config'
 import Box from '../../styled/Box'
-import {Asset, BrowserQueryOptions, Document, Filter} from '../../types'
+import {Asset, Document} from '../../types'
 import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import CardView from '../View/Card'
 import TableView from '../View/Table'
 import useTypedSelector from '../../hooks/useTypedSelector'
+import {browserSetFetchNextPage} from '../../modules/browser'
 
 const PER_PAGE = 50
 
@@ -33,9 +33,6 @@ type InfiniteLoaderRenderProps = {
 const Browser = (props: Props) => {
   const {document: currentDocument, onClose, selectedAssets} = props
 
-  // Get available filters, depending on whether the `document` prop is available or not.
-  const filters: Filter[] = getFilters(currentDocument)
-
   // Ref used to scroll to the top of the page on filter changes
   const viewRef = useRef<HTMLDivElement | null>(null)
 
@@ -46,15 +43,16 @@ const Browser = (props: Props) => {
     items
     // totalCount
   } = useAssetBrowserState()
-  const [browserQueryOptions, setBrowserQueryOptions] = useState<BrowserQueryOptions>({
-    q: '',
-    filter: filters[0],
-    order: ORDERS[0],
-    pageIndex: 0,
-    replaceOnFetch: false
-  })
+
+  // Redux
+  const dispatch = useDispatch()
 
   const view = useTypedSelector(state => state.browser.view)
+  const filter = useTypedSelector(state => state.browser.filter)
+  const order = useTypedSelector(state => state.browser.order)
+  const searchQuery = useTypedSelector(state => state.browser.searchQuery)
+  const pageIndex = useTypedSelector(state => state.browser.pageIndex)
+  const replaceOnFetch = useTypedSelector(state => state.browser.replaceOnFetch)
 
   const orientationRegExp = /orientation:(landscape|square|portrait)/i
   const extensionRegExp = /extension:(.+\s?)/i
@@ -66,8 +64,6 @@ const Browser = (props: Props) => {
   const hasPicked = picked.length > 0
 
   const fetchPage = (index: number, replace: boolean) => {
-    const {filter, order, q} = browserQueryOptions
-
     const start = index * PER_PAGE
     const end = start + PER_PAGE
 
@@ -77,13 +73,17 @@ const Browser = (props: Props) => {
     // ID can be null when operating on pristine / unsaved drafts
     const currentDocumentId = currentDocument?._id
 
+    if (!filter) {
+      return
+    }
+
     let filterResult
 
-    if (q) {
-      const textQuery = q.replace(orientationRegExp, '').replace(extensionRegExp, '')
+    if (searchQuery) {
+      const textQuery = searchQuery.replace(orientationRegExp, '').replace(extensionRegExp, '')
       filterResult = groq`${filter.value} && originalFilename match '*${textQuery}*'`
 
-      const orientation = q.match(orientationRegExp)
+      const orientation = searchQuery.match(orientationRegExp)
       if (orientation) {
         const orientationVal = orientation[1]
         let orientationFilterVal
@@ -102,7 +102,7 @@ const Browser = (props: Props) => {
         filterResult = groq`${filterResult} && ${orientationFilterVal}`
       }
 
-      const extension = q.match(extensionRegExp)
+      const extension = searchQuery.match(extensionRegExp)
       if (extension) {
         filterResult = groq`${filterResult} && extension == '${extension[1]}'`
       }
@@ -140,15 +140,13 @@ const Browser = (props: Props) => {
 
   // Fetch items on mount and when query options have changed
   useDeepCompareEffect(() => {
-    const {pageIndex, replaceOnFetch} = browserQueryOptions
-
     fetchPage(pageIndex, replaceOnFetch)
 
     // Scroll to top when replacing items
     if (replaceOnFetch) {
       scrollToTop()
     }
-  }, [browserQueryOptions])
+  }, [filter, order, pageIndex, searchQuery])
 
   // Scroll to top when browser view has changed
   useEffect(() => {
@@ -162,26 +160,7 @@ const Browser = (props: Props) => {
   // TODO: When it's performant enough to get total asset count across large datasets, revert
   // to using `totalCount` across the board.
   const hasMore = fetchCount === PER_PAGE
-  // const hasMore = (browserQueryOptions.pageIndex + 1) * PER_PAGE < totalCount
-
-  const handleFetchNextPage = () => {
-    setBrowserQueryOptions(
-      produce(draft => {
-        draft.pageIndex += 1
-        draft.replaceOnFetch = false
-      })
-    )
-  }
-
-  const handleUpdateBrowserQueryOptions = (field: string, value: Filter | string) => {
-    setBrowserQueryOptions(
-      produce(draft => {
-        draft[field] = value
-        draft.pageIndex = 0
-        draft.replaceOnFetch = true
-      })
-    )
-  }
+  // const hasMore = (pageIndex + 1) * PER_PAGE < totalCount
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = (index: number) => {
@@ -192,7 +171,7 @@ const Browser = (props: Props) => {
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const handleLoadMoreItems = () => {
     if (!fetching) {
-      handleFetchNextPage()
+      dispatch(browserSetFetchNextPage())
     }
     return new Promise(() => {})
   }
@@ -203,14 +182,7 @@ const Browser = (props: Props) => {
   return (
     <Box bg="darkerGray" fontSize={1} justifyContent="space-between" minHeight="100%">
       {/* Header */}
-      <Header
-        browserQueryOptions={browserQueryOptions}
-        currentDocument={currentDocument}
-        filters={filters}
-        items={items}
-        onClose={onClose}
-        onUpdateBrowserQueryOptions={handleUpdateBrowserQueryOptions}
-      />
+      <Header currentDocument={currentDocument} items={items} onClose={onClose} />
 
       {/* Items */}
       <Box

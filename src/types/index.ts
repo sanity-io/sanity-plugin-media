@@ -89,15 +89,14 @@ export type BoxProps = AlignItemsProps &
     zIndex?: any
   }
 
-export type BrowserQueryOptions = {
-  q: string
-  filter: Filter
-  order: {
-    title: string
-    value: string
-  }
-  pageIndex: number
-  replaceOnFetch: boolean
+export type BrowserFilter = {
+  title: string
+  value: string
+}
+
+export type BrowserOrder = {
+  title: string
+  value: string
 }
 
 export type BrowserView = 'grid' | 'table'
@@ -129,11 +128,6 @@ export type FetchOptions = {
   replace?: boolean
   selector?: string
   sort?: string
-}
-
-export type Filter = {
-  title: string
-  value: string
 }
 
 export type Item = {

@@ -5,38 +5,37 @@ import {useDispatch} from 'react-redux'
 
 import {useAssetBrowserState} from '../../contexts/AssetBrowserStateContext'
 import {ORDERS} from '../../config'
+import useTypedSelector from '../../hooks/useTypedSelector'
+import {
+  browserSetFilter,
+  browserSetOrder,
+  browserSetSearchQuery,
+  browserSetView
+} from '../../modules/browser'
 import Box from '../../styled/Box'
 import blocksToText from '../../util/blocksToText'
-import {BrowserQueryOptions, Document, Filter, Item} from '../../types'
+import {Document, Item} from '../../types'
 import Button from '../Button/Button'
 import Label from '../Label/Label'
 import Progress from '../Progress/Progress'
 import SearchInput from '../SearchInput/SearchInput'
 import Select from '../Select/Select'
-import useTypedSelector from '../../hooks/useTypedSelector'
-import {browserSetView} from '../../modules/browser'
 
 type Props = {
-  browserQueryOptions: BrowserQueryOptions
   currentDocument?: Document
-  filters: Filter[]
   items: Item[]
   onClose?: () => void
-  onUpdateBrowserQueryOptions: (field: string, value: Filter | string) => void
 }
 
 const Header = (props: Props) => {
-  const {
-    browserQueryOptions,
-    currentDocument,
-    filters,
-    onClose,
-    onUpdateBrowserQueryOptions
-  } = props
+  const {currentDocument, onClose} = props
 
   // Redux
   const dispatch = useDispatch()
+  const searchQuery = useTypedSelector(state => state.browser.searchQuery)
   const view = useTypedSelector(state => state.browser.view)
+  const filters = useTypedSelector(state => state.browser.filters)
+  const pageIndex = useTypedSelector(state => state.browser.pageIndex)
 
   const {
     fetching
@@ -113,8 +112,8 @@ const Header = (props: Props) => {
           <SearchInput
             maxWidth={['none', '340px']}
             mx={2}
-            onChange={e => onUpdateBrowserQueryOptions('q', e.currentTarget.value)}
-            value={browserQueryOptions.q}
+            onChange={e => dispatch(browserSetSearchQuery(e.currentTarget.value))}
+            value={searchQuery}
           />
         </Box>
 
@@ -143,22 +142,20 @@ const Header = (props: Props) => {
           </Box>
 
           <Box>
-            <Select
-              items={filters}
-              ml={2}
-              onChange={value => onUpdateBrowserQueryOptions('filter', value)}
-            />
-            <Select
-              items={ORDERS}
-              mx={2}
-              onChange={value => onUpdateBrowserQueryOptions('order', value)}
-            />
+            {filters && (
+              <Select
+                items={filters}
+                ml={2}
+                onChange={value => dispatch(browserSetFilter(value))}
+              />
+            )}
+            <Select items={ORDERS} mx={2} onChange={value => dispatch(browserSetOrder(value))} />
           </Box>
         </Box>
       </Box>
 
       {/* Progress bar */}
-      <Progress key={browserQueryOptions.pageIndex} loading={fetching} />
+      <Progress key={pageIndex} loading={fetching} />
     </Box>
   )
 }
