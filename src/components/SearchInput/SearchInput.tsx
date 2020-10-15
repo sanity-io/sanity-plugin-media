@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState} from 'react'
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {IoIosClose, IoIosSearch} from 'react-icons/io'
 import {useDispatch} from 'react-redux'
 import {Subject} from 'rxjs'
@@ -13,6 +13,9 @@ type Props = BoxProps & {}
 
 const SearchInput = (props: Props) => {
   const {...boxProps} = props
+
+  // Refs
+  const mounted = useRef(false)
 
   // State
   const [search$] = useState(() => new Subject())
@@ -39,9 +42,13 @@ const SearchInput = (props: Props) => {
     }
   }, [])
 
+  // Update search on query (but not on initial mount)
   useEffect(() => {
-    // search$.next(e.currentTarget.value)
-    search$.next(query)
+    if (!mounted.current) {
+      mounted.current = true
+    } else {
+      search$.next(query)
+    }
   }, [query])
 
   // Callbacks
