@@ -2,7 +2,7 @@
 
 Alternative media management for [Sanity](https://www.sanity.io/).
 
-![example](https://user-images.githubusercontent.com/209129/70153124-56828d00-16a6-11ea-9d18-3c08e859dfdb.jpg)
+![example](https://user-images.githubusercontent.com/209129/96188577-e2a44880-0f36-11eb-96dd-f19c12bef017.jpg)
 
 ## Background
 
@@ -16,6 +16,9 @@ It can also be used as a [custom asset source](https://www.sanity.io/docs/custom
 
 - Adds a menu item / tool for easy access from anywhere in the studio
 - Grid / table views
+- Basic filename search with support for:
+  - searching by orientation `orientation:landscape|portrait|square`
+  - searching by file extension `extension:gif|jpg|png`
 - Multiple selection (hold down the shift key) and deletion
 - Custom filters to display unused assets and those referenced in the current document
 - Basic filename / date sorting
@@ -77,7 +80,6 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 - Multiple insertion into documents
 - More detailed metadata views
 - Folder management (!)
-- Fix typings across the board, consider using `typesafe-actions`
 - Remember browser options with local storage
 
 ## Contributing
