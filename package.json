@@ -31,8 +31,12 @@
     "watch": "tsc -w"
   },
   "dependencies": {
+    "@commitlint/cli": "11.0.0",
+    "@commitlint/config-conventional": "11.0.0",
     "@sanity/components": "2.0.2",
     "@tanem/react-nprogress": "3.0.8",
+    "commitizen": "4.2.2",
+    "cz-conventional-changelog": "3.3.0",
     "date-fns": "2.7.0",
     "filesize": "6.0.1",
     "groq": "1.149.16",
@@ -48,6 +52,7 @@
     "redux-devtools-extension": "2.13.8",
     "redux-observable": "1.2.0",
     "rxjs": "6.5.3",
+    "standard-version": "9.0.0",
     "styled-components": "5.2.0",
     "styled-system": "5.1.5",
     "typesafe-actions": "5.1.0"
@@ -78,6 +83,7 @@
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-prettier": "3.1.4",
     "eslint-plugin-react": "7.21.4",
+    "husky": "4.3.0",
     "prettier": "2.1.2",
     "react": "16.13.1",
     "react-dom": ">=16.9",
@@ -92,5 +98,15 @@
     "@sanity/form-builder": ">= 2.0.2",
     "react": ">= 16.9",
     "react-dom": ">=16.9"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
