@@ -4,17 +4,13 @@ import React from 'react'
 import {IoIosDownload, IoIosLink} from 'react-icons/io'
 import {useDispatch} from 'react-redux'
 
-import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsDeletePicked} from '../../modules/assets'
 import {dialogShowRefs} from '../../modules/dialog'
 import Box from '../../styled/Box'
 import Flex from '../../styled/Flex'
 import Button from '../Button/Button'
 
 const Footer = () => {
-  const {onSelect} = useAssetSourceActions()
-
   // Redux
   const dispatch = useDispatch()
   const byIds = useTypedSelector(state => state.assets.byIds)
@@ -41,18 +37,6 @@ const Footer = () => {
       textColor="lighterGray"
       width="100%"
     >
-      {/* LHS */}
-      <Flex alignItems="center" flex="3 0" height="headerRowHeight" order={[2, 0]}>
-        {/* Delete */}
-        {picked.length > 0 && (
-          <Flex height="100%">
-            <Button onClick={() => dispatch(assetsDeletePicked())} variant="danger">
-              Delete{picked.length > 1 ? ` ${picked.length} images` : ''}
-            </Button>
-          </Flex>
-        )}
-      </Flex>
-
       {/* Center */}
       <Box height="headerRowHeight" order={[0, 1]} overflow="hidden" width={['100%', 'auto']}>
         {singlePickedAsset && (
@@ -123,38 +107,7 @@ const Footer = () => {
             </Flex>
           </Flex>
         )}
-
-        {picked.length > 1 && (
-          <Flex alignItems="center" height="headerRowHeight" mx={3} textColor="lighterGray">
-            {picked.length} images selected
-          </Flex>
-        )}
       </Box>
-
-      {/* RHS */}
-      <Flex
-        alignItems="center"
-        flex="3 0"
-        height="headerRowHeight"
-        justifyContent="flex-end"
-        order={[2, 2]}
-      >
-        {/* Select */}
-        {onSelect && singlePickedAsset && (
-          <Button
-            onClick={() => {
-              onSelect([
-                {
-                  kind: 'assetDocumentId',
-                  value: singlePickedAsset._id
-                }
-              ])
-            }}
-          >
-            Select
-          </Button>
-        )}
-      </Flex>
     </Flex>
   )
 }

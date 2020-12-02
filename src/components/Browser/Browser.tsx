@@ -9,7 +9,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsLoadNextPage, assetsLoadPageIndex} from '../../modules/assets'
 import Box from '../../styled/Box'
 import Dialogs from '../Dialogs/Dialogs'
-import Footer from '../Footer/Footer'
+// import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import Snackbars from '../Snackbars/Snackbars'
 import CardView from '../View/Card'
@@ -100,12 +100,15 @@ const Browser = (props: Props) => {
 
         {/* Items */}
         <Box
-          bottom={[hasPicked ? 'headerRowHeight2x' : 0, hasPicked ? 'headerRowHeight' : 0]}
+          bottom={0}
           mx="auto"
           overflow="hidden"
           position="absolute"
           ref={viewRef}
-          top={['headerRowHeight3x', 'headerRowHeight2x']}
+          top={[
+            hasPicked ? 'headerRowHeight4x' : 'headerRowHeight3x', //
+            hasPicked ? 'headerRowHeight3x' : 'headerRowHeight2x'
+          ]}
           width="100%"
         >
           {hasItems && (view === 'grid' || 'table') && (
@@ -166,7 +169,6 @@ const Browser = (props: Props) => {
                             itemCount={itemCount}
                             onItemsRendered={newItemsRendered}
                             ref={ref}
-                            focusedId={picked.length === 1 ? picked[0].asset._id : undefined}
                             selectedAssets={selectedAssets}
                             width={width}
                           />
@@ -188,7 +190,7 @@ const Browser = (props: Props) => {
         </Box>
 
         {/* Footer */}
-        {hasPicked && <Footer />}
+        {/* {hasPicked && <Footer />} */}
       </Box>
     </>
   )

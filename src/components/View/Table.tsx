@@ -43,6 +43,7 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
         zIndex="header"
       >
         <Box textAlign="left"></Box>
+        <Box textAlign="left"></Box>
         <Box textAlign="left">Original filename</Box>
         <Box textAlign="left">Dimensions</Box>
         <Box textAlign="left">Type</Box>

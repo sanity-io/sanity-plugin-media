@@ -1,4 +1,5 @@
 import {Item} from '@types'
+import pluralize from 'pluralize'
 import React from 'react'
 import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
 import {IoIosClose} from 'react-icons/io'
@@ -6,7 +7,13 @@ import {useDispatch} from 'react-redux'
 
 import {ORDERS} from '../../config'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsSetFilter, assetsSetOrder, assetsSetView} from '../../modules/assets'
+import {
+  assetsDeletePicked,
+  assetsPickClear,
+  assetsSetFilter,
+  assetsSetOrder,
+  assetsSetView
+} from '../../modules/assets'
 import Box from '../../styled/Box'
 import Flex from '../../styled/Flex'
 import blocksToText from '../../util/blocksToText'
@@ -26,16 +33,31 @@ const Header = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
+  const byIds = useTypedSelector(state => state.assets.byIds)
   const currentDocument = useTypedSelector(state => state.document)
   const fetching = useTypedSelector(state => state.assets.fetching)
   const view = useTypedSelector(state => state.assets.view)
   const filters = useTypedSelector(state => state.assets.filters)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
 
+  const items = byIds ? Object.values(byIds) : []
+
+  const picked = items && items.filter(item => item.picked)
+
   // Try and infer title from `name` and `title` fields, in that order.
   // Convert blocks to plain text and trim extra whitespace.
   // If no title is found, the current document ID will be displayed instead.
   const currentDocumentTitle = blocksToText(currentDocument?.name || currentDocument?.title)?.trim()
+
+  // Callbacks
+  // -
+  const handlePickClear = () => {
+    dispatch(assetsPickClear())
+  }
+
+  const handleDeletePicked = () => {
+    dispatch(assetsDeletePicked())
+  }
 
   return (
     <Box
@@ -86,7 +108,7 @@ const Header = (props: Props) => {
         )}
       </Flex>
 
-      {/* Rows */}
+      {/* Rows: search / filters / orders  */}
       <Flex
         alignItems={['flex-start', 'center']}
         flexDirection={['column', 'row']}
@@ -137,6 +159,21 @@ const Header = (props: Props) => {
           </Box>
         </Flex>
       </Flex>
+
+      {/* Row: picked assets */}
+      {picked.length > 0 && (
+        <Flex alignItems="center" height="headerRowHeight" mx={3} textColor="lighterGray">
+          <Box mr={3}>
+            {picked.length} {pluralize('image', picked.length)} selected
+          </Box>
+          <Button onClick={handlePickClear} variant="default">
+            Deselect
+          </Button>
+          <Button onClick={handleDeletePicked} variant="danger">
+            Delete
+          </Button>
+        </Flex>
+      )}
 
       {/* Progress bar */}
       <Progress key={pageIndex} loading={fetching} />

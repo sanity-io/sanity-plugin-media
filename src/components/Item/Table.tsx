@@ -2,18 +2,21 @@ import {Item} from '@types'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
-import {IoIosAlert, IoMdCheckmarkCircle} from 'react-icons/io'
+import {IoIosAlert} from 'react-icons/io'
 import {useDispatch} from 'react-redux'
 
-import {assetsPick, assetsPickClear} from '../../modules/assets'
-import {dialogShowConflicts} from '../../modules/dialog'
+import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
+import {assetsPick} from '../../modules/assets'
+import {dialogShowConflicts, dialogShowRefs} from '../../modules/dialog'
 import Image from '../../styled/Image'
 import Box from '../../styled/Box'
 import Flex from '../../styled/Flex'
 import Button from '../Button/Button'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
 import Spinner from '../Spinner/Spinner'
+import useTypedSelector from '../../hooks/useTypedSelector'
 import imageDprUrl from '../../util/imageDprUrl'
+import Checkbox from '../Checkbox/Checkbox'
 
 type Props = {
   item: Item
@@ -23,10 +26,16 @@ type Props = {
 }
 
 const TableItem = (props: Props) => {
-  const {item, selected, shiftPressed, style} = props
+  const {
+    item,
+    selected,
+    // shiftPressed,
+    style
+  } = props
 
   // Redux
   const dispatch = useDispatch()
+  const currentDocument = useTypedSelector(state => state.document)
 
   const asset = item?.asset
   const dimensions = item?.asset?.metadata?.dimensions
@@ -35,17 +44,33 @@ const TableItem = (props: Props) => {
   const picked = item?.picked
   const updating = item?.updating
 
+  const {onSelect} = useAssetSourceActions()
+
   // Short circuit if no asset is available
   if (!asset) {
     return null
   }
 
-  const handleAssetPick = () => {
-    if (!shiftPressed) {
-      dispatch(assetsPickClear())
-      dispatch(assetsPick(asset._id, true))
+  // Callbacks
+  const handlePickToggle = (e: MouseEvent) => {
+    e.stopPropagation()
+    dispatch(assetsPick(asset._id, !picked))
+  }
+
+  const handleClick = (e: MouseEvent) => {
+    e.stopPropagation()
+
+    if (currentDocument) {
+      if (onSelect) {
+        onSelect([
+          {
+            kind: 'assetDocumentId',
+            value: asset._id
+          }
+        ])
+      }
     } else {
-      dispatch(assetsPick(asset._id, !picked))
+      dispatch(dialogShowRefs(asset))
     }
   }
 
@@ -62,15 +87,16 @@ const TableItem = (props: Props) => {
   return (
     <Box
       alignItems="center"
-      bg={picked ? 'overlayTableRow' : 'none'}
+      bg={selected ? 'overlayTableRow' : 'none'}
+      cursor="pointer"
       display="grid"
       fontSize={1}
-      gridColumnGap={[3, 2]}
+      gridColumnGap={2}
       gridTemplateColumns={['tableSmall', 'tableLarge']}
       gridTemplateRows={['auto', '1fr']}
       height={['tableRowHeight.0', 'tableRowHeight.1']}
-      onClick={handleAssetPick}
-      px={[3, 2]}
+      onClick={handleClick}
+      px={2}
       py={[2, 0]}
       style={style}
       textColor="lightGray"
@@ -78,8 +104,21 @@ const TableItem = (props: Props) => {
       userSelect="none"
       whiteSpace="nowrap"
     >
+      {/* Picked checkbox */}
+      <Flex
+        alignItems="center"
+        gridColumn={[1, 1]}
+        gridRowStart={['1', 'auto']}
+        gridRowEnd={['span 5', 'auto']}
+        height="100%"
+        justifyContent="center"
+        position="relative"
+      >
+        <Checkbox checked={picked} height="100%" onClick={handlePickToggle} position="relative" />
+      </Flex>
+
       {/* Preview image + spinner */}
-      <Box gridColumn={[1, 1]} gridRowStart={['1', 'auto']} gridRowEnd={['span 5', 'auto']}>
+      <Box gridColumn={[2, 2]} gridRowStart={['1', 'auto']} gridRowEnd={['span 5', 'auto']}>
         <ResponsiveBox aspectRatio={4 / 3}>
           <Image
             draggable={false}
@@ -87,21 +126,6 @@ const TableItem = (props: Props) => {
             showCheckerboard={!isOpaque}
             src={imageUrl}
           />
-
-          {/* Selected checkmark */}
-          {selected && (
-            <Flex
-              alignItems="center"
-              justifyContent="center"
-              left={0}
-              position="absolute"
-              size="100%"
-              textColor="white"
-              top={0}
-            >
-              <IoMdCheckmarkCircle size={16} />
-            </Flex>
-          )}
 
           {/* Spinner */}
           {updating && (
@@ -123,7 +147,7 @@ const TableItem = (props: Props) => {
 
       {/* Filename */}
       <Box
-        gridColumn={[2, 2]}
+        gridColumn={[3, 3]}
         gridRow={[1, 'auto']}
         opacity={cellOpacity}
         overflow="hidden"
@@ -133,27 +157,27 @@ const TableItem = (props: Props) => {
       </Box>
 
       {/* Dimensions */}
-      <Box gridColumn={[2, 3]} gridRow={[2, 'auto']} opacity={cellOpacity}>
+      <Box gridColumn={[3, 4]} gridRow={[2, 'auto']} opacity={cellOpacity}>
         {dimensions.width || '??'} x {dimensions.height || '??'}
       </Box>
 
       {/* File extension */}
-      <Box gridColumn={[2, 4]} gridRow={[3, 'auto']} opacity={cellOpacity}>
+      <Box gridColumn={[3, 5]} gridRow={[3, 'auto']} opacity={cellOpacity}>
         {asset.extension.toUpperCase()}
       </Box>
 
       {/* Size */}
-      <Box gridColumn={[2, 5]} gridRow={[4, 'auto']} opacity={cellOpacity}>
+      <Box gridColumn={[3, 6]} gridRow={[4, 'auto']} opacity={cellOpacity}>
         {filesize(asset.size, {round: 0})}
       </Box>
 
       {/* Last updated */}
-      <Box gridColumn={[2, 6]} gridRow={[5, 'auto']} opacity={cellOpacity}>
+      <Box gridColumn={[3, 7]} gridRow={[5, 'auto']} opacity={cellOpacity}>
         {formatRelative(new Date(asset._updatedAt), new Date())}
       </Box>
 
       {/* Error */}
-      <Box gridColumn={[3, 7]} gridRowStart="1" gridRowEnd={['span 5', 'auto']} mx="auto">
+      <Box gridColumn={[4, 8]} gridRowStart="1" gridRowEnd={['span 5', 'auto']} mx="auto">
         {errorCode && (
           <Button icon={IoIosAlert({size: 20})} onClick={handleDialogConflicts} variant="danger" />
         )}

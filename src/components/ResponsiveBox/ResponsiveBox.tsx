@@ -8,6 +8,7 @@ import Box from '../../styled/Box'
 type Props = BoxProps & {
   aspectRatio: number | number[]
   children: ReactNode
+  onClick?: Function // TODO: revise type
 }
 
 const Container = styled(Box)<{aspectRatio: number | number[]}>`
@@ -20,12 +21,13 @@ const Container = styled(Box)<{aspectRatio: number | number[]}>`
 `
 
 const ResponsiveBox = (props: Props) => {
-  const {aspectRatio, children, ...boxProps} = props
+  const {aspectRatio, children, onClick, ...boxProps} = props
 
   return (
     <Container
       aspectRatio={aspectRatio} //
       height={0}
+      onClick={onClick}
       position="relative"
       width="100%"
       {...boxProps}

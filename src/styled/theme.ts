@@ -2,16 +2,15 @@ import {DefaultTheme, createGlobalStyle} from 'styled-components'
 
 const HEADER_ROW_HEIGHT = 50 // px
 
-const headerRowHeight = `${HEADER_ROW_HEIGHT}px`
-const headerRowHeight2x = `${HEADER_ROW_HEIGHT * 2}px`
-const headerRowHeight3x = `${HEADER_ROW_HEIGHT * 3}px`
+const headerRowHeight = (rows = 1) => `${HEADER_ROW_HEIGHT * rows}px`
 const tableHeaderHeight = '34px'
 const tableRowHeight = ['115px', '100px']
 
 const sizes: string[] & Record<string, any> = []
-sizes.headerRowHeight = headerRowHeight
-sizes.headerRowHeight2x = headerRowHeight2x
-sizes.headerRowHeight3x = headerRowHeight3x
+sizes.headerRowHeight = headerRowHeight(1)
+sizes.headerRowHeight2x = headerRowHeight(2)
+sizes.headerRowHeight3x = headerRowHeight(3)
+sizes.headerRowHeight4x = headerRowHeight(4)
 sizes.tableHeaderHeight = tableHeaderHeight
 sizes.tableRowHeight = tableRowHeight
 
@@ -23,9 +22,10 @@ const space: string[] & Record<string, any> = [
   '2.4rem',
   '4.8rem'
 ]
-space.headerRowHeight = headerRowHeight
-space.headerRowHeight2x = headerRowHeight2x
-space.headerRowHeight3x = headerRowHeight3x
+space.headerRowHeight = headerRowHeight(1)
+space.headerRowHeight2x = headerRowHeight(2)
+space.headerRowHeight3x = headerRowHeight(3)
+space.headerRowHeight4x = headerRowHeight(4)
 space.tableHeaderHeight = tableHeaderHeight
 space.tableRowHeight = tableRowHeight
 
@@ -51,8 +51,8 @@ const theme: DefaultTheme = {
     overlayTableRow: 'rgba(255, 255, 255, 0.035)'
   },
   gridTemplateColumns: {
-    tableSmall: '8rem auto 1.5rem',
-    tableLarge: '6rem auto 5.5rem 2.75rem 3.5rem 8.5rem 2rem'
+    tableSmall: '1.5rem 8rem auto 1.5rem',
+    tableLarge: '1.5rem 6rem auto 5.5rem 2.75rem 3.5rem 8.5rem 2rem'
   },
   fonts: {
     default: `-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Droid Sans, Helvetica Neue, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif`

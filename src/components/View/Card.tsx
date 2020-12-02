@@ -7,7 +7,6 @@ import Box from '../../styled/Box'
 import CardItem from '../Item/Card'
 
 type Props = {
-  focusedId?: string
   height: number
   items: Item[]
   itemCount: number
@@ -33,7 +32,7 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
 }
 
 const VirtualCell = memo(({columnIndex, data, rowIndex, style}: VirtualCellProps) => {
-  const {columnCount, focusedId, items, selectedIds, shiftPressed} = data
+  const {columnCount, items, selectedIds, shiftPressed} = data
   const index = columnCount * rowIndex + columnIndex
   const item = items[index]
   const assetId = item?.asset?._id
@@ -52,7 +51,6 @@ const VirtualCell = memo(({columnIndex, data, rowIndex, style}: VirtualCellProps
   return (
     <CardItem
       item={item}
-      focused={focusedId === assetId}
       key={`grid-${assetId}`}
       selected={selectedIds.includes(assetId)}
       shiftPressed={shiftPressed}
@@ -62,7 +60,7 @@ const VirtualCell = memo(({columnIndex, data, rowIndex, style}: VirtualCellProps
 })
 
 const CardView = forwardRef((props: Props, ref: Ref<any>) => {
-  const {focusedId, height, items, itemCount, onItemsRendered, selectedAssets, width} = props
+  const {height, items, itemCount, onItemsRendered, selectedAssets, width} = props
 
   const shiftPressed = useKeyPress('Shift')
 
@@ -83,7 +81,6 @@ const CardView = forwardRef((props: Props, ref: Ref<any>) => {
       innerElementType={innerElementType}
       itemData={{
         columnCount,
-        focusedId,
         items,
         selectedIds,
         shiftPressed
