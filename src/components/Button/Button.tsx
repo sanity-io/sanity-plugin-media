@@ -3,7 +3,7 @@ import React, {MouseEvent, ReactElement, ReactNode} from 'react'
 import styled from 'styled-components'
 import {variant} from 'styled-system'
 
-import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import {BoxProps, ButtonVariant} from '../../types'
 
 type Props = BoxProps & {
@@ -14,7 +14,7 @@ type Props = BoxProps & {
   variant?: ButtonVariant
 }
 
-const Container = styled(Box)<{variant: ButtonVariant}>`
+const Container = styled(Flex)<{variant: ButtonVariant}>`
   transition: background 250ms;
 
   ${props =>
@@ -63,7 +63,6 @@ const Button = (props: Props) => {
       bg="transparent"
       border="none"
       cursor={disabled ? 'default' : 'pointer'}
-      display="flex"
       fontSize={1}
       height="headerRowHeight"
       justifyContent="center"
@@ -75,21 +74,20 @@ const Button = (props: Props) => {
     >
       {/* Icon */}
       {icon && (
-        <Box
+        <Flex
           alignItems="center"
-          display="flex"
           justifyContent="center"
           pl={children ? 3 : 0}
           width={children ? 'auto' : 'headerRowHeight'}
         >
           {icon}
-        </Box>
+        </Flex>
       )}
 
       {children && (
-        <Box alignItems="center" display="flex" pl={icon ? 1 : 3} pr={3}>
+        <Flex alignItems="center" pl={icon ? 1 : 3} pr={3}>
           <strong>{children}</strong>
-        </Box>
+        </Flex>
       )}
     </Container>
   )

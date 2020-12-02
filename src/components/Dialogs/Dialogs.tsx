@@ -1,7 +1,7 @@
 import React from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import RefsDialog from '../Dialog/Refs'
 import ConflictsDialog from '../Dialog/Conflicts'
 
@@ -16,10 +16,9 @@ const Dialogs = () => {
   }
 
   return (
-    <Box
+    <Flex
       alignItems="center"
       bg="rgba(0, 0, 0, 0.9)"
-      display="flex"
       justifyContent="center"
       left={0}
       position="fixed"
@@ -29,7 +28,7 @@ const Dialogs = () => {
     >
       {asset && type === 'conflicts' && <ConflictsDialog item={currentItem} />}
       {asset && type === 'refs' && <RefsDialog item={currentItem} />}
-    </Box>
+    </Flex>
   )
 }
 

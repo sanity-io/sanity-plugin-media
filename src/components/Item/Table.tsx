@@ -8,6 +8,7 @@ import {assetsPick, assetsPickClear} from '../../modules/assets'
 import {dialogShowConflicts} from '../../modules/dialog'
 import Image from '../../styled/Image'
 import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import Button from '../Button/Button'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
 import Spinner from '../Spinner/Spinner'
@@ -89,9 +90,8 @@ const TableItem = (props: Props) => {
 
           {/* Selected checkmark */}
           {selected && (
-            <Box
+            <Flex
               alignItems="center"
-              display="flex"
               justifyContent="center"
               left={0}
               position="absolute"
@@ -100,14 +100,13 @@ const TableItem = (props: Props) => {
               top={0}
             >
               <IoMdCheckmarkCircle size={16} />
-            </Box>
+            </Flex>
           )}
 
           {/* Spinner */}
           {updating && (
-            <Box
+            <Flex
               alignItems="center"
-              display="flex"
               fontSize={2}
               justifyContent="center"
               left={0}
@@ -117,7 +116,7 @@ const TableItem = (props: Props) => {
               top={0}
             >
               <Spinner />
-            </Box>
+            </Flex>
           )}
         </ResponsiveBox>
       </Box>

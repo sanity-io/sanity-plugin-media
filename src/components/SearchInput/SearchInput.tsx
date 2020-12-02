@@ -6,6 +6,7 @@ import {debounceTime, distinctUntilChanged} from 'rxjs/operators'
 
 import {assetsSetSearchQuery} from '../../modules/assets'
 import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import FormInput from '../../styled/FormInput'
 import {BoxProps} from '../../types'
 
@@ -57,9 +58,16 @@ const SearchInput = (props: Props) => {
   }
 
   return (
-    <Box alignItems="center" display="flex" position="relative" width="100%" {...boxProps}>
+    <Flex alignItems="center" position="relative" width="100%" {...boxProps}>
       {/* Search icon */}
-      <Box left={0} position="absolute" pointerEvents="none" px="9px" textColor="lighterGray">
+      <Box
+        left={0}
+        mt="3px"
+        position="absolute"
+        pointerEvents="none"
+        px="9px"
+        textColor="lighterGray"
+      >
         <IoIosSearch size={16} />
       </Box>
 
@@ -76,10 +84,9 @@ const SearchInput = (props: Props) => {
 
       {/* Clear form button */}
       {query.length > 0 && (
-        <Box
+        <Flex
           alignItems="center"
           cursor="pointer"
-          display="flex"
           height="100%"
           onClick={() => setQuery('')}
           position="absolute"
@@ -87,9 +94,9 @@ const SearchInput = (props: Props) => {
           right={0}
         >
           <IoIosClose size={18} style={{display: 'block'}} />
-        </Box>
+        </Flex>
       )}
-    </Box>
+    </Flex>
   )
 }
 

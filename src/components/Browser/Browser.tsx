@@ -43,7 +43,6 @@ const Browser = (props: Props) => {
     view
     // totalCount
   } = useTypedSelector(state => state.assets)
-  const currentDocument = useTypedSelector(state => state.document)
 
   const items = allIds.map(id => byIds[id])
 
@@ -106,10 +105,7 @@ const Browser = (props: Props) => {
           overflow="hidden"
           position="absolute"
           ref={viewRef}
-          top={[
-            currentDocument ? 'headerRowHeight3x' : 'headerRowHeight2x',
-            currentDocument ? 'headerRowHeight2x' : 'headerRowHeight'
-          ]}
+          top={['headerRowHeight3x', 'headerRowHeight2x']}
           width="100%"
         >
           {hasItems && (view === 'grid' || 'table') && (

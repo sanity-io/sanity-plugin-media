@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import {BoxProps} from '../../types'
 
 type Props = BoxProps & {
@@ -12,12 +13,10 @@ const Label = (props: Props) => {
   const {title, type, ...boxProps} = props
 
   return (
-    <Box
+    <Flex
       alignItems="center"
       bg="darkerGray"
       borderRadius="2px"
-      display="flex"
-      mx={2}
       px={2}
       py={1}
       textColor="lighterGray"
@@ -43,7 +42,7 @@ const Label = (props: Props) => {
       >
         {title}
       </Box>
-    </Box>
+    </Flex>
   )
 }
 

@@ -57,7 +57,7 @@ const theme: DefaultTheme = {
   fonts: {
     default: `-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Droid Sans, Helvetica Neue, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif`
   },
-  fontSizes: ['10px', '12px', '14px'],
+  fontSizes: ['10px', '12px', '14px', '16px'],
   sizes,
   space,
   tableRowHeight,

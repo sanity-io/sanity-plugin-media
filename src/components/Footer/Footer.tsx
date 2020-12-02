@@ -8,6 +8,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsDeletePicked} from '../../modules/assets'
 import {dialogShowRefs} from '../../modules/dialog'
 import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import {Asset} from '../../types'
 import Button from '../Button/Button'
 
@@ -29,11 +30,10 @@ const Footer = () => {
   }
 
   return (
-    <Box
+    <Flex
       alignItems="center"
       bg="darkestGray"
       bottom={0}
-      display="flex"
       flexWrap="wrap"
       justifyContent="space-between"
       left={0}
@@ -42,30 +42,28 @@ const Footer = () => {
       width="100%"
     >
       {/* LHS */}
-      <Box alignItems="center" display="flex" flex="3 0" height="headerRowHeight" order={[2, 0]}>
+      <Flex alignItems="center" flex="3 0" height="headerRowHeight" order={[2, 0]}>
         {/* Delete */}
         {picked.length > 0 && (
-          <Box display="flex" height="100%">
+          <Flex height="100%">
             <Button onClick={() => dispatch(assetsDeletePicked())} variant="danger">
               Delete{picked.length > 1 ? ` ${picked.length} images` : ''}
             </Button>
-          </Box>
+          </Flex>
         )}
-      </Box>
+      </Flex>
 
       {/* Center */}
       <Box height="headerRowHeight" order={[0, 1]} overflow="hidden" width={['100%', 'auto']}>
         {singlePickedAsset && (
-          <Box
+          <Flex
             alignItems="center"
-            display="flex"
             height="100%"
             justifyContent={['space-between', 'center']}
             width="100%"
           >
-            <Box
+            <Flex
               alignItems="center"
-              display="flex"
               flexDirection="row"
               ml={[2, 0]}
               minWidth={0}
@@ -109,9 +107,9 @@ const Footer = () => {
               >
                 {singlePickedAsset.extension.toUpperCase()}
               </Box>
-            </Box>
+            </Flex>
 
-            <Box alignItems="center" display="flex" height="100%" ml={[0, 2]}>
+            <Flex alignItems="center" height="100%" ml={[0, 2]}>
               {/* Show references */}
               <Button
                 icon={IoIosLink({size: 16})}
@@ -122,27 +120,20 @@ const Footer = () => {
                 icon={IoIosDownload({size: 16})}
                 onClick={handleDownloadOriginal.bind(null, singlePickedAsset)}
               />
-            </Box>
-          </Box>
+            </Flex>
+          </Flex>
         )}
 
         {picked.length > 1 && (
-          <Box
-            alignItems="center"
-            display="flex"
-            height="headerRowHeight"
-            mx={3}
-            textColor="lighterGray"
-          >
+          <Flex alignItems="center" height="headerRowHeight" mx={3} textColor="lighterGray">
             {picked.length} images selected
-          </Box>
+          </Flex>
         )}
       </Box>
 
       {/* RHS */}
-      <Box
+      <Flex
         alignItems="center"
-        display="flex"
         flex="3 0"
         height="headerRowHeight"
         justifyContent="flex-end"
@@ -150,23 +141,21 @@ const Footer = () => {
       >
         {/* Select */}
         {onSelect && singlePickedAsset && (
-          <Box display="flex">
-            <Button
-              onClick={() => {
-                onSelect([
-                  {
-                    kind: 'assetDocumentId',
-                    value: singlePickedAsset._id
-                  }
-                ])
-              }}
-            >
-              Select
-            </Button>
-          </Box>
+          <Button
+            onClick={() => {
+              onSelect([
+                {
+                  kind: 'assetDocumentId',
+                  value: singlePickedAsset._id
+                }
+              ])
+            }}
+          >
+            Select
+          </Button>
         )}
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   )
 }
 

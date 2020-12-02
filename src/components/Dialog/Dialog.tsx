@@ -5,6 +5,7 @@ import {IoIosAlert, IoIosClose} from 'react-icons/io'
 
 import {Asset, DialogAction} from '../../types'
 import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import Image from '../../styled/Image'
 import imageDprUrl from '../../util/imageDprUrl'
 import Button from '../Button/Button'
@@ -36,8 +37,7 @@ const Dialog = (props: Props) => {
   }, [containerElement])
 
   return (
-    <Box
-      display="flex"
+    <Flex
       flexDirection="column"
       maxHeight="calc(100% - 100px)"
       maxWidth="560px"
@@ -46,29 +46,28 @@ const Dialog = (props: Props) => {
       width="100%"
     >
       {/* Header */}
-      <Box
+      <Flex
         alignItems="center"
         bg="darkestGray"
         fontSize={1}
-        display="flex"
         height="headerRowHeight"
         justifyContent="space-between"
         pl={3}
         textColor="lighterGray"
       >
         {/* Title */}
-        <Box alignItems="center" display="flex" textColor={isDanger ? 'red' : 'inherit'}>
+        <Flex alignItems="center" textColor={isDanger ? 'red' : 'inherit'}>
           {isDanger && (
             <Box mr={1}>
               <IoIosAlert size={18} style={{display: 'block'}} />
             </Box>
           )}
           <strong>{title}</strong>
-        </Box>
+        </Flex>
 
         {/* Close */}
         <Button icon={IoIosClose({size: 25})} onClick={onClose} />
-      </Box>
+      </Flex>
 
       <Box
         // alignItems="center"
@@ -117,10 +116,9 @@ const Dialog = (props: Props) => {
       </Box>
 
       {/* Footer */}
-      <Box
+      <Flex
         alignItems="center"
         bg="darkestGray"
-        display="flex"
         height="headerRowHeight"
         justifyContent="space-between"
       >
@@ -136,8 +134,8 @@ const Dialog = (props: Props) => {
             </Button>
           )
         })}
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   )
 }
 

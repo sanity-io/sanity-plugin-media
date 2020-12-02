@@ -6,6 +6,7 @@ import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import {assetsPick, assetsPickClear} from '../../modules/assets'
 import {dialogShowConflicts} from '../../modules/dialog'
 import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import Image from '../../styled/Image'
 import {Item} from '../../types'
 import imageDprUrl from '../../util/imageDprUrl'
@@ -70,11 +71,10 @@ const CardItem = (props: Props) => {
   const imageOpacity = updating ? 0.25 : selected && !picked ? 0.25 : 1
 
   return (
-    <Box
+    <Flex
       alignItems="center"
       bg={picked ? 'overlayCard' : 'none'}
       borderRadius="4px"
-      display="flex"
       justifyContent="center"
       onClick={handleAssetPick}
       onDoubleClick={selected ? undefined : handleSelect}
@@ -102,9 +102,8 @@ const CardItem = (props: Props) => {
 
         {/* Spinner */}
         {updating && (
-          <Box
+          <Flex
             alignItems="center"
-            display="flex"
             fontSize={3}
             justifyContent="center"
             left={0}
@@ -114,7 +113,7 @@ const CardItem = (props: Props) => {
             top={0}
           >
             <Spinner />
-          </Box>
+          </Flex>
         )}
 
         {/* Select button */}
@@ -141,7 +140,7 @@ const CardItem = (props: Props) => {
           </Box>
         )}
       </ResponsiveBox>
-    </Box>
+    </Flex>
   )
 }
 

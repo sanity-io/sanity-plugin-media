@@ -7,6 +7,7 @@ import {ORDERS} from '../../config'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsSetFilter, assetsSetOrder, assetsSetView} from '../../modules/assets'
 import Box from '../../styled/Box'
+import Flex from '../../styled/Flex'
 import blocksToText from '../../util/blocksToText'
 import {Item} from '../../types'
 import Button from '../Button/Button'
@@ -49,40 +50,45 @@ const Header = (props: Props) => {
       width="100%"
     >
       {/* Row: Current document / close button */}
-      {currentDocument && (
-        <Box
-          alignItems="center"
-          display="flex"
-          height="headerRowHeight"
-          justifyContent="space-between"
-          overflow="hidden"
-          textAlign="left"
-          width="100%"
-        >
-          {/* Label */}
-          <Label
-            minWidth={0}
-            title={currentDocumentTitle ? currentDocumentTitle : currentDocument._id}
-            type={`${currentDocument._type} ${!currentDocumentTitle ? 'id' : ''}`}
-          />
+      <Flex
+        alignItems="center"
+        height="headerRowHeight"
+        justifyContent="space-between"
+        // overflow="hidden"
+        textAlign="left"
+        width="100%"
+      >
+        {/* Label */}
+        <Flex minWidth={0} overflow="hidden">
+          <Box color="white" fontSize={3} fontWeight={600} mx={3}>
+            {currentDocument ? 'Select media' : 'Browse media'}
+          </Box>
 
-          {/* Close */}
-          {onClose && (
-            <Box
-              // bg="darkerGray"
-              flexShrink={0}
-              height="100%"
-            >
-              <Button icon={IoIosClose({size: 25})} onClick={onClose} />
-            </Box>
+          {currentDocument && (
+            <Label
+              minWidth={0}
+              mr={2}
+              title={currentDocumentTitle ? currentDocumentTitle : currentDocument._id}
+              type={`${currentDocument._type} ${!currentDocumentTitle ? 'id' : ''}`}
+            />
           )}
-        </Box>
-      )}
+        </Flex>
+
+        {/* Close */}
+        {onClose && (
+          <Box
+            // bg="darkerGray"
+            flexShrink={0}
+            height="100%"
+          >
+            <Button icon={IoIosClose({size: 25})} onClick={onClose} />
+          </Box>
+        )}
+      </Flex>
 
       {/* Rows */}
-      <Box
+      <Flex
         alignItems={['flex-start', 'center']}
-        display="flex"
         flexDirection={['column', 'row']}
         height={['headerRowHeight2x', 'headerRowHeight']}
         justifyContent="space-between"
@@ -90,26 +96,24 @@ const Header = (props: Props) => {
         width="100%"
       >
         {/* Search */}
-        <Box
+        <Flex
           alignItems="center"
-          display="flex"
           flexGrow={1}
           height="100%"
           justifyContent="flex-start"
           width="100%"
         >
           <SearchInput maxWidth={['none', '340px']} mx={2} />
-        </Box>
+        </Flex>
 
         {/* Views + filters + orders*/}
-        <Box
+        <Flex
           alignItems="center"
-          display="flex"
           height="100%"
           justifyContent={['space-between', 'flex-end']}
           width="100%"
         >
-          <Box display="flex">
+          <Flex>
             <Button
               icon={AiFillAppstore({size: 18})}
               onClick={() => dispatch(assetsSetView('grid'))}
@@ -123,7 +127,7 @@ const Header = (props: Props) => {
               pointerEvents={view === 'table' ? 'none' : 'auto'}
               variant={view === 'table' ? 'default' : 'secondary'}
             />
-          </Box>
+          </Flex>
 
           <Box>
             {filters && (
@@ -131,8 +135,8 @@ const Header = (props: Props) => {
             )}
             <Select items={ORDERS} mx={2} onChange={value => dispatch(assetsSetOrder(value))} />
           </Box>
-        </Box>
-      </Box>
+        </Flex>
+      </Flex>
 
       {/* Progress bar */}
       <Progress key={pageIndex} loading={fetching} />
