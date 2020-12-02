@@ -8,8 +8,10 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsLoadNextPage, assetsLoadPageIndex} from '../../modules/assets'
 import Box from '../../styled/Box'
 import {Asset} from '../../types'
+import Dialogs from '../Dialogs/Dialogs'
 import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
+import Snackbars from '../Snackbars/Snackbars'
 import CardView from '../View/Card'
 import TableView from '../View/Table'
 
@@ -83,105 +85,116 @@ const Browser = (props: Props) => {
   const itemCount = hasMore ? items.length + 1 : items.length
 
   return (
-    <Box bg="darkerGray" fontSize={1} justifyContent="space-between" minHeight="100%">
-      {/* Header */}
-      <Header items={items} onClose={onClose} />
+    <>
+      <Snackbars />
+      <Dialogs />
 
-      {/* Items */}
       <Box
-        bottom={[hasPicked ? 'headerRowHeight2x' : 0, hasPicked ? 'headerRowHeight' : 0]}
-        mx="auto"
-        overflow="hidden"
-        position="absolute"
-        ref={viewRef}
-        top={[
-          currentDocument ? 'headerRowHeight3x' : 'headerRowHeight2x',
-          currentDocument ? 'headerRowHeight2x' : 'headerRowHeight'
-        ]}
-        width="100%"
+        bg="darkerGray"
+        fontFamily="default"
+        fontSize={1}
+        justifyContent="space-between"
+        minHeight="100%"
       >
-        {hasItems && (view === 'grid' || 'table') && (
-          <AutoSizer>
-            {({height, width}) => {
-              return (
-                <InfiniteLoader
-                  isItemLoaded={isItemLoaded}
-                  itemCount={itemCount}
-                  loadMoreItems={handleLoadMoreItems}
-                >
-                  {({onItemsRendered, ref}: InfiniteLoaderRenderProps) => {
-                    // View: Table
-                    if (view === 'table') {
-                      return (
-                        <TableView
-                          height={height}
-                          items={items}
-                          itemCount={itemCount}
-                          onItemsRendered={onItemsRendered}
-                          ref={ref}
-                          selectedAssets={selectedAssets}
-                          width={width}
-                        />
-                      )
-                    }
+        {/* Header */}
+        <Header items={items} onClose={onClose} />
 
-                    // View: Grid
-                    if (view === 'grid') {
-                      // The `onItemsRendered` method signature for `react-window` grids is different and
-                      // requires an adaptor, below.
-                      // Source: https://github.com/bvaughn/react-window-infinite-loader/issues/3
-                      const newItemsRendered = (gridData: GridOnItemsRenderedProps) => {
-                        const {
-                          overscanRowStartIndex,
-                          overscanRowStopIndex,
-                          overscanColumnStopIndex
-                        } = gridData
-
-                        const endCol = overscanColumnStopIndex + 1
-                        const startRow = overscanRowStartIndex
-                        const endRow = overscanRowStopIndex
-                        const visibleStartIndex = startRow * endCol
-                        const visibleStopIndex = endRow * endCol
-
-                        onItemsRendered({
-                          overscanStartIndex: visibleStartIndex - 10,
-                          overscanStopIndex: visibleStopIndex + 10,
-                          visibleStartIndex,
-                          visibleStopIndex
-                        })
+        {/* Items */}
+        <Box
+          bottom={[hasPicked ? 'headerRowHeight2x' : 0, hasPicked ? 'headerRowHeight' : 0]}
+          mx="auto"
+          overflow="hidden"
+          position="absolute"
+          ref={viewRef}
+          top={[
+            currentDocument ? 'headerRowHeight3x' : 'headerRowHeight2x',
+            currentDocument ? 'headerRowHeight2x' : 'headerRowHeight'
+          ]}
+          width="100%"
+        >
+          {hasItems && (view === 'grid' || 'table') && (
+            <AutoSizer>
+              {({height, width}) => {
+                return (
+                  <InfiniteLoader
+                    isItemLoaded={isItemLoaded}
+                    itemCount={itemCount}
+                    loadMoreItems={handleLoadMoreItems}
+                  >
+                    {({onItemsRendered, ref}: InfiniteLoaderRenderProps) => {
+                      // View: Table
+                      if (view === 'table') {
+                        return (
+                          <TableView
+                            height={height}
+                            items={items}
+                            itemCount={itemCount}
+                            onItemsRendered={onItemsRendered}
+                            ref={ref}
+                            selectedAssets={selectedAssets}
+                            width={width}
+                          />
+                        )
                       }
 
-                      return (
-                        <CardView
-                          height={height}
-                          items={items}
-                          itemCount={itemCount}
-                          onItemsRendered={newItemsRendered}
-                          ref={ref}
-                          focusedId={picked.length === 1 ? picked[0].asset._id : undefined}
-                          selectedAssets={selectedAssets}
-                          width={width}
-                        />
-                      )
-                    }
-                  }}
-                </InfiniteLoader>
-              )
-            }}
-          </AutoSizer>
-        )}
+                      // View: Grid
+                      if (view === 'grid') {
+                        // The `onItemsRendered` method signature for `react-window` grids is different and
+                        // requires an adaptor, below.
+                        // Source: https://github.com/bvaughn/react-window-infinite-loader/issues/3
+                        const newItemsRendered = (gridData: GridOnItemsRenderedProps) => {
+                          const {
+                            overscanRowStartIndex,
+                            overscanRowStopIndex,
+                            overscanColumnStopIndex
+                          } = gridData
 
-        {/* No results */}
-        {!hasItems && hasFetchedOnce && !fetching && (
-          <Box fontSize={1} p={3} textColor="lighterGray">
-            No results for the current query
-          </Box>
-        )}
+                          const endCol = overscanColumnStopIndex + 1
+                          const startRow = overscanRowStartIndex
+                          const endRow = overscanRowStopIndex
+                          const visibleStartIndex = startRow * endCol
+                          const visibleStopIndex = endRow * endCol
+
+                          onItemsRendered({
+                            overscanStartIndex: visibleStartIndex - 10,
+                            overscanStopIndex: visibleStopIndex + 10,
+                            visibleStartIndex,
+                            visibleStopIndex
+                          })
+                        }
+
+                        return (
+                          <CardView
+                            height={height}
+                            items={items}
+                            itemCount={itemCount}
+                            onItemsRendered={newItemsRendered}
+                            ref={ref}
+                            focusedId={picked.length === 1 ? picked[0].asset._id : undefined}
+                            selectedAssets={selectedAssets}
+                            width={width}
+                          />
+                        )
+                      }
+                    }}
+                  </InfiniteLoader>
+                )
+              }}
+            </AutoSizer>
+          )}
+
+          {/* No results */}
+          {!hasItems && hasFetchedOnce && !fetching && (
+            <Box fontSize={1} p={3} textColor="lighterGray">
+              No results for the current query
+            </Box>
+          )}
+        </Box>
+
+        {/* Footer */}
+        {hasPicked && <Footer />}
       </Box>
-
-      {/* Footer */}
-      {hasPicked && <Footer />}
-    </Box>
+    </>
   )
 }
 
