@@ -1,4 +1,4 @@
-import {Document, BrowserFilter, BrowserOrder} from './types'
+import {Document, BrowserFilter, BrowserOrder} from '@types'
 
 // Filters to display in header dropdown
 export const getFilters = (currentDocument?: Document) => {

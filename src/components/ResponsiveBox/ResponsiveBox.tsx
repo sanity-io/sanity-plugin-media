@@ -1,9 +1,9 @@
+import {BoxProps} from '@types'
 import React, {ReactNode} from 'react'
 import styled from 'styled-components'
 import {system} from 'styled-system'
 
 import Box from '../../styled/Box'
-import {BoxProps} from '../../types'
 
 type Props = BoxProps & {
   aspectRatio: number | number[]

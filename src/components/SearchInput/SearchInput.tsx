@@ -1,3 +1,4 @@
+import {BoxProps} from '@types'
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {IoIosClose, IoIosSearch} from 'react-icons/io'
 import {useDispatch} from 'react-redux'
@@ -8,7 +9,6 @@ import {assetsSetSearchQuery} from '../../modules/assets'
 import Box from '../../styled/Box'
 import Flex from '../../styled/Flex'
 import FormInput from '../../styled/FormInput'
-import {BoxProps} from '../../types'
 
 type Props = BoxProps & {}
 

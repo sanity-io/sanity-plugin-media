@@ -1,4 +1,5 @@
 import {Portal} from '@sanity/ui'
+import {Asset} from '@types'
 import React, {MouseEvent, useLayoutEffect, useEffect} from 'react'
 import {ThemeProvider} from 'styled-components'
 
@@ -8,7 +9,6 @@ import Browser from './components/Browser/Browser'
 import useKeyPress from './hooks/useKeyPress'
 import Box from './styled/Box'
 import theme, {GlobalStyle} from './styled/theme'
-import {Asset} from './types'
 
 type Props = {
   onClose?: () => void

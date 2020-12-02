@@ -1,3 +1,4 @@
+import {Asset} from '@types'
 import filesize from 'filesize'
 import React from 'react'
 import {IoIosDownload, IoIosLink} from 'react-icons/io'
@@ -9,7 +10,6 @@ import {assetsDeletePicked} from '../../modules/assets'
 import {dialogShowRefs} from '../../modules/dialog'
 import Box from '../../styled/Box'
 import Flex from '../../styled/Flex'
-import {Asset} from '../../types'
 import Button from '../Button/Button'
 
 const Footer = () => {

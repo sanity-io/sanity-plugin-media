@@ -1,6 +1,6 @@
-import {Asset} from '../types'
+import {Asset} from '@types'
 
-export default function(asset: Asset, height: number) {
+export default function (asset: Asset, height: number) {
   const dpi =
     typeof window === 'undefined' || !window.devicePixelRatio
       ? 1

@@ -1,4 +1,4 @@
-import {Asset} from '../../types'
+import {Asset} from '@types'
 import {DialogActionTypes} from './index'
 
 // Reducer

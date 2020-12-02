@@ -1,8 +1,8 @@
+import {BoxProps} from '@types'
 import React from 'react'
 import styled from 'styled-components'
 
 import Box from '../../styled/Box'
-import {BoxProps} from '../../types'
 
 type Props = BoxProps & {}
 

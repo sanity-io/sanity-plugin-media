@@ -1,9 +1,9 @@
+import {DialogAction, Item} from '@types'
 import React, {useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {assetsDelete} from '../../modules/assets'
 import {dialogClear} from '../../modules/dialog'
-import {DialogAction, Item} from '../../types'
 import DocumentList from '../DocumentList/DocumentList'
 import Dialog from './Dialog'
 

@@ -1,6 +1,6 @@
+import {Asset} from '@types'
 import {ReactNode} from 'react'
 import {SnackbarsActionTypes} from './index'
-import {Asset} from '../../types'
 
 type Snackbar = {
   // TODO: use type from sanity

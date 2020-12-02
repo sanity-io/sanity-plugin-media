@@ -1,10 +1,10 @@
+import {Asset, Item} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {areEqual, FixedSizeList, ListOnItemsRenderedProps} from 'react-window'
 
 import TableItem from '../Item/Table'
 import useKeyPress from '../../hooks/useKeyPress'
 import Box from '../../styled/Box'
-import {Asset, Item} from '../../types'
 import useThemeBreakpointValue from '../../hooks/useThemeBreakpointValue'
 
 type Props = {

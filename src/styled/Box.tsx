@@ -1,3 +1,4 @@
+import {BoxProps} from '@types'
 import {
   border,
   color,
@@ -11,8 +12,6 @@ import {
   typography
 } from 'styled-system'
 import styled from 'styled-components'
-
-import {BoxProps} from '../types'
 
 const textColor = style({
   prop: 'textColor',

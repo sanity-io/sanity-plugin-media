@@ -1,3 +1,11 @@
+import {
+  Asset,
+  BrowserOrder,
+  BrowserFilter,
+  BrowserView,
+  DeleteHandleTarget,
+  FetchOptions
+} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import {ofType, ActionsObservable} from 'redux-observable'
@@ -6,14 +14,6 @@ import {catchError, mergeAll, mergeMap, switchMap, withLatestFrom} from 'rxjs/op
 import client from 'part:@sanity/base/client'
 
 import {ORDERS} from '../../config'
-import {
-  Asset,
-  BrowserOrder,
-  BrowserFilter,
-  BrowserView,
-  DeleteHandleTarget,
-  FetchOptions
-} from '../../types'
 import {AssetsActions, AssetsReducerState, AssetsDeleteRequestAction} from './types'
 
 /***********

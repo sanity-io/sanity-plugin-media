@@ -1,5 +1,5 @@
+import {SelectedAsset} from '@types'
 import React, {ReactNode, createContext, useContext} from 'react'
-import {SelectedAsset} from '../types'
 
 type ContextProps = {
   onSelect?: (assets: SelectedAsset[]) => void

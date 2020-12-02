@@ -1,8 +1,8 @@
+import {BoxProps} from '@types'
 import React from 'react'
 
 import Box from '../../styled/Box'
 import Flex from '../../styled/Flex'
-import {BoxProps} from '../../types'
 
 type Props = BoxProps & {
   title: string

@@ -1,3 +1,4 @@
+import {Item} from '@types'
 import React from 'react'
 import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
 import {IoIosClose} from 'react-icons/io'
@@ -9,7 +10,6 @@ import {assetsSetFilter, assetsSetOrder, assetsSetView} from '../../modules/asse
 import Box from '../../styled/Box'
 import Flex from '../../styled/Flex'
 import blocksToText from '../../util/blocksToText'
-import {Item} from '../../types'
 import Button from '../Button/Button'
 import Label from '../Label/Label'
 import Progress from '../Progress/Progress'

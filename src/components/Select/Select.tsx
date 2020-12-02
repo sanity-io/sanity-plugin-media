@@ -1,8 +1,8 @@
+import {BoxProps, SelectItem} from '@types'
 import React, {ChangeEvent} from 'react'
 import styled from 'styled-components'
 
 import FormInput from '../../styled/FormInput'
-import {BoxProps, SelectItem} from '../../types'
 
 type Props = BoxProps & {
   disabled?: boolean

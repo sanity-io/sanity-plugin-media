@@ -1,9 +1,9 @@
+import {Item, Asset} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {VariableSizeGrid, GridOnItemsRenderedProps} from 'react-window'
 
 import useKeyPress from '../../hooks/useKeyPress'
 import Box from '../../styled/Box'
-import {Item, Asset} from '../../types'
 import CardItem from '../Item/Card'
 
 type Props = {

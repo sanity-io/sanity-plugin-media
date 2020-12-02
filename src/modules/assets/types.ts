@@ -1,12 +1,5 @@
+import {Asset, BrowserFilter, BrowserOrder, BrowserView, Item, DeleteHandleTarget} from '@types'
 import {AssetsActionTypes} from './index'
-import {
-  Asset,
-  BrowserFilter,
-  BrowserOrder,
-  BrowserView,
-  Item,
-  DeleteHandleTarget
-} from '../../types'
 
 // Reducer
 

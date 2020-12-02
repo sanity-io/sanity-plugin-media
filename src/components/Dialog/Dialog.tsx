@@ -1,9 +1,9 @@
 import {useClickOutside} from '@sanity/ui'
+import {Asset, DialogAction} from '@types'
 import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'
 import React, {ReactNode, useState} from 'react'
 import {IoIosAlert, IoIosClose} from 'react-icons/io'
 
-import {Asset, DialogAction} from '../../types'
 import Box from '../../styled/Box'
 import Flex from '../../styled/Flex'
 import Image from '../../styled/Image'

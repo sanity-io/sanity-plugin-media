@@ -1,10 +1,10 @@
+import {BoxProps, ButtonVariant} from '@types'
 import {rgba} from 'polished'
 import React, {MouseEvent, ReactElement, ReactNode} from 'react'
 import styled from 'styled-components'
 import {variant} from 'styled-system'
 
 import Flex from '../../styled/Flex'
-import {BoxProps, ButtonVariant} from '../../types'
 
 type Props = BoxProps & {
   children?: ReactNode

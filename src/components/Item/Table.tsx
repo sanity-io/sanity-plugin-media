@@ -1,3 +1,4 @@
+import {Item} from '@types'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
@@ -12,7 +13,6 @@ import Flex from '../../styled/Flex'
 import Button from '../Button/Button'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
 import Spinner from '../Spinner/Spinner'
-import {Item} from '../../types'
 import imageDprUrl from '../../util/imageDprUrl'
 
 type Props = {
