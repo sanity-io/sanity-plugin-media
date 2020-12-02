@@ -1,5 +1,6 @@
+import {useClickOutside} from '@sanity/ui'
 import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'
-import React, {ReactNode, useRef} from 'react'
+import React, {ReactNode, useState} from 'react'
 import {IoIosAlert, IoIosClose} from 'react-icons/io'
 
 import {Asset, DialogAction} from '../../types'
@@ -8,7 +9,6 @@ import Image from '../../styled/Image'
 import imageDprUrl from '../../util/imageDprUrl'
 import Button from '../Button/Button'
 import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
-import useClickOutside from '../../hooks/useClickOutside'
 
 type Variant = 'default' | 'danger'
 
@@ -27,12 +27,13 @@ const Dialog = (props: Props) => {
   const imageUrl = imageDprUrl(asset, 250)
   const isDanger = variant === 'danger'
 
-  const refContainer = useRef<HTMLElement>(null)
+  // State
+  const [containerElement, setContainerElement] = useState<HTMLElement | null>(null)
 
   // Close when clicked outside dialog container
-  useClickOutside(refContainer, () => {
+  useClickOutside(() => {
     onClose()
-  })
+  }, [containerElement])
 
   return (
     <Box
@@ -41,7 +42,7 @@ const Dialog = (props: Props) => {
       maxHeight="calc(100% - 100px)"
       maxWidth="560px"
       overflow="hidden"
-      ref={refContainer}
+      ref={setContainerElement}
       width="100%"
     >
       {/* Header */}
