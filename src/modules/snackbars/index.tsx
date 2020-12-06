@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react'
+import {ReactNode} from 'react'
 import pluralize from 'pluralize'
 import produce from 'immer'
 import {ofType} from 'redux-observable'
@@ -96,11 +96,7 @@ export const snackbarsAddSuccessEpic = (action$: any) =>
       const deletedCount = actions.length
       return of(
         snackbarsAddSuccess({
-          title: (
-            <>
-              {deletedCount} {pluralize('image', deletedCount)} deleted
-            </>
-          )
+          title: `${deletedCount} ${pluralize('image', deletedCount)} deleted`
         })
       )
     })
@@ -124,12 +120,7 @@ export const snackbarsAddDeleteErrorsEpic = (action$: any) =>
       const errorCount = actions.length
       return of(
         snackbarsAddError({
-          subtitle: 'Please view errors for more information',
-          title: (
-            <strong>
-              Unable to delete {errorCount} {pluralize('image', errorCount)}
-            </strong>
-          )
+          title: `Unable to delete ${errorCount} ${pluralize('image', errorCount)}`
         })
       )
     })
@@ -146,7 +137,7 @@ export const snackbarsAddFetchErrorEpic = (action$: any) =>
       const error = action.payload?.error
       return of(
         snackbarsAddError({
-          title: <strong>An error occured: {error.toString()}</strong>
+          title: `An error occured: ${error.toString()}`
         })
       )
     })

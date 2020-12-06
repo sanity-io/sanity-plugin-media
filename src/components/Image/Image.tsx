@@ -1,13 +1,15 @@
+import {MouseEvent} from 'react'
 import styled, {css} from 'styled-components'
-import {color, ColorProps} from 'styled-system'
 
-type Props = ColorProps & {
+type Props = {
+  onClick?: (e: MouseEvent) => void
   showCheckerboard?: boolean
-  transition?: string
+  src: string
+  style?: any
 }
 
 const Image = styled.img<Props>`
-  --checkerboard-color: rgba(255, 255, 255, 0.1);
+  --checkerboard-color: rgba(0, 0, 0, 0.1); // TODO: use theme color
 
   display: block;
   width: 100%;
@@ -24,8 +26,6 @@ const Image = styled.img<Props>`
       background-size: 20px 20px;
       background-position: 0 0, 0 10px, 10px -10px, -10px 0;
     `}
-
-  ${color}
 `
 
 export default Image

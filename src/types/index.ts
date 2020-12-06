@@ -1,32 +1,4 @@
 import {ReactElement} from 'react'
-import {
-  AlignItemsProps,
-  AlignSelfProps,
-  BorderProps,
-  ColorProps,
-  FlexDirectionProps,
-  FlexProps,
-  FlexGrowProps,
-  FlexShrinkProps,
-  FlexWrapProps,
-  GridProps,
-  JustifyContentProps,
-  LayoutProps,
-  OverflowProps,
-  PositionProps,
-  SpaceProps,
-  TextColorProps,
-  TypographyProps,
-  JustifyItemsProps,
-  JustifySelfProps
-} from 'styled-system'
-
-// Styled-system patch for the color prop fixing "Types of property 'color' are incompatible"
-// when applying props to component that extend ColorProps.
-// Source: https://stackoverflow.com/questions/53711454/styled-system-props-typing-with-typescript
-export interface CustomColorProps extends Omit<ColorProps, 'color'> {
-  textColor?: TextColorProps['color']
-}
 
 export type Asset = {
   _id: string
@@ -40,6 +12,7 @@ export type Asset = {
       width: number
     }
   }
+  mimeType: string
   originalFilename: string
   size: number
   url: string
@@ -51,43 +24,6 @@ export type Block = {
   children: Span[]
   markDefs: MarkDef[]
 }
-
-export type BoxProps = AlignItemsProps &
-  AlignSelfProps &
-  BorderProps &
-  CustomColorProps &
-  FlexDirectionProps &
-  FlexGrowProps &
-  FlexProps &
-  FlexShrinkProps &
-  FlexWrapProps &
-  GridProps &
-  JustifyContentProps &
-  JustifyItemsProps &
-  JustifySelfProps &
-  LayoutProps &
-  OverflowProps &
-  PositionProps &
-  SpaceProps &
-  TypographyProps & {
-    as?: keyof JSX.IntrinsicElements | React.ComponentType<any>
-    boxSizing?: string
-    cursor?: string
-    gridRowEnd?: string | string[]
-    gridRowStart?: string | string[]
-    order?: any
-    outline?: string
-    pointerEvents?: string
-    ref?: any
-    textOverflow?: string
-    textTransform?: string
-    transform?: string
-    transition?: string
-    userSelect?: string
-    whiteSpace?: string
-    // TODO: document
-    zIndex?: any
-  }
 
 export type BrowserFilter = {
   title: string

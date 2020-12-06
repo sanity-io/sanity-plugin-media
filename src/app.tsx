@@ -1,14 +1,13 @@
-import {Portal} from '@sanity/ui'
+import {Box, Portal, ThemeProvider, ToastProvider, studioTheme} from '@sanity/ui'
 import {Asset} from '@types'
 import React, {MouseEvent, useLayoutEffect, useEffect} from 'react'
-import {ThemeProvider} from 'styled-components'
+import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 
 import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContext'
 import withRedux from './helpers/withRedux'
 import Browser from './components/Browser/Browser'
 import useKeyPress from './hooks/useKeyPress'
-import Box from './styled/Box'
-import theme, {GlobalStyle} from './styled/theme'
+import theme from './styled/theme'
 
 type Props = {
   onClose?: () => void
@@ -45,18 +44,34 @@ const AssetBrowser = (props: Props) => {
   }, [])
 
   useEffect(() => {
+    const sanityContainerEl: HTMLDivElement | null = document.querySelector('#sanity')
+
     // Scroll to top if browser is being used as a tool.
     // We do this as we lock body scroll when the plugin is active, and due to overscroll
     // on mobile devices, the menu may not always be positioned at the top of the page.
     if (tool) {
       window.scrollTo(0, 0)
+    } else {
+      if (sanityContainerEl) {
+        sanityContainerEl.style.position = 'relative'
+        sanityContainerEl.style.zIndex = '-1'
+      }
     }
 
+    /*
     // Diable scrolling on the body element whilst the plugin is active, re-enable on close
     // Note that this has no effect on iOS < 13
     window.document.body.style.overflow = 'hidden'
     return () => {
       window.document.body.style.overflow = 'auto'
+    }
+    */
+
+    return () => {
+      if (sanityContainerEl) {
+        sanityContainerEl.style.position = 'inherit'
+        sanityContainerEl.style.zIndex = 'inherit'
+      }
     }
   }, [])
 
@@ -67,34 +82,40 @@ const AssetBrowser = (props: Props) => {
     e.nativeEvent.stopImmediatePropagation()
   }
 
-  // TODO: preload selectedAssets in redux store rather than prop drilling
   return (
-    <ThemeProvider theme={theme}>
-      <AssetBrowserDispatchProvider onSelect={onSelect}>
-        {/* Global styles */}
-        <GlobalStyle />
-
-        {tool ? (
-          <Box height="100%" position="relative" zIndex="appTool">
-            <Browser onClose={onClose} selectedAssets={selectedAssets} />
-          </Box>
-        ) : (
-          <Portal>
-            <Box
-              bottom={0}
-              height="auto"
-              left={0}
-              onMouseUp={handleStopPropagation}
-              position="fixed"
-              top={0}
-              width="100%"
-              zIndex="appInline"
-            >
-              <Browser onClose={onClose} selectedAssets={selectedAssets} />
-            </Box>
-          </Portal>
-        )}
-      </AssetBrowserDispatchProvider>
+    <ThemeProvider theme={studioTheme}>
+      <LegacyThemeProvider theme={theme}>
+        <ToastProvider>
+          <AssetBrowserDispatchProvider onSelect={onSelect}>
+            {tool ? (
+              <Box
+                style={{
+                  height: '100%',
+                  position: 'relative'
+                }}
+              >
+                <Browser onClose={onClose} selectedAssets={selectedAssets} />
+              </Box>
+            ) : (
+              <Portal>
+                <Box
+                  onMouseUp={handleStopPropagation}
+                  style={{
+                    bottom: 0,
+                    height: 'auto',
+                    left: 0,
+                    position: 'fixed',
+                    top: 0,
+                    width: '100%'
+                  }}
+                >
+                  <Browser onClose={onClose} selectedAssets={selectedAssets} />
+                </Box>
+              </Portal>
+            )}
+          </AssetBrowserDispatchProvider>
+        </ToastProvider>
+      </LegacyThemeProvider>
     </ThemeProvider>
   )
 }

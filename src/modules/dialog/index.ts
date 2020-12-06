@@ -13,7 +13,6 @@ import {DialogActions, DialogReducerState} from './types'
 
 export enum DialogActionTypes {
   CLEAR = 'DIALOG_CLEAR',
-  SHOW_CONFLICTS = 'DIALOG_SHOW_CONFLICTS',
   SHOW_REFS = 'DIALOG_SHOW_REFS'
 }
 
@@ -23,9 +22,8 @@ export enum DialogActionTypes {
 
 /**
  * `asset` is a Sanity asset, which dialogs reference to display contextual information
- * `type` can be of type 'conflicts' or 'refs':
+ * `type` can be of type 'refs':
  * - `refs` displays all asset references, with an option to delete
- * - 'conflicts' is the same as refs, except rendered as a danger dialog with no option to delete
  */
 
 const INITIAL_STATE = {
@@ -44,12 +42,6 @@ export default function dialogReducer(
         draft.asset = null
         draft.type = null
         break
-      case DialogActionTypes.SHOW_CONFLICTS: {
-        const asset = action.payload?.asset
-        draft.asset = asset
-        draft.type = 'conflicts'
-        break
-      }
       case DialogActionTypes.SHOW_REFS: {
         const asset = action.payload?.asset
         draft.asset = asset
@@ -73,17 +65,6 @@ export const dialogClear = () => ({
     asset: null
   },
   type: DialogActionTypes.CLEAR
-})
-
-/**
- * Display asset conflict dialog
- */
-
-export const dialogShowConflicts = (asset: Asset) => ({
-  payload: {
-    asset
-  },
-  type: DialogActionTypes.SHOW_CONFLICTS
 })
 
 /**
@@ -118,23 +99,5 @@ export const dialogClearEpic = (action$: any, state$: any) =>
     }),
     mergeMap(() => {
       return of(dialogClear())
-    })
-  )
-
-/**
- * Listen for asset delete errors:
- * - Show error dialog if `handleTarget === 'dialog'`
- */
-
-export const dialogShowConflictsEpic = (action$: any) =>
-  action$.pipe(
-    ofType(AssetsActionTypes.DELETE_ERROR),
-    filter((action: any) => {
-      const handleTarget = action.payload?.handleTarget
-      return handleTarget === 'dialog'
-    }),
-    mergeMap((action: any) => {
-      const asset = action.payload?.asset
-      return of(dialogShowConflicts(asset))
     })
   )

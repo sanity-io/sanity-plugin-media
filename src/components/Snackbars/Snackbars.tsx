@@ -1,11 +1,24 @@
-import Snackbar from 'part:@sanity/components/snackbar/default'
-import React from 'react'
+import {useToast} from '@sanity/ui'
+import {useEffect} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 
 const Snackbars = () => {
   const items = useTypedSelector(state => state.snackbars.items)
+  const toast = useToast()
 
+  useEffect(() => {
+    if (items.length > 0) {
+      const lastItem = items[items.length - 1]
+      toast.push({
+        status: lastItem.kind,
+        title: lastItem.title
+      })
+    }
+  }, [items.length])
+
+  return null
+  /*
   return (
     <div>
       {items &&
@@ -17,6 +30,7 @@ const Snackbars = () => {
         })}
     </div>
   )
+  */
 }
 
 export default Snackbars

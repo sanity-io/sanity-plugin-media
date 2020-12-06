@@ -1,20 +1,12 @@
-import {BoxProps} from '@types'
+import {Box, Flex, Icon, TextInput} from '@sanity/ui'
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
-import {IoIosClose, IoIosSearch} from 'react-icons/io'
 import {useDispatch} from 'react-redux'
 import {Subject} from 'rxjs'
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators'
 
 import {assetsSetSearchQuery} from '../../modules/assets'
-import Box from '../../styled/Box'
-import Flex from '../../styled/Flex'
-import FormInput from '../../styled/FormInput'
 
-type Props = BoxProps & {}
-
-const SearchInput = (props: Props) => {
-  const {...boxProps} = props
-
+const TextInputSearch = () => {
   // Refs
   const mounted = useRef(false)
 
@@ -58,46 +50,42 @@ const SearchInput = (props: Props) => {
   }
 
   return (
-    <Flex alignItems="center" position="relative" width="100%" {...boxProps}>
-      {/* Search icon */}
-      <Box
-        left={0}
-        mt="3px"
-        position="absolute"
-        pointerEvents="none"
-        px="9px"
-        textColor="lighterGray"
-      >
-        <IoIosSearch size={16} />
-      </Box>
-
-      <FormInput
-        as="input"
+    <Box
+      style={{
+        position: 'relative'
+      }}
+    >
+      <TextInput
+        icon="search"
         onChange={handleChange}
         placeholder="Search"
-        pl="32px"
-        pr="32px"
-        type="text"
-        width="100%"
+        radius={2}
+        size={1}
         value={query}
       />
 
       {/* Clear form button */}
       {query.length > 0 && (
         <Flex
-          alignItems="center"
-          cursor="pointer"
-          height="100%"
+          align="center"
+          justify="center"
           onClick={() => setQuery('')}
-          position="absolute"
-          px="5px"
-          right={0}
+          style={{
+            cursor: 'pointer',
+            height: '100%',
+            opacity: 0.75,
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            width: '2em'
+            // zIndex: 1 // TODO: try to avoid manually setting z-indices
+          }}
         >
-          <IoIosClose size={18} style={{display: 'block'}} />
+          <Icon symbol="close" />
         </Flex>
       )}
-    </Flex>
+    </Box>
   )
 }
 
-export default SearchInput
+export default TextInputSearch

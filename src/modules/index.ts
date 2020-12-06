@@ -9,7 +9,7 @@ import assets, {
   assetsFetchPageEpic,
   assetsFetchPageIndexEpic
 } from './assets'
-import dialog, {dialogClearEpic, dialogShowConflictsEpic} from './dialog'
+import dialog, {dialogClearEpic} from './dialog'
 import document from './document'
 import snackbars, {
   snackbarsAddDeleteErrorsEpic,
@@ -25,7 +25,6 @@ export const rootEpic = combineEpics(
   assetsFetchPageEpic,
   assetsFetchPageIndexEpic,
   dialogClearEpic,
-  dialogShowConflictsEpic,
   snackbarsAddDeleteErrorsEpic,
   snackbarsAddFetchErrorEpic,
   snackbarsAddSuccessEpic

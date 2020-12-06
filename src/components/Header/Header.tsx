@@ -1,30 +1,15 @@
-import {Item} from '@types'
-import pluralize from 'pluralize'
-import React from 'react'
-import {AiFillAppstore, AiOutlineBars} from 'react-icons/ai'
-import {IoIosClose} from 'react-icons/io'
+import {Box, Button, Card, Flex, Icon, Inline, Select, Text} from '@sanity/ui'
+import React, {ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
+import {Flex as LegacyFlex} from 'theme-ui'
 
 import {ORDERS} from '../../config'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {
-  assetsDeletePicked,
-  assetsPickClear,
-  assetsSetFilter,
-  assetsSetOrder,
-  assetsSetView
-} from '../../modules/assets'
-import Box from '../../styled/Box'
-import Flex from '../../styled/Flex'
-import blocksToText from '../../util/blocksToText'
-import Button from '../Button/Button'
-import Label from '../Label/Label'
+import {assetsSetFilter, assetsSetOrder, assetsSetView} from '../../modules/assets'
 import Progress from '../Progress/Progress'
-import SearchInput from '../SearchInput/SearchInput'
-import Select from '../Select/Select'
+import TextInputSearch from '../TextInputSearch/SearchTextInput'
 
 type Props = {
-  items: Item[]
   onClose?: () => void
 }
 
@@ -33,147 +18,183 @@ const Header = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const byIds = useTypedSelector(state => state.assets.byIds)
   const currentDocument = useTypedSelector(state => state.document)
   const fetching = useTypedSelector(state => state.assets.fetching)
   const view = useTypedSelector(state => state.assets.view)
   const filters = useTypedSelector(state => state.assets.filters)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
 
-  const items = byIds ? Object.values(byIds) : []
-
-  const picked = items && items.filter(item => item.picked)
-
-  // Try and infer title from `name` and `title` fields, in that order.
-  // Convert blocks to plain text and trim extra whitespace.
-  // If no title is found, the current document ID will be displayed instead.
-  const currentDocumentTitle = blocksToText(currentDocument?.name || currentDocument?.title)?.trim()
-
-  // Callbacks
-  // -
-  const handlePickClear = () => {
-    dispatch(assetsPickClear())
-  }
-
-  const handleDeletePicked = () => {
-    dispatch(assetsDeletePicked())
-  }
-
   return (
     <Box
-      alignItems="center"
-      bg="darkestGray"
-      justifyContent="space-between"
-      overflow="hidden"
-      position="absolute"
-      textColor="lighterGray"
-      top={0}
-      whiteSpace="nowrap"
-      width="100%"
+      style={{
+        position: 'absolute',
+        top: 0,
+        width: '100%'
+      }}
     >
       {/* Row: Current document / close button */}
-      <Flex
-        alignItems="center"
-        height="headerRowHeight"
-        justifyContent="space-between"
-        // overflow="hidden"
-        textAlign="left"
-        width="100%"
-      >
-        {/* Label */}
-        <Flex minWidth={0} overflow="hidden">
-          <Box color="white" fontSize={3} fontWeight={600} mx={3}>
-            {currentDocument ? 'Select media' : 'Browse media'}
+      <Card>
+        <LegacyFlex
+          sx={{
+            alignItems: 'center',
+            height: 'headerRowHeight1x',
+            justifyContent: 'space-between',
+            textAlign: 'left',
+            width: '100%'
+          }}
+        >
+          {/* Label */}
+          <Box marginX={3}>
+            <Inline space={2}>
+              <Text weight="semibold">{currentDocument ? 'Insert Media' : 'Browse Media'}</Text>
+              {currentDocument && (
+                <Text>
+                  <Icon symbol="arrow-right" />
+                </Text>
+              )}
+              {currentDocument && (
+                <Text
+                  style={{
+                    textTransform: 'capitalize'
+                  }}
+                >
+                  {currentDocument._type}
+                </Text>
+              )}
+            </Inline>
           </Box>
 
-          {currentDocument && (
-            <Label
-              minWidth={0}
-              mr={2}
-              title={currentDocumentTitle ? currentDocumentTitle : currentDocument._id}
-              type={`${currentDocument._type} ${!currentDocumentTitle ? 'id' : ''}`}
-            />
+          {/* Close */}
+          {onClose && (
+            <Box marginX={3}>
+              <Button icon="close" mode="bleed" onClick={onClose} radius={0} />
+            </Box>
           )}
-        </Flex>
-
-        {/* Close */}
-        {onClose && (
-          <Box
-            // bg="darkerGray"
-            flexShrink={0}
-            height="100%"
-          >
-            <Button icon={IoIosClose({size: 25})} onClick={onClose} />
-          </Box>
-        )}
-      </Flex>
+        </LegacyFlex>
+      </Card>
 
       {/* Rows: search / filters / orders  */}
-      <Flex
-        alignItems={['flex-start', 'center']}
-        flexDirection={['column', 'row']}
-        height={['headerRowHeight2x', 'headerRowHeight']}
-        justifyContent="space-between"
-        textAlign="right"
-        width="100%"
-      >
-        {/* Search */}
-        <Flex
-          alignItems="center"
-          flexGrow={1}
-          height="100%"
-          justifyContent="flex-start"
-          width="100%"
+      <Card>
+        <LegacyFlex
+          sx={{
+            alignItems: ['flex-start', 'center'],
+            flexDirection: ['column', 'row'],
+            height: ['headerRowHeight2x', 'headerRowHeight1x'],
+            justifyContent: 'space-between',
+            textAlign: 'right',
+            width: '100%'
+          }}
         >
-          <SearchInput maxWidth={['none', '340px']} mx={2} />
-        </Flex>
+          {/* Search */}
+          <LegacyFlex
+            sx={{
+              alignItems: 'center',
+              flexGrow: 1,
+              height: '100%',
+              justifyContent: 'flex-start',
+              maxWidth: ['none', '340px'],
+              position: 'relative',
+              width: '100%'
+            }}
+          >
+            <Box flex={1} marginX={2}>
+              <TextInputSearch />
+            </Box>
+          </LegacyFlex>
 
-        {/* Views + filters + orders*/}
-        <Flex
-          alignItems="center"
-          height="100%"
-          justifyContent={['space-between', 'flex-end']}
-          width="100%"
-        >
-          <Flex>
-            <Button
-              icon={AiFillAppstore({size: 18})}
-              onClick={() => dispatch(assetsSetView('grid'))}
-              pointerEvents={view === 'grid' ? 'none' : 'auto'}
-              variant={view === 'grid' ? 'default' : 'secondary'}
-            />
+          {/* Views + filters + orders*/}
+          <LegacyFlex
+            sx={{
+              alignItems: 'center',
+              height: '100%',
+              justifyContent: ['space-between', 'flex-end'],
+              width: '100%'
+            }}
+          >
+            <Flex>
+              <Box marginX={2}>
+                <Inline
+                  space={0}
+                  style={{
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <Button
+                    icon="th-large"
+                    mode={view === 'grid' ? 'default' : 'ghost'}
+                    onClick={() => dispatch(assetsSetView('grid'))}
+                    radius={0}
+                    size={1}
+                  />
+                  <Button
+                    icon="th-list"
+                    mode={view === 'table' ? 'default' : 'ghost'}
+                    onClick={() => dispatch(assetsSetView('table'))}
+                    radius={0}
+                    size={1}
+                  />
+                </Inline>
+              </Box>
+            </Flex>
 
-            <Button
-              icon={AiOutlineBars({size: 18})}
-              onClick={() => dispatch(assetsSetView('table'))}
-              pointerEvents={view === 'table' ? 'none' : 'auto'}
-              variant={view === 'table' ? 'default' : 'secondary'}
-            />
-          </Flex>
+            <Box marginX={2}>
+              <Inline
+                style={{
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <Select
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    const selectedIndex = e.target.selectedIndex
+                    const filter = filters?.[selectedIndex]
+                    if (filter) {
+                      console.log('dispatch filter:', filter)
+                      dispatch(assetsSetFilter(filter))
+                    }
+                  }}
+                  padding={3}
+                  size={1}
+                >
+                  {filters?.map((item, index) => {
+                    return (
+                      <option key={index} value={item.value}>
+                        {item.title}
+                      </option>
+                    )
+                  })}
+                </Select>
 
-          <Box>
-            {filters && (
-              <Select items={filters} ml={2} onChange={value => dispatch(assetsSetFilter(value))} />
-            )}
-            <Select items={ORDERS} mx={2} onChange={value => dispatch(assetsSetOrder(value))} />
-          </Box>
-        </Flex>
-      </Flex>
-
-      {/* Row: picked assets */}
-      {picked.length > 0 && (
-        <Flex alignItems="center" height="headerRowHeight" mx={3} textColor="lighterGray">
-          <Box mr={3}>
-            {picked.length} {pluralize('image', picked.length)} selected
-          </Box>
-          <Button onClick={handlePickClear} variant="default">
-            Deselect
-          </Button>
-          <Button onClick={handleDeletePicked} variant="danger">
-            Delete
-          </Button>
-        </Flex>
-      )}
+                {/* Order select */}
+                <Inline>
+                  <Box marginX={3}>
+                    <Text size={1}>
+                      <Icon symbol="sort" />
+                    </Text>
+                  </Box>
+                  <Select
+                    radius={1}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      const selectedIndex = e.target.selectedIndex
+                      const value = ORDERS[selectedIndex]
+                      dispatch(assetsSetOrder(value))
+                    }}
+                    padding={3}
+                    size={1}
+                  >
+                    {ORDERS?.map((item, index) => {
+                      return (
+                        <option key={index} value={item.value}>
+                          {item.title}
+                        </option>
+                      )
+                    })}
+                  </Select>
+                </Inline>
+              </Inline>
+            </Box>
+          </LegacyFlex>
+        </LegacyFlex>
+      </Card>
 
       {/* Progress bar */}
       <Progress key={pageIndex} loading={fetching} />

@@ -1,14 +1,11 @@
-import {Asset} from '@types'
-import filesize from 'filesize'
+import {Box, Button, Card, Inline, Text} from '@sanity/ui'
+import pluralize from 'pluralize'
 import React from 'react'
-import {IoIosDownload, IoIosLink} from 'react-icons/io'
 import {useDispatch} from 'react-redux'
+import {Flex as LegacyFlex} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {dialogShowRefs} from '../../modules/dialog'
-import Box from '../../styled/Box'
-import Flex from '../../styled/Flex'
-import Button from '../Button/Button'
+import {assetsDeletePicked, assetsPickClear} from '../../modules/assets'
 
 const Footer = () => {
   // Redux
@@ -18,98 +15,78 @@ const Footer = () => {
   const items = byIds ? Object.values(byIds) : []
 
   const picked = items && items.filter(item => item.picked)
-  const singlePickedAsset: Asset | undefined =
-    picked && picked.length === 1 ? picked[0]?.asset : undefined
 
+  /*
   const handleDownloadOriginal = (asset: Asset) => {
     window.location.href = `${asset.url}?dl`
   }
 
-  return (
-    <Flex
-      alignItems="center"
-      bg="darkestGray"
-      bottom={0}
-      flexWrap="wrap"
-      justifyContent="space-between"
-      left={0}
-      position="fixed"
-      textColor="lighterGray"
-      width="100%"
-    >
-      {/* Center */}
-      <Box height="headerRowHeight" order={[0, 1]} overflow="hidden" width={['100%', 'auto']}>
-        {singlePickedAsset && (
-          <Flex
-            alignItems="center"
-            height="100%"
-            justifyContent={['space-between', 'center']}
-            width="100%"
-          >
-            <Flex
-              alignItems="center"
-              flexDirection="row"
-              ml={[2, 0]}
-              minWidth={0}
-              whiteSpace="nowrap"
-            >
-              {/* Original filename */}
-              <Box
-                maxWidth={[null, '420px']}
-                mx={2}
-                overflow="hidden"
-                textColor="lightGray"
-                textOverflow="ellipsis"
-              >
-                <strong>{singlePickedAsset.originalFilename}</strong>
-              </Box>
+  // Show references
+  <Button
+    icon={IoIosLink({size: 16})}
+    onClick={() => dispatch(dialogShowRefs(singlePickedAsset))}
+  />
+  // Download original
+  <Button
+    icon={IoIosDownload({size: 16})}
+    onClick={handleDownloadOriginal.bind(null, singlePickedAsset)}
+  />
+  */
 
-              {/* Dimensions */}
-              {singlePickedAsset.metadata?.dimensions && (
-                <Box color="lightGray" mx={2}>
-                  {singlePickedAsset.metadata.dimensions.width} x{' '}
-                  {singlePickedAsset.metadata.dimensions.height}
-                </Box>
-              )}
+  // Callbacks
+  const handlePickClear = () => {
+    dispatch(assetsPickClear())
+  }
 
-              {/* Filesize */}
-              <Box color="lightGray" mx={2}>
-                {filesize(singlePickedAsset.size, {round: 0})}
-              </Box>
+  const handleDeletePicked = () => {
+    dispatch(assetsDeletePicked())
+  }
 
-              {/* File extension */}
-              <Box
-                borderColor="lightGray"
-                borderStyle="solid"
-                borderWidth="1px"
-                borderRadius="2px"
-                display={['none', 'block']}
-                fontSize={1}
-                mx={2}
-                px={1}
-                textColor="lightGray"
-              >
-                {singlePickedAsset.extension.toUpperCase()}
-              </Box>
-            </Flex>
+  if (picked.length > 0) {
+    return (
+      <Card
+        paddingX={3}
+        style={{
+          bottom: 0,
+          left: 0,
+          position: 'fixed',
+          width: '100%'
+        }}
+      >
+        <LegacyFlex
+          sx={{
+            alignItems: 'center',
+            height: 'headerRowHeight1x',
+            justifyContent: 'center'
+          }}
+        >
+          <Inline space={2}>
+            <Box marginRight={2}>
+              <Text size={1}>
+                {picked.length} {pluralize('image', picked.length)} selected
+              </Text>
+            </Box>
+            <Button
+              // icon="revert"
+              mode="bleed"
+              onClick={handlePickClear}
+              size={1}
+              text="Deselect"
+            />
+            <Button
+              mode="bleed"
+              onClick={handleDeletePicked}
+              size={1}
+              text="Delete"
+              tone="critical"
+            />
+          </Inline>
+        </LegacyFlex>
+      </Card>
+    )
+  }
 
-            <Flex alignItems="center" height="100%" ml={[0, 2]}>
-              {/* Show references */}
-              <Button
-                icon={IoIosLink({size: 16})}
-                onClick={() => dispatch(dialogShowRefs(singlePickedAsset))}
-              />
-              {/* Download original */}
-              <Button
-                icon={IoIosDownload({size: 16})}
-                onClick={handleDownloadOriginal.bind(null, singlePickedAsset)}
-              />
-            </Flex>
-          </Flex>
-        )}
-      </Box>
-    </Flex>
-  )
+  return null
 }
 
 export default Footer

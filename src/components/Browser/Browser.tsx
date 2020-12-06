@@ -1,15 +1,16 @@
+import {Box, Card, Text} from '@sanity/ui'
 import {Asset} from '@types'
 import React, {Ref, useRef, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
+import {Box as LegacyBox} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsLoadNextPage, assetsLoadPageIndex} from '../../modules/assets'
-import Box from '../../styled/Box'
 import Dialogs from '../Dialogs/Dialogs'
-// import Footer from '../Footer/Footer'
+import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import Snackbars from '../Snackbars/Snackbars'
 import CardView from '../View/Card'
@@ -88,28 +89,28 @@ const Browser = (props: Props) => {
       <Snackbars />
       <Dialogs />
 
-      <Box
-        bg="darkerGray"
-        fontFamily="default"
-        fontSize={1}
-        justifyContent="space-between"
-        minHeight="100%"
+      <Card
+        style={{
+          minHeight: '100%'
+        }}
       >
         {/* Header */}
-        <Header items={items} onClose={onClose} />
+        <Header onClose={onClose} />
+
+        {/* Footer */}
+        {hasPicked && <Footer />}
 
         {/* Items */}
-        <Box
-          bottom={0}
-          mx="auto"
-          overflow="hidden"
-          position="absolute"
+        <LegacyBox
           ref={viewRef}
-          top={[
-            hasPicked ? 'headerRowHeight4x' : 'headerRowHeight3x', //
-            hasPicked ? 'headerRowHeight3x' : 'headerRowHeight2x'
-          ]}
-          width="100%"
+          sx={{
+            bottom: [hasPicked ? 'headerRowHeight1x' : 0],
+            mx: 'auto',
+            overflow: 'hidden',
+            position: 'absolute',
+            top: ['headerRowHeight3x', 'headerRowHeight2x'],
+            width: '100%'
+          }}
         >
           {hasItems && (view === 'grid' || 'table') && (
             <AutoSizer>
@@ -183,15 +184,14 @@ const Browser = (props: Props) => {
 
           {/* No results */}
           {!hasItems && hasFetchedOnce && !fetching && (
-            <Box fontSize={1} p={3} textColor="lighterGray">
-              No results for the current query
+            <Box padding={4}>
+              <Text size={1} weight="semibold">
+                No results for the current query
+              </Text>
             </Box>
           )}
-        </Box>
-
-        {/* Footer */}
-        {/* {hasPicked && <Footer />} */}
-      </Box>
+        </LegacyBox>
+      </Card>
     </>
   )
 }

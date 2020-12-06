@@ -1,9 +1,7 @@
 import React from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import Flex from '../../styled/Flex'
 import RefsDialog from '../Dialog/Refs'
-import ConflictsDialog from '../Dialog/Conflicts'
 
 const Dialogs = () => {
   const {asset, type} = useTypedSelector(state => state.dialog)
@@ -15,21 +13,11 @@ const Dialogs = () => {
     return null
   }
 
-  return (
-    <Flex
-      alignItems="center"
-      bg="rgba(0, 0, 0, 0.9)"
-      justifyContent="center"
-      left={0}
-      position="fixed"
-      size="100%"
-      top={0}
-      zIndex="modal"
-    >
-      {asset && type === 'conflicts' && <ConflictsDialog item={currentItem} />}
-      {asset && type === 'refs' && <RefsDialog item={currentItem} />}
-    </Flex>
-  )
+  if (asset && type === 'refs') {
+    return <RefsDialog item={currentItem} />
+  }
+
+  return null
 }
 
 export default Dialogs

@@ -1,7 +1,6 @@
 import {useNProgress} from '@tanem/react-nprogress'
 import React from 'react'
-
-import Box from '../../styled/Box'
+import {Box} from 'theme-ui'
 
 type Props = {
   loading?: boolean
@@ -16,15 +15,21 @@ const Progress = (props: Props) => {
   })
 
   return (
-    <Box opacity={isFinished ? 0 : 1} transition={`opacity ${animationDuration}ms linear`}>
+    <Box
+      sx={{
+        opacity: isFinished ? 0 : 1,
+        transition: `opacity ${animationDuration}ms linear`
+      }}
+    >
       <Box
-        bg="lightGray"
-        height="1px"
-        position="absolute"
-        left={0}
-        top={0}
-        transition={`width ${animationDuration}ms linear`}
-        width={`${progress * 100}%`}
+        sx={{
+          height: '1px',
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          transition: `width ${animationDuration}ms linear`,
+          width: `${progress * 100}%`
+        }}
       />
     </Box>
   )

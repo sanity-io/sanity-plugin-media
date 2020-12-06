@@ -75,6 +75,7 @@ export const initialState: AssetsReducerState = {
   pageSize: 50,
   searchQuery: '',
   view: 'grid'
+  // view: 'table'
   // totalCount: -1
 }
 
@@ -508,6 +509,7 @@ export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
               dimensions,
               isOpaque,
             },
+            mimeType,
             originalFilename,
             size,
             url

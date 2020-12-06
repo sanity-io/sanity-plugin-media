@@ -5,20 +5,13 @@ import {DialogActionTypes} from './index'
 
 export type DialogReducerState = {
   asset?: Asset | null
-  type: 'conflicts' | 'refs' | null
+  type: 'refs' | null
 }
 
 // Actions
 
 export type DialogClearAction = {
   type: DialogActionTypes.CLEAR
-}
-
-export type DialogShowConflictsAction = {
-  payload: {
-    asset: Asset
-  }
-  type: DialogActionTypes.SHOW_CONFLICTS
 }
 
 export type DialogShowRefsAction = {
@@ -30,4 +23,4 @@ export type DialogShowRefsAction = {
 
 // All actions
 
-export type DialogActions = DialogClearAction | DialogShowConflictsAction | DialogShowRefsAction
+export type DialogActions = DialogClearAction | DialogShowRefsAction

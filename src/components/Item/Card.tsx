@@ -1,20 +1,16 @@
+import {Box, Checkbox, Flex, Icon, Spinner, Text, Tooltip} from '@sanity/ui'
 import {Item} from '@types'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
-import {IoIosAlert} from 'react-icons/io'
 import {useDispatch} from 'react-redux'
+import styled from 'styled-components'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsPick} from '../../modules/assets'
-import {dialogShowConflicts, dialogShowRefs} from '../../modules/dialog'
-import Box from '../../styled/Box'
-import Flex from '../../styled/Flex'
-import Image from '../../styled/Image'
+import {dialogShowRefs} from '../../modules/dialog'
 import imageDprUrl from '../../util/imageDprUrl'
-import Button from '../Button/Button'
-import Checkbox from '../Checkbox/Checkbox'
-import ResponsiveBox from '../ResponsiveBox/ResponsiveBox'
-import Spinner from '../Spinner/Spinner'
+import Image from '../Image/Image'
+import TextEllipsis from '../TextEllipsis/TextEllipsis'
 
 type Props = {
   item: Item
@@ -23,10 +19,48 @@ type Props = {
   style?: CSSProperties
 }
 
+const Container = styled(Flex)`
+  background: #fafafa; // TODO: use theme colors
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+
+  ::after {
+    box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.1);
+    content: ' ';
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transition: all 400ms;
+    width: 100%;
+    z-index: -1;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::after {
+      opacity: 1;
+    }
+  }
+`
+
+const ContextActionContainer = styled(Box)`
+  cursor: pointer;
+  transition: all 400ms;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+`
+
 const CardItem = (props: Props) => {
   const {
     item,
-    selected,
+    // selected,
     // shiftPressed,
     style
   } = props
@@ -49,11 +83,7 @@ const CardItem = (props: Props) => {
   }
 
   // Callbacks
-  const handlePickToggle = () => {
-    dispatch(assetsPick(asset._id, !picked))
-  }
-
-  const handleClick = (e: MouseEvent) => {
+  const handlePictureClick = (e: MouseEvent) => {
     e.stopPropagation()
 
     if (currentDocument) {
@@ -70,70 +100,108 @@ const CardItem = (props: Props) => {
     }
   }
 
-  const handleDialogConflicts = (e: MouseEvent) => {
+  const handleContextActionClick = (e: MouseEvent) => {
     e.stopPropagation()
-    dispatch(dialogShowConflicts(asset))
+
+    if (currentDocument) {
+      dispatch(dialogShowRefs(asset))
+    } else {
+      dispatch(assetsPick(asset._id, !picked))
+    }
   }
 
   const imageUrl = imageDprUrl(asset, 250)
 
   return (
-    <Flex
-      alignItems="center"
-      bg={selected ? 'overlayCard' : 'none'}
-      borderRadius="4px"
-      justifyContent="center"
-      p={2}
-      position="relative"
-      style={style}
-      transition="background 250ms"
-      userSelect="none"
-    >
-      {/* Image */}
-      <ResponsiveBox aspectRatio={4 / 3} cursor="pointer" onClick={handleClick}>
-        <Image
-          draggable={false}
-          opacity={updating ? 0.25 : 1}
-          showCheckerboard={!isOpaque}
-          src={imageUrl}
-          transition="opacity 1000ms"
-        />
-      </ResponsiveBox>
-
-      {/* Picked checkbox */}
-      {!currentDocument && (
-        <Checkbox
-          checked={picked}
-          left={2}
-          onClick={handlePickToggle}
-          position="absolute"
-          top={2}
-        />
-      )}
-
-      {/* Spinner */}
-      {updating && (
-        <Flex
-          alignItems="center"
-          fontSize={3}
-          justifyContent="center"
-          left={0}
-          position="absolute"
-          size="100%"
-          textColor="white"
-          top={0}
+    <>
+      <Container
+        direction="column"
+        style={{
+          ...style
+        }}
+      >
+        {/* Image */}
+        <Box
+          flex={1}
+          style={{
+            cursor: 'pointer'
+          }}
         >
-          <Spinner />
-        </Flex>
-      )}
-
-      {/* Error button */}
-      {errorCode && (
-        <Box bottom={0} color="white" position="absolute" right={0} top={0}>
-          <Button icon={IoIosAlert({size: 20})} onClick={handleDialogConflicts} variant="danger" />
+          <Image
+            onClick={handlePictureClick}
+            showCheckerboard={!isOpaque}
+            src={imageUrl}
+            style={{
+              draggable: false,
+              opacity: updating ? 0.25 : 1,
+              transition: 'opacity 1000ms'
+            }}
+          />
         </Box>
-      )}
-    </Flex>
+
+        {/* Footer */}
+        <ContextActionContainer onClick={handleContextActionClick} padding={2}>
+          <Flex align="center">
+            {currentDocument ? (
+              <Icon
+                symbol="edit"
+                style={{
+                  flexShrink: 0,
+                  opacity: 0.5
+                }}
+              />
+            ) : (
+              <Checkbox
+                checked={picked}
+                readOnly
+                style={{
+                  flexShrink: 0,
+                  pointerEvents: 'none',
+                  transform: 'scale(0.8)'
+                }}
+              />
+            )}
+
+            <Box marginLeft={2}>
+              <TextEllipsis size={0}>{asset.originalFilename}</TextEllipsis>
+            </Box>
+
+            {/* Error button */}
+            {errorCode && (
+              <Tooltip
+                content={
+                  <Box padding={2}>
+                    <Text size={1}>has references</Text>
+                  </Box>
+                }
+                placement="top"
+              >
+                <Text size={1}>
+                  <Icon symbol="warning-outline" />
+                </Text>
+              </Tooltip>
+            )}
+          </Flex>
+        </ContextActionContainer>
+
+        {/* Spinner */}
+        {updating && (
+          <Flex
+            align="center"
+            justify="center"
+            style={{
+              height: '100%',
+              left: 0,
+              position: 'absolute',
+              top: 0,
+              width: '100%'
+            }}
+          >
+            <Spinner />
+          </Flex>
+        )}
+      </Container>
+    </>
   )
 }
 

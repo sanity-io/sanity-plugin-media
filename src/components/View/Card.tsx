@@ -1,9 +1,9 @@
 import {Item, Asset} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {VariableSizeGrid, GridOnItemsRenderedProps} from 'react-window'
+import {Box} from 'theme-ui'
 
 import useKeyPress from '../../hooks/useKeyPress'
-import Box from '../../styled/Box'
 import CardItem from '../Item/Card'
 
 type Props = {
@@ -25,7 +25,13 @@ type VirtualCellProps = {
 const innerElementType = (props: {children: ReactNode; style: CSSProperties}) => {
   const {children, style} = props
   return (
-    <Box mx="auto" position="relative" width={style.width}>
+    <Box
+      sx={{
+        mx: 'auto',
+        position: 'relative',
+        width: style.width
+      }}
+    >
       <div style={style}>{children}</div>
     </Box>
   )
@@ -40,12 +46,12 @@ const VirtualCell = memo(({columnIndex, data, rowIndex, style}: VirtualCellProps
   // Add padding to virtual cells
   const cellStyle = {
     ...style,
-    left: Number(style.left) + 3,
-    right: Number(style.left) + 3,
-    top: Number(style.top) + 3,
-    bottom: Number(style.top) + 3,
-    width: Number(style.width) - 6,
-    height: Number(style.height) - 6
+    left: Number(style.left) + 10,
+    right: Number(style.left) + 10,
+    top: Number(style.top) + 10,
+    bottom: Number(style.top) + 10,
+    width: Number(style.width) - 20,
+    height: Number(style.height) - 20
   }
 
   return (
@@ -66,8 +72,8 @@ const CardView = forwardRef((props: Props, ref: Ref<any>) => {
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
 
-  const cardWidth = 250
-  const cardHeight = 200
+  const cardWidth = 260
+  const cardHeight = 220
 
   const columnCount = Math.floor(width / cardWidth)
   const rowCount = Math.ceil(itemCount / columnCount)
