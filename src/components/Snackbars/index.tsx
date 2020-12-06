@@ -11,26 +11,13 @@ const Snackbars = () => {
     if (items.length > 0) {
       const lastItem = items[items.length - 1]
       toast.push({
-        status: lastItem.kind,
+        status: lastItem.status,
         title: lastItem.title
       })
     }
   }, [items.length])
 
   return null
-  /*
-  return (
-    <div>
-      {items &&
-        items.map(item => {
-          const {id, kind, subtitle, timeout, title} = item
-          return (
-            <Snackbar key={id} kind={kind} subtitle={subtitle} timeout={timeout} title={title} />
-          )
-        })}
-    </div>
-  )
-  */
 }
 
 export default Snackbars

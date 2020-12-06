@@ -32,7 +32,7 @@ export default function snackbarsReducer(
     switch (action.type) {
       case SnackbarsActionTypes.ADD: {
         const asset = action.payload?.asset
-        const kind = action.payload?.kind
+        const status = action.payload?.status
         const subtitle = action.payload?.subtitle
         const timeout = action.payload?.timeout
         const title = action.payload?.title
@@ -40,7 +40,7 @@ export default function snackbarsReducer(
         draft.items.push({
           asset,
           id: String(new Date().getTime() + Math.floor(Math.random() * 10000)),
-          kind,
+          status,
           subtitle,
           timeout,
           title
@@ -58,8 +58,8 @@ export default function snackbarsReducer(
 // Add error snackbar
 export const snackbarsAddError = ({subtitle, title}: {subtitle?: string; title: ReactNode}) => ({
   payload: {
-    kind: 'error',
     subtitle,
+    status: 'error',
     timeout: 8000,
     title
   },
@@ -69,8 +69,8 @@ export const snackbarsAddError = ({subtitle, title}: {subtitle?: string; title: 
 // Add success snackbar
 export const snackbarsAddSuccess = ({subtitle, title}: {subtitle?: string; title: ReactNode}) => ({
   payload: {
-    kind: 'success',
     subtitle,
+    status: 'success',
     timeout: 4000,
     title
   },

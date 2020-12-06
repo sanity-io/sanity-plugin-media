@@ -1,10 +1,15 @@
 import {Label} from '@sanity/ui'
 import {Asset, Item} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
-import {areEqual, FixedSizeList, ListOnItemsRenderedProps} from 'react-window'
+import {
+  areEqual,
+  FixedSizeList,
+  ListChildComponentProps,
+  ListOnItemsRenderedProps
+} from 'react-window'
 import {Box as LegacyBox} from 'theme-ui'
 
-import TableItem from '../Item/Table'
+import TableRow from '../TableRow'
 import useKeyPress from '../../hooks/useKeyPress'
 import useThemeBreakpointValue from '../../hooks/useThemeBreakpointValue'
 
@@ -15,12 +20,6 @@ type Props = {
   onItemsRendered: (props: ListOnItemsRenderedProps) => any
   selectedAssets?: Asset[]
   width: number
-}
-
-type VirtualRowProps = {
-  data: Record<string, any>
-  index: number
-  style: CSSProperties
 }
 
 const innerElementType = (props: {children: ReactNode; style: CSSProperties}) => {
@@ -66,7 +65,10 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
   )
 }
 
-const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
+// const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
+const VirtualRow = memo((props: ListChildComponentProps) => {
+  const {data, index, style} = props
+
   if (!data) {
     return null
   }
@@ -79,10 +81,10 @@ const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
     ...style,
     top: Number(style.top) + 2,
     height: Number(style.height) - 2
-  }
+  } as CSSProperties
 
   return (
-    <TableItem
+    <TableRow
       item={item}
       selected={selectedIds.includes(assetId)}
       shiftPressed={shiftPressed}
@@ -91,7 +93,7 @@ const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
   )
 }, areEqual)
 
-const TableView = forwardRef((props: Props, ref: Ref<any>) => {
+const Table = forwardRef((props: Props, ref: Ref<any>) => {
   const {height, items, itemCount, onItemsRendered, selectedAssets, width} = props
 
   const shiftPressed = useKeyPress('Shift')
@@ -131,4 +133,4 @@ const TableView = forwardRef((props: Props, ref: Ref<any>) => {
   )
 })
 
-export default TableView
+export default Table

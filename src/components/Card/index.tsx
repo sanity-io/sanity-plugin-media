@@ -9,8 +9,8 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsPick} from '../../modules/assets'
 import {dialogShowRefs} from '../../modules/dialog'
 import imageDprUrl from '../../util/imageDprUrl'
-import Image from '../Image/Image'
-import TextEllipsis from '../TextEllipsis/TextEllipsis'
+import Image from '../Image'
+import TextEllipsis from '../TextEllipsis'
 
 type Props = {
   item: Item
@@ -57,7 +57,7 @@ const ContextActionContainer = styled(Box)`
   }
 `
 
-const CardItem = (props: Props) => {
+const Card = (props: Props) => {
   const {
     item,
     // selected,
@@ -205,4 +205,4 @@ const CardItem = (props: Props) => {
   )
 }
 
-export default memo(CardItem)
+export default memo(Card)

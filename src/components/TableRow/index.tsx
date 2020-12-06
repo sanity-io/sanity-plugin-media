@@ -13,8 +13,8 @@ import {dialogShowRefs} from '../../modules/dialog'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import getAssetResolution from '../../util/getAssetResolution'
 import imageDprUrl from '../../util/imageDprUrl'
-import Image from '../Image/Image'
-import TextEllipsis from '../TextEllipsis/TextEllipsis'
+import Image from '../Image'
+import TextEllipsis from '../TextEllipsis'
 
 type Props = {
   item: Item
@@ -49,7 +49,7 @@ const ContextActionContainer = styled(LegacyFlex)`
   }
 `
 
-const TableItem = (props: Props) => {
+const TableRow = (props: Props) => {
   const {
     item,
     selected,
@@ -163,9 +163,11 @@ const TableItem = (props: Props) => {
         <AspectRatio ratio={4 / 3}>
           <Image
             draggable={false}
-            opacity={imageOpacity}
             showCheckerboard={!isOpaque}
             src={imageUrl}
+            style={{
+              opacity: imageOpacity
+            }}
           />
 
           {/* Spinner */}
@@ -262,4 +264,4 @@ const TableItem = (props: Props) => {
   )
 }
 
-export default memo(TableItem)
+export default memo(TableRow)

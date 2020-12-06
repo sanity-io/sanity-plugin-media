@@ -5,7 +5,7 @@ import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 
 import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContext'
 import withRedux from './helpers/withRedux'
-import Browser from './components/Browser/Browser'
+import Browser from './components/Browser'
 import useKeyPress from './hooks/useKeyPress'
 import theme from './styled/theme'
 

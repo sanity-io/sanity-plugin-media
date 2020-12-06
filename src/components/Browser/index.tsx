@@ -9,12 +9,12 @@ import {Box as LegacyBox} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsLoadNextPage, assetsLoadPageIndex} from '../../modules/assets'
-import Dialogs from '../Dialogs/Dialogs'
-import Footer from '../Footer/Footer'
-import Header from '../Header/Header'
-import Snackbars from '../Snackbars/Snackbars'
-import CardView from '../View/Card'
-import TableView from '../View/Table'
+import Dialogs from '../Dialogs'
+import Footer from '../Footer'
+import Header from '../Header'
+import Snackbars from '../Snackbars'
+import Cards from '../Cards'
+import Table from '../Table'
 
 type Props = {
   onClose?: () => void
@@ -125,7 +125,7 @@ const Browser = (props: Props) => {
                       // View: Table
                       if (view === 'table') {
                         return (
-                          <TableView
+                          <Table
                             height={height}
                             items={items}
                             itemCount={itemCount}
@@ -164,7 +164,7 @@ const Browser = (props: Props) => {
                         }
 
                         return (
-                          <CardView
+                          <Cards
                             height={height}
                             items={items}
                             itemCount={itemCount}

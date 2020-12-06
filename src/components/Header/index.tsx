@@ -6,8 +6,8 @@ import {Flex as LegacyFlex} from 'theme-ui'
 import {ORDERS} from '../../config'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsSetFilter, assetsSetOrder, assetsSetView} from '../../modules/assets'
-import Progress from '../Progress/Progress'
-import TextInputSearch from '../TextInputSearch/SearchTextInput'
+import Progress from '../Progress'
+import TextInputSearch from '../TextInputSearch'
 
 type Props = {
   onClose?: () => void
@@ -148,7 +148,6 @@ const Header = (props: Props) => {
                     const selectedIndex = e.target.selectedIndex
                     const filter = filters?.[selectedIndex]
                     if (filter) {
-                      console.log('dispatch filter:', filter)
                       dispatch(assetsSetFilter(filter))
                     }
                   }}

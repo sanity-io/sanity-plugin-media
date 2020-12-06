@@ -6,7 +6,7 @@ type Snackbar = {
   // TODO: use type from sanity
   asset: Asset
   id: string
-  kind: string
+  status?: 'error' | 'warning' | 'success' | 'info'
   subtitle?: string
   timeout?: number
   title?: ReactNode

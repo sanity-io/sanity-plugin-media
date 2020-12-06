@@ -1,3 +1,4 @@
+import {SanityDocument} from '@sanity/client'
 import {Box} from '@sanity/ui'
 import {IntentLink} from 'part:@sanity/base/router'
 import Preview from 'part:@sanity/base/preview'
@@ -31,15 +32,21 @@ const DocumentList = (props: Props) => {
   return (
     <Box>
       <WithReferringDocuments id={assetId}>
-        {({isLoading, referringDocuments}: {isLoading: boolean; referringDocuments: any}) => {
-          const drafts = referringDocuments.reduce(
-            (acc: any, doc: any) =>
+        {({
+          isLoading,
+          referringDocuments
+        }: {
+          isLoading: boolean
+          referringDocuments: SanityDocument
+        }) => {
+          const draftIds = referringDocuments.reduce(
+            (acc: string[], doc: SanityDocument) =>
               doc._id.startsWith('drafts.') ? acc.concat(doc._id.slice(7)) : acc,
             []
           )
 
-          const filteredDocuments = referringDocuments.filter(
-            (doc: any) => !drafts.includes(doc._id)
+          const filteredDocuments: SanityDocument[] = referringDocuments.filter(
+            (doc: SanityDocument) => !draftIds.includes(doc._id)
           )
 
           if (isLoading) {
@@ -49,8 +56,6 @@ const DocumentList = (props: Props) => {
           if (filteredDocuments.length === 0) {
             return <Box>No documents are referencing this asset</Box>
           }
-
-          console.log('> filteredDocuments', filteredDocuments)
 
           return filteredDocuments?.map(doc => {
             const schemaType = schema.get(doc._type)
@@ -74,31 +79,6 @@ const DocumentList = (props: Props) => {
       </WithReferringDocuments>
     </Box>
   )
-
-  /*
-  return (
-    <LegacyBox>
-      {documents.map((doc: any) => {
-        const schemaType = schema.get(doc._type)
-        if (!schemaType) {
-          return (
-            <div>
-              A document of the unknown type <em>{doc._type}</em>
-            </div>
-          )
-        }
-
-        return (
-          <LegacyBox key={doc._id}>
-            <IntentLink intent="edit" params={{id: doc._id}} key={doc._id}>
-              <Preview layout="default" value={doc} type={schemaType} />
-            </IntentLink>
-          </LegacyBox>
-        )
-      })}
-    </LegacyBox>
-  )
-  */
 }
 
 export default DocumentList

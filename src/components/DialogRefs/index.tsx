@@ -22,14 +22,14 @@ import {AspectRatio} from 'theme-ui'
 import {dialogClear} from '../../modules/dialog'
 import getAssetResolution from '../../util/getAssetResolution'
 import imageDprUrl from '../../util/imageDprUrl'
-import Image from '../Image/Image'
-// import DocumentList from '../DocumentList/DocumentList'
+// import DocumentList from '../DocumentList'
+import Image from '../Image'
 
 type Props = {
   item: Item
 }
 
-const RefsDialog = (props: Props) => {
+const DialogRefs = (props: Props) => {
   const {item} = props
 
   // Redux
@@ -81,6 +81,7 @@ const RefsDialog = (props: Props) => {
         header="Asset details"
         id="example"
         onClose={handleClose}
+        // @ts-ignore – currently @sanity/ui only accepts numbers
         width="80%"
       >
         <Grid columns={[1, 1, 2]}>
@@ -151,9 +152,9 @@ const RefsDialog = (props: Props) => {
             {/* <DocumentList assetId={item.asset._id} /> */}
 
             {/* Tabs */}
-            <TabList aria-labelledby="Foo" id="Foo" space={2}>
-              <Tab id="foo" label="Details" selected={true} size={2} />
-              <Tab id="bar" label="References" size={2} />
+            <TabList aria-labelledby="foo" id="oo" space={2}>
+              <Tab aria-controls="bar" id="bar" label="Details" selected={true} size={2} />
+              <Tab aria-controls="baz" id="baz" label="References" size={2} />
             </TabList>
 
             {/* <Heading size={3}>Details</Heading> */}
@@ -205,4 +206,4 @@ const RefsDialog = (props: Props) => {
   )
 }
 
-export default RefsDialog
+export default DialogRefs

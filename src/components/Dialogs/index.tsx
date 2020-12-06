@@ -1,7 +1,7 @@
 import React from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import RefsDialog from '../Dialog/Refs'
+import DialogRefs from '../DialogRefs'
 
 const Dialogs = () => {
   const {asset, type} = useTypedSelector(state => state.dialog)
@@ -14,7 +14,7 @@ const Dialogs = () => {
   }
 
   if (asset && type === 'refs') {
-    return <RefsDialog item={currentItem} />
+    return <DialogRefs item={currentItem} />
   }
 
   return null

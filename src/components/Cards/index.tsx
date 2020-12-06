@@ -1,10 +1,10 @@
 import {Item, Asset} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
-import {VariableSizeGrid, GridOnItemsRenderedProps} from 'react-window'
+import {GridOnItemsRenderedProps, GridChildComponentProps, VariableSizeGrid} from 'react-window'
 import {Box} from 'theme-ui'
 
 import useKeyPress from '../../hooks/useKeyPress'
-import CardItem from '../Item/Card'
+import Card from '../Card'
 
 type Props = {
   height: number
@@ -13,13 +13,6 @@ type Props = {
   onItemsRendered: (props: GridOnItemsRenderedProps) => any
   selectedAssets?: Asset[]
   width: number
-}
-
-type VirtualCellProps = {
-  columnIndex: number
-  data: Record<string, any>
-  rowIndex: number
-  style: CSSProperties
 }
 
 const innerElementType = (props: {children: ReactNode; style: CSSProperties}) => {
@@ -37,25 +30,30 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
   )
 }
 
-const VirtualCell = memo(({columnIndex, data, rowIndex, style}: VirtualCellProps) => {
+const VirtualCell = memo((props: GridChildComponentProps) => {
+  const {columnIndex, data, rowIndex, style} = props
+
   const {columnCount, items, selectedIds, shiftPressed} = data
   const index = columnCount * rowIndex + columnIndex
   const item = items[index]
   const assetId = item?.asset?._id
 
   // Add padding to virtual cells
+  const MARGIN_X = 10
+  const MARGIN_Y = 10
+
   const cellStyle = {
     ...style,
-    left: Number(style.left) + 10,
-    right: Number(style.left) + 10,
-    top: Number(style.top) + 10,
-    bottom: Number(style.top) + 10,
-    width: Number(style.width) - 20,
-    height: Number(style.height) - 20
-  }
+    left: Number(style.left) + MARGIN_X,
+    right: Number(style.left) + MARGIN_X,
+    top: Number(style.top) + MARGIN_Y,
+    bottom: Number(style.top) + MARGIN_Y,
+    width: Number(style.width) - MARGIN_X * 2,
+    height: Number(style.height) - MARGIN_Y * 2
+  } as CSSProperties
 
   return (
-    <CardItem
+    <Card
       item={item}
       key={`grid-${assetId}`}
       selected={selectedIds.includes(assetId)}
@@ -65,7 +63,7 @@ const VirtualCell = memo(({columnIndex, data, rowIndex, style}: VirtualCellProps
   )
 })
 
-const CardView = forwardRef((props: Props, ref: Ref<any>) => {
+const Cards = forwardRef((props: Props, ref: Ref<any>) => {
   const {height, items, itemCount, onItemsRendered, selectedAssets, width} = props
 
   const shiftPressed = useKeyPress('Shift')
@@ -103,4 +101,4 @@ const CardView = forwardRef((props: Props, ref: Ref<any>) => {
   )
 })
 
-export default CardView
+export default Cards
