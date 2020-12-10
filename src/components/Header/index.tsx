@@ -1,4 +1,5 @@
-import {Box, Button, Card, Flex, Icon, Inline, Select, Text} from '@sanity/ui'
+import {CloseIcon, Icon, ThLargeIcon, ThListIcon} from '@sanity/icons'
+import {Box, Button, Card, Flex, Inline, Select, Text} from '@sanity/ui'
 import React, {ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import {Flex as LegacyFlex} from 'theme-ui'
@@ -67,7 +68,7 @@ const Header = (props: Props) => {
           {/* Close */}
           {onClose && (
             <Box marginX={3}>
-              <Button icon="close" mode="bleed" onClick={onClose} radius={0} />
+              <Button icon={CloseIcon} mode="bleed" onClick={onClose} radius={0} />
             </Box>
           )}
         </LegacyFlex>
@@ -120,18 +121,18 @@ const Header = (props: Props) => {
                   }}
                 >
                   <Button
-                    icon="th-large"
+                    fontSize={1}
+                    icon={ThLargeIcon}
                     mode={view === 'grid' ? 'default' : 'ghost'}
                     onClick={() => dispatch(assetsSetView('grid'))}
                     radius={0}
-                    size={1}
                   />
                   <Button
-                    icon="th-list"
+                    fontSize={1}
+                    icon={ThListIcon}
                     mode={view === 'table' ? 'default' : 'ghost'}
                     onClick={() => dispatch(assetsSetView('table'))}
                     radius={0}
-                    size={1}
                   />
                 </Inline>
               </Box>
@@ -144,6 +145,7 @@ const Header = (props: Props) => {
                 }}
               >
                 <Select
+                  fontSize={1}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     const selectedIndex = e.target.selectedIndex
                     const filter = filters?.[selectedIndex]
@@ -152,7 +154,6 @@ const Header = (props: Props) => {
                     }
                   }}
                   padding={3}
-                  size={1}
                 >
                   {filters?.map((item, index) => {
                     return (
@@ -171,6 +172,7 @@ const Header = (props: Props) => {
                     </Text>
                   </Box>
                   <Select
+                    fontSize={1}
                     radius={1}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                       const selectedIndex = e.target.selectedIndex
@@ -178,7 +180,6 @@ const Header = (props: Props) => {
                       dispatch(assetsSetOrder(value))
                     }}
                     padding={3}
-                    size={1}
                   >
                     {ORDERS?.map((item, index) => {
                       return (

@@ -1,4 +1,5 @@
-import {Checkbox, Flex, Icon, Spinner} from '@sanity/ui'
+import {Icon} from '@sanity/icons'
+import {Checkbox, Flex, Spinner} from '@sanity/ui'
 import {Item} from '@types'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'

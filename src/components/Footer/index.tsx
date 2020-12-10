@@ -66,17 +66,11 @@ const Footer = () => {
                 {picked.length} {pluralize('image', picked.length)} selected
               </Text>
             </Box>
+            <Button fontSize={1} mode="bleed" onClick={handlePickClear} text="Deselect" />
             <Button
-              // icon="revert"
-              mode="bleed"
-              onClick={handlePickClear}
-              size={1}
-              text="Deselect"
-            />
-            <Button
+              fontSize={1}
               mode="bleed"
               onClick={handleDeletePicked}
-              size={1}
               text="Delete"
               tone="critical"
             />

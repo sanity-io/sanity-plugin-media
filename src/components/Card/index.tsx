@@ -1,4 +1,5 @@
-import {Box, Checkbox, Flex, Icon, Spinner, Text, Tooltip} from '@sanity/ui'
+import {Icon} from '@sanity/icons'
+import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {Item} from '@types'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {useDispatch} from 'react-redux'

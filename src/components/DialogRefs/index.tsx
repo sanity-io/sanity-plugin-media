@@ -1,3 +1,4 @@
+import {DownloadIcon, PublishIcon} from '@sanity/icons'
 import {
   Box,
   Button,
@@ -69,7 +70,7 @@ const DialogRefs = (props: Props) => {
     <Box padding={3}>
       <Flex justify="space-between">
         <Button mode="bleed" text="Delete" tone="critical" />
-        <Button icon="publish" text="Update" tone="primary" />
+        <Button icon={PublishIcon} text="Update" tone="primary" />
       </Flex>
     </Box>
   )
@@ -137,10 +138,10 @@ const DialogRefs = (props: Props) => {
                 {/* Download button */}
                 <Box>
                   <Button
-                    icon="download"
+                    fontSize={1}
+                    icon={DownloadIcon}
                     mode="ghost"
                     onClick={handleDownload}
-                    size={1}
                     text="Download"
                   />
                 </Box>

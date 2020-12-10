@@ -1,4 +1,5 @@
-import {Box, Flex, Icon, TextInput} from '@sanity/ui'
+import {Icon, SearchIcon} from '@sanity/icons'
+import {Box, Flex, TextInput} from '@sanity/ui'
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {Subject} from 'rxjs'
@@ -56,11 +57,11 @@ const TextInputSearch = () => {
       }}
     >
       <TextInput
-        icon="search"
+        fontSize={1}
+        icon={SearchIcon}
         onChange={handleChange}
         placeholder="Search"
         radius={2}
-        size={1}
         value={query}
       />
 

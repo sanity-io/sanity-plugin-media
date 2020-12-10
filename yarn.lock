@@ -437,7 +437,7 @@
     "@reach/utils" "0.10.5"
     tslib "^2.0.0"
 
-"@reach/auto-id@^0.12.0":
+"@reach/auto-id@^0.12.1":
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/@reach/auto-id/-/auto-id-0.12.1.tgz#2e4a7250d2067ec16a9b4ea732695bc75572405c"
   integrity sha512-s8cdY6dF0hEBB/28BbidB2EX6JfEBVIWLP6S2Jg0Xqq2H3xijL+zrsjL40jACwXRkignjuP+CvYsuFuO0+/GRA==
@@ -548,10 +548,10 @@
   resolved "https://registry.yarnpkg.com/@sanity/color/-/color-1.0.0.tgz#6cc44d4a8f6da4567828f52f141deed4d17aa31e"
   integrity sha512-npFZKld7K/F4vAe4SZNyx4W6R/3z5iH/CuIDFJTn6CRQbDgsrJTCPtVAF1nx76wMa3BYCTs4YFfIVkRRx2Jz9A==
 
-"@sanity/color@^2.0.9":
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/@sanity/color/-/color-2.0.9.tgz#37f49913029f8939d57bab17c5f01768f119a829"
-  integrity sha512-SwC6ZDhgfKsh0YYaa7becfSAYAp71jmJVJtFjkQ9ToIae2CS2hPHS07Df6YUP8gqlKbVoxy8uo383a9O5CTC3w==
+"@sanity/color@^2.0.11":
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/@sanity/color/-/color-2.0.11.tgz#5933e40b0e91bbdaa4fbda46f7dcdd90d5b2c43e"
+  integrity sha512-XVwHXIx78OA8i3y8aIZ9nq6/6hdC4K0FB6jW9I5sLbP4IooXSPoeRL/3Fab6jEzSuhAe7GEhREXqORZC6bfEnw==
 
 "@sanity/components@2.0.2":
   version "2.0.2"
@@ -606,10 +606,10 @@
   resolved "https://registry.yarnpkg.com/@sanity/generate-help-url/-/generate-help-url-2.0.1.tgz#2ba4c8087bd1447737358a6b18ad6ea503252532"
   integrity sha512-dnmMUZJH1tklqh6FE7dCc/L/0VcCexeyrcEBCt9me0KDwVna9l9fzQUo2uSg82ZvxWt+Bkq1c5zP5BDzMpj7Mw==
 
-"@sanity/icons@^1.0.0-beta.3":
-  version "1.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@sanity/icons/-/icons-1.0.0-beta.3.tgz#d08afd3fc40e30e344aee598f5ef881ff0207f89"
-  integrity sha512-VoK3/bFhPoM/UPzpFMVeR23UGQ0IUidtpz5gKWDAoa2oZ2Mjp0b3S/txdtnnYussj4TV8O//1bvHiDmcrwFYNA==
+"@sanity/icons@1.0.0", "@sanity/icons@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sanity/icons/-/icons-1.0.0.tgz#ce7961c14f0491b179b4a8c912bc1583cc0f1579"
+  integrity sha512-SBYNunoF6o9TpOoB7S7exon+eBlsNeOe4FC8ZaYFwgJYgb94cEXInBuBpvWNnW3IMn5PjqDzpYTLDloJI7wLLA==
 
 "@sanity/image-url@^0.140.19":
   version "0.140.19"
@@ -723,17 +723,18 @@
   dependencies:
     "@types/react" "^16.9.49"
 
-"@sanity/ui@1.0.0-beta.20":
-  version "1.0.0-beta.20"
-  resolved "https://registry.yarnpkg.com/@sanity/ui/-/ui-1.0.0-beta.20.tgz#ff180d7871b5a970bfe6d47fac43c7801d8470d8"
-  integrity sha512-ia2uH8lsk9JyGtYOiALUDJmBgHVziw0ZD5L1NZfrEr6Xo3LB0xZbT1EpbcNRTh+fll5JLu7dOYDt8mFzCDY1jQ==
+"@sanity/ui@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@sanity/ui/-/ui-0.28.0.tgz#9328e83de6c1f21ea6fe82cf31e3f358f50e8e9f"
+  integrity sha512-22W7q3iZgUVLbCnFNqWNHhfHBVr8hv+UVIznG6OmulmjxlQD9RBI3Gr/JS0KN65W9XEWeETj80kPBycXAywKGg==
   dependencies:
     "@juggle/resize-observer" "^3.2.0"
     "@popperjs/core" "^2.5.4"
-    "@reach/auto-id" "^0.12.0"
-    "@sanity/color" "^2.0.9"
-    "@sanity/icons" "^1.0.0-beta.3"
-    framer-motion "^2.9.4"
+    "@reach/auto-id" "^0.12.1"
+    "@sanity/color" "^2.0.11"
+    "@sanity/icons" "^1.0.0"
+    framer-motion "^2.9.5"
+    popper-max-size-modifier "^0.2.0"
     react-is "^17.0.1"
     react-popper "^2.2.4"
     react-refractor "^2.1.2"
@@ -2927,10 +2928,10 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-framer-motion@^2.9.4:
-  version "2.9.4"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-2.9.4.tgz#366656ae240776c923cbd4359815e5c1ed56084d"
-  integrity sha512-Bvgdwpu5UO6VnEEwenJEmnGeo9ILRRWh9f3iIX+71NiM5X60Qi6KlkBFGZc9DGbdIUAn0AYgaxVhTKL39OOYng==
+framer-motion@^2.9.5:
+  version "2.9.5"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-2.9.5.tgz#bbb185325d531c57f494cf3f6cf7719fc2c225c7"
+  integrity sha512-epSX4Co1YbDv0mjfHouuY0q361TpHE7WQzCp/xMTilxy4kXd+Z23uJzPVorfzbm1a/9q1Yu8T5bndaw65NI4Tg==
   dependencies:
     framesync "^4.1.0"
     hey-listen "^1.0.8"
