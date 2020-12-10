@@ -1,4 +1,4 @@
-import {Label} from '@sanity/ui'
+import {Box, Label} from '@sanity/ui'
 import {Asset, Item} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {
@@ -11,7 +11,6 @@ import {Box as LegacyBox} from 'theme-ui'
 
 import TableRow from '../TableRow'
 import useKeyPress from '../../hooks/useKeyPress'
-import useThemeBreakpointValue from '../../hooks/useThemeBreakpointValue'
 
 type Props = {
   height: number
@@ -29,14 +28,13 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
       <LegacyBox
         sx={{
           alignItems: 'center',
-          bg: 'white', // TODO: use theme color
-          display: ['none', 'grid'],
-          gridColumnGap: [2, 3],
+          bg: 'black', // TODO: use theme color
+          display: ['none', null, null, 'grid'],
+          gridColumnGap: [2, null, null, 3],
           gridTemplateColumns: 'tableLarge',
-          height: 'tableHeaderHeight',
+          height: '2em',
           letterSpacing: '0.025em',
           position: 'sticky',
-          // px: [0, 2],
           textTransform: 'uppercase',
           top: 0,
           width: '100%',
@@ -52,15 +50,14 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
         <Label size={1}>Last updated</Label>
         <Label></Label>
       </LegacyBox>
-      <LegacyBox
-        sx={{
+      <Box
+        style={{
           position: 'absolute',
-          top: [0, 'tableHeaderHeight'],
           width: '100%'
         }}
       >
         <div style={style}>{children}</div>
-      </LegacyBox>
+      </Box>
     </>
   )
 }
@@ -98,8 +95,6 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
 
   const shiftPressed = useKeyPress('Shift')
 
-  const tableRowHeight = useThemeBreakpointValue('tableRowHeight')
-
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
 
   return (
@@ -110,7 +105,7 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
       }}
     >
       <FixedSizeList
-        className="custom-scrollbar"
+        // className="custom-scrollbar"
         height={height}
         innerElementType={innerElementType}
         itemData={{
@@ -119,7 +114,7 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
           shiftPressed
         }}
         itemCount={itemCount}
-        itemSize={parseInt(tableRowHeight)}
+        itemSize={100} // px
         onItemsRendered={onItemsRendered}
         ref={ref}
         style={{

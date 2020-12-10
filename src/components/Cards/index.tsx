@@ -78,7 +78,7 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
 
   return (
     <VariableSizeGrid
-      className="custom-scrollbar"
+      // className="custom-scrollbar"
       columnCount={columnCount}
       columnWidth={() => cardWidth}
       height={height}

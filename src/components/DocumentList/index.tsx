@@ -5,8 +5,6 @@ import Preview from 'part:@sanity/base/preview'
 import schema from 'part:@sanity/base/schema'
 import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'
 import React from 'react'
-// import styled from 'styled-components'
-import {Box as LegacyBox} from 'theme-ui'
 
 type Props = {
   assetId: string
@@ -68,11 +66,11 @@ const DocumentList = (props: Props) => {
             }
 
             return (
-              <LegacyBox key={doc._id}>
+              <Box key={doc._id}>
                 <IntentLink intent="edit" params={{id: doc._id}} key={doc._id}>
                   <Preview layout="default" value={doc} type={schemaType} />
                 </IntentLink>
-              </LegacyBox>
+              </Box>
             )
           })
         }}

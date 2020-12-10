@@ -90,6 +90,7 @@ const Browser = (props: Props) => {
       <Dialogs />
 
       <Card
+        scheme="dark"
         style={{
           minHeight: '100%'
         }}
@@ -108,7 +109,7 @@ const Browser = (props: Props) => {
             mx: 'auto',
             overflow: 'hidden',
             position: 'absolute',
-            top: ['headerRowHeight3x', 'headerRowHeight2x'],
+            top: ['headerRowHeight3x', null, null, 'headerRowHeight2x'],
             width: '100%'
           }}
         >

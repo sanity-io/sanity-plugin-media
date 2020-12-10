@@ -1,11 +1,19 @@
-import {Box, Button, Card, Inline, Text} from '@sanity/ui'
+import {Box, Button, Inline, Text} from '@sanity/ui'
 import pluralize from 'pluralize'
 import React from 'react'
 import {useDispatch} from 'react-redux'
+import styled from 'styled-components'
 import {Flex as LegacyFlex} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsDeletePicked, assetsPickClear} from '../../modules/assets'
+
+const Container = styled(Box)(({theme}) => {
+  return {
+    // TODO: there must be a better way to select
+    borderTop: `1px solid ${theme.sanity.color.muted.default.disabled.border}`
+  }
+})
 
 const Footer = () => {
   // Redux
@@ -44,7 +52,7 @@ const Footer = () => {
 
   if (picked.length > 0) {
     return (
-      <Card
+      <Container
         paddingX={3}
         style={{
           bottom: 0,
@@ -76,7 +84,7 @@ const Footer = () => {
             />
           </Inline>
         </LegacyFlex>
-      </Card>
+      </Container>
     )
   }
 

@@ -27,13 +27,13 @@ type Props = {
 const ContainerGrid = styled(LegacyGrid)`
   align-items: center;
   cursor: pointer;
-  transition: background 400ms;
+  /* transition: background 400ms; */
   user-select: none;
   white-space: nowrap;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: #fafafa; // TODO: use theme colors
+      background: rgba(0, 0, 0, 0.25); // TODO: use theme colors
     }
   }
 `
@@ -45,7 +45,7 @@ const ContextActionContainer = styled(LegacyFlex)`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: #f0f0f0;
+      background: #000; // TODO: use theme colors
     }
   }
 `
@@ -113,11 +113,10 @@ const TableRow = (props: Props) => {
       onClick={handleClick}
       style={style}
       sx={{
-        gridColumnGap: [2, 3],
+        gridColumnGap: [2, null, null, 3],
         gridRowGap: 0,
-        gridTemplateColumns: ['tableSmall', 'tableLarge'],
-        gridTemplateRows: ['auto', '1fr'],
-        height: ['tableRowHeight.0', 'tableRowHeight.1'],
+        gridTemplateColumns: ['tableSmall', null, null, 'tableLarge'],
+        gridTemplateRows: ['auto', null, null, '1fr'],
         opacity: cellOpacity
       }}
     >
@@ -126,9 +125,9 @@ const TableRow = (props: Props) => {
         onClick={handleContextActionClick}
         sx={{
           alignItems: 'center',
-          gridColumn: [1, 1],
-          gridRowStart: ['1', 'auto'],
-          gridRowEnd: ['span 5', 'auto'],
+          gridColumn: [1, null, null, 1],
+          gridRowStart: ['1', null, null, 'auto'],
+          gridRowEnd: ['span 5', null, null, 'auto'],
           height: '100%',
           justifyContent: 'center',
           position: 'relative'
@@ -156,9 +155,9 @@ const TableRow = (props: Props) => {
       {/* Preview image + spinner */}
       <LegacyBox
         sx={{
-          gridColumn: [2, 2],
-          gridRowStart: ['1', 'auto'],
-          gridRowEnd: ['span 5', 'auto']
+          gridColumn: [2, null, null, 2],
+          gridRowStart: ['1', null, null, 'auto'],
+          gridRowEnd: ['span 5', null, null, 'auto']
         }}
       >
         <AspectRatio ratio={4 / 3}>
@@ -193,8 +192,8 @@ const TableRow = (props: Props) => {
       {/* Filename */}
       <LegacyBox
         sx={{
-          gridColumn: [3, 3],
-          gridRow: [2, 'auto']
+          gridColumn: [3, null, null, 3],
+          gridRow: [2, null, null, 'auto']
         }}
       >
         <TextEllipsis size={1}>{asset.originalFilename}</TextEllipsis>
@@ -203,8 +202,8 @@ const TableRow = (props: Props) => {
       {/* Resolution */}
       <LegacyBox
         sx={{
-          gridColumn: [3, 4],
-          gridRow: [3, 'auto']
+          gridColumn: [3, null, null, 4],
+          gridRow: [3, null, null, 'auto']
         }}
       >
         <TextEllipsis muted size={1}>
@@ -215,9 +214,9 @@ const TableRow = (props: Props) => {
       {/* File extension */}
       <LegacyBox
         sx={{
-          display: ['none', 'block'],
-          gridColumn: [5],
-          gridRow: ['auto']
+          display: ['none', null, null, 'block'],
+          gridColumn: 5,
+          gridRow: 'auto'
         }}
       >
         <TextEllipsis muted size={1}>
@@ -228,9 +227,9 @@ const TableRow = (props: Props) => {
       {/* Size */}
       <LegacyBox
         sx={{
-          display: ['none', 'block'],
-          gridColumn: [6],
-          gridRow: ['auto']
+          display: ['none', null, null, 'block'],
+          gridColumn: 6,
+          gridRow: 'auto'
         }}
       >
         <TextEllipsis muted size={1}>
@@ -241,8 +240,8 @@ const TableRow = (props: Props) => {
       {/* Last updated */}
       <LegacyBox
         sx={{
-          gridColumn: [3, 7],
-          gridRow: [4, 'auto']
+          gridColumn: [3, null, null, 7],
+          gridRow: [4, null, null, 'auto']
         }}
       >
         <TextEllipsis muted size={1}>
@@ -253,9 +252,9 @@ const TableRow = (props: Props) => {
       {/* Error */}
       <LegacyBox
         sx={{
-          gridColumn: [4, 8],
+          gridColumn: [4, null, null, 8],
           gridRowStart: '1',
-          gridRowEnd: ['span 5', 'auto'],
+          gridRowEnd: ['span 5', null, null, 'auto'],
           mx: 'auto'
         }}
       >

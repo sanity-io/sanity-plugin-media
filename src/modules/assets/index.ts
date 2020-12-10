@@ -75,7 +75,6 @@ export const initialState: AssetsReducerState = {
   pageSize: 50,
   searchQuery: '',
   view: 'grid'
-  // view: 'table'
   // totalCount: -1
 }
 

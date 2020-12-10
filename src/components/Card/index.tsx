@@ -21,28 +21,17 @@ type Props = {
 }
 
 const Container = styled(Flex)`
-  background: #fafafa; // TODO: use theme colors
+  background: #222; // TODO: use theme colors
+  border: 1px solid transparent;
   border-radius: 3px;
   overflow: hidden;
   position: relative;
+  transition: all 400ms;
   user-select: none;
 
-  ::after {
-    box-shadow: 0 0 15px 0px rgba(0, 0, 0, 0.1);
-    content: ' ';
-    height: 100%;
-    left: 0;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    transition: all 400ms;
-    width: 100%;
-    z-index: -1;
-  }
-
   @media (hover: hover) and (pointer: fine) {
-    &:hover::after {
-      opacity: 1;
+    &:hover {
+      border: 1px solid ${props => props.theme.sanity.color.spot.gray};
     }
   }
 `
@@ -53,7 +42,7 @@ const ContextActionContainer = styled(Box)`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: #f0f0f0;
+      background: #1a1a1a; // TODO: use theme colors
     }
   }
 `

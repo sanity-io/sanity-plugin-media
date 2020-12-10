@@ -5,7 +5,6 @@ import {
   Dialog,
   Flex,
   Grid,
-  Layer,
   Select,
   Stack,
   Tab,
@@ -76,134 +75,124 @@ const DialogRefs = (props: Props) => {
   )
 
   return (
-    <Layer>
-      <Dialog
-        footer={<Footer />}
-        header="Asset details"
-        id="example"
-        onClose={handleClose}
-        // @ts-ignore – currently @sanity/ui only accepts numbers
-        width="80%"
-      >
-        <Grid columns={[1, 1, 2]}>
-          <Box
-            padding={4}
-            style={
-              {
-                // background: '#999' // TODO: use theme color
-                // background: '#444' // TODO: use theme color
-              }
-            }
-          >
-            {/* Image */}
-            <AspectRatio ratio={item?.asset?.metadata?.dimensions?.aspectRatio}>
-              <Image
-                draggable={false}
-                showCheckerboard={!item?.asset?.metadata?.isOpaque}
-                src={imageUrl}
-              />
-            </AspectRatio>
+    <Dialog
+      scheme="dark"
+      footer={<Footer />}
+      header="Asset details"
+      id="example"
+      onClose={handleClose}
+      width={3}
+    >
+      <Grid columns={[1, 1, 2]}>
+        <Box padding={4}>
+          {/* Image */}
+          <AspectRatio ratio={item?.asset?.metadata?.dimensions?.aspectRatio}>
+            <Image
+              draggable={false}
+              showCheckerboard={!item?.asset?.metadata?.isOpaque}
+              src={imageUrl}
+            />
+          </AspectRatio>
 
-            {/* Metadata */}
-            <Box marginTop={3}>
-              <Stack space={3}>
-                {/* Size */}
-                <Flex justify="space-between">
-                  <Text size={1}>Size</Text>
-                  <Text muted size={1}>
-                    {filesize(item?.asset?.size, {round: 0})}
-                  </Text>
-                </Flex>
-                {/* MIME type */}
-                <Flex justify="space-between">
-                  <Text size={1}>MIME type</Text>
-                  <Text muted size={1}>
-                    {item?.asset?.mimeType}
-                  </Text>
-                </Flex>
-                {/* Extension */}
-                <Flex justify="space-between">
-                  <Text size={1}>Extension</Text>
-                  <Text muted size={1}>
-                    {(item?.asset?.extension).toUpperCase()}
-                  </Text>
-                </Flex>
-                {/* Dimensions */}
-                <Flex justify="space-between">
-                  <Text size={1}>Dimensions</Text>
-                  <Text muted size={1}>
-                    {getAssetResolution(item?.asset)}
-                  </Text>
-                </Flex>
-                {/* Download button */}
-                <Box>
-                  <Button
-                    fontSize={1}
-                    icon={DownloadIcon}
-                    mode="ghost"
-                    onClick={handleDownload}
-                    text="Download"
-                  />
-                </Box>
-              </Stack>
-            </Box>
+          {/* Metadata */}
+          <Box marginTop={3}>
+            <Stack space={3}>
+              {/* Size */}
+              <Flex justify="space-between">
+                <Text size={1}>Size</Text>
+                <Text muted size={1}>
+                  {filesize(item?.asset?.size, {round: 0})}
+                </Text>
+              </Flex>
+              {/* MIME type */}
+              <Flex justify="space-between">
+                <Text size={1}>MIME type</Text>
+                <Text muted size={1}>
+                  {item?.asset?.mimeType}
+                </Text>
+              </Flex>
+              {/* Extension */}
+              <Flex justify="space-between">
+                <Text size={1}>Extension</Text>
+                <Text muted size={1}>
+                  {(item?.asset?.extension).toUpperCase()}
+                </Text>
+              </Flex>
+              {/* Dimensions */}
+              <Flex justify="space-between">
+                <Text size={1}>Dimensions</Text>
+                <Text muted size={1}>
+                  {getAssetResolution(item?.asset)}
+                </Text>
+              </Flex>
+              {/* Download button */}
+              <Box>
+                <Button
+                  fontSize={1}
+                  icon={DownloadIcon}
+                  mode="ghost"
+                  onClick={handleDownload}
+                  text="Download"
+                />
+              </Box>
+            </Stack>
           </Box>
+        </Box>
 
-          <Box padding={4}>
-            {/* <DocumentList assetId={item.asset._id} /> */}
+        <Box padding={4}>
+          {/* <DocumentList assetId={item.asset._id} /> */}
 
-            {/* Tabs */}
-            <TabList aria-labelledby="foo" id="oo" space={2}>
-              <Tab aria-controls="bar" id="bar" label="Details" selected={true} size={2} />
-              <Tab aria-controls="baz" id="baz" label="References" size={2} />
-            </TabList>
+          {/* Tabs */}
+          <TabList aria-labelledby="foo" id="oo" space={2}>
+            <Tab aria-controls="bar" id="bar" label="Details" selected={true} size={2} />
+            <Tab aria-controls="baz" id="baz" label="References" size={2} />
+          </TabList>
 
-            {/* <Heading size={3}>Details</Heading> */}
+          {/* <Heading size={3}>Details</Heading> */}
 
-            {/* Form field */}
-            <Box marginTop={4}>
-              <Stack space={3}>
-                <Box>
-                  <Box paddingY={2}>
-                    <Text size={1}>Filename</Text>
-                  </Box>
-                  <TextInput />
+          {/* Form field */}
+          <Box marginTop={4}>
+            <Stack space={3}>
+              <Box>
+                <Box paddingY={2}>
+                  <Text size={1}>Filename</Text>
                 </Box>
+                <TextInput />
+              </Box>
 
-                <Box>
-                  <Box paddingY={2}>
-                    <Text size={1}>Label</Text>
-                  </Box>
-                  <TextInput />
+              <Box>
+                <Box paddingY={2}>
+                  <Text size={1}>Label</Text>
                 </Box>
+                <TextInput />
+              </Box>
 
-                <Box>
-                  <Box paddingY={2}>
-                    <Text size={1}>Title</Text>
-                  </Box>
-                  <TextInput />
+              <Box>
+                <Box paddingY={2}>
+                  <Text size={1}>Title</Text>
                 </Box>
+                <TextInput />
+              </Box>
 
-                <Box>
-                  <Box paddingY={2}>
-                    <Text size={1}>Description</Text>
-                  </Box>
-                  <TextInput />
+              <Box>
+                <Box paddingY={2}>
+                  <Text size={1}>Description</Text>
                 </Box>
+                <TextInput />
+              </Box>
 
-                {/* Form field */}
-                <Box>
-                  <Box paddingY={2}>
-                    <Text size={1}>Tags</Text>
-                  </Box>
-                  <Select placeholder="tags" />
+              {/* Form field */}
+              <Box>
+                <Box paddingY={2}>
+                  <Text size={1}>Tags</Text>
                 </Box>
-              </Stack>
-            </Box>
+                <Select placeholder="tags" />
+              </Box>
+            </Stack>
           </Box>
-        </Grid>
-      </Dialog>
-    </Layer>
+        </Box>
+      </Grid>
+    </Dialog>
   )
 }
 

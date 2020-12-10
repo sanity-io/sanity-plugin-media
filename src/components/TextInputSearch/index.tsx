@@ -51,11 +51,7 @@ const TextInputSearch = () => {
   }
 
   return (
-    <Box
-      style={{
-        position: 'relative'
-      }}
-    >
+    <Box style={{position: 'relative'}}>
       <TextInput
         fontSize={1}
         icon={SearchIcon}
@@ -78,8 +74,8 @@ const TextInputSearch = () => {
             position: 'absolute',
             right: 0,
             top: 0,
-            width: '2em'
-            // zIndex: 1 // TODO: try to avoid manually setting z-indices
+            width: '2em',
+            zIndex: 1 // TODO: try to avoid manually setting z-indices
           }}
         >
           <Icon symbol="close" />

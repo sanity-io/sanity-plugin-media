@@ -78,9 +78,10 @@ const Header = (props: Props) => {
       <Card>
         <LegacyFlex
           sx={{
-            alignItems: ['flex-start', 'center'],
-            flexDirection: ['column', 'row'],
-            height: ['headerRowHeight2x', 'headerRowHeight1x'],
+            alignItems: ['flex-start', null, null, 'center'],
+            borderBottom: '1px solid #333', // TODO: use theme colors
+            flexDirection: ['column', null, null, 'row'],
+            height: ['headerRowHeight2x', null, null, 'headerRowHeight1x'],
             justifyContent: 'space-between',
             textAlign: 'right',
             width: '100%'
@@ -90,10 +91,10 @@ const Header = (props: Props) => {
           <LegacyFlex
             sx={{
               alignItems: 'center',
-              flexGrow: 1,
+              flex: 1,
               height: '100%',
               justifyContent: 'flex-start',
-              maxWidth: ['none', '340px'],
+              maxWidth: ['none', null, null, '340px'],
               position: 'relative',
               width: '100%'
             }}
@@ -104,46 +105,41 @@ const Header = (props: Props) => {
           </LegacyFlex>
 
           {/* Views + filters + orders*/}
-          <LegacyFlex
-            sx={{
-              alignItems: 'center',
-              height: '100%',
-              justifyContent: ['space-between', 'flex-end'],
+          <Flex
+            align="center"
+            flex={1}
+            justify={['space-between', 'space-between', 'space-between', 'flex-end']}
+            style={{
+              // height: '100%',
               width: '100%'
             }}
           >
-            <Flex>
-              <Box marginX={2}>
-                <Inline
-                  space={0}
-                  style={{
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  <Button
-                    fontSize={1}
-                    icon={ThLargeIcon}
-                    mode={view === 'grid' ? 'default' : 'ghost'}
-                    onClick={() => dispatch(assetsSetView('grid'))}
-                    radius={0}
-                  />
-                  <Button
-                    fontSize={1}
-                    icon={ThListIcon}
-                    mode={view === 'table' ? 'default' : 'ghost'}
-                    onClick={() => dispatch(assetsSetView('table'))}
-                    radius={0}
-                  />
-                </Inline>
-              </Box>
-            </Flex>
-
             <Box marginX={2}>
               <Inline
+                space={0}
                 style={{
                   whiteSpace: 'nowrap'
                 }}
               >
+                <Button
+                  fontSize={1}
+                  icon={ThLargeIcon}
+                  mode={view === 'grid' ? 'default' : 'ghost'}
+                  onClick={() => dispatch(assetsSetView('grid'))}
+                  radius={0}
+                />
+                <Button
+                  fontSize={1}
+                  icon={ThListIcon}
+                  mode={view === 'table' ? 'default' : 'ghost'}
+                  onClick={() => dispatch(assetsSetView('table'))}
+                  radius={0}
+                />
+              </Inline>
+            </Box>
+
+            <Box marginX={2}>
+              <Inline style={{whiteSpace: 'nowrap'}}>
                 <Select
                   fontSize={1}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -166,7 +162,7 @@ const Header = (props: Props) => {
 
                 {/* Order select */}
                 <Inline>
-                  <Box marginX={3}>
+                  <Box marginX={3} style={{opacity: 0.35}}>
                     <Text size={1}>
                       <Icon symbol="sort" />
                     </Text>
@@ -192,7 +188,7 @@ const Header = (props: Props) => {
                 </Inline>
               </Inline>
             </Box>
-          </LegacyFlex>
+          </Flex>
         </LegacyFlex>
       </Card>
 
