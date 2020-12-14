@@ -146,6 +146,7 @@ const TableRow = (props: Props) => {
             checked={picked}
             readOnly
             style={{
+              pointerEvents: 'none', // TODO: consider alternative for usability
               transform: 'scale(0.8)'
             }}
           />
@@ -211,7 +212,7 @@ const TableRow = (props: Props) => {
         </TextEllipsis>
       </LegacyBox>
 
-      {/* File extension */}
+      {/* MIME type */}
       <LegacyBox
         sx={{
           display: ['none', null, null, 'block'],
@@ -220,7 +221,7 @@ const TableRow = (props: Props) => {
         }}
       >
         <TextEllipsis muted size={1}>
-          {asset.extension.toUpperCase()}
+          {asset.mimeType}
         </TextEllipsis>
       </LegacyBox>
 

@@ -11,6 +11,7 @@ import assets, {
 } from './assets'
 import dialog, {dialogClearEpic} from './dialog'
 import document from './document'
+import selectedAssets from './selectedAssets'
 import snackbars, {
   snackbarsAddDeleteErrorsEpic,
   snackbarsAddFetchErrorEpic,
@@ -34,5 +35,6 @@ export const rootReducer = combineReducers({
   assets,
   dialog,
   document,
-  snackbars
+  snackbars,
+  selectedAssets
 })

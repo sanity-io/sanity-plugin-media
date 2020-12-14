@@ -1,9 +1,10 @@
-import {Item, Asset} from '@types'
+import {Item} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {GridOnItemsRenderedProps, GridChildComponentProps, VariableSizeGrid} from 'react-window'
 import {Box} from 'theme-ui'
 
 import useKeyPress from '../../hooks/useKeyPress'
+import useTypedSelector from '../../hooks/useTypedSelector'
 import Card from '../Card'
 
 type Props = {
@@ -11,7 +12,6 @@ type Props = {
   items: Item[]
   itemCount: number
   onItemsRendered: (props: GridOnItemsRenderedProps) => any
-  selectedAssets?: Asset[]
   width: number
 }
 
@@ -64,7 +64,10 @@ const VirtualCell = memo((props: GridChildComponentProps) => {
 })
 
 const Cards = forwardRef((props: Props, ref: Ref<any>) => {
-  const {height, items, itemCount, onItemsRendered, selectedAssets, width} = props
+  const {height, items, itemCount, onItemsRendered, width} = props
+
+  // Redux
+  const selectedAssets = useTypedSelector(state => state.selectedAssets)
 
   const shiftPressed = useKeyPress('Shift')
 
@@ -93,7 +96,10 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
       ref={ref}
       rowCount={rowCount}
       rowHeight={() => cardHeight}
-      style={{overflowX: 'hidden'}}
+      style={{
+        overflowX: 'hidden',
+        overflowY: 'scroll'
+      }}
       width={width}
     >
       {VirtualCell}

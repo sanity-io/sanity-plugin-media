@@ -1,12 +1,4 @@
-const HEADER_ROW_HEIGHT = 50 // px
-
-const headerRowHeight = (rows = 1) => `${HEADER_ROW_HEIGHT * rows}px`
-
 const sizes: string[] & Record<string, any> = []
-sizes.headerRowHeight1x = headerRowHeight(1)
-sizes.headerRowHeight2x = headerRowHeight(2)
-sizes.headerRowHeight3x = headerRowHeight(3)
-sizes.headerRowHeight4x = headerRowHeight(4)
 
 const space: string[] & Record<string, any> = [
   '0.0rem',
@@ -16,16 +8,12 @@ const space: string[] & Record<string, any> = [
   '2.4rem',
   '4.8rem'
 ]
-space.headerRowHeight1x = headerRowHeight(1)
-space.headerRowHeight2x = headerRowHeight(2)
-space.headerRowHeight3x = headerRowHeight(3)
-space.headerRowHeight4x = headerRowHeight(4)
 
 const theme = {
   breakpoints: ['320px', '640px', '960px', '1280px', '1600px', '1920px'],
   gridTemplateColumns: {
     tableSmall: '3rem 8rem auto 1.5rem',
-    tableLarge: '3rem 6rem auto 5.5rem 2.75rem 3.5rem 8.5rem 2rem'
+    tableLarge: '3rem 6rem auto 5.5rem 5.5rem 3.5rem 8.5rem 2rem'
   },
   sizes,
   space

@@ -1,17 +1,18 @@
-import {Box, Button, Inline, Text} from '@sanity/ui'
+import {Box, Button, Flex, Inline, Text} from '@sanity/ui'
 import pluralize from 'pluralize'
 import React from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
-import {Flex as LegacyFlex} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsDeletePicked, assetsPickClear} from '../../modules/assets'
 
 const Container = styled(Box)(({theme}) => {
   return {
-    // TODO: there must be a better way to select
-    borderTop: `1px solid ${theme.sanity.color.muted.default.disabled.border}`
+    background: theme.sanity.color.base.bg,
+    borderBottom: `1px solid ${theme.sanity.color.muted.default.disabled.border}`,
+    position: 'relative',
+    width: '100vw'
   }
 })
 
@@ -52,22 +53,8 @@ const Footer = () => {
 
   if (picked.length > 0) {
     return (
-      <Container
-        paddingX={3}
-        style={{
-          bottom: 0,
-          left: 0,
-          position: 'fixed',
-          width: '100%'
-        }}
-      >
-        <LegacyFlex
-          sx={{
-            alignItems: 'center',
-            height: 'headerRowHeight1x',
-            justifyContent: 'center'
-          }}
-        >
+      <Container paddingX={3} paddingY={2}>
+        <Flex align="center" justify="flex-start">
           <Inline space={2}>
             <Box marginRight={2}>
               <Text size={1}>
@@ -83,7 +70,7 @@ const Footer = () => {
               tone="critical"
             />
           </Inline>
-        </LegacyFlex>
+        </Flex>
       </Container>
     )
   }

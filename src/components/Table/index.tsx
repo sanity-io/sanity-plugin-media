@@ -1,5 +1,5 @@
-import {Box, Label} from '@sanity/ui'
-import {Asset, Item} from '@types'
+import {Box} from '@sanity/ui'
+import {Item} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {
   areEqual,
@@ -7,17 +7,17 @@ import {
   ListChildComponentProps,
   ListOnItemsRenderedProps
 } from 'react-window'
-import {Box as LegacyBox} from 'theme-ui'
 
-import TableRow from '../TableRow'
 import useKeyPress from '../../hooks/useKeyPress'
+import useTypedSelector from '../../hooks/useTypedSelector'
+import TableHeader from '../TableHeader'
+import TableRow from '../TableRow'
 
 type Props = {
   height: number
   itemCount: number
   items: Item[]
   onItemsRendered: (props: ListOnItemsRenderedProps) => any
-  selectedAssets?: Asset[]
   width: number
 }
 
@@ -25,31 +25,8 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
   const {children, style} = props
   return (
     <>
-      <LegacyBox
-        sx={{
-          alignItems: 'center',
-          bg: 'black', // TODO: use theme color
-          display: ['none', null, null, 'grid'],
-          gridColumnGap: [2, null, null, 3],
-          gridTemplateColumns: 'tableLarge',
-          height: '2em',
-          letterSpacing: '0.025em',
-          position: 'sticky',
-          textTransform: 'uppercase',
-          top: 0,
-          width: '100%',
-          zIndex: 1 // TODO: try to avoid manually setting z-indices
-        }}
-      >
-        <Label></Label>
-        <Label></Label>
-        <Label size={1}>Filename</Label>
-        <Label size={1}>Resolution</Label>
-        <Label size={1}>Type</Label>
-        <Label size={1}>Size</Label>
-        <Label size={1}>Last updated</Label>
-        <Label></Label>
-      </LegacyBox>
+      <TableHeader />
+
       <Box
         style={{
           position: 'absolute',
@@ -91,40 +68,38 @@ const VirtualRow = memo((props: ListChildComponentProps) => {
 }, areEqual)
 
 const Table = forwardRef((props: Props, ref: Ref<any>) => {
-  const {height, items, itemCount, onItemsRendered, selectedAssets, width} = props
+  const {height, items, itemCount, onItemsRendered, width} = props
 
   const shiftPressed = useKeyPress('Shift')
+
+  // Redux
+  const selectedAssets = useTypedSelector(state => state.selectedAssets)
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
 
   return (
-    <LegacyBox
-      sx={{
-        height,
-        width
+    <FixedSizeList
+      // className="custom-scrollbar"
+      height={height}
+      innerElementType={innerElementType}
+      itemData={{
+        items,
+        selectedIds,
+        shiftPressed
       }}
+      itemCount={itemCount}
+      itemSize={100} // px
+      onItemsRendered={onItemsRendered}
+      ref={ref}
+      style={{
+        position: 'relative',
+        overflowX: 'hidden',
+        overflowY: 'scroll'
+      }}
+      width={width}
     >
-      <FixedSizeList
-        // className="custom-scrollbar"
-        height={height}
-        innerElementType={innerElementType}
-        itemData={{
-          items,
-          selectedIds,
-          shiftPressed
-        }}
-        itemCount={itemCount}
-        itemSize={100} // px
-        onItemsRendered={onItemsRendered}
-        ref={ref}
-        style={{
-          overflowX: 'hidden'
-        }}
-        width={width}
-      >
-        {VirtualRow}
-      </FixedSizeList>
-    </LegacyBox>
+      {VirtualRow}
+    </FixedSizeList>
   )
 })
 

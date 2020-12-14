@@ -1,4 +1,4 @@
-import {Asset, BrowserFilter, BrowserOrder, BrowserView, Item, DeleteHandleTarget} from '@types'
+import {Asset, BrowserFilter, BrowserView, Item, DeleteHandleTarget, Order} from '@types'
 import {AssetsActionTypes} from './index'
 
 // Reducer
@@ -11,7 +11,7 @@ export type AssetsReducerState = {
   fetchingError: any
   filter?: BrowserFilter
   filters?: BrowserFilter[]
-  order: BrowserOrder
+  order: Order
   pageIndex: number
   pageSize: number
   searchQuery?: string

@@ -1,11 +1,4 @@
-import {
-  Asset,
-  BrowserOrder,
-  BrowserFilter,
-  BrowserView,
-  DeleteHandleTarget,
-  FetchOptions
-} from '@types'
+import {Asset, BrowserFilter, BrowserView, DeleteHandleTarget, FetchOptions, Order} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import {ofType, ActionsObservable} from 'redux-observable'
@@ -13,7 +6,7 @@ import {from, of, empty} from 'rxjs'
 import {catchError, mergeAll, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
 import client from 'part:@sanity/base/client'
 
-import {ORDERS} from '../../config'
+import {BROWSER_SELECT} from '../../config'
 import {AssetsActions, AssetsReducerState, AssetsDeleteRequestAction} from './types'
 
 /***********
@@ -70,11 +63,12 @@ export const initialState: AssetsReducerState = {
   fetchingError: null,
   filter: undefined,
   filters: undefined,
-  order: ORDERS[0],
+  order: BROWSER_SELECT[0]?.order,
   pageIndex: 0,
   pageSize: 50,
   searchQuery: '',
-  view: 'grid'
+  // view: 'grid'
+  view: 'table'
   // totalCount: -1
 }
 
@@ -383,7 +377,7 @@ export const assetsSetFilter = (filter: BrowserFilter) => ({
 })
 
 // Set order
-export const assetsSetOrder = (order: BrowserOrder) => ({
+export const assetsSetOrder = (order: Order) => ({
   payload: {
     order
   },
@@ -514,7 +508,7 @@ export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
             url
           }`,
           selector: groq`[${start}...${end}]`,
-          sort: groq`order(${state.assets.order.value})`
+          sort: groq`order(${state.assets.order.field} ${state.assets.order.direction})`
         })
       )
     })

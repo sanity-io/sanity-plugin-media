@@ -30,9 +30,9 @@ export type BrowserFilter = {
   value: string
 }
 
-export type BrowserOrder = {
+export type BrowserSelect = {
+  order: Order
   title: string
-  value: string
 }
 
 export type BrowserView = 'grid' | 'table'
@@ -76,6 +76,11 @@ export type Item = {
 }
 
 export type MarkDef = {_key: string; _type: string}
+
+export type Order = {
+  direction: 'asc' | 'desc'
+  field: string
+}
 
 export type SelectedAsset = {
   assetDocumentProps?: {originalFilename?: string; source?: string; sourceId?: string}

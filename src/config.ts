@@ -1,4 +1,4 @@
-import {Document, BrowserFilter, BrowserOrder} from '@types'
+import {Document, BrowserFilter, BrowserSelect} from '@types'
 
 // Filters to display in header dropdown
 export const getFilters = (currentDocument?: Document) => {
@@ -25,21 +25,61 @@ export const getFilters = (currentDocument?: Document) => {
 }
 
 // Sort order dropdown options
-export const ORDERS: BrowserOrder[] = [
+export const BROWSER_SELECT: BrowserSelect[] = [
   {
-    title: 'Latest first',
-    value: '_updatedAt desc'
+    order: {
+      direction: 'desc',
+      field: '_updatedAt'
+    },
+    title: 'Last updated: Newest first'
   },
   {
-    title: 'Oldest first',
-    value: '_updatedAt asc'
+    order: {
+      direction: 'asc',
+      field: '_updatedAt'
+    },
+    title: 'Last updated: Oldest first'
   },
   {
-    title: 'File: A to Z',
-    value: 'originalFilename asc'
+    order: {
+      direction: 'asc',
+      field: 'originalFilename'
+    },
+    title: 'Filename: A to Z'
   },
   {
-    title: 'File: Z to A',
-    value: 'originalFilename desc'
+    order: {
+      direction: 'desc',
+      field: 'originalFilename'
+    },
+    title: 'Filename: Z to A'
+  },
+  {
+    order: {
+      direction: 'desc',
+      field: 'size'
+    },
+    title: 'Filesize: Largest first'
+  },
+  {
+    order: {
+      direction: 'asc',
+      field: 'size'
+    },
+    title: 'Filesize: Smallest first'
+  },
+  {
+    order: {
+      direction: 'asc',
+      field: 'mimeType'
+    },
+    title: 'MIME type: A to Z'
+  },
+  {
+    order: {
+      direction: 'desc',
+      field: 'mimeType'
+    },
+    title: 'MIME type: Z to A'
   }
 ]

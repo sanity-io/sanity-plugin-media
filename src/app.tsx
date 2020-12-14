@@ -94,7 +94,7 @@ const AssetBrowser = (props: Props) => {
                   position: 'relative'
                 }}
               >
-                <Browser onClose={onClose} selectedAssets={selectedAssets} />
+                <Browser onClose={onClose} />
               </Box>
             ) : (
               <Portal>
@@ -109,7 +109,7 @@ const AssetBrowser = (props: Props) => {
                     width: '100%'
                   }}
                 >
-                  <Browser onClose={onClose} selectedAssets={selectedAssets} />
+                  <Browser onClose={onClose} />
                 </Box>
               </Portal>
             )}
