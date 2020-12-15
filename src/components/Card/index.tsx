@@ -20,7 +20,7 @@ type Props = {
   style?: CSSProperties
 }
 
-const Container = styled(Flex)`
+const Container = styled(Flex)<{picked?: boolean}>`
   background: #222; // TODO: use theme colors
   border: 1px solid transparent;
   border-radius: 3px;
@@ -28,6 +28,11 @@ const Container = styled(Flex)`
   position: relative;
   transition: all 400ms;
   user-select: none;
+
+  border: ${props =>
+    props.picked
+      ? `1px solid ${props.theme.sanity.color.spot.blue} !important`
+      : '1px solid inherit'};
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -106,6 +111,7 @@ const Card = (props: Props) => {
     <>
       <Container
         direction="column"
+        picked={picked}
         style={{
           ...style
         }}
@@ -152,7 +158,7 @@ const Card = (props: Props) => {
               />
             )}
 
-            <Box marginLeft={2}>
+            <Box marginLeft={2} style={{overflow: 'hidden'}}>
               <TextEllipsis size={0}>{asset.originalFilename}</TextEllipsis>
             </Box>
 
