@@ -16,13 +16,17 @@ import {
   Text,
   TextInput
 } from '@sanity/ui'
-import React from 'react'
+import React, {FC} from 'react'
 
-type Props = {}
-
-const FacetAutocomplete = (props: Props) => {
+const FacetAutocomplete: FC = () => {
   return (
-    <Card padding={1} radius={3}>
+    <Card
+      padding={1}
+      radius={2}
+      style={{
+        background: 'rgba(255, 255, 255, 0.05)'
+      }}
+    >
       <Flex align="center">
         <Box paddingLeft={1} paddingRight={2}>
           {/* <Text size={1}>Tag</Text> */}

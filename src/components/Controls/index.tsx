@@ -17,12 +17,11 @@ const Controls = () => {
     <Box
       paddingY={2}
       style={{
-        // background: 'lime',
         borderBottom: '1px solid #333' // TODO: use theme colors
       }}
     >
       {/* Rows: search / filters / orders  */}
-      <Box>
+      <Box marginBottom={2}>
         <Flex
           align="flex-start"
           direction={['column', 'column', 'column', 'column', 'row']}
@@ -33,7 +32,6 @@ const Controls = () => {
             flex={1}
             style={{
               alignItems: 'flex-start',
-              // background: 'yellow',
               // alignItems: 'center',
               // border: '2px solid red',
               height: '100%',
@@ -55,34 +53,18 @@ const Controls = () => {
             {/* Filters */}
             <Filters />
           </Flex>
+        </Flex>
+      </Box>
 
-          {/* Views + filters + orders*/}
-          <Box marginTop={[2, 2, 2, 2, 0]}>
-            <Flex
-              align="center"
-              justify={[
-                'space-between',
-                'space-between',
-                'space-between',
-                'space-between',
-                'flex-end'
-              ]}
-              style={
-                {
-                  // background: 'orangered'
-                }
-              }
-            >
-              {/* View buttons */}
-              <Box marginX={2}>
-                <ButtonViewGroup />
-              </Box>
+      {/* Views + filters + orders*/}
+      <Box>
+        <Flex align="center" justify={['space-between']}>
+          <Box marginX={2}>
+            <ButtonViewGroup />
+          </Box>
 
-              {/* Order select */}
-              <Box marginX={2}>
-                <OrderSelect />
-              </Box>
-            </Flex>
+          <Box marginX={2}>
+            <OrderSelect />
           </Box>
         </Flex>
       </Box>
