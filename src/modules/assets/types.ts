@@ -1,4 +1,4 @@
-import {Asset, BrowserFilter, BrowserView, Item, DeleteHandleTarget, Order} from '@types'
+import {Asset, BrowserView, Item, DeleteHandleTarget, Order, SearchFacetProps} from '@types'
 import {AssetsActionTypes} from './index'
 
 // Reducer
@@ -9,12 +9,11 @@ export type AssetsReducerState = {
   fetchCount: number
   fetching: boolean
   fetchingError: any
-  filter?: BrowserFilter
-  filters?: BrowserFilter[]
   order: Order
   pageIndex: number
   pageSize: number
-  searchQuery?: string
+  searchFacets: SearchFacetProps[]
+  searchQuery: string
   view: BrowserView
   // totalCount: number
 }
@@ -101,16 +100,33 @@ export type AssetsPickClearAction = {
   type: AssetsActionTypes.PICK_CLEAR
 }
 
-export type AssetsSetFilterAction = {
+export type AssetsSearchFacetsAddAction = {
   payload: {
-    filter: BrowserFilter
+    facet: SearchFacetProps
   }
-  type: AssetsActionTypes.SET_FILTER
+  type: AssetsActionTypes.SEARCH_FACETS_ADD
+}
+
+export type AssetsSearchFacetsRemoveAction = {
+  payload: {
+    facetName: string
+  }
+  type: AssetsActionTypes.SEARCH_FACETS_REMOVE
+}
+
+export type AssetsSearchFacetsUpdateAction = {
+  payload: {
+    facet: SearchFacetProps
+  }
+  type: AssetsActionTypes.SEARCH_FACETS_UPDATE
 }
 
 export type AssetsSetOrderAction = {
   payload: {
-    order: BrowserFilter
+    order: {
+      title: string
+      value: string
+    }
   }
   type: AssetsActionTypes.SET_ORDER
 }
@@ -144,7 +160,9 @@ export type AssetsActions =
   | AssetsPickAction
   | AssetsPickAllAction
   | AssetsPickClearAction
-  | AssetsSetFilterAction
+  | AssetsSearchFacetsAddAction
+  | AssetsSearchFacetsRemoveAction
+  | AssetsSearchFacetsUpdateAction
   | AssetsSetOrderAction
   | AssetsSetSearchQueryAction
   | AssetsSetViewAction

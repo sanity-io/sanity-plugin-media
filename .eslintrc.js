@@ -22,14 +22,10 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/no-unused-vars': 'error',
     'import/no-unresolved': ['error', {ignore: ['^react$', '.*:.*']}],
     'react/display-name': 0,
-    'no-unused-vars': [
-      'error',
-      {
-        ignoreRestSiblings: true
-      }
-    ]
+    'no-unused-vars': 'off'
   },
   settings: {
     'import/ignore': ['.*node_modules.*', '.*:.*'],

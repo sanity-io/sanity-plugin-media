@@ -29,13 +29,9 @@ const OrderSelect: FC = () => {
           text={selectedOrder?.title}
         />
       }
-      id="test"
+      id="order"
       menu={
-        <Menu
-          onItemClick={() => {
-            // console.log('item clicked!!')
-          }}
-        >
+        <Menu>
           {BROWSER_SELECT?.map((item, index) => {
             return (
               <MenuItem

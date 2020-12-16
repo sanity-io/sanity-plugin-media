@@ -1,14 +1,14 @@
 import {Card, Flex} from '@sanity/ui'
 import React, {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import styled from 'styled-components'
+// import styled from 'styled-components'
 
 import {
   // assetsLoadNextPage,
   assetsLoadPageIndex
 } from '../../modules/assets'
-import Dialogs from '../Dialogs'
 import Controls from '../Controls'
+import Dialogs from '../Dialogs'
 import Header from '../Header'
 import Items from '../Items'
 import Snackbars from '../Snackbars'
@@ -47,8 +47,6 @@ const Browser = (props: Props) => {
           minHeight: '100%'
         }}
       >
-        {/* <CustomThing /> */}
-
         <Flex
           direction="column"
           style={{

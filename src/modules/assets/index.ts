@@ -1,12 +1,20 @@
-import {Asset, BrowserFilter, BrowserView, DeleteHandleTarget, FetchOptions, Order} from '@types'
+import {Asset, BrowserView, DeleteHandleTarget, FetchOptions, Order, SearchFacetProps} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import {ofType, ActionsObservable} from 'redux-observable'
 import {from, of, empty} from 'rxjs'
-import {catchError, mergeAll, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
+import {
+  catchError,
+  debounceTime,
+  mergeAll,
+  mergeMap,
+  switchMap,
+  withLatestFrom
+} from 'rxjs/operators'
 import client from 'part:@sanity/base/client'
 
 import {BROWSER_SELECT} from '../../config'
+import {COMPARISON_OPERATOR_MAPPING} from '../../constants'
 import {AssetsActions, AssetsReducerState, AssetsDeleteRequestAction} from './types'
 
 /***********
@@ -27,7 +35,9 @@ export enum AssetsActionTypes {
   PICK = 'ASSETS_PICK',
   PICK_ALL = 'ASSETS_PICK_ALL',
   PICK_CLEAR = 'ASSETS_PICK_CLEAR',
-  SET_FILTER = 'ASSETS_SET_FILTER',
+  SEARCH_FACETS_ADD = 'ASSETS_SEARCH_FACET_ADD',
+  SEARCH_FACETS_REMOVE = 'ASSETS_SEARCH_FACET_REMOVE',
+  SEARCH_FACETS_UPDATE = 'ASSETS_SEARCH_FACET_UPDATE',
   SET_ORDER = 'ASSETS_SET_ORDER',
   SET_SEARCH_QUERY = 'ASSETS_SET_SEARCH_QUERY',
   SET_VIEW = 'ASSETS_SET_VIEW',
@@ -61,11 +71,10 @@ export const initialState: AssetsReducerState = {
   fetchCount: -1,
   fetching: false,
   fetchingError: null,
-  filter: undefined,
-  filters: undefined,
   order: BROWSER_SELECT[0]?.order,
   pageIndex: 0,
   pageSize: 50,
+  searchFacets: [],
   searchQuery: '',
   // view: 'grid'
   view: 'table'
@@ -208,10 +217,39 @@ export default function assetsReducerState(
         })
         break
 
+      /**
+       * A search facet has been added
+       */
+      case AssetsActionTypes.SEARCH_FACETS_ADD:
+        draft.searchFacets.push(action.payload.facet)
+        break
+
+      /**
+       * A single search facet has been removed
+       */
+      case AssetsActionTypes.SEARCH_FACETS_REMOVE:
+        draft.searchFacets = draft.searchFacets.filter(
+          facet => facet.name !== action.payload.facetName
+        )
+        break
+
+      /**
+       * A single search facet has been updated
+       */
+      case AssetsActionTypes.SEARCH_FACETS_UPDATE:
+        draft.searchFacets.forEach((facet, index) => {
+          if (facet.name === action.payload.facet.name) {
+            draft.searchFacets[index] = action.payload.facet
+          }
+        })
+        break
+
+      /*
       case AssetsActionTypes.SET_FILTER:
         draft.filter = action.payload?.filter
         draft.pageIndex = 0
         break
+      */
       case AssetsActionTypes.SET_ORDER:
         draft.order = action.payload?.order
         draft.pageIndex = 0
@@ -360,20 +398,36 @@ export const assetsPickClear = () => ({
   type: AssetsActionTypes.PICK_CLEAR
 })
 
+// Add search facet
+export const assetsSearchFacetsAdd = (facet: SearchFacetProps) => ({
+  payload: {
+    facet
+  },
+  type: AssetsActionTypes.SEARCH_FACETS_ADD
+})
+
+// Remove search facet
+export const assetsSearchFacetsRemove = (facetName: string) => ({
+  payload: {
+    facetName
+  },
+  type: AssetsActionTypes.SEARCH_FACETS_REMOVE
+})
+
+// Update search facet
+export const assetsSearchFacetsUpdate = (facet: SearchFacetProps) => ({
+  payload: {
+    facet
+  },
+  type: AssetsActionTypes.SEARCH_FACETS_UPDATE
+})
+
 // Set view mode
 export const assetsSetView = (view: BrowserView) => ({
   payload: {
     view
   },
   type: AssetsActionTypes.SET_VIEW
-})
-
-// Set filter
-export const assetsSetFilter = (filter: BrowserFilter) => ({
-  payload: {
-    filter
-  },
-  type: AssetsActionTypes.SET_FILTER
 })
 
 // Set order
@@ -491,7 +545,7 @@ export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
 
       return of(
         assetsFetch({
-          filter: constructFilter(state.assets.filter.value, state.assets.searchQuery),
+          filter: constructFilter(state.assets.searchFacets, state.assets.searchQuery),
           // Document ID can be null when operating on pristine / unsaved drafts
           ...(state?.document ? {params: {documentId: state?.document?._id}} : {}),
           projections: groq`{
@@ -529,17 +583,32 @@ export const assetsFetchNextPageEpic = (action$: any, state$: any) =>
   )
 
 /**
- * Listen for order, filter and search query changes
+ * Listen for search query + facet changes (debounced)
  * - clear assets
  * - fetch first page
  */
-export const assetsFetchPageEpic = (action$: any) =>
+export const assetsSearchEpic = (action$: any) =>
   action$.pipe(
     ofType(
-      AssetsActionTypes.SET_ORDER,
-      AssetsActionTypes.SET_FILTER,
+      AssetsActionTypes.SEARCH_FACETS_ADD,
+      AssetsActionTypes.SEARCH_FACETS_REMOVE,
+      AssetsActionTypes.SEARCH_FACETS_UPDATE,
       AssetsActionTypes.SET_SEARCH_QUERY
     ),
+    debounceTime(400),
+    switchMap(() => {
+      return of(assetsClear(), assetsLoadPageIndex(0))
+    })
+  )
+
+/**
+ * Listen for order changes
+ * - clear assets
+ * - fetch first page
+ */
+export const assetsSetOrderEpic = (action$: any) =>
+  action$.pipe(
+    ofType(AssetsActionTypes.SET_ORDER),
     switchMap(() => {
       return of(assetsClear(), assetsLoadPageIndex(0))
     })
@@ -550,50 +619,45 @@ export const assetsFetchPageEpic = (action$: any) =>
  *********/
 
 /**
- * Construct GROQ filter based off custom search codes
+ * Construct GROQ filter based off search facets and query
  */
-const constructFilter = (baseFilter: string, searchQuery?: string) => {
-  let constructedQuery = groq`${baseFilter}`
 
-  const REGEX_ORIENTATION = /orientation:(landscape|portrait|square)/i
-  const REGEX_EXTENSION = /extension:([A-Za-z]*)/i
+const constructFilter = (searchFacets: SearchFacetProps[], searchQuery?: string) => {
+  const baseFilter = groq`_type == "sanity.imageAsset"` // all images
 
-  if (searchQuery) {
-    // Strip extension / orientation codes and trim whitespace
-    const filenameQuery = searchQuery
-      .replace(REGEX_ORIENTATION, '')
-      .replace(REGEX_EXTENSION, '')
-      .trim()
+  const searchFacetFragments = searchFacets.map(facet => {
+    if (facet.type === 'number') {
+      const {field, modifier, operators, options, value} = facet
 
-    // Append original filename search
-    constructedQuery += groq` && originalFilename match '*${filenameQuery}*'`
+      // Get current modifier
+      const currentModifier = options?.modifiers.find(m => m.name === modifier)
 
-    // Append orientation
-    const orientation = searchQuery.match(REGEX_ORIENTATION)?.[1]
+      // Apply modifier fn
+      const modifiedValue = currentModifier?.fn(value)
 
-    if (orientation) {
-      switch (orientation) {
-        case 'landscape':
-          constructedQuery += groq` && metadata.dimensions.aspectRatio > 1`
-          break
-        case 'portrait':
-          constructedQuery += groq` && metadata.dimensions.aspectRatio < 1`
-          break
-        case 'square':
-          constructedQuery += groq` && metadata.dimensions.aspectRatio == 1`
-          break
-        default:
-          console.warn('Orientation must be of type (landscape | portrait | square)')
-          break
-      }
+      return `${field} ${COMPARISON_OPERATOR_MAPPING[operators.comparison].value} ${modifiedValue}`
     }
 
-    // Append file extension
-    const extension = searchQuery.match(REGEX_EXTENSION)?.[1]
-    if (extension) {
-      constructedQuery += groq` && extension == '${extension}'`
+    if (facet.type === 'select') {
+      const {options, value} = facet
+
+      const currentListItem = options?.list.find(l => l.name === value)
+
+      return currentListItem?.value
     }
-  }
+
+    throw Error(`type must be either 'number' or 'select'`)
+  })
+
+  // Join separate filter fragments
+  const constructedQuery = [
+    // Base filter
+    baseFilter,
+    // Search query (if present)
+    ...(searchQuery ? [groq` originalFilename match '*${searchQuery.trim()}*'`] : []),
+    // Search facets
+    ...searchFacetFragments
+  ].join(' && ')
 
   return constructedQuery
 }

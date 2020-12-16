@@ -25,11 +25,6 @@ export type Block = {
   markDefs: MarkDef[]
 }
 
-export type BrowserFilter = {
-  title: string
-  value: string
-}
-
 export type BrowserSelect = {
   order: Order
   title: string
@@ -38,6 +33,16 @@ export type BrowserSelect = {
 export type BrowserView = 'grid' | 'table'
 
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
+
+export type ComparisonOperator = 'eq' | 'gt' | 'gte' | 'lt' | 'lte'
+
+export type ComparisonOperatorMapping = Record<
+  ComparisonOperator,
+  {
+    label: string
+    value: string
+  }
+>
 
 export type DeleteHandleTarget = 'dialog' | 'snackbar'
 
@@ -75,12 +80,60 @@ export type Item = {
   updating: boolean
 }
 
+export type LogicalOperator = 'is' | 'not'
+
+export type LogicalOperatorMapping = Record<LogicalOperator, string>
+
 export type MarkDef = {_key: string; _type: string}
 
 export type Order = {
   direction: 'asc' | 'desc'
   field: string
 }
+
+export type SearchFacetNumberModifier = {
+  // TODO: use correct type
+  fn: (val: any) => any
+  name: string
+  title: string
+}
+
+export type SearchFacetNumberProps = {
+  field: string
+  modifier?: string
+  name: string
+  operators: {
+    comparison: ComparisonOperator
+  }
+  options?: {
+    modifiers: SearchFacetNumberModifier[]
+  }
+  title: string
+  type: 'number'
+  value?: number
+}
+
+export type SearchFacetSelectProps = {
+  name: string
+  title: string
+  type: 'select'
+  operators: {
+    logical?: LogicalOperator
+  }
+  options?: {
+    list: SearchFacetSelectListItemProps[]
+    logical?: boolean
+  }
+  value: string
+}
+
+export type SearchFacetSelectListItemProps = {
+  name: string
+  title: string
+  value: string
+}
+
+export type SearchFacetProps = SearchFacetNumberProps | SearchFacetSelectProps
 
 export type SelectedAsset = {
   assetDocumentProps?: {originalFilename?: string; source?: string; sourceId?: string}

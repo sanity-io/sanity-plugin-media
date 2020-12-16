@@ -31,7 +31,7 @@ const Container = styled(Flex)<{picked?: boolean}>`
 
   border: ${props =>
     props.picked
-      ? `1px solid ${props.theme.sanity.color.spot.blue} !important`
+      ? `1px solid ${props.theme.sanity.color.spot.orange} !important`
       : '1px solid inherit'};
 
   @media (hover: hover) and (pointer: fine) {

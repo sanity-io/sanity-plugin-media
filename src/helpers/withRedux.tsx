@@ -4,7 +4,7 @@ import {applyMiddleware, createStore} from 'redux'
 import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly'
 import {createEpicMiddleware} from 'redux-observable'
 
-import {getFilters} from '../config'
+// import {getFilters} from '../config'
 import {rootEpic, rootReducer} from '../modules'
 import {initialState as assetsInitialState} from '../modules/assets'
 
@@ -25,15 +25,15 @@ function withRedux<T>(ComposedComponent: ComponentType<T>) {
       // Get available filters, depending on whether the `document` prop is available or not.
       // TODO: correctly type
       // @ts-ignore
-      const filters = getFilters(props?.document)
+      // const filters = getFilters(props?.document)
 
       this.store = createStore(
         rootReducer,
         {
           assets: {
-            ...assetsInitialState,
-            filter: filters[0],
-            filters
+            ...assetsInitialState
+            // filter: filters[0],
+            // filters
           },
           // TODO: correctly type
           // @ts-ignore

@@ -1,53 +1,25 @@
 import {Icon, SearchIcon} from '@sanity/icons'
 import {Box, Flex, TextInput} from '@sanity/ui'
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react'
+import React, {ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
-import {Subject} from 'rxjs'
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators'
+import useTypedSelector from '../../hooks/useTypedSelector'
 
 import {assetsSetSearchQuery} from '../../modules/assets'
 
 const TextInputSearch = () => {
-  // Refs
-  const mounted = useRef(false)
-
-  // State
-  const [search$] = useState(() => new Subject())
-  const [query, setQuery] = useState('')
+  // Redux
+  const searchQuery = useTypedSelector(state => state.assets.searchQuery)
 
   // Redux
   const dispatch = useDispatch()
 
-  // Effects
-  // - Debounce search input
-  useEffect(() => {
-    const subscription = search$
-      .pipe(
-        debounceTime(400), //
-        distinctUntilChanged()
-      )
-      .subscribe(val => {
-        const result = String(val)
-        dispatch(assetsSetSearchQuery(result))
-      })
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
-
-  // Update search on query (but not on initial mount)
-  useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true
-    } else {
-      search$.next(query)
-    }
-  }, [query])
-
   // Callbacks
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.currentTarget.value)
+    dispatch(assetsSetSearchQuery(String(e.currentTarget.value)))
+  }
+
+  const handleClear = () => {
+    dispatch(assetsSetSearchQuery(''))
   }
 
   return (
@@ -56,17 +28,17 @@ const TextInputSearch = () => {
         fontSize={1}
         icon={SearchIcon}
         onChange={handleChange}
-        placeholder="Search"
+        placeholder="Search filename"
         radius={2}
-        value={query}
+        value={searchQuery}
       />
 
       {/* Clear form button */}
-      {query.length > 0 && (
+      {searchQuery.length > 0 && (
         <Flex
           align="center"
           justify="center"
-          onClick={() => setQuery('')}
+          onClick={handleClear}
           style={{
             cursor: 'pointer',
             height: '100%',

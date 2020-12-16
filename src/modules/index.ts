@@ -6,7 +6,8 @@ import assets, {
   assetsDeletePickedEpic,
   assetsFetchEpic,
   assetsFetchNextPageEpic,
-  assetsFetchPageEpic,
+  assetsSearchEpic,
+  assetsSetOrderEpic,
   assetsFetchPageIndexEpic
 } from './assets'
 import dialog, {dialogClearEpic} from './dialog'
@@ -23,8 +24,9 @@ export const rootEpic = combineEpics(
   assetsDeletePickedEpic,
   assetsFetchEpic,
   assetsFetchNextPageEpic,
-  assetsFetchPageEpic,
   assetsFetchPageIndexEpic,
+  assetsSearchEpic,
+  assetsSetOrderEpic,
   dialogClearEpic,
   snackbarsAddDeleteErrorsEpic,
   snackbarsAddFetchErrorEpic,

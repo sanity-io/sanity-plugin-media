@@ -1,14 +1,14 @@
 import {Box, Flex} from '@sanity/ui'
-import React from 'react'
+import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import ButtonViewGroup from '../ButtonViewGroup'
-import Filters from '../Filters'
+import SearchFacets from '../SearchFacets'
 import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
 import TextInputSearch from '../TextInputSearch'
 
-const Controls = () => {
+const Controls: FC = () => {
   // Redux
   const fetching = useTypedSelector(state => state.assets.fetching)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
@@ -51,7 +51,7 @@ const Controls = () => {
             </Box>
 
             {/* Filters */}
-            <Filters />
+            <SearchFacets />
           </Flex>
         </Flex>
       </Box>
