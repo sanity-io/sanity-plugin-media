@@ -632,8 +632,8 @@ const constructFilter = (searchFacets: SearchFacetProps[], searchQuery?: string)
       // Get current modifier
       const currentModifier = options?.modifiers.find(m => m.name === modifier)
 
-      // Apply modifier fn
-      const modifiedValue = currentModifier?.fn(value)
+      // Apply modifier fn (if present)
+      const modifiedValue = currentModifier ? currentModifier?.fn(value) : value
 
       return `${field} ${COMPARISON_OPERATOR_MAPPING[operators.comparison].value} ${modifiedValue}`
     }

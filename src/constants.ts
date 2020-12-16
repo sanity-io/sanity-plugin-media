@@ -36,11 +36,13 @@ export const COMPARISON_OPERATOR_MENU_ITEMS_DEFAULT: (ComparisonOperator | null)
   'gte',
   'lt',
   'lte',
+  // Divider
   null,
   'eq'
 ]
 
-export const FACETS: SearchFacetProps[] = [
+// null values are represented as menu dividers
+export const FACETS: (SearchFacetProps | null)[] = [
   // Size (with modifiers)
   {
     name: 'size',
@@ -120,6 +122,30 @@ export const FACETS: SearchFacetProps[] = [
       ]
     },
     value: 'portrait'
+  },
+  // Divider
+  null,
+  // Width (with modifiers)
+  {
+    name: 'width',
+    type: 'number',
+    title: 'Width',
+    field: 'metadata.dimensions.width',
+    operators: {
+      comparison: 'gt'
+    },
+    value: 400
+  },
+  // Height (with modifiers)
+  {
+    name: 'height',
+    type: 'number',
+    title: 'Height',
+    field: 'metadata.dimensions.height',
+    operators: {
+      comparison: 'gt'
+    },
+    value: 400
   }
 ]
 

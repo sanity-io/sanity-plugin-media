@@ -1,5 +1,5 @@
 import {AddIcon, EditIcon} from '@sanity/icons'
-import {Box, Button, Inline, Menu, MenuButton, MenuItem} from '@sanity/ui'
+import {Box, Button, Inline, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
@@ -41,16 +41,20 @@ const SearchFacets: FC = () => {
             menu={
               <Menu>
                 {FACETS?.map((facet, index) => {
-                  const isPresent = !!searchFacets.find(v => v.name === facet.name)
+                  if (facet) {
+                    const isPresent = !!searchFacets.find(v => v.name === facet.name)
 
-                  return (
-                    <MenuItem
-                      disabled={isPresent}
-                      key={facet.name}
-                      onClick={() => dispatch(assetsSearchFacetsAdd(FACETS[index]))}
-                      text={facet.title}
-                    />
-                  )
+                    return (
+                      <MenuItem
+                        disabled={isPresent}
+                        key={facet.name}
+                        onClick={() => dispatch(assetsSearchFacetsAdd(facet))}
+                        text={facet.title}
+                      />
+                    )
+                  }
+
+                  return <MenuDivider key={index} />
                 })}
               </Menu>
             }
