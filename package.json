@@ -28,6 +28,7 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
+    "release": "standard-version",
     "watch": "tsc -w"
   },
   "dependencies": {
