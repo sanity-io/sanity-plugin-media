@@ -1,5 +1,4 @@
 import {Box, Portal, ThemeProvider, ToastProvider, studioTheme} from '@sanity/ui'
-import {Asset} from '@types'
 import React, {MouseEvent, useLayoutEffect, useEffect} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 
@@ -12,12 +11,11 @@ import theme from './styled/theme'
 type Props = {
   onClose?: () => void
   onSelect?: () => void
-  selectedAssets: Asset[]
   tool?: string
 }
 
 const AssetBrowser = (props: Props) => {
-  const {onClose, onSelect, selectedAssets, tool} = props
+  const {onClose, onSelect, tool} = props
 
   // Close on escape key press
   useKeyPress('Escape', onClose)

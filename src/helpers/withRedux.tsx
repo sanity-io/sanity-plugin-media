@@ -38,6 +38,8 @@ function withRedux<T>(ComposedComponent: ComponentType<T>) {
           // TODO: correctly type
           // @ts-ignore
           document: props?.document,
+          // TODO: correctly type
+          // @ts-ignore
           selectedAssets: props?.selectedAssets
         },
         composeWithDevTools(applyMiddleware(epicMiddleware))

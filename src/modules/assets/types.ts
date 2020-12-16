@@ -136,10 +136,7 @@ export type AssetsSearchFacetsUpdateAction = {
 
 export type AssetsSetOrderAction = {
   payload: {
-    order: {
-      title: string
-      value: string
-    }
+    order: Order
   }
   type: AssetsActionTypes.SET_ORDER
 }

@@ -12,9 +12,9 @@ export enum DocumentActionTypes {}
  * REDUCER *
  ***********/
 
-const INITIAL_STATE = null
+const initialState: DocumentReducerState = null
 
-export default function documentReducer(state: DocumentReducerState = INITIAL_STATE) {
+export default function documentReducer(state: DocumentReducerState = initialState) {
   return produce(state, draft => {
     /*
     switch (action.type) {

@@ -10,15 +10,27 @@ const useResizeObsever = function ({ref, onResize}: any = {}) {
   // @see https://reactjs.org/docs/hooks-rules.html#explanation
   const defaultRef = useRef(null)
   ref = ref || defaultRef
-  const [size, setSize] = useState({
+  const [size, setSize] = useState<{
+    height?: number
+    width?: number
+  }>({
     width: undefined,
     height: undefined
   })
 
   // Using a ref to track the previous width / height to avoid unnecessary renders
+  /*
   const previous = useRef({
-    width: undefined,
-    height: undefined
+    height: undefined,
+    width: undefined
+  })
+  */
+  const previous = useRef<{
+    height?: number
+    width?: number
+  }>({
+    height: undefined,
+    width: undefined
   })
 
   useEffect(() => {
