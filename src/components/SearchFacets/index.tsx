@@ -1,11 +1,11 @@
-import {AddIcon, EditIcon} from '@sanity/icons'
-import {Box, Button, Inline, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
+import {AddCircleIcon, EditIcon, ResetIcon} from '@sanity/icons'
+import {Box, Button, Flex, Inline, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {FACETS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsSearchFacetsAdd} from '../../modules/assets'
+import {assetsSearchFacetsAdd, assetsSearchFacetsClear} from '../../modules/assets'
 import SearchFacetNumber from '../SearchFacetNumber'
 import SearchFacetSelect from '../SearchFacetSelect'
 
@@ -13,6 +13,10 @@ const SearchFacets: FC = () => {
   // Redux
   const dispatch = useDispatch()
   const searchFacets = useTypedSelector(state => state.assets.searchFacets)
+
+  // Determine if there are any remaining facets
+  // (This operates under the assumption that only one of each facet can be active at any given time)
+  const remainingSearchFacets = FACETS.filter(facet => facet).length - searchFacets.length > 0
 
   return (
     <>
@@ -33,32 +37,55 @@ const SearchFacets: FC = () => {
             })}
           </Inline>
 
-          <MenuButton
-            button={
-              <Button fontSize={1} icon={AddIcon} mode="ghost" text="Add filter" tone="primary" />
-            }
-            id="facets"
-            menu={
-              <Menu>
-                {FACETS?.map((facet, index) => {
-                  if (facet) {
-                    const isPresent = !!searchFacets.find(v => v.name === facet.name)
+          <Flex>
+            {/* Add filter button */}
+            <MenuButton
+              button={
+                <Button
+                  disabled={!remainingSearchFacets}
+                  fontSize={1}
+                  icon={AddCircleIcon}
+                  mode="bleed"
+                  // mode="ghost"
+                  text="Add filter"
+                  tone="primary"
+                />
+              }
+              id="facets"
+              menu={
+                <Menu>
+                  {FACETS?.map((facet, index) => {
+                    if (facet) {
+                      const isPresent = !!searchFacets.find(v => v.name === facet.name)
 
-                    return (
-                      <MenuItem
-                        disabled={isPresent}
-                        key={facet.name}
-                        onClick={() => dispatch(assetsSearchFacetsAdd(facet))}
-                        text={facet.title}
-                      />
-                    )
-                  }
+                      return (
+                        <MenuItem
+                          disabled={isPresent}
+                          key={facet.name}
+                          onClick={() => dispatch(assetsSearchFacetsAdd(facet))}
+                          text={facet.title}
+                        />
+                      )
+                    }
 
-                  return <MenuDivider key={index} />
-                })}
-              </Menu>
-            }
-          />
+                    return <MenuDivider key={index} />
+                  })}
+                </Menu>
+              }
+            />
+
+            {/* Clear facets button */}
+            {searchFacets.length > 0 && (
+              <Button
+                fontSize={1}
+                icon={ResetIcon}
+                // mode="ghost"
+                mode="bleed"
+                onClick={() => dispatch(assetsSearchFacetsClear())}
+                text="Reset"
+              />
+            )}
+          </Flex>
         </Inline>
       </Box>
       <Box display={['block', 'block', 'block', 'none']}>

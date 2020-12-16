@@ -116,6 +116,10 @@ export type AssetsSearchFacetsAddAction = {
   type: AssetsActionTypes.SEARCH_FACETS_ADD
 }
 
+export type AssetsSearchFacetsClearAction = {
+  type: AssetsActionTypes.SEARCH_FACETS_CLEAR
+}
+
 export type AssetsSearchFacetsRemoveAction = {
   payload: {
     facetName: string
@@ -171,6 +175,7 @@ export type AssetsActions =
   | AssetsPickClearAction
   | AssetsPickRangeAction
   | AssetsSearchFacetsAddAction
+  | AssetsSearchFacetsClearAction
   | AssetsSearchFacetsRemoveAction
   | AssetsSearchFacetsUpdateAction
   | AssetsSetOrderAction

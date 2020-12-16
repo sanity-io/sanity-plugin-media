@@ -37,6 +37,7 @@ export enum AssetsActionTypes {
   PICK_CLEAR = 'ASSETS_PICK_CLEAR',
   PICK_RANGE = 'ASSETS_PICK_RANGE',
   SEARCH_FACETS_ADD = 'ASSETS_SEARCH_FACET_ADD',
+  SEARCH_FACETS_CLEAR = 'ASSETS_SEARCH_FACET_CLEAR',
   SEARCH_FACETS_REMOVE = 'ASSETS_SEARCH_FACET_REMOVE',
   SEARCH_FACETS_UPDATE = 'ASSETS_SEARCH_FACET_UPDATE',
   SET_ORDER = 'ASSETS_SET_ORDER',
@@ -78,8 +79,7 @@ export const initialState: AssetsReducerState = {
   pageSize: 50,
   searchFacets: [],
   searchQuery: '',
-  // view: 'grid'
-  view: 'table'
+  view: 'grid'
   // totalCount: -1
 }
 
@@ -243,6 +243,12 @@ export default function assetsReducerState(
        */
       case AssetsActionTypes.SEARCH_FACETS_ADD:
         draft.searchFacets.push(action.payload.facet)
+        break
+      /**
+       * All search facet have been clear
+       */
+      case AssetsActionTypes.SEARCH_FACETS_CLEAR:
+        draft.searchFacets = []
         break
       /**
        * A single search facet has been removed
@@ -426,6 +432,11 @@ export const assetsSearchFacetsAdd = (facet: SearchFacetProps) => ({
     facet
   },
   type: AssetsActionTypes.SEARCH_FACETS_ADD
+})
+
+// Clear search facets
+export const assetsSearchFacetsClear = () => ({
+  type: AssetsActionTypes.SEARCH_FACETS_CLEAR
 })
 
 // Remove search facet
@@ -613,6 +624,7 @@ export const assetsSearchEpic = (action$: any) =>
   action$.pipe(
     ofType(
       AssetsActionTypes.SEARCH_FACETS_ADD,
+      AssetsActionTypes.SEARCH_FACETS_CLEAR,
       AssetsActionTypes.SEARCH_FACETS_REMOVE,
       AssetsActionTypes.SEARCH_FACETS_UPDATE,
       AssetsActionTypes.SET_SEARCH_QUERY
