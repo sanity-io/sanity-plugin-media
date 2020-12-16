@@ -1,6 +1,6 @@
 import {Box, Button, Flex, Inline, Text} from '@sanity/ui'
 import pluralize from 'pluralize'
-import React from 'react'
+import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
@@ -16,7 +16,7 @@ const Container = styled(Box)(({theme}) => {
   }
 })
 
-const Footer = () => {
+const PickedBar: FC = () => {
   // Redux
   const dispatch = useDispatch()
   const byIds = useTypedSelector(state => state.assets.byIds)
@@ -73,4 +73,4 @@ const Footer = () => {
   return null
 }
 
-export default Footer
+export default PickedBar

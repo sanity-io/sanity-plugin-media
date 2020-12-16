@@ -1,24 +1,23 @@
 import {Box, Text} from '@sanity/ui'
-import React, {Ref, useRef} from 'react'
+import React, {FC, Ref, useRef} from 'react'
 import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
+import useResizeObserver from '../../hooks/useResizeObserver'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsLoadNextPage} from '../../modules/assets'
 import Cards from '../Cards'
-import Footer from '../Footer'
+import PickedBar from '../PickedBar'
 import Table from '../Table'
-
-type Props = {}
 
 type InfiniteLoaderRenderProps = {
   onItemsRendered: (props: ListOnItemsRenderedProps) => any
   ref: Ref<any>
 }
 
-const Items = (props: Props) => {
+const Items: FC = () => {
   // Ref used to scroll to the top of the page on filter changes
   const viewRef = useRef<HTMLDivElement | null>(null)
 
@@ -69,6 +68,8 @@ const Items = (props: Props) => {
 
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
 
+  const {ref, height: containerHeight} = useResizeObserver()
+
   if (isEmpty) {
     return (
       <Box padding={4}>
@@ -88,13 +89,14 @@ const Items = (props: Props) => {
         width: '100%'
       }}
     >
+      {/* Picked bar */}
+      <div ref={ref}>{hasPicked && <PickedBar />}</div>
+
       {(view === 'grid' || 'table') && (
         <AutoSizer>
           {({height, width}) => {
             return (
               <>
-                {hasPicked && <Footer />}
-
                 <InfiniteLoader
                   isItemLoaded={isItemLoaded}
                   itemCount={itemCount}
@@ -105,7 +107,7 @@ const Items = (props: Props) => {
                     if (view === 'table') {
                       return (
                         <Table
-                          height={height}
+                          height={height - (containerHeight ?? 0)}
                           items={items}
                           itemCount={itemCount}
                           onItemsRendered={onItemsRendered}
@@ -143,7 +145,7 @@ const Items = (props: Props) => {
 
                       return (
                         <Cards
-                          height={height}
+                          height={height - (containerHeight ?? 0)}
                           items={items}
                           itemCount={itemCount}
                           onItemsRendered={newItemsRendered}

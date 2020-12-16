@@ -38,6 +38,7 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
   )
 }
 
+// const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
 const VirtualRow = memo((props: ListChildComponentProps) => {
   const {data, index, style} = props
 
