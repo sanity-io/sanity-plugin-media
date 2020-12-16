@@ -30,11 +30,6 @@ const Footer = () => {
     window.location.href = `${asset.url}?dl`
   }
 
-  // Show references
-  <Button
-    icon={IoIosLink({size: 16})}
-    onClick={() => dispatch(dialogShowRefs(singlePickedAsset))}
-  />
   // Download original
   <Button
     icon={IoIosDownload({size: 16})}

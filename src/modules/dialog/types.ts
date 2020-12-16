@@ -5,7 +5,7 @@ import {DialogActionTypes} from './index'
 
 export type DialogReducerState = {
   asset?: Asset | null
-  type: 'refs' | null
+  type: 'details' | null
 }
 
 // Actions
@@ -14,13 +14,13 @@ export type DialogClearAction = {
   type: DialogActionTypes.CLEAR
 }
 
-export type DialogShowRefsAction = {
+export type DialogShowDetailsAction = {
   payload: {
     asset: Asset
   }
-  type: DialogActionTypes.SHOW_REFS
+  type: DialogActionTypes.SHOW_DETAILS
 }
 
 // All actions
 
-export type DialogActions = DialogClearAction | DialogShowRefsAction
+export type DialogActions = DialogClearAction | DialogShowDetailsAction

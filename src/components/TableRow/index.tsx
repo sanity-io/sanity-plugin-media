@@ -10,7 +10,7 @@ import {AspectRatio, Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} f
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import {assetsPick} from '../../modules/assets'
-import {dialogShowRefs} from '../../modules/dialog'
+import {dialogShowDetails} from '../../modules/dialog'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import getAssetResolution from '../../util/getAssetResolution'
 import imageDprUrl from '../../util/imageDprUrl'
@@ -86,7 +86,7 @@ const TableRow = (props: Props) => {
     e.stopPropagation()
 
     if (currentDocument) {
-      dispatch(dialogShowRefs(asset))
+      dispatch(dialogShowDetails(asset))
     } else {
       dispatch(assetsPick(asset._id, !picked))
     }
@@ -105,7 +105,7 @@ const TableRow = (props: Props) => {
         ])
       }
     } else {
-      dispatch(dialogShowRefs(asset))
+      dispatch(dialogShowDetails(asset))
     }
   }
 

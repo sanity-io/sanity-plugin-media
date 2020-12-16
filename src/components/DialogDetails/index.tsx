@@ -14,7 +14,7 @@ import {
 } from '@sanity/ui'
 import {Item} from '@types'
 import filesize from 'filesize'
-import React, {useCallback} from 'react'
+import React, {FC, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 import {AspectRatio} from 'theme-ui'
 
@@ -29,7 +29,7 @@ type Props = {
   item: Item
 }
 
-const DialogRefs = (props: Props) => {
+const DialogDetails: FC<Props> = (props: Props) => {
   const {item} = props
 
   // Redux
@@ -196,4 +196,4 @@ const DialogRefs = (props: Props) => {
   )
 }
 
-export default DialogRefs
+export default DialogDetails

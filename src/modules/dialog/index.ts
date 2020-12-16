@@ -13,7 +13,7 @@ import {DialogActions, DialogReducerState} from './types'
 
 export enum DialogActionTypes {
   CLEAR = 'DIALOG_CLEAR',
-  SHOW_REFS = 'DIALOG_SHOW_REFS'
+  SHOW_DETAILS = 'DIALOG_SHOW_DETAILS'
 }
 
 /***********
@@ -22,8 +22,8 @@ export enum DialogActionTypes {
 
 /**
  * `asset` is a Sanity asset, which dialogs reference to display contextual information
- * `type` can be of type 'refs':
- * - `refs` displays all asset references, with an option to delete
+ * `type` can be of type 'details':
+ * - `details` displays all asset details
  */
 
 const INITIAL_STATE = {
@@ -42,10 +42,10 @@ export default function dialogReducer(
         draft.asset = null
         draft.type = null
         break
-      case DialogActionTypes.SHOW_REFS: {
+      case DialogActionTypes.SHOW_DETAILS: {
         const asset = action.payload?.asset
         draft.asset = asset
-        draft.type = 'refs'
+        draft.type = 'details'
         break
       }
     }
@@ -68,14 +68,14 @@ export const dialogClear = () => ({
 })
 
 /**
- * Display asset references
+ * Display asset details
  */
 
-export const dialogShowRefs = (asset: Asset) => ({
+export const dialogShowDetails = (asset: Asset) => ({
   payload: {
     asset
   },
-  type: DialogActionTypes.SHOW_REFS
+  type: DialogActionTypes.SHOW_DETAILS
 })
 
 /*********

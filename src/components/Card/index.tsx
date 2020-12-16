@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsPick} from '../../modules/assets'
-import {dialogShowRefs} from '../../modules/dialog'
+import {dialogShowDetails} from '../../modules/dialog'
 import imageDprUrl from '../../util/imageDprUrl'
 import Image from '../Image'
 import TextEllipsis from '../TextEllipsis'
@@ -97,7 +97,7 @@ const Card = (props: Props) => {
         ])
       }
     } else {
-      dispatch(dialogShowRefs(asset))
+      dispatch(dialogShowDetails(asset))
     }
   }
 
@@ -105,7 +105,7 @@ const Card = (props: Props) => {
     e.stopPropagation()
 
     if (currentDocument) {
-      dispatch(dialogShowRefs(asset))
+      dispatch(dialogShowDetails(asset))
     } else {
       dispatch(assetsPick(asset._id, !picked))
     }

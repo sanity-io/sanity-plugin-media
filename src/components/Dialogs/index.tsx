@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import DialogRefs from '../DialogRefs'
+import DialogDetails from '../DialogDetails'
 
-const Dialogs = () => {
+const Dialogs: FC = () => {
   const {asset, type} = useTypedSelector(state => state.dialog)
   const {byIds} = useTypedSelector(state => state.assets)
 
@@ -13,8 +13,8 @@ const Dialogs = () => {
     return null
   }
 
-  if (asset && type === 'refs') {
-    return <DialogRefs item={currentItem} />
+  if (asset && type === 'details') {
+    return <DialogDetails item={currentItem} />
   }
 
   return null
