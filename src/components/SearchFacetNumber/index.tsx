@@ -46,7 +46,6 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
   }
 
   const handleValueChange = (value: number) => {
-    // TODO: consider debouncing
     dispatch(
       assetsSearchFacetsUpdate({
         ...facet,

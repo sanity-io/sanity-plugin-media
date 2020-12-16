@@ -16,7 +16,7 @@ const TextInputNumber: FC<Props> = (props: Props) => {
 
     // Test for number and strip leading zeroes
     if (val === '' || regex.test(val)) {
-      onValueChange(parseInt(val, 10))
+      onValueChange(parseInt(val, 10) || 0)
     }
   }
 
