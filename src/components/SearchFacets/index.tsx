@@ -89,7 +89,14 @@ const SearchFacets: FC = () => {
         </Inline>
       </Box>
       <Box display={['block', 'block', 'block', 'none']}>
-        <Button fontSize={1} icon={EditIcon} mode="ghost" text="Filters (2)" tone="primary" />
+        <Button
+          fontSize={1}
+          icon={EditIcon}
+          mode="ghost"
+          onClick={() => window.alert('TODO: Show search facet dialog')}
+          text={`Filters${searchFacets.length > 0 ? ' (' + searchFacets.length + ')' : ''}`}
+          tone="primary"
+        />
       </Box>
     </>
   )
