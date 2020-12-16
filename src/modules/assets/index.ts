@@ -639,11 +639,15 @@ const constructFilter = (searchFacets: SearchFacetProps[], searchQuery?: string)
     }
 
     if (facet.type === 'select') {
-      const {options, value} = facet
+      const {operators, options, value} = facet
 
-      const currentListItem = options?.list.find(l => l.name === value)
+      const currentListValue = options?.list.find(l => l.name === value)?.value
 
-      return currentListItem?.value
+      if (operators.logical === 'not') {
+        return `!(${currentListValue})`
+      }
+
+      return currentListValue
     }
 
     throw Error(`type must be either 'number' or 'select'`)
