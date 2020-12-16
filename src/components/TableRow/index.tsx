@@ -39,7 +39,6 @@ const ContainerGrid = styled(LegacyGrid)`
 `
 
 const ContextActionContainer = styled(LegacyFlex)`
-  /* background: lime; */
   cursor: pointer;
   transition: all 400ms;
 
