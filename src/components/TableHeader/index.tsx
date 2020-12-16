@@ -23,6 +23,8 @@ const ContextActionContainer = styled(Flex)`
 const TableHeader: FC = () => {
   // Redux
   const dispatch = useDispatch()
+
+  const fetching = useTypedSelector(state => state.assets.fetching)
   const currentDocument = useTypedSelector(state => state.document)
   const byIds = useTypedSelector(state => state.assets.byIds)
 
@@ -70,7 +72,7 @@ const TableHeader: FC = () => {
       >
         {!currentDocument && (
           <Checkbox
-            checked={allSelected}
+            checked={!fetching && allSelected}
             readOnly
             style={{
               pointerEvents: 'none', // TODO: consider alternative for usability
