@@ -1,4 +1,4 @@
-import {Icon, SearchIcon} from '@sanity/icons'
+import {CloseIcon, SearchIcon} from '@sanity/icons'
 import {Box, Flex, TextInput} from '@sanity/ui'
 import React, {ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
@@ -50,7 +50,7 @@ const TextInputSearch = () => {
             zIndex: 1 // TODO: try to avoid manually setting z-indices
           }}
         >
-          <Icon symbol="close" />
+          <CloseIcon />
         </Flex>
       )}
     </Box>

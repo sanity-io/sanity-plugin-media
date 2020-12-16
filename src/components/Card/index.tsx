@@ -1,4 +1,4 @@
-import {Icon} from '@sanity/icons'
+import {EditIcon, WarningOutlineIcon} from '@sanity/icons'
 import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {Item} from '@types'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
@@ -51,6 +51,12 @@ const ContextActionContainer = styled(Box)`
     }
   }
 `
+
+const StyledWarningOutlineIcon = styled(WarningOutlineIcon)(({theme}) => {
+  return {
+    color: theme.sanity.color.spot.red
+  }
+})
 
 const Card = (props: Props) => {
   const {
@@ -139,8 +145,7 @@ const Card = (props: Props) => {
         <ContextActionContainer onClick={handleContextActionClick} padding={2}>
           <Flex align="center">
             {currentDocument ? (
-              <Icon
-                symbol="edit"
+              <EditIcon
                 style={{
                   flexShrink: 0,
                   opacity: 0.5
@@ -161,24 +166,40 @@ const Card = (props: Props) => {
             <Box marginLeft={2} style={{overflow: 'hidden'}}>
               <TextEllipsis size={0}>{asset.originalFilename}</TextEllipsis>
             </Box>
-
-            {/* Error button */}
-            {errorCode && (
-              <Tooltip
-                content={
-                  <Box padding={2}>
-                    <Text size={1}>has references</Text>
-                  </Box>
-                }
-                placement="top"
-              >
-                <Text size={1}>
-                  <Icon symbol="warning-outline" />
-                </Text>
-              </Tooltip>
-            )}
           </Flex>
         </ContextActionContainer>
+
+        {/* TODO: DRY */}
+        {/* Error button */}
+        {errorCode && (
+          <Box
+            padding={3}
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: 0
+            }}
+          >
+            <Tooltip
+              content={
+                <Box
+                  padding={2}
+                  style={{
+                    minWidth: '110px', // TODO: is this necessary?
+                    textAlign: 'center'
+                  }}
+                >
+                  <Text size={1}>has references</Text>
+                </Box>
+              }
+              placement="left"
+            >
+              <Text size={1}>
+                <StyledWarningOutlineIcon color="critical" />
+              </Text>
+            </Tooltip>
+          </Box>
+        )}
 
         {/* Spinner */}
         {updating && (

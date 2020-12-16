@@ -1,5 +1,5 @@
-import {Icon} from '@sanity/icons'
-import {Checkbox, Flex, Spinner} from '@sanity/ui'
+import {EditIcon, WarningOutlineIcon} from '@sanity/icons'
+import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {Item} from '@types'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
@@ -49,6 +49,12 @@ const ContextActionContainer = styled(LegacyFlex)`
     }
   }
 `
+
+const StyledWarningOutlineIcon = styled(WarningOutlineIcon)(({theme}) => {
+  return {
+    color: theme.sanity.color.spot.red
+  }
+})
 
 const TableRow = (props: Props) => {
   const {
@@ -134,8 +140,7 @@ const TableRow = (props: Props) => {
         }}
       >
         {currentDocument ? (
-          <Icon
-            symbol="edit"
+          <EditIcon
             style={{
               flexShrink: 0,
               opacity: 0.5
@@ -259,7 +264,30 @@ const TableRow = (props: Props) => {
           mx: 'auto'
         }}
       >
-        {errorCode && <div>(BUTTON)</div>}
+        {/* TODO: DRY */}
+        {/* Error button */}
+        {errorCode && (
+          <Box padding={3}>
+            <Tooltip
+              content={
+                <Box
+                  padding={2}
+                  style={{
+                    minWidth: '110px', // TODO: is this necessary?
+                    textAlign: 'center'
+                  }}
+                >
+                  <Text size={1}>has references</Text>
+                </Box>
+              }
+              placement="left"
+            >
+              <Text size={1}>
+                <StyledWarningOutlineIcon color="critical" />
+              </Text>
+            </Tooltip>
+          </Box>
+        )}
       </LegacyBox>
     </ContainerGrid>
   )
