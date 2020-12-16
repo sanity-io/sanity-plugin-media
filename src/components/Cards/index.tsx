@@ -3,7 +3,6 @@ import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {GridOnItemsRenderedProps, GridChildComponentProps, VariableSizeGrid} from 'react-window'
 import {Box} from 'theme-ui'
 
-import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import Card from '../Card'
 
@@ -33,7 +32,7 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
 const VirtualCell = memo((props: GridChildComponentProps) => {
   const {columnIndex, data, rowIndex, style} = props
 
-  const {columnCount, items, selectedIds, shiftPressed} = data
+  const {columnCount, items, selectedIds} = data
   const index = columnCount * rowIndex + columnIndex
   const item = items[index]
   const assetId = item?.asset?._id
@@ -57,7 +56,6 @@ const VirtualCell = memo((props: GridChildComponentProps) => {
       item={item}
       key={`grid-${assetId}`}
       selected={selectedIds.includes(assetId)}
-      shiftPressed={shiftPressed}
       style={cellStyle}
     />
   )
@@ -68,8 +66,6 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
 
   // Redux
   const selectedAssets = useTypedSelector(state => state.selectedAssets)
-
-  const shiftPressed = useKeyPress('Shift')
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
 
@@ -89,8 +85,7 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
       itemData={{
         columnCount,
         items,
-        selectedIds,
-        shiftPressed
+        selectedIds
       }}
       onItemsRendered={onItemsRendered}
       ref={ref}

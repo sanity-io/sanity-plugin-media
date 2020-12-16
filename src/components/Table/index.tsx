@@ -8,7 +8,6 @@ import {
   ListOnItemsRenderedProps
 } from 'react-window'
 
-import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
@@ -46,7 +45,7 @@ const VirtualRow = memo((props: ListChildComponentProps) => {
   if (!data) {
     return null
   }
-  const {items, selectedIds, shiftPressed} = data
+  const {items, selectedIds} = data
   const item = items[index]
   const assetId = item?.asset?._id
 
@@ -57,20 +56,11 @@ const VirtualRow = memo((props: ListChildComponentProps) => {
     height: Number(style.height) - 2
   } as CSSProperties
 
-  return (
-    <TableRow
-      item={item}
-      selected={selectedIds.includes(assetId)}
-      shiftPressed={shiftPressed}
-      style={rowStyle}
-    />
-  )
+  return <TableRow item={item} selected={selectedIds.includes(assetId)} style={rowStyle} />
 }, areEqual)
 
 const Table = forwardRef((props: Props, ref: Ref<any>) => {
   const {height, items, itemCount, onItemsRendered, width} = props
-
-  const shiftPressed = useKeyPress('Shift')
 
   // Redux
   const selectedAssets = useTypedSelector(state => state.selectedAssets)
@@ -84,8 +74,7 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
       innerElementType={innerElementType}
       itemData={{
         items,
-        selectedIds,
-        shiftPressed
+        selectedIds
       }}
       itemCount={itemCount}
       itemSize={100} // px

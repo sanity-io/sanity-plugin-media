@@ -9,8 +9,9 @@ import styled from 'styled-components'
 import {AspectRatio, Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
-import {assetsPick} from '../../modules/assets'
+import {assetsPick, assetsPickRange} from '../../modules/assets'
 import {dialogShowDetails} from '../../modules/dialog'
+import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import getAssetResolution from '../../util/getAssetResolution'
 import imageDprUrl from '../../util/imageDprUrl'
@@ -20,7 +21,6 @@ import TextEllipsis from '../TextEllipsis'
 type Props = {
   item: Item
   selected: boolean
-  shiftPressed: boolean
   style?: CSSProperties
 }
 
@@ -57,16 +57,14 @@ const StyledWarningOutlineIcon = styled(WarningOutlineIcon)(({theme}) => {
 })
 
 const TableRow = (props: Props) => {
-  const {
-    item,
-    selected,
-    // shiftPressed,
-    style
-  } = props
+  const {item, selected, style} = props
+
+  const shiftPressed = useKeyPress('Shift')
 
   // Redux
   const dispatch = useDispatch()
   const currentDocument = useTypedSelector(state => state.document)
+  const lastPicked = useTypedSelector(state => state.assets.lastPicked)
 
   const asset = item?.asset
   const errorCode = item?.errorCode
@@ -88,7 +86,11 @@ const TableRow = (props: Props) => {
     if (currentDocument) {
       dispatch(dialogShowDetails(asset))
     } else {
-      dispatch(assetsPick(asset._id, !picked))
+      if (shiftPressed && !picked) {
+        dispatch(assetsPickRange(lastPicked || asset._id, asset._id))
+      } else {
+        dispatch(assetsPick(asset._id, !picked))
+      }
     }
   }
 
@@ -105,7 +107,15 @@ const TableRow = (props: Props) => {
         ])
       }
     } else {
-      dispatch(dialogShowDetails(asset))
+      if (shiftPressed) {
+        if (picked) {
+          dispatch(assetsPick(asset._id, !picked))
+        } else {
+          dispatch(assetsPickRange(lastPicked || asset._id, asset._id))
+        }
+      } else {
+        dispatch(dialogShowDetails(asset))
+      }
     }
   }
 

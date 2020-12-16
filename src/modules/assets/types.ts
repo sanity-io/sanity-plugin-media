@@ -9,6 +9,7 @@ export type AssetsReducerState = {
   fetchCount: number
   fetching: boolean
   fetchingError: any
+  lastPicked?: string
   order: Order
   pageIndex: number
   pageSize: number
@@ -100,6 +101,14 @@ export type AssetsPickClearAction = {
   type: AssetsActionTypes.PICK_CLEAR
 }
 
+export type AssetsPickRangeAction = {
+  payload: {
+    endId: string
+    startId: string
+  }
+  type: AssetsActionTypes.PICK_RANGE
+}
+
 export type AssetsSearchFacetsAddAction = {
   payload: {
     facet: SearchFacetProps
@@ -160,6 +169,7 @@ export type AssetsActions =
   | AssetsPickAction
   | AssetsPickAllAction
   | AssetsPickClearAction
+  | AssetsPickRangeAction
   | AssetsSearchFacetsAddAction
   | AssetsSearchFacetsRemoveAction
   | AssetsSearchFacetsUpdateAction

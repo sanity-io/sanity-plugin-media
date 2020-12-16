@@ -35,6 +35,7 @@ export enum AssetsActionTypes {
   PICK = 'ASSETS_PICK',
   PICK_ALL = 'ASSETS_PICK_ALL',
   PICK_CLEAR = 'ASSETS_PICK_CLEAR',
+  PICK_RANGE = 'ASSETS_PICK_RANGE',
   SEARCH_FACETS_ADD = 'ASSETS_SEARCH_FACET_ADD',
   SEARCH_FACETS_REMOVE = 'ASSETS_SEARCH_FACET_REMOVE',
   SEARCH_FACETS_UPDATE = 'ASSETS_SEARCH_FACET_UPDATE',
@@ -71,6 +72,7 @@ export const initialState: AssetsReducerState = {
   fetchCount: -1,
   fetching: false,
   fetchingError: null,
+  lastPicked: undefined,
   order: BROWSER_SELECT[0]?.order,
   pageIndex: 0,
   pageSize: 50,
@@ -198,6 +200,7 @@ export default function assetsReducerState(
         const picked = action.payload?.picked
 
         draft.byIds[assetId].picked = picked
+        draft.lastPicked = picked ? assetId : undefined
         break
       }
       /**
@@ -212,10 +215,28 @@ export default function assetsReducerState(
        * All assets have been unpicked.
        */
       case AssetsActionTypes.PICK_CLEAR:
+        draft.lastPicked = undefined
         Object.keys(draft.byIds).forEach(key => {
           draft.byIds[key].picked = false
         })
         break
+      /**
+       * A range of assets have been picked.
+       */
+      case AssetsActionTypes.PICK_RANGE: {
+        const startIndex = draft.allIds.findIndex(id => id === action.payload.startId)
+        const endIndex = draft.allIds.findIndex(id => id === action.payload.endId)
+
+        // Sort numerically, ascending order
+        const indices = [startIndex, endIndex].sort((a, b) => a - b)
+
+        draft.allIds.slice(indices[0], indices[1] + 1).forEach(key => {
+          draft.byIds[key].picked = true
+        })
+        draft.lastPicked = draft.allIds[endIndex]
+
+        break
+      }
 
       /**
        * A search facet has been added
@@ -223,7 +244,6 @@ export default function assetsReducerState(
       case AssetsActionTypes.SEARCH_FACETS_ADD:
         draft.searchFacets.push(action.payload.facet)
         break
-
       /**
        * A single search facet has been removed
        */
@@ -232,7 +252,6 @@ export default function assetsReducerState(
           facet => facet.name !== action.payload.facetName
         )
         break
-
       /**
        * A single search facet has been updated
        */
@@ -244,12 +263,6 @@ export default function assetsReducerState(
         })
         break
 
-      /*
-      case AssetsActionTypes.SET_FILTER:
-        draft.filter = action.payload?.filter
-        draft.pageIndex = 0
-        break
-      */
       case AssetsActionTypes.SET_ORDER:
         draft.order = action.payload?.order
         draft.pageIndex = 0
@@ -396,6 +409,15 @@ export const assetsPickAll = () => ({
 // Unpick all assets
 export const assetsPickClear = () => ({
   type: AssetsActionTypes.PICK_CLEAR
+})
+
+// Pick a range of assets
+export const assetsPickRange = (startId: string, endId: string) => ({
+  payload: {
+    endId,
+    startId
+  },
+  type: AssetsActionTypes.PICK_RANGE
 })
 
 // Add search facet

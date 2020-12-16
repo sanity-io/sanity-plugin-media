@@ -6,8 +6,9 @@ import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
+import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsPick} from '../../modules/assets'
+import {assetsPick, assetsPickRange} from '../../modules/assets'
 import {dialogShowDetails} from '../../modules/dialog'
 import imageDprUrl from '../../util/imageDprUrl'
 import Image from '../Image'
@@ -16,7 +17,6 @@ import TextEllipsis from '../TextEllipsis'
 type Props = {
   item: Item
   selected: boolean
-  shiftPressed: boolean
   style?: CSSProperties
 }
 
@@ -62,13 +62,15 @@ const Card = (props: Props) => {
   const {
     item,
     // selected,
-    // shiftPressed,
     style
   } = props
+
+  const shiftPressed = useKeyPress('Shift')
 
   // Redux
   const dispatch = useDispatch()
   const currentDocument = useTypedSelector(state => state.document)
+  const lastPicked = useTypedSelector(state => state.assets.lastPicked)
 
   const asset = item?.asset
   const errorCode = item?.errorCode
@@ -97,7 +99,15 @@ const Card = (props: Props) => {
         ])
       }
     } else {
-      dispatch(dialogShowDetails(asset))
+      if (shiftPressed) {
+        if (picked) {
+          dispatch(assetsPick(asset._id, !picked))
+        } else {
+          dispatch(assetsPickRange(lastPicked || asset._id, asset._id))
+        }
+      } else {
+        dispatch(dialogShowDetails(asset))
+      }
     }
   }
 
@@ -107,7 +117,11 @@ const Card = (props: Props) => {
     if (currentDocument) {
       dispatch(dialogShowDetails(asset))
     } else {
-      dispatch(assetsPick(asset._id, !picked))
+      if (shiftPressed && !picked) {
+        dispatch(assetsPickRange(lastPicked || asset._id, asset._id))
+      } else {
+        dispatch(assetsPick(asset._id, !picked))
+      }
     }
   }
 
