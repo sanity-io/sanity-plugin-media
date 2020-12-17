@@ -13,7 +13,8 @@ import {DialogActions, DialogReducerState} from './types'
 
 export enum DialogActionTypes {
   CLEAR = 'DIALOG_CLEAR',
-  SHOW_DETAILS = 'DIALOG_SHOW_DETAILS'
+  SHOW_DETAILS = 'DIALOG_SHOW_DETAILS',
+  SHOW_SEARCH_FACETS = 'DIALOG_SHOW_SEARCH_FACETS'
 }
 
 /***********
@@ -48,6 +49,9 @@ export default function dialogReducer(
         draft.type = 'details'
         break
       }
+      case DialogActionTypes.SHOW_SEARCH_FACETS:
+        draft.type = 'searchFacets'
+        break
     }
   })
 }
@@ -76,6 +80,14 @@ export const dialogShowDetails = (asset: Asset) => ({
     asset
   },
   type: DialogActionTypes.SHOW_DETAILS
+})
+
+/**
+ * Display search facets
+ */
+
+export const dialogShowSearchFacets = () => ({
+  type: DialogActionTypes.SHOW_SEARCH_FACETS
 })
 
 /*********

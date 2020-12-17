@@ -29,6 +29,15 @@ type Props = {
   item: Item
 }
 
+const Footer = () => (
+  <Box padding={3}>
+    <Flex justify="space-between">
+      <Button mode="bleed" text="Delete" tone="critical" />
+      <Button icon={PublishIcon} text="Update" tone="primary" />
+    </Flex>
+  </Box>
+)
+
 const DialogDetails: FC<Props> = (props: Props) => {
   const {item} = props
 
@@ -64,15 +73,6 @@ const DialogDetails: FC<Props> = (props: Props) => {
   */
 
   const imageUrl = imageDprUrl(item?.asset, 250)
-
-  const Footer = () => (
-    <Box padding={3}>
-      <Flex justify="space-between">
-        <Button mode="bleed" text="Delete" tone="critical" />
-        <Button icon={PublishIcon} text="Update" tone="primary" />
-      </Flex>
-    </Box>
-  )
 
   return (
     <Dialog

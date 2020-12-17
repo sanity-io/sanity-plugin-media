@@ -723,10 +723,10 @@
   dependencies:
     "@types/react" "^16.9.49"
 
-"@sanity/ui@0.30.1":
-  version "0.30.1"
-  resolved "https://registry.yarnpkg.com/@sanity/ui/-/ui-0.30.1.tgz#4a12202b17e3174576d0f0b02ed5d410d8e50951"
-  integrity sha512-pdwqg8HNFayekjMZPbASOsZs6bD3rqHhzMRlm4wKvw2ixFdGc48Y/1yt0zaHAL+031TNHqnc8qJDX2Z11ixiJw==
+"@sanity/ui@0.30.2":
+  version "0.30.2"
+  resolved "https://registry.yarnpkg.com/@sanity/ui/-/ui-0.30.2.tgz#7c2ddae4226894ce2aed2c6340e63c52f487d21f"
+  integrity sha512-qCe7tiVAgREY/NhnBBqPmHokDmg0q7Vsw10YrLEUM39zOCKIlZfwLPPxGzcZ1MDtj+Zm4D61TgYHeXl1u2Zofg==
   dependencies:
     "@juggle/resize-observer" "^3.2.0"
     "@popperjs/core" "^2.5.4"

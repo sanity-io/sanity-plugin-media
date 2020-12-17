@@ -1,5 +1,5 @@
 import {Card, Flex} from '@sanity/ui'
-import React, {useEffect} from 'react'
+import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 // import styled from 'styled-components'
 
@@ -24,7 +24,7 @@ const CustomThing = styled.div(({theme}) => {
 })
 */
 
-const Browser = (props: Props) => {
+const Browser: FC<Props> = (props: Props) => {
   const {onClose} = props
 
   // Redux

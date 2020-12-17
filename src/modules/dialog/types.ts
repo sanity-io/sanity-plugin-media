@@ -5,7 +5,7 @@ import {DialogActionTypes} from './index'
 
 export type DialogReducerState = {
   asset?: Asset | null
-  type: 'details' | null
+  type: 'details' | 'searchFacets' | null
 }
 
 // Actions
@@ -21,6 +21,13 @@ export type DialogShowDetailsAction = {
   type: DialogActionTypes.SHOW_DETAILS
 }
 
+export type DialogShowSearchFacetsAction = {
+  type: DialogActionTypes.SHOW_SEARCH_FACETS
+}
+
 // All actions
 
-export type DialogActions = DialogClearAction | DialogShowDetailsAction
+export type DialogActions =
+  | DialogClearAction
+  | DialogShowDetailsAction
+  | DialogShowSearchFacetsAction

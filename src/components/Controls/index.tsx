@@ -1,17 +1,28 @@
-import {Box, Flex} from '@sanity/ui'
+import {EditIcon} from '@sanity/icons'
+import {Box, Button, Flex, Inline} from '@sanity/ui'
 import React, {FC} from 'react'
+import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
+import {dialogShowSearchFacets} from '../../modules/dialog'
 import ButtonViewGroup from '../ButtonViewGroup'
-import SearchFacets from '../SearchFacets'
 import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
+import SearchFacets from '../SearchFacets'
+import SearchFacetsControl from '../SearchFacetsControl'
 import TextInputSearch from '../TextInputSearch'
 
 const Controls: FC = () => {
   // Redux
+  const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
+  const searchFacets = useTypedSelector(state => state.assets.searchFacets)
+
+  // Callbacks
+  const handleShowSearchFacetDialog = () => {
+    dispatch(dialogShowSearchFacets())
+  }
 
   return (
     <Box
@@ -50,8 +61,26 @@ const Controls: FC = () => {
               <TextInputSearch />
             </Box>
 
-            {/* Filters */}
-            <SearchFacets />
+            <Box display={['none', 'none', 'none', 'block']}>
+              <Inline>
+                <SearchFacets />
+
+                {/* Search Facets Control (add / clear) */}
+                <SearchFacetsControl />
+              </Inline>
+            </Box>
+
+            <Box display={['block', 'block', 'block', 'none']}>
+              <Button
+                fontSize={1}
+                icon={EditIcon}
+                mode="ghost"
+                onClick={handleShowSearchFacetDialog}
+                text={`Filters${searchFacets.length > 0 ? ' (' + searchFacets.length + ')' : ''}`}
+                tone="primary"
+              />
+            </Box>
+            {/* <SearchFacetsControl /> */}
           </Flex>
         </Flex>
       </Box>
