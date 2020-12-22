@@ -1,6 +1,6 @@
 import {CloseIcon, Icon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Text} from '@sanity/ui'
-import React from 'react'
+import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 
@@ -8,7 +8,7 @@ type Props = {
   onClose?: () => void
 }
 
-const Header = (props: Props) => {
+const Header: FC<Props> = (props: Props) => {
   const {onClose} = props
 
   // Redux

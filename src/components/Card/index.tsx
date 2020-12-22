@@ -26,7 +26,7 @@ const Container = styled(Flex)<{picked?: boolean}>`
   border-radius: 3px;
   overflow: hidden;
   position: relative;
-  transition: all 400ms;
+  transition: all 300ms;
   user-select: none;
 
   border: ${props =>
@@ -43,7 +43,7 @@ const Container = styled(Flex)<{picked?: boolean}>`
 
 const ContextActionContainer = styled(Box)`
   cursor: pointer;
-  transition: all 400ms;
+  transition: all 300ms;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {

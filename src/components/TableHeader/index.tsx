@@ -11,7 +11,7 @@ import TableHeaderItem from '../TableHeaderItem'
 // TODO: DRY
 const ContextActionContainer = styled(Flex)`
   cursor: pointer;
-  transition: all 400ms;
+  transition: all 300ms;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {

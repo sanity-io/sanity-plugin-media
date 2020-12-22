@@ -27,7 +27,6 @@ type Props = {
 const ContainerGrid = styled(LegacyGrid)`
   align-items: center;
   cursor: pointer;
-  /* transition: background 400ms; */
   user-select: none;
   white-space: nowrap;
 
@@ -40,7 +39,7 @@ const ContainerGrid = styled(LegacyGrid)`
 
 const ContextActionContainer = styled(LegacyFlex)`
   cursor: pointer;
-  transition: all 400ms;
+  transition: all 300ms;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {

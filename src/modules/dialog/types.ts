@@ -5,7 +5,7 @@ import {DialogActionTypes} from './index'
 
 export type DialogReducerState = {
   asset?: Asset | null
-  type: 'details' | 'searchFacets' | null
+  type: 'deletePickedConfirm' | 'details' | 'searchFacets' | null
 }
 
 // Actions
@@ -21,6 +21,10 @@ export type DialogShowDetailsAction = {
   type: DialogActionTypes.SHOW_DETAILS
 }
 
+export type DialogShowDeletePickedConfirmAction = {
+  type: DialogActionTypes.SHOW_DELETE_PICKED_CONFIRM
+}
+
 export type DialogShowSearchFacetsAction = {
   type: DialogActionTypes.SHOW_SEARCH_FACETS
 }
@@ -29,5 +33,6 @@ export type DialogShowSearchFacetsAction = {
 
 export type DialogActions =
   | DialogClearAction
+  | DialogShowDeletePickedConfirmAction
   | DialogShowDetailsAction
   | DialogShowSearchFacetsAction

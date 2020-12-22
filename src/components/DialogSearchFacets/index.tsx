@@ -16,7 +16,7 @@ const DialogSearchFacets: FC = () => {
   }, [])
 
   return (
-    <Dialog scheme="dark" header="Filters" id="example" onClose={handleClose} width={1}>
+    <Dialog scheme="dark" header="Filters" id="searchFacets" onClose={handleClose} width={1}>
       <Box padding={3}>
         <SearchFacets layout="stack" />
         <SearchFacetsControl />

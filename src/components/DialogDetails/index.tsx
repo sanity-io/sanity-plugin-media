@@ -32,8 +32,8 @@ type Props = {
 const Footer = () => (
   <Box padding={3}>
     <Flex justify="space-between">
-      <Button mode="bleed" text="Delete" tone="critical" />
-      <Button icon={PublishIcon} text="Update" tone="primary" />
+      <Button fontSize={1} mode="bleed" text="Delete" tone="critical" />
+      <Button fontSize={1} icon={PublishIcon} text="Update" tone="primary" />
     </Flex>
   </Box>
 )
@@ -76,11 +76,11 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
   return (
     <Dialog
-      scheme="dark"
       footer={<Footer />}
       header="Asset details"
-      id="example"
+      id="dialogDetails"
       onClose={handleClose}
+      scheme="dark"
       width={3}
     >
       <Grid columns={[1, 1, 2]}>

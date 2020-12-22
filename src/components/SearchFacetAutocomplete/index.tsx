@@ -20,7 +20,7 @@ const SearchFacetAutocomplete: FC<Props> = (props: Props) => {
 
       <MenuButton
         button={<Button fontSize={1} iconRight={SelectIcon} padding={2} text="includes" />}
-        id="test"
+        id="operators"
         menu={
           <Menu>
             <Stack space={1}>
@@ -36,7 +36,7 @@ const SearchFacetAutocomplete: FC<Props> = (props: Props) => {
           fontSize={1}
           // loading={true}
           padding={2}
-          id="test"
+          id="autoComplete"
         />
       </Box>
 

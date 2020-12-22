@@ -13,6 +13,7 @@ import {DialogActions, DialogReducerState} from './types'
 
 export enum DialogActionTypes {
   CLEAR = 'DIALOG_CLEAR',
+  SHOW_DELETE_PICKED_CONFIRM = 'DIALOG_SHOW_DELETE_PICKED_CONFIRM',
   SHOW_DETAILS = 'DIALOG_SHOW_DETAILS',
   SHOW_SEARCH_FACETS = 'DIALOG_SHOW_SEARCH_FACETS'
 }
@@ -49,6 +50,9 @@ export default function dialogReducer(
         draft.type = 'details'
         break
       }
+      case DialogActionTypes.SHOW_DELETE_PICKED_CONFIRM:
+        draft.type = 'deletePickedConfirm'
+        break
       case DialogActionTypes.SHOW_SEARCH_FACETS:
         draft.type = 'searchFacets'
         break
@@ -88,6 +92,10 @@ export const dialogShowDetails = (asset: Asset) => ({
 
 export const dialogShowSearchFacets = () => ({
   type: DialogActionTypes.SHOW_SEARCH_FACETS
+})
+
+export const dialogShowDeletePickedConfirm = () => ({
+  type: DialogActionTypes.SHOW_DELETE_PICKED_CONFIRM
 })
 
 /*********
