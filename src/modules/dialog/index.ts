@@ -13,7 +13,8 @@ import {DialogActions, DialogReducerState} from './types'
 
 export enum DialogActionTypes {
   CLEAR = 'DIALOG_CLEAR',
-  SHOW_DELETE_PICKED_CONFIRM = 'DIALOG_SHOW_DELETE_PICKED_CONFIRM',
+  REMOVE = 'DIALOG_REMOVE',
+  SHOW_DELETE_CONFIRM = 'DIALOG_SHOW_DELETE_CONFIRM',
   SHOW_DETAILS = 'DIALOG_SHOW_DETAILS',
   SHOW_SEARCH_FACETS = 'DIALOG_SHOW_SEARCH_FACETS'
 }
@@ -22,15 +23,8 @@ export enum DialogActionTypes {
  * REDUCER *
  ***********/
 
-/**
- * `asset` is a Sanity asset, which dialogs reference to display contextual information
- * `type` can be of type 'details':
- * - `details` displays all asset details
- */
-
 const INITIAL_STATE = {
-  asset: null,
-  type: null
+  items: []
 }
 
 export default function dialogReducer(
@@ -41,20 +35,36 @@ export default function dialogReducer(
     // eslint-disable-next-line default-case
     switch (action.type) {
       case DialogActionTypes.CLEAR:
-        draft.asset = null
-        draft.type = null
+        draft.items = []
         break
-      case DialogActionTypes.SHOW_DETAILS: {
-        const asset = action.payload?.asset
-        draft.asset = asset
-        draft.type = 'details'
+      case DialogActionTypes.REMOVE: {
+        const id = action.payload?.id
+        draft.items = draft.items.filter(item => item.id !== id)
         break
       }
-      case DialogActionTypes.SHOW_DELETE_PICKED_CONFIRM:
-        draft.type = 'deletePickedConfirm'
+      case DialogActionTypes.SHOW_DETAILS: {
+        const asset = action.payload?.asset
+        draft.items.push({
+          asset,
+          id: 'details',
+          type: 'details'
+        })
         break
+      }
+      case DialogActionTypes.SHOW_DELETE_CONFIRM: {
+        const asset = action.payload?.asset
+        draft.items.push({
+          asset,
+          id: 'deleteConfirm',
+          type: 'deleteConfirm'
+        })
+        break
+      }
       case DialogActionTypes.SHOW_SEARCH_FACETS:
-        draft.type = 'searchFacets'
+        draft.items.push({
+          id: 'searchFacets',
+          type: 'searchFacets'
+        })
         break
     }
   })
@@ -65,14 +75,25 @@ export default function dialogReducer(
  *******************/
 
 /**
- * Clear dialog
+ * Clear all dialogs
  */
 
 export const dialogClear = () => ({
   payload: {
-    asset: null
+    asset: undefined
   },
   type: DialogActionTypes.CLEAR
+})
+
+/**
+ * Clear dialog with ID
+ */
+
+export const dialogRemove = (id: string) => ({
+  payload: {
+    id
+  },
+  type: DialogActionTypes.REMOVE
 })
 
 /**
@@ -94,8 +115,11 @@ export const dialogShowSearchFacets = () => ({
   type: DialogActionTypes.SHOW_SEARCH_FACETS
 })
 
-export const dialogShowDeletePickedConfirm = () => ({
-  type: DialogActionTypes.SHOW_DELETE_PICKED_CONFIRM
+export const dialogShowDeleteConfirm = (asset?: Asset) => ({
+  payload: {
+    asset
+  },
+  type: DialogActionTypes.SHOW_DELETE_CONFIRM
 })
 
 /*********

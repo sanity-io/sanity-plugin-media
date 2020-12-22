@@ -1,30 +1,52 @@
+import {Dialog} from '@types'
 import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import DialogDeletePickedConfirm from '../DialogDeletePickedConfirm'
+import DialogDeleteConfirm from '../DialogDeleteConfirm'
 import DialogDetails from '../DialogDetails'
 import DialogSearchFacets from '../DialogSearchFacets'
 
 const Dialogs: FC = () => {
   // Redux
-  const {asset, type} = useTypedSelector(state => state.dialog)
-  const {byIds} = useTypedSelector(state => state.assets)
+  const {items} = useTypedSelector(state => state.dialog)
 
-  const currentItem = asset && byIds[asset._id]
+  const renderDialogs = (items: Dialog[], index: number) => {
+    if (items.length === 0 || index >= items.length) {
+      return null
+    }
 
-  if (type === 'deletePickedConfirm') {
-    return <DialogDeletePickedConfirm />
+    const item = items[index]
+
+    const childDialogs = renderDialogs(items, index + 1)
+
+    if (item.type === 'deleteConfirm') {
+      return (
+        <DialogDeleteConfirm asset={item?.asset} id={item.id} key={index}>
+          {childDialogs}
+        </DialogDeleteConfirm>
+      )
+    }
+
+    if (item.type === 'details' && item.asset) {
+      return (
+        <DialogDetails asset={item.asset} id={item.id} key={index}>
+          {childDialogs}
+        </DialogDetails>
+      )
+    }
+
+    if (item.type === 'searchFacets') {
+      return (
+        <DialogSearchFacets id={item.id} key={index}>
+          {childDialogs}
+        </DialogSearchFacets>
+      )
+    }
+
+    return null
   }
 
-  if (type === 'details' && currentItem) {
-    return <DialogDetails item={currentItem} />
-  }
-
-  if (type === 'searchFacets') {
-    return <DialogSearchFacets />
-  }
-
-  return null
+  return renderDialogs(items, 0)
 }
 
 export default Dialogs

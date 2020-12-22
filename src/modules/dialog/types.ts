@@ -1,11 +1,11 @@
-import {Asset} from '@types'
+import {Asset, Dialog} from '@types'
+
 import {DialogActionTypes} from './index'
 
 // Reducer
 
 export type DialogReducerState = {
-  asset?: Asset | null
-  type: 'deletePickedConfirm' | 'details' | 'searchFacets' | null
+  items: Dialog[]
 }
 
 // Actions
@@ -14,18 +14,33 @@ export type DialogClearAction = {
   type: DialogActionTypes.CLEAR
 }
 
+export type DialogRemoveAction = {
+  payload: {
+    id: string
+  }
+  type: DialogActionTypes.REMOVE
+}
+
 export type DialogShowDetailsAction = {
   payload: {
     asset: Asset
+    id: string
   }
   type: DialogActionTypes.SHOW_DETAILS
 }
 
-export type DialogShowDeletePickedConfirmAction = {
-  type: DialogActionTypes.SHOW_DELETE_PICKED_CONFIRM
+export type DialogShowDeleteConfirmAction = {
+  payload: {
+    asset: Asset
+    id: string
+  }
+  type: DialogActionTypes.SHOW_DELETE_CONFIRM
 }
 
 export type DialogShowSearchFacetsAction = {
+  payload: {
+    id: string
+  }
   type: DialogActionTypes.SHOW_SEARCH_FACETS
 }
 
@@ -33,6 +48,7 @@ export type DialogShowSearchFacetsAction = {
 
 export type DialogActions =
   | DialogClearAction
-  | DialogShowDeletePickedConfirmAction
+  | DialogRemoveAction
+  | DialogShowDeleteConfirmAction
   | DialogShowDetailsAction
   | DialogShowSearchFacetsAction

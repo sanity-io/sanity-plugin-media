@@ -12,45 +12,45 @@ import {
   Text,
   TextInput
 } from '@sanity/ui'
-import {Item} from '@types'
+import {Asset} from '@types'
 import filesize from 'filesize'
-import React, {FC, useCallback} from 'react'
+import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 import {AspectRatio} from 'theme-ui'
 
+// import useTypedSelector from '../../hooks/useTypedSelector'
 // import {assetsDelete} from '../../modules/assets'
-import {dialogClear} from '../../modules/dialog'
+import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
 import getAssetResolution from '../../util/getAssetResolution'
 import imageDprUrl from '../../util/imageDprUrl'
 // import DocumentList from '../DocumentList'
 import Image from '../Image'
 
 type Props = {
-  item: Item
+  asset: Asset
+  children: ReactNode
+  id: string
 }
 
-const Footer = () => (
-  <Box padding={3}>
-    <Flex justify="space-between">
-      <Button fontSize={1} mode="bleed" text="Delete" tone="critical" />
-      <Button fontSize={1} icon={PublishIcon} text="Update" tone="primary" />
-    </Flex>
-  </Box>
-)
-
 const DialogDetails: FC<Props> = (props: Props) => {
-  const {item} = props
+  const {asset, children, id} = props
 
   // Redux
   const dispatch = useDispatch()
+  // onst item = useTypedSelector(state => state.assets.byIds)[asset._id]
+  // console.log('item', item)
 
   // Callbacks
   const handleClose = useCallback(() => {
-    dispatch(dialogClear())
+    dispatch(dialogRemove(id))
   }, [])
 
+  const handleDelete = () => {
+    dispatch(dialogShowDeleteConfirm(asset))
+  }
+
   const handleDownload = () => {
-    window.location.href = `${item.asset.url}?dl`
+    window.location.href = `${asset.url}?dl`
   }
 
   /*
@@ -72,13 +72,22 @@ const DialogDetails: FC<Props> = (props: Props) => {
   ]
   */
 
-  const imageUrl = imageDprUrl(item?.asset, 250)
+  const imageUrl = imageDprUrl(asset, 250)
+
+  const Footer = () => (
+    <Box padding={3}>
+      <Flex justify="space-between">
+        <Button fontSize={1} mode="bleed" onClick={handleDelete} text="Delete" tone="critical" />
+        <Button fontSize={1} icon={PublishIcon} text="Update" tone="primary" />
+      </Flex>
+    </Box>
+  )
 
   return (
     <Dialog
       footer={<Footer />}
       header="Asset details"
-      id="dialogDetails"
+      id={id}
       onClose={handleClose}
       scheme="dark"
       width={3}
@@ -86,12 +95,8 @@ const DialogDetails: FC<Props> = (props: Props) => {
       <Grid columns={[1, 1, 2]}>
         <Box padding={4}>
           {/* Image */}
-          <AspectRatio ratio={item?.asset?.metadata?.dimensions?.aspectRatio}>
-            <Image
-              draggable={false}
-              showCheckerboard={!item?.asset?.metadata?.isOpaque}
-              src={imageUrl}
-            />
+          <AspectRatio ratio={asset?.metadata?.dimensions?.aspectRatio}>
+            <Image draggable={false} showCheckerboard={!asset?.metadata?.isOpaque} src={imageUrl} />
           </AspectRatio>
 
           {/* Metadata */}
@@ -101,28 +106,28 @@ const DialogDetails: FC<Props> = (props: Props) => {
               <Flex justify="space-between">
                 <Text size={1}>Size</Text>
                 <Text muted size={1}>
-                  {filesize(item?.asset?.size, {round: 0})}
+                  {filesize(asset?.size, {round: 0})}
                 </Text>
               </Flex>
               {/* MIME type */}
               <Flex justify="space-between">
                 <Text size={1}>MIME type</Text>
                 <Text muted size={1}>
-                  {item?.asset?.mimeType}
+                  {asset?.mimeType}
                 </Text>
               </Flex>
               {/* Extension */}
               <Flex justify="space-between">
                 <Text size={1}>Extension</Text>
                 <Text muted size={1}>
-                  {(item?.asset?.extension).toUpperCase()}
+                  {(asset?.extension).toUpperCase()}
                 </Text>
               </Flex>
               {/* Dimensions */}
               <Flex justify="space-between">
                 <Text size={1}>Dimensions</Text>
                 <Text muted size={1}>
-                  {getAssetResolution(item?.asset)}
+                  {getAssetResolution(asset)}
                 </Text>
               </Flex>
               {/* Download button */}
@@ -192,6 +197,8 @@ const DialogDetails: FC<Props> = (props: Props) => {
           </Box>
         </Box>
       </Grid>
+
+      {children}
     </Dialog>
   )
 }

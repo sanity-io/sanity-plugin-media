@@ -1,12 +1,19 @@
 import {Box, Dialog} from '@sanity/ui'
-import React, {FC, useCallback} from 'react'
+import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {dialogClear} from '../../modules/dialog'
 import SearchFacets from '../SearchFacets'
 import SearchFacetsControl from '../SearchFacetsControl'
 
-const DialogSearchFacets: FC = () => {
+type Props = {
+  children: ReactNode
+  id: string
+}
+
+const DialogSearchFacets: FC<Props> = (props: Props) => {
+  const {children, id} = props
+
   // Redux
   const dispatch = useDispatch()
 
@@ -16,11 +23,13 @@ const DialogSearchFacets: FC = () => {
   }, [])
 
   return (
-    <Dialog scheme="dark" header="Filters" id="searchFacets" onClose={handleClose} width={1}>
+    <Dialog scheme="dark" header="Filters" id={id} onClose={handleClose} width={1}>
       <Box padding={3}>
         <SearchFacets layout="stack" />
         <SearchFacetsControl />
       </Box>
+
+      {children}
     </Dialog>
   )
 }

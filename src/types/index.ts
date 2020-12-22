@@ -46,6 +46,12 @@ export type ComparisonOperatorMapping = Record<
 
 export type DeleteHandleTarget = 'dialog' | 'snackbar'
 
+export type Dialog = {
+  asset?: Asset
+  id: string
+  type: DialogType
+}
+
 export type DialogAction = {
   callback: () => void
   disabled?: boolean
@@ -53,6 +59,8 @@ export type DialogAction = {
   title: string
   variant?: ButtonVariant
 }
+
+export type DialogType = 'deleteConfirm' | 'deletePickedConfirm' | 'details' | 'searchFacets'
 
 export type Document = {
   _createdAt: string
