@@ -3,7 +3,7 @@ import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {Item} from '@types'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {useDispatch} from 'react-redux'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'
@@ -20,11 +20,12 @@ type Props = {
   style?: CSSProperties
 }
 
-const Container = styled(Flex)<{picked?: boolean}>`
+const Container = styled(Flex)<{picked?: boolean; updating?: boolean}>`
   background: #222; // TODO: use theme colors
   border: 1px solid transparent;
   border-radius: 3px;
   overflow: hidden;
+  pointer-events: ${props => (props.updating ? 'none' : 'auto')};
   position: relative;
   transition: all 300ms;
   user-select: none;
@@ -34,11 +35,15 @@ const Container = styled(Flex)<{picked?: boolean}>`
       ? `1px solid ${props.theme.sanity.color.spot.orange} !important`
       : '1px solid inherit'};
 
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      border: 1px solid ${props => props.theme.sanity.color.spot.gray};
-    }
-  }
+  ${props =>
+    !props.updating &&
+    css`
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          border: 1px solid ${props => props.theme.sanity.color.spot.gray};
+        }
+      }
+    `}
 `
 
 const ContextActionContainer = styled(Box)`
@@ -135,6 +140,7 @@ const Card = (props: Props) => {
         style={{
           ...style
         }}
+        updating={item.updating}
       >
         {/* Image */}
         <Box

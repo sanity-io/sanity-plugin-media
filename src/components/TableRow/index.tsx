@@ -5,7 +5,7 @@ import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
 import {useDispatch} from 'react-redux'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
 import {AspectRatio, Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -24,17 +24,22 @@ type Props = {
   style?: CSSProperties
 }
 
-const ContainerGrid = styled(LegacyGrid)`
+const ContainerGrid = styled(LegacyGrid)<{updating?: boolean}>`
   align-items: center;
   cursor: pointer;
+  pointer-events: ${props => (props.updating ? 'none' : 'auto')};
   user-select: none;
   white-space: nowrap;
 
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: rgba(0, 0, 0, 0.25); // TODO: use theme colors
-    }
-  }
+  ${props =>
+    !props.updating &&
+    css`
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background: rgba(0, 0, 0, 0.25); // TODO: use theme colors
+        }
+      }
+    `}
 `
 
 const ContextActionContainer = styled(LegacyFlex)`
@@ -133,6 +138,7 @@ const TableRow = (props: Props) => {
         gridTemplateRows: ['auto', null, null, '1fr'],
         opacity: cellOpacity
       }}
+      updating={item.updating}
     >
       {/* Picked checkbox */}
       <ContextActionContainer

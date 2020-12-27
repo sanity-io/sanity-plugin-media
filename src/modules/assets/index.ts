@@ -131,11 +131,12 @@ export default function assetsReducerState(
       }
       /**
        * A request to delete an asset has been made (and not yet completed).
-       * - Set updating status on asset in question.
-       * - Clear any existing asset errors
+       * - Set updating and clear picked status on target asset.
+       * - Clear any existing asset errors.
        */
       case AssetsActionTypes.DELETE_REQUEST: {
         const assetId = action.payload?.asset?._id
+        draft.byIds[assetId].picked = false
         draft.byIds[assetId].updating = true
 
         Object.keys(draft.byIds).forEach(key => {
