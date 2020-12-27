@@ -3,11 +3,13 @@ import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 // import styled from 'styled-components'
 
+import {DEBUG_MODE} from '../../config'
 import {
   // assetsLoadNextPage,
   assetsLoadPageIndex
 } from '../../modules/assets'
 import Controls from '../Controls'
+import DebugControls from '../DebugControls'
 import Dialogs from '../Dialogs'
 import Header from '../Header'
 import Items from '../Items'
@@ -62,6 +64,9 @@ const Browser: FC<Props> = (props: Props) => {
 
           {/* Items */}
           <Items />
+
+          {/* Debug */}
+          {DEBUG_MODE && <DebugControls />}
         </Flex>
       </Card>
     </>

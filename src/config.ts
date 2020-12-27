@@ -59,3 +59,6 @@ export const BROWSER_SELECT: BrowserSelect[] = [
     title: 'MIME type: Z to A'
   }
 ]
+
+// Expose development debug bar
+export const DEBUG_MODE = true

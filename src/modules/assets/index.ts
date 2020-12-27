@@ -2,13 +2,17 @@ import {Asset, BrowserView, DeleteHandleTarget, FetchOptions, Order, SearchFacet
 import groq from 'groq'
 import produce from 'immer'
 import {ofType, ActionsObservable} from 'redux-observable'
-import {from, of, empty} from 'rxjs'
+import {from, empty, iif, interval, of, throwError, Observable} from 'rxjs'
 import {
   catchError,
   debounceTime,
+  delay,
+  delayWhen,
+  mapTo,
   mergeAll,
   mergeMap,
   switchMap,
+  tap,
   withLatestFrom
 } from 'rxjs/operators'
 import client from 'part:@sanity/base/client'
@@ -488,27 +492,21 @@ export const assetsSetSearchQuery = (searchQuery: string) => ({
  * - make async call to `client.delete`
  * - return a corresponding success or error action
  */
-export const assetsDeleteEpic = (action$: ActionsObservable<AssetsDeleteRequestAction>) =>
-  action$.pipe(
+export const assetsDeleteEpic = (action$: any, state$: any) => {
+  return action$.pipe(
     ofType(AssetsActionTypes.DELETE_REQUEST),
-    mergeMap(action => {
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const asset = action.payload?.asset
       return of(action).pipe(
-        mergeMap(() => {
-          const assetId = action.payload?.asset?._id
-          return from(client.delete(assetId))
-        }),
-        mergeMap(() => {
-          const asset = action.payload?.asset
-          return of(assetsDeleteComplete(asset))
-        }),
-        catchError(error => {
-          const asset = action.payload?.asset
-          const handleTarget = action.payload?.handleTarget
-          return of(assetsDeleteError(asset, error, handleTarget))
-        })
+        debugThrottle(action, state.debug.badConnection),
+        mapTo(from(client.delete(asset._id))),
+        mapTo(assetsDeleteComplete(asset)),
+        catchError(error => of(assetsDeleteError(asset, error, action.payload?.handleTarget)))
       )
     })
   )
+}
 
 /**
  * Listen for requests to delete all picked assets:
@@ -540,16 +538,17 @@ export const assetsDeletePickedEpic = (action$: any, state$: any) =>
  * - make async call to `client.fetch`
  * - return a corresponding success or error action
  */
-export const assetsFetchEpic = (action$: any) =>
+export const assetsFetchEpic = (action$: any, state$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.FETCH_REQUEST),
-    switchMap((action: any) => {
+    withLatestFrom(state$),
+    switchMap(([action, state]: [any, any]) => {
+      const params = action.payload?.params
+      const query = action.payload?.query
+
       return of(action).pipe(
-        mergeMap(() => {
-          const params = action.payload?.params
-          const query = action.payload?.query
-          return from(client.fetch(query, params))
-        }),
+        debugThrottle(action, state.debug.badConnection),
+        mergeMap(() => from(client.fetch(query, params))),
         mergeMap((result: any) => {
           const {
             items
@@ -698,4 +697,22 @@ const constructFilter = (searchFacets: SearchFacetProps[], searchQuery?: string)
   ].join(' && ')
 
   return constructedQuery
+}
+
+const debugThrottle = (action: any, throttled: boolean) => {
+  return mergeMap(action => {
+    return iif(
+      () => throttled,
+      of(action).pipe(
+        delay(5000),
+        mergeMap(action => {
+          if (Math.random() > 0.5) {
+            return throwError('Test error')
+          }
+          return of(action)
+        })
+      ),
+      of(action)
+    )
+  })
 }

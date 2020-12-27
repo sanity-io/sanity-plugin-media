@@ -10,6 +10,7 @@ import assets, {
   assetsSetOrderEpic,
   assetsFetchPageIndexEpic
 } from './assets'
+import debug from './debug'
 import dialog, {dialogClearEpic} from './dialog'
 import document from './document'
 import selectedAssets from './selectedAssets'
@@ -35,6 +36,7 @@ export const rootEpic = combineEpics(
 
 export const rootReducer = combineReducers({
   assets,
+  debug,
   dialog,
   document,
   snackbars,
