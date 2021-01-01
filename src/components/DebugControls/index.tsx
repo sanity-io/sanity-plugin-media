@@ -1,5 +1,5 @@
 import {PlugIcon} from '@sanity/icons'
-import {Box, Card, Flex, Switch, Text, Tooltip} from '@sanity/ui'
+import {Box, Flex, Switch, Text, Tooltip} from '@sanity/ui'
 import React, {ChangeEvent, FC} from 'react'
 import {useDispatch} from 'react-redux'
 
@@ -38,13 +38,13 @@ const DebugControls: FC = () => {
         </Box>
         <Tooltip
           content={
-            <Card padding={2}>
+            <Box padding={2}>
               <Text muted size={1}>
                 {badConnection
                   ? 'Bad connection: +2000ms & 50% chance to fail'
                   : 'No connection throttling'}
               </Text>
-            </Card>
+            </Box>
           }
           fallbackPlacements={['right', 'left']}
           placement="bottom"

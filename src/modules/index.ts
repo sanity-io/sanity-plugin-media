@@ -8,16 +8,19 @@ import assets, {
   assetsFetchNextPageEpic,
   assetsSearchEpic,
   assetsSetOrderEpic,
-  assetsFetchPageIndexEpic
+  assetsFetchPageIndexEpic,
+  assetsUpdateEpic
 } from './assets'
 import debug from './debug'
-import dialog, {dialogClearEpic} from './dialog'
+import dialog, {dialogClearOnAssetUpdateEpic} from './dialog'
 import document from './document'
 import selectedAssets from './selectedAssets'
 import snackbars, {
   snackbarsAddDeleteErrorsEpic,
   snackbarsAddFetchErrorEpic,
-  snackbarsAddSuccessEpic
+  snackbarsAddSuccessEpic,
+  snackbarsAddUpdateEpic,
+  snackbarsAddUpdateErrorEpic
 } from './snackbars'
 
 export const rootEpic = combineEpics(
@@ -28,10 +31,13 @@ export const rootEpic = combineEpics(
   assetsFetchPageIndexEpic,
   assetsSearchEpic,
   assetsSetOrderEpic,
-  dialogClearEpic,
+  assetsUpdateEpic,
+  dialogClearOnAssetUpdateEpic,
   snackbarsAddDeleteErrorsEpic,
   snackbarsAddFetchErrorEpic,
-  snackbarsAddSuccessEpic
+  snackbarsAddSuccessEpic,
+  snackbarsAddUpdateEpic,
+  snackbarsAddUpdateErrorEpic
 )
 
 export const rootReducer = combineReducers({

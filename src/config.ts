@@ -5,6 +5,20 @@ export const BROWSER_SELECT: BrowserSelect[] = [
   {
     order: {
       direction: 'desc',
+      field: '_createdAt'
+    },
+    title: 'Last created: Newest first'
+  },
+  {
+    order: {
+      direction: 'asc',
+      field: '_createdAt'
+    },
+    title: 'Last created: Oldest first'
+  },
+  {
+    order: {
+      direction: 'desc',
       field: '_updatedAt'
     },
     title: 'Last updated: Newest first'

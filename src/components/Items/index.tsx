@@ -8,6 +8,7 @@ import useResizeObserver from '../../hooks/useResizeObserver'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsLoadNextPage} from '../../modules/assets'
+import {Asset} from '../../types'
 import Cards from '../Cards'
 import PickedBar from '../PickedBar'
 import Table from '../Table'
@@ -27,6 +28,7 @@ const Items: FC = () => {
   const byIds = useTypedSelector(state => state.assets.byIds)
   const fetchCount = useTypedSelector(state => state.assets.fetchCount)
   const fetching = useTypedSelector(state => state.assets.fetching)
+  const order = useTypedSelector(state => state.assets.order)
   const pageSize = useTypedSelector(state => state.assets.pageSize)
   const view = useTypedSelector(state => state.assets.view)
 
@@ -70,6 +72,23 @@ const Items: FC = () => {
 
   const {ref, height: containerHeight} = useResizeObserver()
 
+  // Sort items on the client:
+  // Despite specifying manual sort / ordering in our GROQ queries, we sort
+  // on the client to preserve ordering when items have been changed after
+  // any initial fetch.
+  const sortedItems = [...items].sort((a, b) => {
+    const assetFieldA = a.asset[order.field as keyof Asset]
+    const assetFieldB = b.asset[order.field as keyof Asset]
+
+    if (assetFieldA < assetFieldB) {
+      return order.direction === 'asc' ? -1 : 1
+    } else if (assetFieldA > assetFieldB) {
+      return order.direction === 'asc' ? 1 : -1
+    } else {
+      return 0
+    }
+  })
+
   if (isEmpty) {
     return (
       <Box padding={4}>
@@ -108,7 +127,7 @@ const Items: FC = () => {
                       return (
                         <Table
                           height={height - (containerHeight ?? 0)}
-                          items={items}
+                          items={sortedItems}
                           itemCount={itemCount}
                           onItemsRendered={onItemsRendered}
                           ref={ref}
@@ -146,7 +165,7 @@ const Items: FC = () => {
                       return (
                         <Cards
                           height={height - (containerHeight ?? 0)}
-                          items={items}
+                          items={sortedItems}
                           itemCount={itemCount}
                           onItemsRendered={newItemsRendered}
                           ref={ref}

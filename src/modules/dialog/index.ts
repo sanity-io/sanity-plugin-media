@@ -52,9 +52,10 @@ export default function dialogReducer(
         break
       }
       case DialogActionTypes.SHOW_DELETE_CONFIRM: {
-        const asset = action.payload?.asset
+        const {asset, options} = action.payload
         draft.items.push({
           asset,
+          closeDialogId: options?.closeDialogId,
           id: 'deleteConfirm',
           type: 'deleteConfirm'
         })
@@ -97,6 +98,23 @@ export const dialogRemove = (id: string) => ({
 })
 
 /**
+ * Display asset delete confirmation
+ */
+
+export const dialogShowDeleteConfirm = (
+  asset: Asset,
+  options?: {
+    closeDialogId?: string
+  }
+) => ({
+  payload: {
+    asset,
+    options
+  },
+  type: DialogActionTypes.SHOW_DELETE_CONFIRM
+})
+
+/**
  * Display asset details
  */
 
@@ -115,33 +133,20 @@ export const dialogShowSearchFacets = () => ({
   type: DialogActionTypes.SHOW_SEARCH_FACETS
 })
 
-export const dialogShowDeleteConfirm = (asset?: Asset) => ({
-  payload: {
-    asset
-  },
-  type: DialogActionTypes.SHOW_DELETE_CONFIRM
-})
-
 /*********
  * EPICS *
  *********/
 
 /**
- * Listen for successful asset deletion:
- * - Clear dialog if the current dialog asset matches recently deleted asset
+ * Listen for successful asset updates / deletes:
+ * - Clear dialog if a dialog ID has been passed
  */
-
-export const dialogClearEpic = (action$: any, state$: any) =>
+export const dialogClearOnAssetUpdateEpic = (action$: any, state$: any) =>
   action$.pipe(
-    ofType(AssetsActionTypes.DELETE_COMPLETE),
-    withLatestFrom(state$),
-    filter(([action, state]) => {
-      const dialogAssetId = state.dialog?.asset?._id
-      const assetId = action.payload?.asset?._id
-
-      return assetId === dialogAssetId
-    }),
-    mergeMap(() => {
-      return of(dialogClear())
+    ofType(AssetsActionTypes.DELETE_COMPLETE, AssetsActionTypes.UPDATE_COMPLETE),
+    filter(action => action?.payload?.options?.closeDialogId),
+    mergeMap(action => {
+      const dialogId = action?.payload?.options?.closeDialogId
+      return of(dialogRemove(dialogId))
     })
   )

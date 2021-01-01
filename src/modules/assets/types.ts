@@ -1,4 +1,4 @@
-import {Asset, BrowserView, Item, DeleteHandleTarget, Order, SearchFacetProps} from '@types'
+import {Asset, BrowserView, Item, Order, SearchFacetProps} from '@types'
 import {AssetsActionTypes} from './index'
 
 // Reducer
@@ -10,6 +10,7 @@ export type AssetsReducerState = {
   fetching: boolean
   fetchingError: any
   lastPicked?: string
+  lastTouched?: number
   order: Order
   pageIndex: number
   pageSize: number
@@ -25,7 +26,7 @@ export type AssetsClearAction = {
   type: AssetsActionTypes.CLEAR
 }
 
-export type AssetsDeleteErrorCompleteAction = {
+export type AssetsDeleteCompleteAction = {
   payload: {
     asset: Asset
   }
@@ -49,7 +50,6 @@ export type AssetsDeletePickedAction = {
 export type AssetsDeleteRequestAction = {
   payload: {
     asset: Asset
-    handleTarget: DeleteHandleTarget
   }
   type: AssetsActionTypes.DELETE_REQUEST
 }
@@ -155,11 +155,36 @@ export type AssetsSetViewAction = {
   type: AssetsActionTypes.SET_VIEW
 }
 
+export type AssetsUpdateCompleteAction = {
+  payload: {
+    asset: Asset
+  }
+  type: AssetsActionTypes.UPDATE_COMPLETE
+}
+
+export type AssetsUpdateErrorAction = {
+  payload: {
+    asset: Asset
+    error: {
+      statusCode: number
+    }
+  }
+  type: AssetsActionTypes.UPDATE_ERROR
+}
+
+export type AssetsUpdateRequestAction = {
+  payload: {
+    asset: Asset
+    formData: Record<string, any>
+  }
+  type: AssetsActionTypes.UPDATE_REQUEST
+}
+
 // All actions
 
 export type AssetsActions =
   | AssetsClearAction
-  | AssetsDeleteErrorCompleteAction
+  | AssetsDeleteCompleteAction
   | AssetsDeleteErrorAction
   | AssetsDeleteRequestAction
   | AssetsFetchCompleteAction
@@ -178,3 +203,6 @@ export type AssetsActions =
   | AssetsSetOrderAction
   | AssetsSetSearchQueryAction
   | AssetsSetViewAction
+  | AssetsUpdateCompleteAction
+  | AssetsUpdateErrorAction
+  | AssetsUpdateRequestAction

@@ -1,26 +1,36 @@
 import {CloseIcon, SearchIcon} from '@sanity/icons'
 import {Box, Flex, TextInput} from '@sanity/ui'
-import React, {ChangeEvent} from 'react'
+import React, {ChangeEvent, FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import useTypedSelector from '../../hooks/useTypedSelector'
 
+import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsSetSearchQuery} from '../../modules/assets'
 
-const TextInputSearch = () => {
+const TextInputSearch: FC = () => {
   // Redux
   const searchQuery = useTypedSelector(state => state.assets.searchQuery)
+  const lastTouched = useTypedSelector(state => state.assets.lastTouched)
 
   // Redux
   const dispatch = useDispatch()
 
   // Callbacks
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(assetsSetSearchQuery(String(e.currentTarget.value)))
+    dispatch(assetsSetSearchQuery(e.currentTarget.value))
   }
 
   const handleClear = () => {
     dispatch(assetsSetSearchQuery(''))
   }
+
+  // Effects
+  // - Force search query if assets have been 'touched' again and search query is not empty
+  // (Any asset updates or deletions are considered 'touch' actions)
+  useEffect(() => {
+    if (lastTouched && searchQuery) {
+      dispatch(assetsSetSearchQuery(searchQuery))
+    }
+  }, [lastTouched])
 
   return (
     <Box style={{position: 'relative'}}>

@@ -3,6 +3,8 @@ import {ReactElement} from 'react'
 export type Asset = {
   _id: string
   _updatedAt: string
+  altText: string // non-standard
+  description: string // non-standard
   extension: string
   metadata: {
     isOpaque: boolean
@@ -15,6 +17,7 @@ export type Asset = {
   mimeType: string
   originalFilename: string
   size: number
+  title: string // non-standard
   url: string
 }
 
@@ -44,10 +47,9 @@ export type ComparisonOperatorMapping = Record<
   }
 >
 
-export type DeleteHandleTarget = 'dialog' | 'snackbar'
-
 export type Dialog = {
   asset?: Asset
+  closeDialogId?: string
   id: string
   type: DialogType
 }

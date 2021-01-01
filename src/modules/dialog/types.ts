@@ -24,7 +24,6 @@ export type DialogRemoveAction = {
 export type DialogShowDetailsAction = {
   payload: {
     asset: Asset
-    id: string
   }
   type: DialogActionTypes.SHOW_DETAILS
 }
@@ -32,7 +31,9 @@ export type DialogShowDetailsAction = {
 export type DialogShowDeleteConfirmAction = {
   payload: {
     asset: Asset
-    id: string
+    options?: {
+      closeDialogId?: string
+    }
   }
   type: DialogActionTypes.SHOW_DELETE_CONFIRM
 }

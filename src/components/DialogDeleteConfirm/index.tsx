@@ -11,11 +11,12 @@ import {assetsDelete, assetsDeletePicked} from '../../modules/assets'
 type Props = {
   asset?: Asset
   children?: ReactNode
+  closeDialogId?: string
   id: string
 }
 
 const DialogDeleteConfirm: FC<Props> = (props: Props) => {
-  const {asset, children, id} = props
+  const {asset, children, closeDialogId, id} = props
 
   // Redux
   const dispatch = useDispatch()
@@ -32,6 +33,11 @@ const DialogDeleteConfirm: FC<Props> = (props: Props) => {
   }
 
   const handleDelete = () => {
+    // Close target dialog, if provided
+    if (closeDialogId) {
+      dispatch(dialogRemove(closeDialogId))
+    }
+
     if (asset) {
       // Delete single asset
       dispatch(assetsDelete(asset))

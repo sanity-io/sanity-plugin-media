@@ -1,4 +1,4 @@
-import {Asset, BrowserView, DeleteHandleTarget, FetchOptions, Order, SearchFacetProps} from '@types'
+import {Asset, BrowserView, FetchOptions, Order, SearchFacetProps} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import {ofType, ActionsObservable} from 'redux-observable'
@@ -7,12 +7,9 @@ import {
   catchError,
   debounceTime,
   delay,
-  delayWhen,
-  mapTo,
   mergeAll,
   mergeMap,
   switchMap,
-  tap,
   withLatestFrom
 } from 'rxjs/operators'
 import client from 'part:@sanity/base/client'
@@ -47,7 +44,10 @@ export enum AssetsActionTypes {
   SET_ORDER = 'ASSETS_SET_ORDER',
   SET_SEARCH_QUERY = 'ASSETS_SET_SEARCH_QUERY',
   SET_VIEW = 'ASSETS_SET_VIEW',
-  UNCAUGHT_EXCEPTION = 'ASSETS_UNCAUGHT_EXCEPTION'
+  UNCAUGHT_EXCEPTION = 'ASSETS_UNCAUGHT_EXCEPTION',
+  UPDATE_COMPLETE = 'ASSETS_UPDATE_COMPLETE',
+  UPDATE_ERROR = 'ASSETS_UPDATE_ERROR',
+  UPDATE_REQUEST = 'ASSETS_UPDATE_REQUEST'
 }
 
 /***********
@@ -78,6 +78,7 @@ export const initialState: AssetsReducerState = {
   fetching: false,
   fetchingError: null,
   lastPicked: undefined,
+  lastTouched: undefined,
   order: BROWSER_SELECT[0]?.order,
   pageIndex: 0,
   pageSize: 50,
@@ -113,6 +114,7 @@ export default function assetsReducerState(
         const assetId = action.payload?.asset?._id
         const deleteIndex = draft.allIds.indexOf(assetId)
         draft.allIds.splice(deleteIndex, 1)
+        draft.lastTouched = new Date().getTime()
         delete draft.byIds[assetId]
         // draft.totalCount -= 1
         break
@@ -285,6 +287,43 @@ export default function assetsReducerState(
       case AssetsActionTypes.SET_VIEW:
         draft.view = action.payload?.view
         break
+
+      /**
+       * An asset has been successfully updated via the client.
+       * - Update asset in `byIds`
+       */
+      case AssetsActionTypes.UPDATE_COMPLETE: {
+        const asset = action.payload?.asset
+        draft.byIds[asset._id] = {
+          asset,
+          picked: false,
+          updating: false
+        }
+        draft.lastTouched = new Date().getTime()
+        break
+      }
+      /**
+       * An asset was unable to be updated via the client.
+       * - Store the error code on asset in question to optionally display to the user.
+       * - Clear updating status on asset in question.
+       */
+      case AssetsActionTypes.UPDATE_ERROR: {
+        const assetId = action.payload?.asset?._id
+        const errorCode = action.payload?.error?.statusCode
+        draft.byIds[assetId].errorCode = errorCode
+        draft.byIds[assetId].updating = false
+        break
+      }
+      /**
+       * A request to update an asset has been made (and not yet completed).
+       * - Set updating status on target asset.
+       * - Clear any existing asset errors.
+       */
+      case AssetsActionTypes.UPDATE_REQUEST: {
+        const assetId = action.payload?.asset?._id
+        draft.byIds[assetId].updating = true
+        break
+      }
     }
   })
 }
@@ -299,27 +338,32 @@ export const assetsClear = () => ({
 })
 
 // Delete started
-export const assetsDelete = (asset: Asset, handleTarget: DeleteHandleTarget = 'snackbar') => ({
+export const assetsDelete = (
+  asset: Asset,
+  options?: {
+    closeDialogId?: string
+  }
+) => ({
   payload: {
     asset,
-    handleTarget
+    options
   },
   type: AssetsActionTypes.DELETE_REQUEST
 })
 
 // Delete success
-export const assetsDeleteComplete = (asset: Asset) => ({
+export const assetsDeleteComplete = (asset: Asset, options?: {closeDialogId?: string}) => ({
   payload: {
-    asset
+    asset,
+    options
   },
   type: AssetsActionTypes.DELETE_COMPLETE
 })
 
 // Delete error
-export const assetsDeleteError = (asset: Asset, error: any, handleTarget: DeleteHandleTarget) => ({
+export const assetsDeleteError = (asset: Asset, error: any) => ({
   payload: {
     asset,
-    handleTarget,
     error
   },
   type: AssetsActionTypes.DELETE_ERROR
@@ -484,6 +528,40 @@ export const assetsSetSearchQuery = (searchQuery: string) => ({
   type: AssetsActionTypes.SET_SEARCH_QUERY
 })
 
+// Update started
+export const assetsUpdate = (
+  asset: Asset,
+  formData: Record<string, any>,
+  options?: {
+    closeDialogId?: string
+  }
+) => ({
+  payload: {
+    asset,
+    formData,
+    options
+  },
+  type: AssetsActionTypes.UPDATE_REQUEST
+})
+
+// Delete success
+export const assetsUpdateComplete = (asset: Asset, options?: {closeDialogId?: string}) => ({
+  payload: {
+    asset,
+    options
+  },
+  type: AssetsActionTypes.UPDATE_COMPLETE
+})
+
+// Delete error
+export const assetsUpdateError = (asset: Asset, error: any) => ({
+  payload: {
+    asset,
+    error
+  },
+  type: AssetsActionTypes.UPDATE_ERROR
+})
+
 /*********
  * EPICS *
  *********/
@@ -501,9 +579,9 @@ export const assetsDeleteEpic = (action$: any, state$: any) => {
       const asset = action.payload?.asset
       return of(action).pipe(
         debugThrottle(action, state.debug.badConnection),
-        mapTo(from(client.delete(asset._id))),
-        mapTo(assetsDeleteComplete(asset)),
-        catchError(error => of(assetsDeleteError(asset, error, action.payload?.handleTarget)))
+        mergeMap(() => from(client.delete(asset._id))),
+        mergeMap(() => of(assetsDeleteComplete(asset))),
+        catchError(error => of(assetsDeleteError(asset, error)))
       )
     })
   )
@@ -531,7 +609,7 @@ export const assetsDeletePickedEpic = (action$: any, state$: any) =>
       return of(assets)
     }),
     mergeAll(),
-    mergeMap((asset: any) => of(assetsDelete(asset, 'snackbar')))
+    mergeMap((asset: any) => of(assetsDelete(asset)))
   )
 
 /**
@@ -645,6 +723,29 @@ export const assetsSetOrderEpic = (action$: any) =>
     ofType(AssetsActionTypes.SET_ORDER),
     switchMap(() => {
       return of(assetsClear(), assetsLoadPageIndex(0))
+    })
+  )
+
+/**
+ * Listen for asset update requests:
+ * - make async call to `client.patch`
+ * - return a corresponding success or error action
+ */
+export const assetsUpdateEpic = (action$: any, state$: any) =>
+  action$.pipe(
+    ofType(AssetsActionTypes.UPDATE_REQUEST),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {asset, formData, options} = action.payload
+
+      return of(action).pipe(
+        debugThrottle(action, state.debug.badConnection),
+        mergeMap(() => from(client.patch(asset._id).set(formData).commit())),
+        mergeMap((updatedAsset: any) => {
+          return of(assetsUpdateComplete(updatedAsset, options))
+        }),
+        catchError(error => of(assetsUpdateError(asset, error)))
+      )
     })
   )
 

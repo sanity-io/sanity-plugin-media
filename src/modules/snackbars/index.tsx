@@ -82,7 +82,7 @@ export const snackbarsAddSuccess = ({subtitle, title}: {subtitle?: string; title
  *********/
 
 /**
- * Listen for successful asset deletes errors:
+ * Listen for successful asset deletions:
  * - Display success snackbar
  * - Buffer responses over 1000ms
  */
@@ -103,17 +103,13 @@ export const snackbarsAddSuccessEpic = (action$: any) =>
   )
 
 /**
- * Listen for asset delete errors where `handleTarget == 'snackbar'`:
+ * Listen for asset delete errors
  * - Display error snackbar
  * - Buffer responses over 1000ms
  */
 export const snackbarsAddDeleteErrorsEpic = (action$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.DELETE_ERROR),
-    filter((action: any) => {
-      const handleTarget = action?.payload?.handleTarget
-      return handleTarget === 'snackbar'
-    }),
     bufferTime(1000),
     filter((actions: any) => actions.length > 0),
     mergeMap((actions: any) => {
@@ -133,6 +129,40 @@ export const snackbarsAddDeleteErrorsEpic = (action$: any) =>
 export const snackbarsAddFetchErrorEpic = (action$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.FETCH_ERROR),
+    mergeMap((action: any) => {
+      const error = action.payload?.error
+      return of(
+        snackbarsAddError({
+          title: `An error occured: ${error.toString()}`
+        })
+      )
+    })
+  )
+
+/**
+ * Listen for successful asset updates:
+ * - Display success snackbar
+ */
+
+export const snackbarsAddUpdateEpic = (action$: any) =>
+  action$.pipe(
+    ofType(AssetsActionTypes.UPDATE_COMPLETE),
+    mergeMap(() =>
+      of(
+        snackbarsAddSuccess({
+          title: `Image updated`
+        })
+      )
+    )
+  )
+
+/**
+ * Listen for asset update errors:
+ * - Display error snackbar
+ */
+export const snackbarsAddUpdateErrorEpic = (action$: any) =>
+  action$.pipe(
+    ofType(AssetsActionTypes.UPDATE_ERROR),
     mergeMap((action: any) => {
       const error = action.payload?.error
       return of(

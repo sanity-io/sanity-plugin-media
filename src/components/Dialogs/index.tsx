@@ -21,7 +21,12 @@ const Dialogs: FC = () => {
 
     if (item.type === 'deleteConfirm') {
       return (
-        <DialogDeleteConfirm asset={item?.asset} id={item.id} key={index}>
+        <DialogDeleteConfirm
+          asset={item?.asset}
+          closeDialogId={item.closeDialogId}
+          id={item.id}
+          key={index}
+        >
           {childDialogs}
         </DialogDeleteConfirm>
       )
