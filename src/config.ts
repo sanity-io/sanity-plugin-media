@@ -35,42 +35,28 @@ export const BROWSER_SELECT: BrowserSelect[] = [
       direction: 'asc',
       field: 'originalFilename'
     },
-    title: 'Filename: A to Z'
+    title: 'File name: A to Z'
   },
   {
     order: {
       direction: 'desc',
       field: 'originalFilename'
     },
-    title: 'Filename: Z to A'
+    title: 'File name: Z to A'
   },
   {
     order: {
       direction: 'desc',
       field: 'size'
     },
-    title: 'Filesize: Largest first'
+    title: 'File size: Largest first'
   },
   {
     order: {
       direction: 'asc',
       field: 'size'
     },
-    title: 'Filesize: Smallest first'
-  },
-  {
-    order: {
-      direction: 'asc',
-      field: 'mimeType'
-    },
-    title: 'MIME type: A to Z'
-  },
-  {
-    order: {
-      direction: 'desc',
-      field: 'mimeType'
-    },
-    title: 'MIME type: Z to A'
+    title: 'File size: Smallest first'
   }
 ]
 
