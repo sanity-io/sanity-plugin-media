@@ -1,4 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup'
+import {MutationEvent} from '@sanity/client'
 import {
   Box,
   Button,
@@ -23,18 +24,18 @@ import * as yup from 'yup'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsUpdate} from '../../modules/assets'
-// import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
 import imageDprUrl from '../../util/imageDprUrl'
 import AssetMetadata from '../AssetMetadata'
 import DocumentList from '../DocumentList'
 import FormFieldInputFilename from '../FormFieldInputFilename'
+import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
 import Image from '../Image'
 
 type Props = {
-  asset: Asset
+  asset?: Asset
   children: ReactNode
   id: string
 }
@@ -46,20 +47,18 @@ const formSchema = yup.object().shape({
 })
 
 const DialogDetails: FC<Props> = (props: Props) => {
-  const {asset: initialAsset, children, id} = props
+  const {asset, children, id} = props
 
   // State
-  const [currentAsset, setCurrentAsset] = useState<Asset>()
+  const [assetSnapshot, setAssetSnapshot] = useState(asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
-
-  const asset = currentAsset || initialAsset
 
   // Redux
   const dispatch = useDispatch()
-  const item = useTypedSelector(state => state.assets.byIds)[asset._id]
+  const item = useTypedSelector(state => state.assets.byIds)[asset?._id || '']
 
   // react-hook-form
-  const {errors, formState, handleSubmit, register, reset, setValue, watch} = useForm({
+  const {control, errors, formState, handleSubmit, register, reset} = useForm({
     mode: 'all', // NOTE: this forces re-renders on all changes!
     resolver: yupResolver(formSchema)
   })
@@ -70,19 +69,34 @@ const DialogDetails: FC<Props> = (props: Props) => {
   }, [])
 
   const handleDelete = () => {
+    if (!asset) {
+      return
+    }
+
     dispatch(
-      dialogShowDeleteConfirm(asset, {
+      dialogShowDeleteConfirm(asset._id, {
         closeDialogId: id
       })
     )
   }
 
-  const handleUpdate = update => {
-    setCurrentAsset(update.result)
+  const handleUpdate = (update: MutationEvent) => {
+    const {result, transition, type} = update
+
+    if (result && transition === 'update' && type === 'mutation') {
+      setAssetSnapshot(result as Asset)
+
+      // Reset react-hook-form
+      reset()
+    }
   }
 
   // - submit react-hook-form
   const onSubmit = async (formData: FormData) => {
+    if (!asset) {
+      return
+    }
+
     dispatch(
       assetsUpdate(
         asset,
@@ -105,14 +119,9 @@ const DialogDetails: FC<Props> = (props: Props) => {
     // Remember that Sanity listeners ignore joins, order clauses and projections
     const QUERY = groq`*[_id == $id]`
 
-    /*
-    // Fetch initial value
-    // client.fetch(QUERY, {id: asset._id}).then(result => {
-    client.getDocument(asset._id).then(result => {
-      console.log('initial - result', result)
-      // setCurrentAsset(result)
-    })
-    */
+    if (!asset) {
+      return
+    }
 
     // Listen for changes
     const subscription = client.listen(QUERY, {id: asset._id}).subscribe(handleUpdate)
@@ -124,7 +133,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
     }
   }, [])
 
-  const imageUrl = imageDprUrl(asset, 250)
+  const imageUrl = assetSnapshot ? imageDprUrl(assetSnapshot, 250) : undefined
 
   const Footer = () => (
     <Box padding={3}>
@@ -143,7 +152,6 @@ const DialogDetails: FC<Props> = (props: Props) => {
         <Button
           disabled={!item || item?.updating || !formState.isDirty || !formState.isValid}
           fontSize={1}
-          // icon={PublishIcon}
           onClick={handleSubmit(onSubmit)}
           text="Save and close"
           tone="primary"
@@ -152,8 +160,8 @@ const DialogDetails: FC<Props> = (props: Props) => {
     </Box>
   )
 
-  const extensionIndex = asset.originalFilename.lastIndexOf(`.${asset.extension}`)
-  const filenameWithoutExtension = asset.originalFilename.slice(0, extensionIndex)
+  const extensionIndex = assetSnapshot?.originalFilename?.lastIndexOf(`.${assetSnapshot.extension}`)
+  const filenameWithoutExtension = assetSnapshot?.originalFilename?.slice(0, extensionIndex)
 
   return (
     <Dialog
@@ -167,12 +175,18 @@ const DialogDetails: FC<Props> = (props: Props) => {
       <Grid columns={[1, 1, 2]}>
         <Box padding={4}>
           {/* Image */}
-          <AspectRatio ratio={asset?.metadata?.dimensions?.aspectRatio}>
-            <Image draggable={false} showCheckerboard={!asset?.metadata?.isOpaque} src={imageUrl} />
-          </AspectRatio>
+          {imageUrl && (
+            <AspectRatio ratio={assetSnapshot?.metadata?.dimensions?.aspectRatio}>
+              <Image
+                draggable={false}
+                showCheckerboard={!assetSnapshot?.metadata?.isOpaque}
+                src={imageUrl}
+              />
+            </AspectRatio>
+          )}
 
           {/* Metadata */}
-          <AssetMetadata asset={asset} item={item} />
+          {assetSnapshot && <AssetMetadata asset={assetSnapshot} item={item} />}
         </Box>
 
         <Box padding={4}>
@@ -217,15 +231,25 @@ const DialogDetails: FC<Props> = (props: Props) => {
               id="details-panel"
             >
               <Stack space={3}>
+                {/* Tags */}
+                <FormFieldInputTags
+                  control={control}
+                  disabled={!item || item?.updating}
+                  error={errors?.tags}
+                  label="Tags"
+                  name="tags"
+                  ref={register}
+                  value={assetSnapshot?.tags}
+                />
+
                 {/* Filename */}
                 <FormFieldInputFilename
                   disabled={!item || item?.updating}
                   error={errors?.originalFilename}
-                  extension={asset?.extension}
+                  extension={assetSnapshot?.extension || ''}
                   label="Filename"
                   name="originalFilename"
                   ref={register}
-                  // value={asset?.originalFilename}
                   value={filenameWithoutExtension}
                 />
                 {/* Alt text */}
@@ -235,7 +259,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   label="Alt Text"
                   name="altText"
                   ref={register}
-                  value={asset?.altText}
+                  value={assetSnapshot?.altText}
                 />
                 {/* Title */}
                 <FormFieldInputText
@@ -244,7 +268,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   label="Title"
                   name="title"
                   ref={register}
-                  value={asset?.title}
+                  value={assetSnapshot?.title}
                 />
                 {/* Description */}
                 <FormFieldInputTextarea
@@ -254,20 +278,8 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   name="description"
                   ref={register}
                   rows={3}
-                  value={asset?.description}
+                  value={assetSnapshot?.description}
                 />
-
-                {/* Form field */}
-                {/*
-              <Box>
-                <Box marginBottom={1} paddingY={2}>
-                  <Text size={1} weight="semibold">
-                    Tags
-                  </Text>
-                </Box>
-                <Select placeholder="tags" />
-              </Box>
-              */}
               </Stack>
             </TabPanel>
 
@@ -276,7 +288,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
               hidden={tabSection !== 'references'}
               id="references-panel"
             >
-              <DocumentList assetId={item.asset._id} />
+              {item?.asset && <DocumentList assetId={item.asset._id} />}
             </TabPanel>
           </Box>
         </Box>

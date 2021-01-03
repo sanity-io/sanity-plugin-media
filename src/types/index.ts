@@ -1,24 +1,10 @@
+import {SanityImageAssetDocument} from '@sanity/client'
 import {ReactElement} from 'react'
 
-export type Asset = {
-  _id: string
-  _updatedAt: string
-  altText: string // non-standard
-  description: string // non-standard
-  extension: string
-  metadata: {
-    isOpaque: boolean
-    dimensions: {
-      aspectRatio: number
-      height: number
-      width: number
-    }
-  }
-  mimeType: string
-  originalFilename: string
-  size: number
-  title: string // non-standard
-  url: string
+export type Asset = SanityImageAssetDocument & {
+  altText: string
+  description: string
+  title: string
 }
 
 export type Block = {
@@ -48,7 +34,7 @@ export type ComparisonOperatorMapping = Record<
 >
 
 export type Dialog = {
-  asset?: Asset
+  assetId: string
   closeDialogId?: string
   id: string
   type: DialogType

@@ -1,4 +1,4 @@
-import {Asset, Dialog} from '@types'
+import {Dialog} from '@types'
 
 import {DialogActionTypes} from './index'
 
@@ -23,14 +23,14 @@ export type DialogRemoveAction = {
 
 export type DialogShowDetailsAction = {
   payload: {
-    asset: Asset
+    assetId: string
   }
   type: DialogActionTypes.SHOW_DETAILS
 }
 
 export type DialogShowDeleteConfirmAction = {
   payload: {
-    asset: Asset
+    assetId: string
     options?: {
       closeDialogId?: string
     }

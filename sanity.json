@@ -8,6 +8,10 @@
     {
       "implements": "part:@sanity/base/tool",
       "path": "index.js"
+    },
+    {
+      "implements": "part:@sanity/base/schema-type",
+      "path": "schemas/mediaTag.js"
     }
   ],
   "paths": {

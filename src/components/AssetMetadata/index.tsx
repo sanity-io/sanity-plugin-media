@@ -8,7 +8,7 @@ import getAssetResolution from '../../util/getAssetResolution'
 
 type Props = {
   asset: Asset
-  item: Item
+  item?: Item
 }
 
 const AssetMetadata: FC<Props> = (props: Props) => {

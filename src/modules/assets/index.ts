@@ -16,7 +16,7 @@ import client from 'part:@sanity/base/client'
 
 import {BROWSER_SELECT} from '../../config'
 import {COMPARISON_OPERATOR_MAPPING} from '../../constants'
-import {AssetsActions, AssetsReducerState, AssetsDeleteRequestAction} from './types'
+import {AssetsActions, AssetsReducerState} from './types'
 
 /***********
  * ACTIONS *
@@ -31,6 +31,8 @@ export enum AssetsActionTypes {
   FETCH_COMPLETE = 'ASSETS_FETCH_COMPLETE',
   FETCH_ERROR = 'ASSETS_FETCH_ERROR',
   FETCH_REQUEST = 'ASSETS_FETCH_REQUEST',
+  LISTENER_DELETE = 'LISTENER_DELETE',
+  LISTENER_UPDATE = 'LISTENER_UPDATE',
   LOAD_NEXT_PAGE = 'ASSETS_LOAD_NEXT_PAGE',
   LOAD_PAGE_INDEX = 'ASSETS_LOAD_PAGE_INDEX',
   PICK = 'ASSETS_PICK',
@@ -103,7 +105,6 @@ export default function assetsReducerState(
        */
       case AssetsActionTypes.CLEAR:
         draft.allIds = []
-        draft.byIds = {}
         break
 
       /**
@@ -111,10 +112,9 @@ export default function assetsReducerState(
        * - Delete asset from the redux store (both the normalised object and ordered assetID).
        */
       case AssetsActionTypes.DELETE_COMPLETE: {
-        const assetId = action.payload?.asset?._id
+        const assetId = action.payload?.assetId
         const deleteIndex = draft.allIds.indexOf(assetId)
         draft.allIds.splice(deleteIndex, 1)
-        draft.lastTouched = new Date().getTime()
         delete draft.byIds[assetId]
         // draft.totalCount -= 1
         break
@@ -289,6 +289,32 @@ export default function assetsReducerState(
         break
 
       /**
+       * An asset has been successfully deleted via the client.
+       * - Delete asset from the redux store (both the normalised object and ordered assetID).
+       */
+      case AssetsActionTypes.LISTENER_DELETE: {
+        const assetId = action.payload?.assetId
+        const deleteIndex = draft.allIds.indexOf(assetId)
+        draft.allIds.splice(deleteIndex, 1)
+        draft.lastTouched = new Date().getTime()
+        delete draft.byIds[assetId]
+        break
+      }
+
+      /**
+       * An asset has been successfully updated via the client.
+       * - Update asset in `byIds`
+       */
+      case AssetsActionTypes.LISTENER_UPDATE: {
+        const asset = action.payload?.asset
+        if (draft.byIds[asset._id]) {
+          draft.byIds[asset._id].asset = asset
+        }
+        draft.lastTouched = new Date().getTime()
+        break
+      }
+
+      /**
        * An asset has been successfully updated via the client.
        * - Update asset in `byIds`
        */
@@ -299,7 +325,6 @@ export default function assetsReducerState(
           picked: false,
           updating: false
         }
-        draft.lastTouched = new Date().getTime()
         break
       }
       /**
@@ -352,9 +377,9 @@ export const assetsDelete = (
 })
 
 // Delete success
-export const assetsDeleteComplete = (asset: Asset, options?: {closeDialogId?: string}) => ({
+export const assetsDeleteComplete = (assetId: string, options?: {closeDialogId?: string}) => ({
   payload: {
-    asset,
+    assetId,
     options
   },
   type: AssetsActionTypes.DELETE_COMPLETE
@@ -434,6 +459,18 @@ export const assetsFetchError = (error: any) => ({
   type: AssetsActionTypes.FETCH_ERROR
 })
 
+// Asset deleted via listener
+export const assetsListenerDelete = (assetId: string) => ({
+  payload: {assetId},
+  type: AssetsActionTypes.LISTENER_DELETE
+})
+
+// Asset updated via listener
+export const assetsListenerUpdate = (asset: Asset) => ({
+  payload: {asset},
+  type: AssetsActionTypes.LISTENER_UPDATE
+})
+
 // Load page assets at page index
 export const assetsLoadPageIndex = (pageIndex: number) => ({
   payload: {
@@ -506,25 +543,19 @@ export const assetsSearchFacetsUpdate = (facet: SearchFacetProps) => ({
 
 // Set view mode
 export const assetsSetView = (view: BrowserView) => ({
-  payload: {
-    view
-  },
+  payload: {view},
   type: AssetsActionTypes.SET_VIEW
 })
 
 // Set order
 export const assetsSetOrder = (order: Order) => ({
-  payload: {
-    order
-  },
+  payload: {order},
   type: AssetsActionTypes.SET_ORDER
 })
 
 // Set search query
 export const assetsSetSearchQuery = (searchQuery: string) => ({
-  payload: {
-    searchQuery
-  },
+  payload: {searchQuery},
   type: AssetsActionTypes.SET_SEARCH_QUERY
 })
 
@@ -576,11 +607,11 @@ export const assetsDeleteEpic = (action$: any, state$: any) => {
     ofType(AssetsActionTypes.DELETE_REQUEST),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const asset = action.payload?.asset
+      const {asset, options} = action.payload
       return of(action).pipe(
         debugThrottle(action, state.debug.badConnection),
         mergeMap(() => from(client.delete(asset._id))),
-        mergeMap(() => of(assetsDeleteComplete(asset))),
+        mergeMap(() => of(assetsDeleteComplete(asset._id))),
         catchError(error => of(assetsDeleteError(asset, error)))
       )
     })

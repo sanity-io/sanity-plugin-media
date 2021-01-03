@@ -28,7 +28,7 @@ export type AssetsClearAction = {
 
 export type AssetsDeleteCompleteAction = {
   payload: {
-    asset: Asset
+    assetId: string
   }
   type: AssetsActionTypes.DELETE_COMPLETE
 }
@@ -72,6 +72,20 @@ export type AssetsFetchRequestAction = {
     query: string
   }
   type: AssetsActionTypes.FETCH_REQUEST
+}
+
+export type AssetsListenerDeleteAction = {
+  payload: {
+    assetId: string
+  }
+  type: AssetsActionTypes.LISTENER_DELETE
+}
+
+export type AssetsListenerUpdateAction = {
+  payload: {
+    asset: Asset
+  }
+  type: AssetsActionTypes.LISTENER_UPDATE
 }
 
 export type AssetsLoadNextPageAction = {
@@ -190,6 +204,8 @@ export type AssetsActions =
   | AssetsFetchCompleteAction
   | AssetsFetchErrorAction
   | AssetsFetchRequestAction
+  | AssetsListenerDeleteAction
+  | AssetsListenerUpdateAction
   | AssetsLoadNextPageAction
   | AssetsLoadPageIndexAction
   | AssetsPickAction

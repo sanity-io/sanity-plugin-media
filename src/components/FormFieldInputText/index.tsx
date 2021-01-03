@@ -11,14 +11,13 @@ type Props = {
   label: string
   name: string
   placeholder?: string
-  tabIndex?: number
   value?: string
 }
 
 type Ref = HTMLInputElement
 
 const FormFieldInputText = forwardRef<Ref, Props>((props: Props, ref) => {
-  const {description, disabled, error, label, name, placeholder, tabIndex, value} = props
+  const {description, disabled, error, label, name, placeholder, value} = props
 
   return (
     <Box>

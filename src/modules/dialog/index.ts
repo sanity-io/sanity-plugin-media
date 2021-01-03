@@ -43,18 +43,18 @@ export default function dialogReducer(
         break
       }
       case DialogActionTypes.SHOW_DETAILS: {
-        const asset = action.payload?.asset
+        const {assetId} = action.payload
         draft.items.push({
-          asset,
+          assetId,
           id: 'details',
           type: 'details'
         })
         break
       }
       case DialogActionTypes.SHOW_DELETE_CONFIRM: {
-        const {asset, options} = action.payload
+        const {assetId, options} = action.payload
         draft.items.push({
-          asset,
+          assetId,
           closeDialogId: options?.closeDialogId,
           id: 'deleteConfirm',
           type: 'deleteConfirm'
@@ -102,13 +102,13 @@ export const dialogRemove = (id: string) => ({
  */
 
 export const dialogShowDeleteConfirm = (
-  asset: Asset,
+  assetId: string,
   options?: {
     closeDialogId?: string
   }
 ) => ({
   payload: {
-    asset,
+    assetId,
     options
   },
   type: DialogActionTypes.SHOW_DELETE_CONFIRM
@@ -118,9 +118,9 @@ export const dialogShowDeleteConfirm = (
  * Display asset details
  */
 
-export const dialogShowDetails = (asset: Asset) => ({
+export const dialogShowDetails = (assetId: string) => ({
   payload: {
-    asset
+    assetId
   },
   type: DialogActionTypes.SHOW_DETAILS
 })
