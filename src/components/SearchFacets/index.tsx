@@ -1,4 +1,4 @@
-import {Flex, Inline} from '@sanity/ui'
+import {Box, Flex, Inline} from '@sanity/ui'
 import React, {FC} from 'react'
 import styled from 'styled-components'
 
@@ -35,15 +35,14 @@ const SearchFacets: FC<Props> = (props: Props) => {
   })
 
   if (layout === 'inline') {
+    if (searchFacets.length === 0) {
+      return null
+    }
+
     return (
-      <Inline
-        space={2}
-        style={{
-          marginRight: searchFacets?.length > 0 ? '0.5em' : 0
-        }}
-      >
-        {Items}
-      </Inline>
+      <Box marginBottom={2}>
+        <Inline space={2}>{Items}</Inline>
+      </Box>
     )
   }
 

@@ -61,16 +61,14 @@ const Controls: FC = () => {
               <TextInputSearch />
             </Box>
 
-            <Box display={['none', 'none', 'none', 'block']}>
-              <Inline>
-                <SearchFacets />
+            <Box display={['none', 'none', 'block']}>
+              <SearchFacets />
 
-                {/* Search Facets Control (add / clear) */}
-                <SearchFacetsControl />
-              </Inline>
+              {/* Search Facets Control (add / clear) */}
+              <SearchFacetsControl />
             </Box>
 
-            <Box display={['block', 'block', 'block', 'none']}>
+            <Box display={['block', 'block', 'none']}>
               <Button
                 fontSize={1}
                 icon={EditIcon}
@@ -80,7 +78,6 @@ const Controls: FC = () => {
                 tone="primary"
               />
             </Box>
-            {/* <SearchFacetsControl /> */}
           </Flex>
         </Flex>
       </Box>

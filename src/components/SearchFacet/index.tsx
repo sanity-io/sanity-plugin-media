@@ -28,18 +28,10 @@ const SearchFacet: FC<Props> = (props: Props) => {
   }
 
   return (
-    <Container padding={[2, 2, 2, 1]}>
-      <Flex
-        align={['flex-start', 'flex-start', 'flex-start', 'center']}
-        direction={['column', 'column', 'column', 'row']}
-      >
+    <Container padding={[2, 2, 1]}>
+      <Flex align={['flex-start', 'flex-start', 'center']} direction={['column', 'column', 'row']}>
         {/* Title */}
-        <Box
-          paddingBottom={[3, 3, 3, 0]}
-          paddingLeft={1}
-          paddingRight={2}
-          paddingTop={[1, 1, 1, 0]}
-        >
+        <Box paddingBottom={[3, 3, 0]} paddingLeft={1} paddingRight={2} paddingTop={[1, 1, 0]}>
           <Label
             size={0}
             style={{
