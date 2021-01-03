@@ -16,7 +16,7 @@ const AssetMetadata: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleDownload = () => {
-    window.location.href = `${asset.url}?dl`
+    window.location.href = `${asset.url}?dl=${asset.originalFilename}`
   }
 
   return (
