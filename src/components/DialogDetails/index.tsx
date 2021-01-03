@@ -46,6 +46,17 @@ const formSchema = yup.object().shape({
   originalFilename: yup.string().required('Filename cannot be empty')
 })
 
+// Strip keys with empty strings, undefined or null values
+const sanitiseFormData = (formData: FormData) => {
+  return Object.keys(formData).reduce((acc: Record<string, any>, key) => {
+    if (formData[key] !== '' && formData[key] != null) {
+      acc[key] = formData[key]
+    }
+
+    return acc
+  }, {})
+}
+
 const DialogDetails: FC<Props> = (props: Props) => {
   const {asset, children, id} = props
 
@@ -97,13 +108,16 @@ const DialogDetails: FC<Props> = (props: Props) => {
       return
     }
 
+    // Sanitise form data: strip nullish values
+    const sanitisedFormData = sanitiseFormData(formData)
+
     dispatch(
       assetsUpdate(
         asset,
         // Form data
         {
-          ...formData,
-          originalFilename: `${formData.originalFilename}.${asset.extension}` // Append extension to filename
+          ...sanitisedFormData,
+          originalFilename: `${sanitisedFormData.originalFilename}.${asset.extension}` // Append extension to filename
         },
         // Options
         {
