@@ -15,13 +15,13 @@ import debug from './debug'
 import dialog, {dialogClearOnAssetUpdateEpic} from './dialog'
 import document from './document'
 import selectedAssets from './selectedAssets'
-import snackbars, {
-  snackbarsAddDeleteErrorsEpic,
-  snackbarsAddFetchErrorEpic,
-  snackbarsAddSuccessEpic,
-  snackbarsAddUpdateEpic,
-  snackbarsAddUpdateErrorEpic
-} from './snackbars'
+import notifications, {
+  notificationsAddDeleteErrorsEpic,
+  notificationsAddFetchErrorEpic,
+  notificationsAddSuccessEpic,
+  notificationAddUpdateEpic,
+  notificationsAddUpdateErrorEpic
+} from './notifications'
 
 export const rootEpic = combineEpics(
   assetsDeleteEpic,
@@ -33,11 +33,11 @@ export const rootEpic = combineEpics(
   assetsSetOrderEpic,
   assetsUpdateEpic,
   dialogClearOnAssetUpdateEpic,
-  snackbarsAddDeleteErrorsEpic,
-  snackbarsAddFetchErrorEpic,
-  snackbarsAddSuccessEpic,
-  snackbarsAddUpdateEpic,
-  snackbarsAddUpdateErrorEpic
+  notificationsAddDeleteErrorsEpic,
+  notificationsAddFetchErrorEpic,
+  notificationsAddSuccessEpic,
+  notificationAddUpdateEpic,
+  notificationsAddUpdateErrorEpic
 )
 
 export const rootReducer = combineReducers({
@@ -45,6 +45,6 @@ export const rootReducer = combineReducers({
   debug,
   dialog,
   document,
-  snackbars,
+  notifications,
   selectedAssets
 })

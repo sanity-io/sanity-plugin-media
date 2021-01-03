@@ -5,14 +5,14 @@ import {ofType} from 'redux-observable'
 import {of} from 'rxjs'
 import {bufferTime, filter, mergeMap} from 'rxjs/operators'
 import {AssetsActionTypes} from '../assets'
-import {SnackbarsReducerState, SnackbarActions} from './types'
+import {NotificationsReducerState, NotificationsActions} from './types'
 
 /***********
  * ACTIONS *
  ***********/
 
-export enum SnackbarsActionTypes {
-  ADD = 'SNACKBARS_ADD'
+export enum NotificationsActionTypes {
+  ADD = 'NOTIFICATIONS_ADD'
 }
 
 /***********
@@ -23,14 +23,14 @@ const INITIAL_STATE = {
   items: []
 }
 
-export default function snackbarsReducer(
-  state: SnackbarsReducerState = INITIAL_STATE,
-  action: SnackbarActions
+export default function notificationsReducer(
+  state: NotificationsReducerState = INITIAL_STATE,
+  action: NotificationsActions
 ) {
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
-      case SnackbarsActionTypes.ADD: {
+      case NotificationsActionTypes.ADD: {
         const asset = action.payload?.asset
         const status = action.payload?.status
         const subtitle = action.payload?.subtitle
@@ -55,26 +55,38 @@ export default function snackbarsReducer(
  * ACTION CREATORS *
  *******************/
 
-// Add error snackbar
-export const snackbarsAddError = ({subtitle, title}: {subtitle?: string; title: ReactNode}) => ({
+// Add error notification
+export const notificationsAddError = ({
+  subtitle,
+  title
+}: {
+  subtitle?: string
+  title: ReactNode
+}) => ({
   payload: {
     subtitle,
     status: 'error',
     timeout: 8000,
     title
   },
-  type: SnackbarsActionTypes.ADD
+  type: NotificationsActionTypes.ADD
 })
 
-// Add success snackbar
-export const snackbarsAddSuccess = ({subtitle, title}: {subtitle?: string; title: ReactNode}) => ({
+// Add success notification
+export const notificationsAddSuccess = ({
+  subtitle,
+  title
+}: {
+  subtitle?: string
+  title: ReactNode
+}) => ({
   payload: {
     subtitle,
     status: 'success',
     timeout: 4000,
     title
   },
-  type: SnackbarsActionTypes.ADD
+  type: NotificationsActionTypes.ADD
 })
 
 /*********
@@ -83,11 +95,11 @@ export const snackbarsAddSuccess = ({subtitle, title}: {subtitle?: string; title
 
 /**
  * Listen for successful asset deletions:
- * - Display success snackbar
+ * - Display success notification
  * - Buffer responses over 1000ms
  */
 
-export const snackbarsAddSuccessEpic = (action$: any) =>
+export const notificationsAddSuccessEpic = (action$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.DELETE_COMPLETE),
     bufferTime(1000),
@@ -95,7 +107,7 @@ export const snackbarsAddSuccessEpic = (action$: any) =>
     mergeMap((actions: any) => {
       const deletedCount = actions.length
       return of(
-        snackbarsAddSuccess({
+        notificationsAddSuccess({
           title: `${deletedCount} ${pluralize('image', deletedCount)} deleted`
         })
       )
@@ -104,10 +116,10 @@ export const snackbarsAddSuccessEpic = (action$: any) =>
 
 /**
  * Listen for asset delete errors
- * - Display error snackbar
+ * - Display error notification
  * - Buffer responses over 1000ms
  */
-export const snackbarsAddDeleteErrorsEpic = (action$: any) =>
+export const notificationsAddDeleteErrorsEpic = (action$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.DELETE_ERROR),
     bufferTime(1000),
@@ -115,7 +127,7 @@ export const snackbarsAddDeleteErrorsEpic = (action$: any) =>
     mergeMap((actions: any) => {
       const errorCount = actions.length
       return of(
-        snackbarsAddError({
+        notificationsAddError({
           title: `Unable to delete ${errorCount} ${pluralize('image', errorCount)}`
         })
       )
@@ -124,15 +136,15 @@ export const snackbarsAddDeleteErrorsEpic = (action$: any) =>
 
 /**
  * Listen for asset fetch errors:
- * - Display error snackbar
+ * - Display error notification
  */
-export const snackbarsAddFetchErrorEpic = (action$: any) =>
+export const notificationsAddFetchErrorEpic = (action$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.FETCH_ERROR),
     mergeMap((action: any) => {
       const error = action.payload?.error
       return of(
-        snackbarsAddError({
+        notificationsAddError({
           title: `An error occured: ${error.toString()}`
         })
       )
@@ -141,15 +153,15 @@ export const snackbarsAddFetchErrorEpic = (action$: any) =>
 
 /**
  * Listen for successful asset updates:
- * - Display success snackbar
+ * - Display success notification
  */
 
-export const snackbarsAddUpdateEpic = (action$: any) =>
+export const notificationAddUpdateEpic = (action$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.UPDATE_COMPLETE),
     mergeMap(() =>
       of(
-        snackbarsAddSuccess({
+        notificationsAddSuccess({
           title: `Image updated`
         })
       )
@@ -158,15 +170,15 @@ export const snackbarsAddUpdateEpic = (action$: any) =>
 
 /**
  * Listen for asset update errors:
- * - Display error snackbar
+ * - Display error notification
  */
-export const snackbarsAddUpdateErrorEpic = (action$: any) =>
+export const notificationsAddUpdateErrorEpic = (action$: any) =>
   action$.pipe(
     ofType(AssetsActionTypes.UPDATE_ERROR),
     mergeMap((action: any) => {
       const error = action.payload?.error
       return of(
-        snackbarsAddError({
+        notificationsAddError({
           title: `An error occured: ${error.toString()}`
         })
       )

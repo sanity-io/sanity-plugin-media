@@ -1,10 +1,10 @@
 import {useToast} from '@sanity/ui'
-import {useEffect} from 'react'
+import {FC, useEffect} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 
-const Snackbars = () => {
-  const items = useTypedSelector(state => state.snackbars.items)
+const Notifications: FC = () => {
+  const items = useTypedSelector(state => state.notifications.items)
   const toast = useToast()
 
   useEffect(() => {
@@ -20,4 +20,4 @@ const Snackbars = () => {
   return null
 }
 
-export default Snackbars
+export default Notifications

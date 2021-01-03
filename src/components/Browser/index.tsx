@@ -13,7 +13,7 @@ import DebugControls from '../DebugControls'
 import Dialogs from '../Dialogs'
 import Header from '../Header'
 import Items from '../Items'
-import Snackbars from '../Snackbars'
+import Notifications from '../Notifications'
 
 type Props = {
   onClose?: () => void
@@ -39,7 +39,7 @@ const Browser: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <Snackbars />
+      <Notifications />
       <Dialogs />
 
       <Card
