@@ -729,6 +729,7 @@ export const assetsFetchNextPageEpic = (action$: any, state$: any) =>
  * - clear assets
  * - fetch first page
  */
+
 export const assetsSearchEpic = (action$: any) =>
   action$.pipe(
     ofType(
@@ -798,12 +799,17 @@ const constructFilter = (searchFacets: SearchFacetProps[], searchQuery?: string)
       // Get current modifier
       const currentModifier = options?.modifiers.find(m => m.name === modifier)
 
-      // Apply field modifier fn (if present)
-      const fieldValue = currentModifier?.fieldModifier
+      // Apply field modifier function (if present)
+      const facetField = currentModifier?.fieldModifier
         ? currentModifier.fieldModifier(field)
         : field
 
-      return `${fieldValue} ${COMPARISON_OPERATOR_MAPPING[operators.comparison].value} ${value}`
+      // Apply default if no value is found (empty field)
+      const facetValue = value || 0
+
+      return `${facetField} ${
+        COMPARISON_OPERATOR_MAPPING[operators.comparison].value
+      } ${facetValue}`
     }
 
     if (facet.type === 'select') {
