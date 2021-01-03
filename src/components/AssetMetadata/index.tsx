@@ -26,7 +26,7 @@ const AssetMetadata: FC<Props> = (props: Props) => {
         <Flex justify="space-between">
           <Text size={1}>Size</Text>
           <Text muted size={1}>
-            {filesize(asset?.size, {round: 0})}
+            {filesize(asset?.size, {base: 10, round: 0})}
           </Text>
         </Flex>
         {/* MIME type */}

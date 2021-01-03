@@ -88,8 +88,7 @@ export type Order = {
 }
 
 export type SearchFacetNumberModifier = {
-  // TODO: use correct type
-  fn: (val: any) => any
+  fieldModifier?: (fieldName: string) => string
   name: string
   title: string
 }

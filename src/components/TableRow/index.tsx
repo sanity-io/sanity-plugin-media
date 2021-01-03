@@ -253,7 +253,7 @@ const TableRow = (props: Props) => {
         }}
       >
         <TextEllipsis muted size={1}>
-          {filesize(asset.size, {round: 0})}
+          {filesize(asset.size, {base: 10, round: 0})}
         </TextEllipsis>
       </LegacyBox>
 

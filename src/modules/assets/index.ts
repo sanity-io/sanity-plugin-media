@@ -798,10 +798,12 @@ const constructFilter = (searchFacets: SearchFacetProps[], searchQuery?: string)
       // Get current modifier
       const currentModifier = options?.modifiers.find(m => m.name === modifier)
 
-      // Apply modifier fn (if present)
-      const modifiedValue = currentModifier ? currentModifier?.fn(value) : value
+      // Apply field modifier fn (if present)
+      const fieldValue = currentModifier?.fieldModifier
+        ? currentModifier.fieldModifier(field)
+        : field
 
-      return `${field} ${COMPARISON_OPERATOR_MAPPING[operators.comparison].value} ${modifiedValue}`
+      return `${fieldValue} ${COMPARISON_OPERATOR_MAPPING[operators.comparison].value} ${value}`
     }
 
     if (facet.type === 'select') {

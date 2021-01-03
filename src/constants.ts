@@ -58,12 +58,12 @@ export const FACETS: (SearchFacetProps | null)[] = [
         {
           name: 'kb',
           title: 'KB',
-          fn: val => val * 1000
+          fieldModifier: fieldName => `round(${fieldName} / 1000)`
         },
         {
           name: 'mb',
           title: 'MB',
-          fn: val => val * 1000000
+          fieldModifier: fieldName => `round(${fieldName} / 1000000)`
         }
       ]
     },
