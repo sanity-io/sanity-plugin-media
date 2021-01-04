@@ -1,4 +1,4 @@
-import {Asset, BrowserView, Item, Order, SearchFacetProps} from '@types'
+import {Asset, BrowserView, Item, Order, SearchFacetInputProps} from '@types'
 import {AssetsActionTypes} from './index'
 
 // Reducer
@@ -14,7 +14,7 @@ export type AssetsReducerState = {
   order: Order
   pageIndex: number
   pageSize: number
-  searchFacets: SearchFacetProps[]
+  searchFacets: SearchFacetInputProps[]
   searchQuery: string
   view: BrowserView
   // totalCount: number
@@ -125,7 +125,7 @@ export type AssetsPickRangeAction = {
 
 export type AssetsSearchFacetsAddAction = {
   payload: {
-    facet: SearchFacetProps
+    facet: SearchFacetInputProps
   }
   type: AssetsActionTypes.SEARCH_FACETS_ADD
 }
@@ -143,7 +143,7 @@ export type AssetsSearchFacetsRemoveAction = {
 
 export type AssetsSearchFacetsUpdateAction = {
   payload: {
-    facet: SearchFacetProps
+    facet: SearchFacetInputProps
   }
   type: AssetsActionTypes.SEARCH_FACETS_UPDATE
 }

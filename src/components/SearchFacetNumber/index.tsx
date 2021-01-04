@@ -1,17 +1,31 @@
 import {SelectIcon} from '@sanity/icons'
 import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
-import {ComparisonOperator, SearchFacetNumberModifier, SearchFacetNumberProps} from '@types'
+import {
+  SearchFacetInputNumberModifier,
+  SearchFacetInputNumberProps,
+  SearchFacetOperatorType
+} from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {COMPARISON_OPERATOR_MAPPING, COMPARISON_OPERATOR_MENU_ITEMS_DEFAULT} from '../../constants'
+import {SEARCH_FACET_OPERATORS} from '../../constants'
 import {assetsSearchFacetsUpdate} from '../../modules/assets'
 import SearchFacet from '../SearchFacet'
 import TextInputNumber from '../TextInputNumber'
 
 type Props = {
-  facet: SearchFacetNumberProps
+  facet: SearchFacetInputNumberProps
 }
+
+// null values are treated as menu dividers
+const OPERATOR_TYPES: (SearchFacetOperatorType | null)[] = [
+  'greaterThan',
+  'greaterThanOrEqualTo',
+  'lessThan',
+  'lessThanOrEqualTo',
+  null,
+  'equalTo'
+]
 
 const SearchFacetNumber: FC<Props> = (props: Props) => {
   const {facet} = props
@@ -24,19 +38,16 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
     ? modifiers?.find(modifier => modifier.name === facet?.modifier)
     : modifiers?.[0]
 
-  const handleComparisonOperatorItemClick = (operator: ComparisonOperator) => {
+  const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
       assetsSearchFacetsUpdate({
         ...facet,
-        operators: {
-          ...facet.operators,
-          comparison: operator
-        }
+        operatorType
       })
     )
   }
 
-  const handleModifierClick = (modifier: SearchFacetNumberModifier) => {
+  const handleModifierClick = (modifier: SearchFacetInputNumberModifier) => {
     dispatch(
       assetsSearchFacetsUpdate({
         ...facet,
@@ -54,7 +65,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
     )
   }
 
-  const selectedComparisonOperator = facet.operators?.comparison ?? 'gt'
+  const selectedOperatorType: SearchFacetOperatorType = facet.operatorType ?? 'greaterThan'
 
   return (
     <SearchFacet facet={facet}>
@@ -65,20 +76,20 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
             fontSize={1}
             iconRight={SelectIcon}
             padding={2} //
-            text={COMPARISON_OPERATOR_MAPPING[selectedComparisonOperator].label}
+            text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
           />
         }
         id="operators"
         menu={
           <Menu>
-            {COMPARISON_OPERATOR_MENU_ITEMS_DEFAULT?.map((operator, index) => {
-              if (operator) {
+            {OPERATOR_TYPES.map((operatorType, index) => {
+              if (operatorType) {
                 return (
                   <MenuItem
-                    disabled={operator === selectedComparisonOperator}
-                    key={operator}
-                    onClick={() => handleComparisonOperatorItemClick(operator)}
-                    text={COMPARISON_OPERATOR_MAPPING[operator].label}
+                    disabled={operatorType === selectedOperatorType}
+                    key={operatorType}
+                    onClick={() => handleOperatorItemClick(operatorType)}
+                    text={SEARCH_FACET_OPERATORS[operatorType].label}
                   />
                 )
               }

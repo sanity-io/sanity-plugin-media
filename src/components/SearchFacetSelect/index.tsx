@@ -1,15 +1,19 @@
 import {SelectIcon} from '@sanity/icons'
 import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
-import {SearchFacetSelectProps, SearchFacetSelectListItemProps, LogicalOperator} from '@types'
+import {
+  SearchFacetInputSelectProps,
+  SearchFacetInputSelectListItemProps,
+  SearchFacetOperatorType
+} from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {LOGICAL_OPERATOR_MENU_ITEMS_DEFAULT, LOGICAL_OPERATOR_MAPPING} from '../../constants'
+import {SEARCH_FACET_OPERATORS} from '../../constants'
 import {assetsSearchFacetsUpdate} from '../../modules/assets'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
-  facet: SearchFacetSelectProps
+  facet: SearchFacetInputSelectProps
 }
 
 const SearchFacetSelect: FC<Props> = (props: Props) => {
@@ -19,11 +23,10 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   const list = facet?.options?.list
-  const logicalNot = facet?.options?.logical ?? true
 
   const selectedItem = list?.find(v => v.name === facet?.value)
 
-  const handleListItemClick = (list: SearchFacetSelectListItemProps) => {
+  const handleListItemClick = (list: SearchFacetInputSelectListItemProps) => {
     dispatch(
       assetsSearchFacetsUpdate({
         ...facet,
@@ -32,24 +35,21 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
     )
   }
 
-  const handleLogicalOperatorItemClick = (operator: LogicalOperator) => {
+  const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
       assetsSearchFacetsUpdate({
         ...facet,
-        operators: {
-          ...facet.operators,
-          logical: operator
-        }
+        operatorType
       })
     )
   }
 
-  const selectedLogicalOperator = facet?.operators?.logical ?? 'is'
+  const selectedOperatorType: SearchFacetOperatorType = facet?.operatorType ?? 'is'
 
   return (
     <SearchFacet facet={facet}>
-      {/* Logical NOT */}
-      {logicalNot && (
+      {/* Optional operators */}
+      {facet?.options?.operatorTypes && (
         <MenuButton
           button={
             <Button
@@ -59,20 +59,20 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
               style={{
                 marginRight: '4px'
               }}
-              text={LOGICAL_OPERATOR_MAPPING[selectedLogicalOperator]}
+              text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
             />
           }
           id="operators"
           menu={
             <Menu>
-              {LOGICAL_OPERATOR_MENU_ITEMS_DEFAULT?.map((operator, index) => {
+              {facet.options.operatorTypes.map((operator, index) => {
                 if (operator) {
                   return (
                     <MenuItem
-                      disabled={operator === selectedLogicalOperator}
+                      disabled={operator === selectedOperatorType}
                       key={operator}
-                      onClick={() => handleLogicalOperatorItemClick(operator)}
-                      text={LOGICAL_OPERATOR_MAPPING[operator]}
+                      onClick={() => handleOperatorItemClick(operator)}
+                      text={SEARCH_FACET_OPERATORS[operator].label}
                     />
                   )
                 }

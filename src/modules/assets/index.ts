@@ -1,4 +1,4 @@
-import {Asset, BrowserView, FetchOptions, Order, SearchFacetProps} from '@types'
+import {Asset, BrowserView, FetchOptions, Order, SearchFacetInputProps} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import {ofType, ActionsObservable} from 'redux-observable'
@@ -15,7 +15,7 @@ import {
 import client from 'part:@sanity/base/client'
 
 import {BROWSER_SELECT} from '../../config'
-import {COMPARISON_OPERATOR_MAPPING} from '../../constants'
+import {SEARCH_FACET_OPERATORS} from '../../constants'
 import {AssetsActions, AssetsReducerState} from './types'
 
 /***********
@@ -517,7 +517,7 @@ export const assetsPickRange = (startId: string, endId: string) => ({
 })
 
 // Add search facet
-export const assetsSearchFacetsAdd = (facet: SearchFacetProps) => ({
+export const assetsSearchFacetsAdd = (facet: SearchFacetInputProps) => ({
   payload: {
     facet
   },
@@ -538,7 +538,7 @@ export const assetsSearchFacetsRemove = (facetName: string) => ({
 })
 
 // Update search facet
-export const assetsSearchFacetsUpdate = (facet: SearchFacetProps) => ({
+export const assetsSearchFacetsUpdate = (facet: SearchFacetInputProps) => ({
   payload: {
     facet
   },
@@ -793,12 +793,14 @@ export const assetsUpdateEpic = (action$: any, state$: any) =>
  * Construct GROQ filter based off search facets and query
  */
 
-const constructFilter = (searchFacets: SearchFacetProps[], searchQuery?: string) => {
+const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: string) => {
   const baseFilter = groq`_type == "sanity.imageAsset"` // all images
 
   const searchFacetFragments = searchFacets.map(facet => {
     if (facet.type === 'number') {
-      const {field, modifier, operators, options, value} = facet
+      const {field, modifier, operatorType, options, value} = facet
+
+      const operator = SEARCH_FACET_OPERATORS[operatorType]
 
       // Get current modifier
       const currentModifier = options?.modifiers.find(m => m.name === modifier)
@@ -811,21 +813,17 @@ const constructFilter = (searchFacets: SearchFacetProps[], searchQuery?: string)
       // Apply default if no value is found (empty field)
       const facetValue = value || 0
 
-      return `${facetField} ${
-        COMPARISON_OPERATOR_MAPPING[operators.comparison].value
-      } ${facetValue}`
+      return operator.fn(facetValue, facetField)
     }
 
     if (facet.type === 'select') {
-      const {operators, options, value} = facet
+      const {operatorType, options, value} = facet
 
-      const currentListValue = options?.list.find(l => l.name === value)?.value
+      const currentListValue = options?.list?.find(l => l.name === value)?.value
 
-      if (operators.logical === 'not') {
-        return `!(${currentListValue})`
-      }
+      const operator = SEARCH_FACET_OPERATORS[operatorType]
 
-      return currentListValue
+      return operator.fn(currentListValue)
     }
 
     throw Error(`type must be either 'number' or 'select'`)

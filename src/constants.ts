@@ -1,48 +1,45 @@
-import {
-  ComparisonOperator,
-  ComparisonOperatorMapping,
-  LogicalOperator,
-  LogicalOperatorMapping,
-  SearchFacetProps
-} from '@types'
+import {SearchFacetOperators, SearchFacetInputProps} from '@types'
 import groq from 'groq'
 
-export const COMPARISON_OPERATOR_MAPPING: ComparisonOperatorMapping = {
-  eq: {
-    label: 'is equal to',
-    value: '=='
+export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
+  equalTo: {
+    fn: (value, field) => `${field} == ${value}`,
+    label: 'is equal to'
   },
-  gt: {
-    label: 'is greater than',
-    value: '>'
+  greaterThan: {
+    fn: (value, field) => `${field} > ${value}`,
+    label: 'is greater than'
   },
-  gte: {
-    label: 'is greater than or equal to',
-    value: '>='
+  greaterThanOrEqualTo: {
+    fn: (value, field) => `${field} >= ${value}`,
+    label: 'is greater than or equal to'
   },
-  lt: {
-    label: 'is less than',
-    value: '<'
+  is: {
+    fn: value => `${value}`,
+    label: 'is'
   },
-  lte: {
-    label: 'is less than or equal to',
-    value: '<='
+  isNot: {
+    fn: value => `!(${value})`,
+    label: 'is not'
+  },
+  lessThan: {
+    fn: (value, field) => `${field} < ${value}`,
+    label: 'is less than'
+  },
+  lessThanOrEqualTo: {
+    fn: (value, field) => `${field} <= ${value}`,
+    label: 'is less than or equal to'
   }
+  /*
+  'includes': field match '*val*',
+  'doesNotInclude'			!(field match '*val*')
+  'isEmpty'				defined(field)
+  'isNotEmpty'				defined(field)
+  */
 }
 
 // null values are represented as menu dividers
-export const COMPARISON_OPERATOR_MENU_ITEMS_DEFAULT: (ComparisonOperator | null)[] = [
-  'gt',
-  'gte',
-  'lt',
-  'lte',
-  // Divider
-  null,
-  'eq'
-]
-
-// null values are represented as menu dividers
-export const FACETS: (SearchFacetProps | null)[] = [
+export const FACETS: (SearchFacetInputProps | null)[] = [
   // Size (with modifiers)
   {
     name: 'size',
@@ -50,9 +47,7 @@ export const FACETS: (SearchFacetProps | null)[] = [
     title: 'File size',
     field: 'size',
     modifier: 'kb',
-    operators: {
-      comparison: 'gt'
-    },
+    operatorType: 'greaterThan',
     options: {
       modifiers: [
         {
@@ -74,9 +69,7 @@ export const FACETS: (SearchFacetProps | null)[] = [
     name: 'inUse',
     type: 'select',
     title: 'In use',
-    operators: {
-      logical: 'is'
-    },
+    operatorType: 'is',
     options: {
       list: [
         {
@@ -89,8 +82,7 @@ export const FACETS: (SearchFacetProps | null)[] = [
           title: 'False',
           value: groq`count(*[references(^._id)]) == 0`
         }
-      ],
-      logical: false
+      ]
     },
     value: 'true'
   },
@@ -99,9 +91,7 @@ export const FACETS: (SearchFacetProps | null)[] = [
     name: 'orientation',
     type: 'select',
     title: 'Orientation',
-    operators: {
-      logical: 'is'
-    },
+    operatorType: 'is',
     options: {
       list: [
         {
@@ -119,7 +109,8 @@ export const FACETS: (SearchFacetProps | null)[] = [
           title: 'Square',
           value: 'metadata.dimensions.aspectRatio == 1'
         }
-      ]
+      ],
+      operatorTypes: ['is', 'isNot']
     },
     value: 'portrait'
   },
@@ -131,9 +122,7 @@ export const FACETS: (SearchFacetProps | null)[] = [
     type: 'number',
     title: 'Width',
     field: 'metadata.dimensions.width',
-    operators: {
-      comparison: 'gt'
-    },
+    operatorType: 'greaterThan',
     value: 400
   },
   // Height (with modifiers)
@@ -142,16 +131,7 @@ export const FACETS: (SearchFacetProps | null)[] = [
     type: 'number',
     title: 'Height',
     field: 'metadata.dimensions.height',
-    operators: {
-      comparison: 'gt'
-    },
+    operatorType: 'greaterThan',
     value: 400
   }
 ]
-
-export const LOGICAL_OPERATOR_MAPPING: LogicalOperatorMapping = {
-  is: 'is',
-  not: 'is not'
-}
-
-export const LOGICAL_OPERATOR_MENU_ITEMS_DEFAULT: (LogicalOperator | null)[] = ['is', 'not']

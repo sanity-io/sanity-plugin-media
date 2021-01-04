@@ -1,12 +1,12 @@
 import {CloseIcon, SelectIcon} from '@sanity/icons'
 import {Autocomplete, Box, Button, Label, Menu, MenuButton, Stack, Text} from '@sanity/ui'
-import {SearchFacetNumberProps} from '@types'
+import {SearchFacetInputNumberProps} from '@types'
 import React, {FC} from 'react'
 
 import SearchFacet from '../SearchFacet'
 
 type Props = {
-  facet: SearchFacetNumberProps
+  facet: SearchFacetInputNumberProps
 }
 
 const SearchFacetAutocomplete: FC<Props> = (props: Props) => {

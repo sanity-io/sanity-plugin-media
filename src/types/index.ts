@@ -23,16 +23,6 @@ export type BrowserView = 'grid' | 'table'
 
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
 
-export type ComparisonOperator = 'eq' | 'gt' | 'gte' | 'lt' | 'lte'
-
-export type ComparisonOperatorMapping = Record<
-  ComparisonOperator,
-  {
-    label: string
-    value: string
-  }
->
-
 export type Dialog = {
   assetId: string
   closeDialogId?: string
@@ -76,10 +66,6 @@ export type Item = {
   updating: boolean
 }
 
-export type LogicalOperator = 'is' | 'not'
-
-export type LogicalOperatorMapping = Record<LogicalOperator, string>
-
 export type MarkDef = {_key: string; _type: string}
 
 export type Order = {
@@ -87,48 +73,61 @@ export type Order = {
   field: string
 }
 
-export type SearchFacetNumberModifier = {
+export type SearchFacetInputProps = SearchFacetInputNumberProps | SearchFacetInputSelectProps
+
+export type SearchFacetInputNumberModifier = {
   fieldModifier?: (fieldName: string) => string
   name: string
   title: string
 }
 
-export type SearchFacetNumberProps = {
+export type SearchFacetInputNumberProps = {
   field: string
   modifier?: string
   name: string
-  operators: {
-    comparison: ComparisonOperator
-  }
+  operatorType: SearchFacetOperatorType
   options?: {
-    modifiers: SearchFacetNumberModifier[]
+    modifiers: SearchFacetInputNumberModifier[]
   }
   title: string
   type: 'number'
   value?: number
 }
 
-export type SearchFacetSelectProps = {
+export type SearchFacetInputSelectProps = {
   name: string
   title: string
   type: 'select'
-  operators: {
-    logical?: LogicalOperator
-  }
+  operatorType: SearchFacetOperatorType
   options?: {
-    list: SearchFacetSelectListItemProps[]
-    logical?: boolean
+    list?: SearchFacetInputSelectListItemProps[]
+    operatorTypes?: (SearchFacetOperatorType | null)[]
   }
   value: string
 }
 
-export type SearchFacetSelectListItemProps = {
+export type SearchFacetInputSelectListItemProps = {
   name: string
   title: string
   value: string
 }
 
-export type SearchFacetProps = SearchFacetNumberProps | SearchFacetSelectProps
+export type SearchFacetOperatorType =
+  | 'equalTo'
+  | 'greaterThan'
+  | 'greaterThanOrEqualTo'
+  | 'is'
+  | 'isNot'
+  | 'lessThan'
+  | 'lessThanOrEqualTo'
+
+export type SearchFacetOperators = Record<
+  SearchFacetOperatorType,
+  {
+    fn: (value: number | string | undefined, field?: string) => string
+    label: string
+  }
+>
 
 export type SelectedAsset = {
   assetDocumentProps?: {originalFilename?: string; source?: string; sourceId?: string}
