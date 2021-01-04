@@ -102,7 +102,7 @@ export const dialogRemove = (id: string) => ({
  */
 
 export const dialogShowDeleteConfirm = (
-  assetId: string,
+  assetId?: string,
   options?: {
     closeDialogId?: string
   }

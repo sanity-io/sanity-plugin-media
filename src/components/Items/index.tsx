@@ -35,6 +35,8 @@ const Items: FC = () => {
   const pageSize = useTypedSelector(state => state.assets.pageSize)
   const view = useTypedSelector(state => state.assets.view)
 
+  // TODO: strip / ignore empty values
+  // allIds will contain references to deleted assets during a delete transaction, this could be cleaned up
   const items = allIds.map(id => byIds[id])
 
   // const hasFetchedOnce = totalCount >= 0
@@ -94,7 +96,7 @@ const Items: FC = () => {
   const itemCount = hasMore ? items.length + 1 : items.length
 
   // TODO: DRY
-  const picked = items.filter(item => item.picked)
+  const picked = items.filter(item => item?.picked)
   const hasPicked = picked.length > 0
 
   const isEmpty = !hasItems && hasFetchedOnce && !fetching

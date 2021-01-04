@@ -24,7 +24,7 @@ const PickedBar: FC = () => {
 
   const items = byIds ? Object.values(byIds) : []
 
-  const picked = items && items.filter(item => item.picked)
+  const picked = items && items.filter(item => item?.picked)
 
   /*
   const handleDownloadOriginal = (asset: Asset) => {
@@ -44,6 +44,7 @@ const PickedBar: FC = () => {
   }
 
   const handleDeletePicked = () => {
+    // TODO: consider creating dedicated action for delete confirmation on picked / multiple items
     dispatch(dialogShowDeleteConfirm())
   }
 
