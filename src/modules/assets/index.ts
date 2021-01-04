@@ -2,7 +2,7 @@ import {Asset, BrowserView, FetchOptions, Order, SearchFacetInputProps} from '@t
 import groq from 'groq'
 import produce from 'immer'
 import {ofType, ActionsObservable} from 'redux-observable'
-import {from, empty, iif, interval, of, throwError, Observable} from 'rxjs'
+import {from, empty, iif, of, throwError, Observable} from 'rxjs'
 import {
   catchError,
   debounceTime,
@@ -611,7 +611,7 @@ export const assetsDeleteEpic = (action$: any, state$: any) => {
     ofType(AssetsActionTypes.DELETE_REQUEST),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const {asset, options} = action.payload
+      const {asset} = action.payload
       return of(action).pipe(
         debugThrottle(action, state.debug.badConnection),
         mergeMap(() => from(client.delete(asset._id))),

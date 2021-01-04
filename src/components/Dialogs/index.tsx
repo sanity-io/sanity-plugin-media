@@ -17,7 +17,7 @@ const Dialogs: FC = () => {
     }
 
     const dialog = dialogs[index]
-    const item = byIds[dialog.assetId]
+    const item = dialog?.assetId ? byIds[dialog.assetId] : undefined
 
     const childDialogs = renderDialogs(dialogs, index + 1)
 

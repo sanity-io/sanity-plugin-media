@@ -87,7 +87,7 @@ const TableRow = (props: Props) => {
     e.stopPropagation()
 
     if (currentDocument) {
-      dispatch(dialogShowDetails(asset))
+      dispatch(dialogShowDetails(asset._id))
     } else {
       if (shiftPressed && !picked) {
         dispatch(assetsPickRange(lastPicked || asset._id, asset._id))
@@ -117,7 +117,7 @@ const TableRow = (props: Props) => {
           dispatch(assetsPickRange(lastPicked || asset._id, asset._id))
         }
       } else {
-        dispatch(dialogShowDetails(asset))
+        dispatch(dialogShowDetails(asset._id))
       }
     }
   }

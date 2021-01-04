@@ -1,5 +1,5 @@
 import {EditIcon} from '@sanity/icons'
-import {Box, Button, Flex, Inline} from '@sanity/ui'
+import {Box, Button, Flex} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 

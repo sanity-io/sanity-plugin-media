@@ -24,7 +24,7 @@ export type BrowserView = 'grid' | 'table'
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
 
 export type Dialog = {
-  assetId: string
+  assetId?: string
   closeDialogId?: string
   id: string
   type: DialogType
