@@ -697,6 +697,8 @@ export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
           projections: groq`{
             _id,
             _updatedAt,
+            altText,
+            description,
             extension,
             metadata {
               dimensions,
@@ -705,6 +707,7 @@ export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
             mimeType,
             originalFilename,
             size,
+            title,
             url
           }`,
           selector: groq`[${start}...${end}]`,
