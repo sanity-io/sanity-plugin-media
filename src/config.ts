@@ -1,7 +1,8 @@
 import {BrowserSelect} from '@types'
 
 // Sort order dropdown options
-export const BROWSER_SELECT: BrowserSelect[] = [
+// null values are represented as menu dividers
+export const BROWSER_SELECT: (BrowserSelect | null)[] = [
   {
     order: {
       direction: 'desc',
@@ -16,6 +17,8 @@ export const BROWSER_SELECT: BrowserSelect[] = [
     },
     title: 'Last created: Oldest first'
   },
+  // Divider
+  null,
   {
     order: {
       direction: 'desc',
@@ -30,6 +33,8 @@ export const BROWSER_SELECT: BrowserSelect[] = [
     },
     title: 'Last updated: Oldest first'
   },
+  // Divider
+  null,
   {
     order: {
       direction: 'asc',
@@ -44,6 +49,8 @@ export const BROWSER_SELECT: BrowserSelect[] = [
     },
     title: 'File name: Z to A'
   },
+  // Divider
+  null,
   {
     order: {
       direction: 'desc',

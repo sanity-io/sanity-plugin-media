@@ -799,38 +799,49 @@ export const assetsUpdateEpic = (action$: any, state$: any) =>
 const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: string) => {
   const baseFilter = groq`_type == "sanity.imageAsset"` // all images
 
-  const searchFacetFragments = searchFacets.map(facet => {
-    if (facet.type === 'number') {
-      const {field, modifier, operatorType, options, value} = facet
+  const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
+    const {operatorType, value} = facet
+    const operator = SEARCH_FACET_OPERATORS[operatorType]
 
-      const operator = SEARCH_FACET_OPERATORS[operatorType]
+    if (facet.type === 'number') {
+      const {field, modifier, options} = facet
 
       // Get current modifier
-      const currentModifier = options?.modifiers.find(m => m.name === modifier)
+      const currentModifier = options?.modifiers?.find(m => m.name === modifier)
 
       // Apply field modifier function (if present)
       const facetField = currentModifier?.fieldModifier
         ? currentModifier.fieldModifier(field)
         : field
 
-      // Apply default if no value is found (empty field)
-      const facetValue = value || 0
-
-      return operator.fn(facetValue, facetField)
+      const fragment = operator.fn(value, facetField)
+      if (fragment) {
+        acc.push(fragment)
+      }
     }
 
     if (facet.type === 'select') {
-      const {operatorType, options, value} = facet
+      const {options} = facet
 
       const currentListValue = options?.list?.find(l => l.name === value)?.value
 
-      const operator = SEARCH_FACET_OPERATORS[operatorType]
-
-      return operator.fn(currentListValue)
+      const fragment = operator.fn(currentListValue)
+      if (fragment) {
+        acc.push(fragment)
+      }
     }
 
-    throw Error(`type must be either 'number' or 'select'`)
-  })
+    if (facet.type === 'string') {
+      const {field} = facet
+
+      const fragment = operator.fn(value, field)
+      if (fragment) {
+        acc.push(fragment)
+      }
+    }
+
+    return acc
+  }, [])
 
   // Join separate filter fragments
   const constructedQuery = [
@@ -850,7 +861,7 @@ const debugThrottle = (action: any, throttled: boolean) => {
     return iif(
       () => throttled,
       of(action).pipe(
-        delay(5000),
+        delay(3000),
         mergeMap(action => {
           if (Math.random() > 0.5) {
             return throwError('Test error')

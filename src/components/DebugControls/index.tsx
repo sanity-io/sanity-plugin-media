@@ -41,7 +41,7 @@ const DebugControls: FC = () => {
             <Box padding={2}>
               <Text muted size={1}>
                 {badConnection
-                  ? 'Bad connection: +2000ms & 50% chance to fail'
+                  ? 'Bad connection: +3000ms & 50% chance to fail'
                   : 'No connection throttling'}
               </Text>
             </Box>

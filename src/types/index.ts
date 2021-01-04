@@ -73,7 +73,10 @@ export type Order = {
   field: string
 }
 
-export type SearchFacetInputProps = SearchFacetInputNumberProps | SearchFacetInputSelectProps
+export type SearchFacetInputProps =
+  | SearchFacetInputNumberProps
+  | SearchFacetInputSelectProps
+  | SearchFacetInputStringProps
 
 export type SearchFacetInputNumberModifier = {
   fieldModifier?: (fieldName: string) => string
@@ -87,7 +90,8 @@ export type SearchFacetInputNumberProps = {
   name: string
   operatorType: SearchFacetOperatorType
   options?: {
-    modifiers: SearchFacetInputNumberModifier[]
+    modifiers?: SearchFacetInputNumberModifier[]
+    operatorTypes?: (SearchFacetOperatorType | null)[]
   }
   title: string
   type: 'number'
@@ -112,19 +116,37 @@ export type SearchFacetInputSelectListItemProps = {
   value: string
 }
 
+export type SearchFacetInputStringProps = {
+  field: string
+  modifier?: string
+  name: string
+  operatorType: SearchFacetOperatorType
+  options?: {
+    operatorTypes?: (SearchFacetOperatorType | null)[]
+  }
+  title: string
+  type: 'string'
+  value?: string
+}
+
 export type SearchFacetOperatorType =
+  | 'doesNotInclude'
+  | 'empty'
   | 'equalTo'
   | 'greaterThan'
   | 'greaterThanOrEqualTo'
+  | 'includes'
   | 'is'
   | 'isNot'
   | 'lessThan'
   | 'lessThanOrEqualTo'
+  | 'notEmpty'
 
 export type SearchFacetOperators = Record<
   SearchFacetOperatorType,
   {
-    fn: (value: number | string | undefined, field?: string) => string
+    fn: (value: number | string | undefined, field?: string) => string | undefined
+    hideInput?: boolean
     label: string
   }
 >

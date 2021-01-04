@@ -41,8 +41,10 @@ const SearchFacetsControl: FC = () => {
                 return (
                   <MenuItem
                     disabled={isPresent}
+                    fontSize={1}
                     key={facet.name}
                     onClick={() => dispatch(assetsSearchFacetsAdd(facet))}
+                    padding={2}
                     text={facet.title}
                   />
                 )

@@ -1,11 +1,7 @@
 import {SelectIcon} from '@sanity/icons'
-import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
-import {
-  SearchFacetInputSelectProps,
-  SearchFacetInputSelectListItemProps,
-  SearchFacetOperatorType
-} from '@types'
-import React, {FC} from 'react'
+import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem, TextInput} from '@sanity/ui'
+import {SearchFacetInputStringProps, SearchFacetOperatorType} from '@types'
+import React, {ChangeEvent, FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {SEARCH_FACET_OPERATORS} from '../../constants'
@@ -13,27 +9,14 @@ import {assetsSearchFacetsUpdate} from '../../modules/assets'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
-  facet: SearchFacetInputSelectProps
+  facet: SearchFacetInputStringProps
 }
 
-const SearchFacetSelect: FC<Props> = (props: Props) => {
+const SearchFacetString: FC<Props> = (props: Props) => {
   const {facet} = props
 
   // Redux
   const dispatch = useDispatch()
-
-  const list = facet?.options?.list
-
-  const selectedItem = list?.find(v => v.name === facet?.value)
-
-  const handleListItemClick = (list: SearchFacetInputSelectListItemProps) => {
-    dispatch(
-      assetsSearchFacetsUpdate({
-        ...facet,
-        value: list.name
-      })
-    )
-  }
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
@@ -44,7 +27,16 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
     )
   }
 
-  const selectedOperatorType: SearchFacetOperatorType = facet?.operatorType ?? 'is'
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      assetsSearchFacetsUpdate({
+        ...facet,
+        value: e.target.value
+      })
+    )
+  }
+
+  const selectedOperatorType: SearchFacetOperatorType = facet.operatorType
 
   return (
     <SearchFacet facet={facet}>
@@ -56,9 +48,6 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
               fontSize={1}
               iconRight={SelectIcon}
               padding={2} //
-              style={{
-                marginRight: '4px'
-              }}
               text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
             />
           }
@@ -84,33 +73,21 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
         />
       )}
 
-      {/* List */}
-      <MenuButton
-        button={
-          <Button
+      {/* Value */}
+      {!SEARCH_FACET_OPERATORS[selectedOperatorType].hideInput && (
+        <Box marginX={1} style={{maxWidth: '125px'}}>
+          <TextInput
             fontSize={1}
-            iconRight={SelectIcon}
-            padding={2} //
-            text={selectedItem?.title}
-            tone="primary"
+            onChange={handleChange}
+            padding={2}
+            radius={2}
+            width={2}
+            value={facet?.value}
           />
-        }
-        id="list"
-        menu={
-          <Menu>
-            {list?.map((item, index) => (
-              <MenuItem
-                disabled={item.name === selectedItem?.name}
-                key={item.name}
-                onClick={() => handleListItemClick(list[index])}
-                text={item.title}
-              />
-            ))}
-          </Menu>
-        }
-      />
+        </Box>
+      )}
     </SearchFacet>
   )
 }
 
-export default SearchFacetSelect
+export default SearchFacetString

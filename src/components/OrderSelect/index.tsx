@@ -1,5 +1,5 @@
 import {SelectIcon, SortIcon} from '@sanity/icons'
-import {Button, Menu, MenuButton, MenuItem} from '@sanity/ui'
+import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
@@ -33,19 +33,25 @@ const OrderSelect: FC = () => {
       menu={
         <Menu>
           {BROWSER_SELECT?.map((item, index) => {
-            return (
-              <MenuItem
-                disabled={
-                  order.field === item.order.field && order.direction === item.order.direction
-                }
-                key={index}
-                onClick={() => {
-                  const value = BROWSER_SELECT[index]
-                  dispatch(assetsSetOrder(value.order))
-                }}
-                text={item.title}
-              />
-            )
+            if (item) {
+              return (
+                <MenuItem
+                  disabled={
+                    order.field === item.order.field && order.direction === item.order.direction
+                  }
+                  fontSize={1}
+                  key={index}
+                  onClick={() => {
+                    const value = BROWSER_SELECT[index]
+                    dispatch(assetsSetOrder(value.order))
+                  }}
+                  padding={2}
+                  text={item.title}
+                />
+              )
+            }
+
+            return <MenuDivider key={index} />
           })}
         </Menu>
       }

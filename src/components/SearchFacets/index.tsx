@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import SearchFacetNumber from '../SearchFacetNumber'
 import SearchFacetSelect from '../SearchFacetSelect'
+import SearchFacetString from '../SearchFacetString'
 
 type Props = {
   layout?: 'inline' | 'stack'
@@ -29,6 +30,10 @@ const SearchFacets: FC<Props> = (props: Props) => {
 
     if (facet.type === 'select') {
       return <SearchFacetSelect facet={facet} key={facet.name} />
+    }
+
+    if (facet.type === 'string') {
+      return <SearchFacetString facet={facet} key={facet.name} />
     }
 
     return null

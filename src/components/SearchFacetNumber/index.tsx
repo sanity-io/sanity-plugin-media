@@ -17,16 +17,6 @@ type Props = {
   facet: SearchFacetInputNumberProps
 }
 
-// null values are treated as menu dividers
-const OPERATOR_TYPES: (SearchFacetOperatorType | null)[] = [
-  'greaterThan',
-  'greaterThanOrEqualTo',
-  'lessThan',
-  'lessThanOrEqualTo',
-  null,
-  'equalTo'
-]
-
 const SearchFacetNumber: FC<Props> = (props: Props) => {
   const {facet} = props
 
@@ -69,36 +59,38 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
 
   return (
     <SearchFacet facet={facet}>
-      {/* Comparison operators */}
-      <MenuButton
-        button={
-          <Button
-            fontSize={1}
-            iconRight={SelectIcon}
-            padding={2} //
-            text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
-          />
-        }
-        id="operators"
-        menu={
-          <Menu>
-            {OPERATOR_TYPES.map((operatorType, index) => {
-              if (operatorType) {
-                return (
-                  <MenuItem
-                    disabled={operatorType === selectedOperatorType}
-                    key={operatorType}
-                    onClick={() => handleOperatorItemClick(operatorType)}
-                    text={SEARCH_FACET_OPERATORS[operatorType].label}
-                  />
-                )
-              }
+      {/* Optional operators */}
+      {facet?.options?.operatorTypes && (
+        <MenuButton
+          button={
+            <Button
+              fontSize={1}
+              iconRight={SelectIcon}
+              padding={2} //
+              text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
+            />
+          }
+          id="operators"
+          menu={
+            <Menu>
+              {facet.options.operatorTypes.map((operatorType, index) => {
+                if (operatorType) {
+                  return (
+                    <MenuItem
+                      disabled={operatorType === selectedOperatorType}
+                      key={operatorType}
+                      onClick={() => handleOperatorItemClick(operatorType)}
+                      text={SEARCH_FACET_OPERATORS[operatorType].label}
+                    />
+                  )
+                }
 
-              return <MenuDivider key={index} />
-            })}
-          </Menu>
-        }
-      />
+                return <MenuDivider key={index} />
+              })}
+            </Menu>
+          }
+        />
+      )}
 
       {/* Value */}
       <Box marginX={1} style={{maxWidth: '50px'}}>
