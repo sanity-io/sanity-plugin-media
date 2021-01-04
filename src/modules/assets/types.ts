@@ -11,7 +11,7 @@ export type AssetsReducerState = {
   fetchingError: any
   lastPicked?: string
   lastTouched?: number
-  order: Order
+  order?: Order
   pageIndex: number
   pageSize: number
   searchFacets: SearchFacetInputProps[]

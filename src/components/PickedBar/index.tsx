@@ -58,7 +58,9 @@ const PickedBar: FC = () => {
                 {picked.length} {pluralize('image', picked.length)} selected
               </Text>
             </Box>
+            {/* Deselect button */}
             <Button fontSize={1} mode="bleed" onClick={handlePickClear} text="Deselect" />
+            {/* Delete button */}
             <Button
               fontSize={1}
               mode="bleed"

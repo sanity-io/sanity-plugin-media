@@ -2,13 +2,12 @@ import {MutationEvent} from '@sanity/client'
 import {Box, Text} from '@sanity/ui'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
-import React, {FC, Ref, useEffect, useRef} from 'react'
+import React, {FC, Ref, useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 
-import useResizeObserver from '../../hooks/useResizeObserver'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsListenerDelete, assetsListenerUpdate, assetsLoadNextPage} from '../../modules/assets'
 import {Asset} from '../../types'
@@ -22,8 +21,11 @@ type InfiniteLoaderRenderProps = {
 }
 
 const Items: FC = () => {
-  // Ref used to scroll to the top of the page on filter changes
-  const viewRef = useRef<HTMLDivElement | null>(null)
+  // Refs
+  const refPickedBar = useRef<HTMLDivElement>(null)
+
+  // State
+  const [pickedBarHeight, setPickedBarHeight] = useState(0)
 
   // Redux
   const dispatch = useDispatch()
@@ -101,8 +103,6 @@ const Items: FC = () => {
 
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
 
-  const {ref, height: containerHeight} = useResizeObserver()
-
   // Sort items on the client:
   // Despite specifying manual sort / ordering in our GROQ queries, we sort
   // on the client to preserve ordering when items have been changed after
@@ -141,6 +141,13 @@ const Items: FC = () => {
     }
   }, [])
 
+  // Layout effects
+  // - recalculate picked bar height when picked status changes
+  useLayoutEffect(() => {
+    const height = refPickedBar?.current?.offsetHeight
+    setPickedBarHeight(height || 0)
+  }, [hasPicked])
+
   if (isEmpty) {
     return (
       <Box padding={4}>
@@ -154,14 +161,15 @@ const Items: FC = () => {
   return (
     <Box
       flex={1}
-      ref={viewRef}
       style={{
         overflow: 'hidden',
         width: '100%'
       }}
     >
       {/* Picked bar */}
-      <div ref={ref}>{hasPicked && <PickedBar />}</div>
+      <div ref={refPickedBar}>
+        <PickedBar />
+      </div>
 
       {(view === 'grid' || 'table') && (
         <AutoSizer>
@@ -178,7 +186,7 @@ const Items: FC = () => {
                     if (view === 'table') {
                       return (
                         <Table
-                          height={height - (containerHeight ?? 0)}
+                          height={height - pickedBarHeight}
                           items={sortedItems}
                           itemCount={itemCount}
                           onItemsRendered={onItemsRendered}
@@ -216,7 +224,7 @@ const Items: FC = () => {
 
                       return (
                         <Cards
-                          height={height - (containerHeight ?? 0)}
+                          height={height - pickedBarHeight}
                           items={sortedItems}
                           itemCount={itemCount}
                           onItemsRendered={newItemsRendered}

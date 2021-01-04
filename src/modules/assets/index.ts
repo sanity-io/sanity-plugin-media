@@ -766,6 +766,26 @@ export const assetsSetOrderEpic = (action$: any) =>
   )
 
 /**
+ * Unpick all assets on search / view changes
+ */
+
+export const assetsUnpickAssetsEpic = (action$: any) =>
+  action$.pipe(
+    ofType(
+      AssetsActionTypes.SEARCH_FACETS_ADD,
+      AssetsActionTypes.SEARCH_FACETS_CLEAR,
+      AssetsActionTypes.SEARCH_FACETS_REMOVE,
+      AssetsActionTypes.SEARCH_FACETS_UPDATE,
+      AssetsActionTypes.SET_ORDER,
+      AssetsActionTypes.SET_SEARCH_QUERY,
+      AssetsActionTypes.SET_VIEW
+    ),
+    switchMap(() => {
+      return of(assetsPickClear())
+    })
+  )
+
+/**
  * Listen for asset update requests:
  * - make async call to `client.patch`
  * - return a corresponding success or error action

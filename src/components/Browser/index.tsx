@@ -1,13 +1,9 @@
 import {Card, Flex} from '@sanity/ui'
 import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-// import styled from 'styled-components'
 
 import {DEBUG_MODE} from '../../config'
-import {
-  // assetsLoadNextPage,
-  assetsLoadPageIndex
-} from '../../modules/assets'
+import {assetsLoadPageIndex} from '../../modules/assets'
 import Controls from '../Controls'
 import DebugControls from '../DebugControls'
 import Dialogs from '../Dialogs'
@@ -18,13 +14,6 @@ import Notifications from '../Notifications'
 type Props = {
   onClose?: () => void
 }
-
-/*
-const CustomThing = styled.div(({theme}) => {
-  console.log(theme.sanity)
-  return {}
-})
-*/
 
 const Browser: FC<Props> = (props: Props) => {
   const {onClose} = props
