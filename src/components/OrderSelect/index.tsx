@@ -13,7 +13,7 @@ const OrderSelect: FC = () => {
   const order = useTypedSelector(state => state.assets.order)
 
   const selectedOrder = BROWSER_SELECT.find(
-    v => v.order.field === order.field && v.order.direction === order.direction
+    v => v?.order.field === order.field && v?.order.direction === order.direction
   )
 
   return (
@@ -42,8 +42,7 @@ const OrderSelect: FC = () => {
                   fontSize={1}
                   key={index}
                   onClick={() => {
-                    const value = BROWSER_SELECT[index]
-                    dispatch(assetsSetOrder(value.order))
+                    dispatch(assetsSetOrder(item.order))
                   }}
                   padding={2}
                   text={item.title}
