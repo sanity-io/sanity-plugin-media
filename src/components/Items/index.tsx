@@ -1,15 +1,12 @@
-import {MutationEvent} from '@sanity/client'
 import {Box, Text} from '@sanity/ui'
-import groq from 'groq'
-import client from 'part:@sanity/base/client'
-import React, {FC, Ref, useEffect, useLayoutEffect, useRef, useState} from 'react'
+import React, {FC, Ref, useLayoutEffect, useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsListenerDelete, assetsListenerUpdate, assetsLoadNextPage} from '../../modules/assets'
+import {assetsLoadNextPage} from '../../modules/assets'
 import {Asset} from '../../types'
 import Cards from '../Cards'
 import PickedBar from '../PickedBar'
@@ -59,32 +56,6 @@ const Items: FC = () => {
     return new Promise(() => {})
   }
 
-  const handleAssetUpdate = (update: MutationEvent) => {
-    const {documentId, result, transition, type} = update
-
-    if (type !== 'mutation') {
-      return
-    }
-
-    // TODO: asset added
-    if (transition === 'appear') {
-      // TODO: how do we deal with 'allIds' ???
-      // Scenarios:
-      // - search results
-      // - custom search facets
-    }
-
-    // asset deleted
-    if (transition === 'disappear') {
-      dispatch(assetsListenerDelete(documentId))
-    }
-
-    // asset updated
-    if (transition === 'update') {
-      dispatch(assetsListenerUpdate(result as Asset))
-    }
-  }
-
   // NOTE: The below is a workaround and can be inaccurate in certain cases.
   // e.g. if `pageSize` is 10 and you have fetched 10 items, `hasMore` will still be true
   // and another fetch will invoked on next page (which will return 0 items).
@@ -119,27 +90,6 @@ const Items: FC = () => {
       return 0
     }
   })
-
-  // Effects
-  useEffect(() => {
-    // Remember that Sanity listeners ignore joins, order clauses and projections
-    const QUERY = groq`*[_type == "sanity.imageAsset"]`
-
-    // Fetch initial value
-    // client.fetch(QUERY, {id: asset._id}).then(result => {
-    // client.getDocument(asset._id).then(result => {
-    //   console.log('initial - result', result)
-    // })
-
-    // Listen for changes
-    const subscription = client.listen(QUERY).subscribe(handleAssetUpdate)
-
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe()
-      }
-    }
-  }, [])
 
   // Layout effects
   // - recalculate picked bar height when picked status changes

@@ -17,7 +17,6 @@ export type TagsReducerState = {
 // Actions
 
 export type TagsCreateCompleteAction = {
-  payload: {tag: Tag}
   type: TagsActionTypes.CREATE_COMPLETE
 }
 
@@ -75,6 +74,11 @@ export type TagsFetchRequestAction = {
   type: TagsActionTypes.FETCH_REQUEST
 }
 
+export type TagsListenerCreateAction = {
+  payload: {tag: Tag}
+  type: TagsActionTypes.LISTENER_CREATE
+}
+
 export type TagsListenerDeleteAction = {
   payload: {tagId: string}
   type: TagsActionTypes.LISTENER_DELETE
@@ -97,5 +101,6 @@ export type TagsActions =
   | TagsFetchCompleteAction
   | TagsFetchErrorAction
   | TagsFetchRequestAction
+  | TagsListenerCreateAction
   | TagsListenerDeleteAction
   | TagsListenerUpdateAction

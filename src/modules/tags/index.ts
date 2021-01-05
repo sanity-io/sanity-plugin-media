@@ -18,6 +18,7 @@ import {
   TagsFetchCompleteAction,
   TagsFetchErrorAction,
   TagsFetchRequestAction,
+  TagsListenerCreateAction,
   TagsListenerDeleteAction,
   TagsListenerUpdateAction,
   TagsReducerState
@@ -39,6 +40,7 @@ export enum TagsActionTypes {
   FETCH_COMPLETE = 'TAGS_FETCH_COMPLETE',
   FETCH_ERROR = 'TAGS_FETCH_ERROR',
   FETCH_REQUEST = 'TAGS_FETCH_REQUEST',
+  LISTENER_CREATE = 'TAGS_LISTENER_CREATE',
   LISTENER_DELETE = 'TAGS_LISTENER_DELETE',
   LISTENER_UPDATE = 'TAGS_LISTENER_UPDATE'
 }
@@ -75,30 +77,7 @@ export default function tagsReducerState(
        * - Add tag from the redux store (both the normalised object and ordered tag id).
        */
       case TagsActionTypes.CREATE_COMPLETE: {
-        const tag = action.payload.tag
         draft.creating = false
-
-        // Add normalised tag item
-        draft.byIds[tag._id] = {
-          picked: false,
-          tag,
-          updating: false
-        }
-
-        // Add tag ID and re-order by name (asc)
-        draft.allIds = [...draft.allIds, tag._id].sort((a, b) => {
-          const tagA = draft.byIds[a].tag
-          const tagB = draft.byIds[b].tag
-
-          if (tagA.name < tagB.name) {
-            return -1
-          } else if (tagA.name > tagB.name) {
-            return 1
-          } else {
-            return 1
-          }
-        })
-
         break
       }
 
@@ -204,6 +183,36 @@ export default function tagsReducerState(
         break
 
       /**
+       * A tag has been successfully created via the client.
+       * - Add tag from the redux store (normalised object).
+       */
+      case TagsActionTypes.LISTENER_CREATE: {
+        const tag = action.payload.tag
+
+        // Add normalised tag item
+        draft.byIds[tag._id] = {
+          picked: false,
+          tag,
+          updating: false
+        }
+
+        // Add tag ID and re-order by name (asc)
+        draft.allIds = [...draft.allIds, tag._id].sort((a, b) => {
+          const tagA = draft.byIds[a].tag
+          const tagB = draft.byIds[b].tag
+
+          if (tagA.name < tagB.name) {
+            return -1
+          } else if (tagA.name > tagB.name) {
+            return 1
+          } else {
+            return 1
+          }
+        })
+        break
+      }
+
+      /**
        * A tag has been successfully deleted via the client.
        * - Delete tag from the redux store (both the normalised object and ordered tag ID).
        */
@@ -243,8 +252,7 @@ export const tagsCreate = (name: string): TagsCreateRequestAction => ({
 })
 
 // Create success
-export const tagsCreateComplete = (tag: Tag): TagsCreateCompleteAction => ({
-  payload: {tag},
+export const tagsCreateComplete = (): TagsCreateCompleteAction => ({
   type: TagsActionTypes.CREATE_COMPLETE
 })
 
@@ -311,6 +319,12 @@ export const tagsFetchError = (error: any): TagsFetchErrorAction => ({
   type: TagsActionTypes.FETCH_ERROR
 })
 
+// Tag created via listener
+export const tagsListenerCreate = (tag: Tag): TagsListenerCreateAction => ({
+  payload: {tag},
+  type: TagsActionTypes.LISTENER_CREATE
+})
+
 // Tag deleted via listener
 export const tagsListenerDelete = (tagId: string): TagsListenerDeleteAction => ({
   payload: {tagId},
@@ -355,14 +369,7 @@ export const tagsCreateEpic = (
             })
           )
         ),
-        // TODO: type correctly
-        mergeMap((result: any) => {
-          const tag = {
-            ...result,
-            name: result?.name?.current
-          }
-          return of(tagsCreateComplete(tag))
-        }),
+        mergeMap(() => of(tagsCreateComplete())),
         catchError(error => of(tagsCreateError(name, error)))
       )
     })
