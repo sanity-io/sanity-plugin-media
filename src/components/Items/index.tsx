@@ -74,6 +74,7 @@ const Items: FC = () => {
 
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
 
+  // TODO: move this into reducer
   // Sort items on the client:
   // Despite specifying manual sort / ordering in our GROQ queries, we sort
   // on the client to preserve ordering when items have been changed after

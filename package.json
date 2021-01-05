@@ -45,6 +45,7 @@
     "filesize": "6.1.0",
     "groq": "2.0.9",
     "immer": "8.0.0",
+    "is-hotkey": "0.2.0",
     "pluralize": "8.0.0",
     "react-hook-form": "6.14.0",
     "react-redux": "7.2.2",

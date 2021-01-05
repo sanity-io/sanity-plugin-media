@@ -6,7 +6,6 @@ import client from 'part:@sanity/base/client'
 import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {DEBUG_MODE} from '../../config'
 import {assetsListenerDelete, assetsListenerUpdate, assetsLoadPageIndex} from '../../modules/assets'
 import {
   tagsListenerDelete,
@@ -129,7 +128,7 @@ const Browser: FC<Props> = (props: Props) => {
           <Items />
 
           {/* Debug */}
-          {DEBUG_MODE && <DebugControls />}
+          <DebugControls />
         </Flex>
       </Card>
     </>

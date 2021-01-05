@@ -63,7 +63,7 @@ const TableRow = (props: Props) => {
   const {item, selected, style} = props
 
   // Refs
-  const shiftPressed: RefObject<boolean> = useKeyPress('Shift')
+  const shiftPressed: RefObject<boolean> = useKeyPress('shift')
 
   // Redux
   const dispatch = useDispatch()

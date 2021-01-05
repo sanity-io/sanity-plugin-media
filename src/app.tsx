@@ -18,7 +18,7 @@ const AssetBrowser = (props: Props) => {
   const {onClose, onSelect, tool} = props
 
   // Close on escape key press
-  useKeyPress('Escape', onClose)
+  useKeyPress('escape', onClose)
 
   useLayoutEffect(() => {
     /**

@@ -3,19 +3,32 @@ import {Box, Flex, Switch, Text, Tooltip} from '@sanity/ui'
 import React, {ChangeEvent, FC} from 'react'
 import {useDispatch} from 'react-redux'
 
+import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {debugSetBadConnection} from '../../modules/debug'
+import {debugSetBadConnection, debugToggleEnabled} from '../../modules/debug'
 
 const DebugControls: FC = () => {
   // Redux
   const dispatch = useDispatch()
   const badConnection = useTypedSelector(state => state.debug.badConnection)
+  const debugEnabled = useTypedSelector(state => state.debug.enabled)
 
   // Callbacks
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked
 
     dispatch(debugSetBadConnection(checked))
+  }
+
+  const handleToggleControls = () => {
+    dispatch(debugToggleEnabled())
+  }
+
+  // Close on escape key press
+  useKeyPress('alt+ctrl+shift+/', handleToggleControls)
+
+  if (!debugEnabled) {
+    return null
   }
 
   return (

@@ -3,7 +3,7 @@ import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {BROWSER_SELECT} from '../../config'
+import {BROWSER_SELECT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsSetOrder} from '../../modules/assets'
 

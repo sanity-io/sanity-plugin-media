@@ -15,8 +15,7 @@ import {
 } from 'rxjs/operators'
 import {isOfType} from 'typesafe-actions'
 
-import {BROWSER_SELECT} from '../../config'
-import {SEARCH_FACET_OPERATORS} from '../../constants'
+import {BROWSER_SELECT, SEARCH_FACET_OPERATORS} from '../../constants'
 import debugThrottle from '../../operators/debugThrottle'
 import {
   AssetsActions,

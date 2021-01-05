@@ -1,11 +1,12 @@
+import isHotkey from 'is-hotkey'
 import {RefObject, useEffect, useRef} from 'react'
 
-const useKeyPress = (targetKey: string, callback?: () => void): RefObject<boolean> => {
+const useKeyPress = (hotkey: string, callback?: () => void): RefObject<boolean> => {
   const keyPressed = useRef(false)
 
   // If pressed key is our target key then set to true
   function downHandler(e: KeyboardEvent) {
-    if (e.key === targetKey) {
+    if (isHotkey(hotkey, e)) {
       keyPressed.current = true
 
       if (callback) {
@@ -15,10 +16,8 @@ const useKeyPress = (targetKey: string, callback?: () => void): RefObject<boolea
   }
 
   // If released key is our target key then set to false
-  const upHandler = (e: KeyboardEvent) => {
-    if (e.key === targetKey) {
-      keyPressed.current = false
-    }
+  const upHandler = () => {
+    keyPressed.current = false
   }
 
   // Add event listeners

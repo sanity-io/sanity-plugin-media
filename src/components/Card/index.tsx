@@ -71,7 +71,7 @@ const Card = (props: Props) => {
   } = props
 
   // Refs
-  const shiftPressed: RefObject<boolean> = useKeyPress('Shift')
+  const shiftPressed: RefObject<boolean> = useKeyPress('shift')
 
   // Redux
   const dispatch = useDispatch()
