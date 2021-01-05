@@ -151,7 +151,7 @@ export type AssetsSetViewAction = {
 
 export type AssetsUpdateCompleteAction = {
   payload: {
-    asset: Asset
+    assetId: string
     options?: {closeDialogId?: string}
   }
   type: AssetsActionTypes.UPDATE_COMPLETE

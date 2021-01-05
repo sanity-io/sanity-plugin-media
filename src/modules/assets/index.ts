@@ -227,6 +227,34 @@ export default function assetsReducerState(
         draft.fetchingError = null
         break
 
+      /**
+       * An asset has been successfully deleted via the client.
+       * - Delete asset from the redux store (both the normalised object and ordered asset ID).
+       */
+      case AssetsActionTypes.LISTENER_DELETE: {
+        const assetId = action.payload?.assetId
+        const deleteIndex = draft.allIds.indexOf(assetId)
+        if (deleteIndex > 0) {
+          draft.allIds.splice(deleteIndex, 1)
+        }
+        draft.lastTouched = new Date().getTime()
+        delete draft.byIds[assetId]
+        break
+      }
+      /**
+       * An asset has been successfully updated via the client.
+       * - Update asset in `byIds`
+       */
+      case AssetsActionTypes.LISTENER_UPDATE: {
+        const asset = action.payload?.asset
+        if (draft.byIds[asset._id]) {
+          draft.byIds[asset._id].asset = asset
+        }
+
+        draft.lastTouched = new Date().getTime()
+        break
+      }
+
       case AssetsActionTypes.LOAD_NEXT_PAGE:
         draft.pageIndex += 1
         break
@@ -323,44 +351,12 @@ export default function assetsReducerState(
         break
 
       /**
-       * An asset has been successfully deleted via the client.
-       * - Delete asset from the redux store (both the normalised object and ordered asset ID).
-       */
-      case AssetsActionTypes.LISTENER_DELETE: {
-        const assetId = action.payload?.assetId
-        const deleteIndex = draft.allIds.indexOf(assetId)
-        if (deleteIndex > 0) {
-          draft.allIds.splice(deleteIndex, 1)
-        }
-        draft.lastTouched = new Date().getTime()
-        delete draft.byIds[assetId]
-        break
-      }
-
-      /**
-       * An asset has been successfully updated via the client.
-       * - Update asset in `byIds`
-       */
-      case AssetsActionTypes.LISTENER_UPDATE: {
-        const asset = action.payload?.asset
-        if (draft.byIds[asset._id]) {
-          draft.byIds[asset._id].asset = asset
-        }
-        draft.lastTouched = new Date().getTime()
-        break
-      }
-
-      /**
        * An asset has been successfully updated via the client.
        * - Update asset in `byIds`
        */
       case AssetsActionTypes.UPDATE_COMPLETE: {
-        const asset = action.payload?.asset
-        draft.byIds[asset._id] = {
-          asset,
-          picked: false,
-          updating: false
-        }
+        const assetId = action.payload?.assetId
+        draft.byIds[assetId].updating = false
         break
       }
       /**
@@ -606,11 +602,11 @@ export const assetsUpdate = (
 
 // Delete success
 export const assetsUpdateComplete = (
-  asset: Asset,
+  assetId: string,
   options?: {closeDialogId?: string}
 ): AssetsUpdateCompleteAction => ({
   payload: {
-    asset,
+    assetId,
     options
   },
   type: AssetsActionTypes.UPDATE_COMPLETE
@@ -853,7 +849,7 @@ export const assetsUpdateEpic = (
         debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.patch(asset._id).set(formData).commit())),
         mergeMap((updatedAsset: any) => {
-          return of(assetsUpdateComplete(updatedAsset, options))
+          return of(assetsUpdateComplete(updatedAsset._id, options))
         }),
         catchError(error => of(assetsUpdateError(asset, error)))
       )
