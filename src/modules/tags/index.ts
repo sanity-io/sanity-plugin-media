@@ -22,7 +22,7 @@ import {
   TagsListenerUpdateAction,
   TagsReducerState
 } from './types'
-import {debugThrottle} from '../utils'
+import debugThrottle from '../../operators/debugThrottle'
 import {RootReducerState} from '../types'
 
 /***********
@@ -55,6 +55,8 @@ export enum TagsActionTypes {
 export const initialState: TagsReducerState = {
   allIds: [],
   byIds: {},
+  creating: false,
+  creatingError: null,
   fetchCount: -1,
   fetching: false,
   fetchingError: null
@@ -68,20 +70,52 @@ export default function tagsReducerState(
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
-      case TagsActionTypes.CREATE_COMPLETE:
+      /**
+       * A tag has been successfully created via the client.
+       * - Add tag from the redux store (both the normalised object and ordered tag id).
+       */
+      case TagsActionTypes.CREATE_COMPLETE: {
+        const tag = action.payload.tag
+        draft.creating = false
+
+        // Add normalised tag item
+        draft.byIds[tag._id] = {
+          picked: false,
+          tag,
+          updating: false
+        }
+
+        // Add tag ID and re-order by name (asc)
+        draft.allIds = [...draft.allIds, tag._id].sort((a, b) => {
+          const tagA = draft.byIds[a].tag
+          const tagB = draft.byIds[b].tag
+
+          if (tagA.name < tagB.name) {
+            return -1
+          } else if (tagA.name > tagB.name) {
+            return 1
+          } else {
+            return 1
+          }
+        })
+
         break
+      }
 
       /**
        * A tag was unable to be created via the client.
        */
       case TagsActionTypes.CREATE_ERROR:
-        // TODO: store error on root tags reducer? (can we ever create multiple tags at once?)
+        draft.creating = false
+        draft.creatingError = action.payload.error
         break
 
       /**
-       * A request to delete a tag has been made (and not yet completed).
+       * A request to create a tag has been made (and not yet completed).
        */
       case TagsActionTypes.CREATE_REQUEST:
+        draft.creating = true
+        draft.creatingError = null
         break
 
       /**
@@ -209,8 +243,8 @@ export const tagsCreate = (name: string): TagsCreateRequestAction => ({
 })
 
 // Create success
-export const tagsCreateComplete = (name: string): TagsCreateCompleteAction => ({
-  payload: {name},
+export const tagsCreateComplete = (tag: Tag): TagsCreateCompleteAction => ({
+  payload: {tag},
   type: TagsActionTypes.CREATE_COMPLETE
 })
 
@@ -255,7 +289,7 @@ export const tagsFetch = (): TagsFetchRequestAction => {
         _rev,
         _type,
         'name': name.current
-      } | order(_updatedAt desc),
+      } | order(name.current asc),
     }
   `
 
@@ -307,8 +341,9 @@ export const tagsCreateEpic = (
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {name} = action.payload
+
       return of(action).pipe(
-        debugThrottle(action, state.debug.badConnection),
+        debugThrottle(state.debug.badConnection),
         mergeMap(() =>
           from(
             client.create({
@@ -320,7 +355,14 @@ export const tagsCreateEpic = (
             })
           )
         ),
-        mergeMap(() => of(tagsCreateComplete(name))),
+        // TODO: type correctly
+        mergeMap((result: any) => {
+          const tag = {
+            ...result,
+            name: result?.name?.current
+          }
+          return of(tagsCreateComplete(tag))
+        }),
         catchError(error => of(tagsCreateError(name, error)))
       )
     })
@@ -341,7 +383,7 @@ export const tagsDeleteEpic = (
     mergeMap(([action, state]) => {
       const {tag} = action.payload
       return of(action).pipe(
-        debugThrottle(action, state.debug.badConnection),
+        debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.delete(tag._id))),
         mergeMap(() => of(tagsDeleteComplete(tag._id))),
         catchError(error => of(tagsDeleteError(tag, error)))
@@ -367,7 +409,7 @@ export const tagsFetchEpic = (
       const query = action.payload?.query
 
       return of(action).pipe(
-        debugThrottle(action, state.debug.badConnection),
+        debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.fetch(query, params))),
         mergeMap((result: any) => {
           const {

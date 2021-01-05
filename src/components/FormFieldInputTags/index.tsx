@@ -1,13 +1,10 @@
 import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
 import {Box, Card, Flex, Text, studioTheme} from '@sanity/ui'
-// import groq from 'groq'
-// import client from 'part:@sanity/base/client'
-import React, {forwardRef, useState} from 'react'
+import React, {forwardRef} from 'react'
 import {Controller, FieldError} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {components} from 'react-select'
 import CreatableSelect from 'react-select/creatable'
-// import AsyncCreatableSelect from 'react-select/async-creatable'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {tagsCreate} from '../../modules/tags'
@@ -92,13 +89,11 @@ const Option = (props: any) => {
 const FormFieldInputTags = forwardRef<Ref, Props>((props: Props, ref) => {
   const {control, description, disabled, error, label, name, placeholder, value} = props
 
-  // State
-  const [isCreating, setIsCreating] = useState(false)
-
   // Redux
   const dispatch = useDispatch()
   const allIds = useTypedSelector(state => state.tags.allIds)
   const byIds = useTypedSelector(state => state.tags.byIds)
+  const creating = useTypedSelector(state => state.tags.creating)
 
   const selectTags = allIds.map(id => {
     const tag = byIds[id].tag
@@ -108,7 +103,6 @@ const FormFieldInputTags = forwardRef<Ref, Props>((props: Props, ref) => {
       value: tag.name
     }
   })
-  console.log('>>> selectTags', selectTags)
 
   // Callbacks
   const handleChange = (newValue: any, actionMeta: any) => {
@@ -119,14 +113,8 @@ const FormFieldInputTags = forwardRef<Ref, Props>((props: Props, ref) => {
   }
 
   const handleCreate = (value: string) => {
-    console.log('create....')
-    console.log('value', value)
-    setIsCreating(true)
-
-    // TODO: dispatch action to create new tag
+    // Dispatch action to create new tag
     dispatch(tagsCreate(value))
-
-    // TODO: how do we determine if a tag has been successfully created?
   }
 
   return (
@@ -151,11 +139,9 @@ const FormFieldInputTags = forwardRef<Ref, Props>((props: Props, ref) => {
         defaultOptions
         instanceId="tags"
         isClearable={false} // TODO: re-enable when we're able to correctly (manually) re-validate on clear
-        isDisabled={isCreating || disabled}
+        isDisabled={creating || disabled}
         isMulti
-        isLoading={isCreating}
-        // menuPortalTarget={document.body}
-        // menuPortalTarget={refContainer.current}
+        isLoading={creating}
         name={name}
         onChange={handleChange}
         onCreateOption={handleCreate}

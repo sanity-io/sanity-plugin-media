@@ -17,7 +17,7 @@ import {isOfType} from 'typesafe-actions'
 
 import {BROWSER_SELECT} from '../../config'
 import {SEARCH_FACET_OPERATORS} from '../../constants'
-import {debugThrottle} from '../utils'
+import debugThrottle from '../../operators/debugThrottle'
 import {
   AssetsActions,
   AssetsClearAction,
@@ -644,7 +644,7 @@ export const assetsDeleteEpic = (
     mergeMap(([action, state]) => {
       const {asset} = action.payload
       return of(action).pipe(
-        debugThrottle(action, state.debug.badConnection),
+        debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.delete(asset._id))),
         mergeMap(() => of(assetsDeleteComplete(asset._id))),
         catchError(error => of(assetsDeleteError(asset, error)))
@@ -698,7 +698,7 @@ export const assetsFetchEpic = (
       const query = action.payload?.query
 
       return of(action).pipe(
-        debugThrottle(action, state.debug.badConnection),
+        debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.fetch(query, params))),
         mergeMap((result: any) => {
           const {
@@ -850,7 +850,7 @@ export const assetsUpdateEpic = (
       const {asset, formData, options} = action.payload
 
       return of(action).pipe(
-        debugThrottle(action, state.debug.badConnection),
+        debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.patch(asset._id).set(formData).commit())),
         mergeMap((updatedAsset: any) => {
           return of(assetsUpdateComplete(updatedAsset, options))

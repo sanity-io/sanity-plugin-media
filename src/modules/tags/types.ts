@@ -6,6 +6,8 @@ import {TagsActionTypes} from './index'
 export type TagsReducerState = {
   allIds: string[]
   byIds: Record<string, TagItem>
+  creating: boolean
+  creatingError: any
   fetchCount: number
   fetching: boolean
   fetchingError: any
@@ -15,7 +17,7 @@ export type TagsReducerState = {
 // Actions
 
 export type TagsCreateCompleteAction = {
-  payload: {name: string}
+  payload: {tag: Tag}
   type: TagsActionTypes.CREATE_COMPLETE
 }
 
