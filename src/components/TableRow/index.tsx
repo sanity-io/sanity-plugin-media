@@ -3,7 +3,7 @@ import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
-import React, {CSSProperties, MouseEvent, memo} from 'react'
+import React, {CSSProperties, MouseEvent, memo, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
 import {AspectRatio, Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
@@ -62,7 +62,8 @@ const StyledWarningOutlineIcon = styled(WarningOutlineIcon)(({theme}) => {
 const TableRow = (props: Props) => {
   const {item, selected, style} = props
 
-  const shiftPressed = useKeyPress('Shift')
+  // Refs
+  const shiftPressed: RefObject<boolean> = useKeyPress('Shift')
 
   // Redux
   const dispatch = useDispatch()
@@ -89,7 +90,7 @@ const TableRow = (props: Props) => {
     if (currentDocument) {
       dispatch(dialogShowDetails(asset._id))
     } else {
-      if (shiftPressed && !picked) {
+      if (shiftPressed.current && !picked) {
         dispatch(assetsPickRange(lastPicked || asset._id, asset._id))
       } else {
         dispatch(assetsPick(asset._id, !picked))
@@ -110,7 +111,7 @@ const TableRow = (props: Props) => {
         ])
       }
     } else {
-      if (shiftPressed) {
+      if (shiftPressed.current) {
         if (picked) {
           dispatch(assetsPick(asset._id, !picked))
         } else {

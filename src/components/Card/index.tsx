@@ -1,7 +1,7 @@
 import {EditIcon, WarningOutlineIcon} from '@sanity/icons'
 import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
-import React, {CSSProperties, MouseEvent, memo} from 'react'
+import React, {CSSProperties, MouseEvent, RefObject, memo} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
 
@@ -70,7 +70,8 @@ const Card = (props: Props) => {
     style
   } = props
 
-  const shiftPressed = useKeyPress('Shift')
+  // Refs
+  const shiftPressed: RefObject<boolean> = useKeyPress('Shift')
 
   // Redux
   const dispatch = useDispatch()
@@ -104,7 +105,7 @@ const Card = (props: Props) => {
         ])
       }
     } else {
-      if (shiftPressed) {
+      if (shiftPressed.current) {
         if (picked) {
           dispatch(assetsPick(asset._id, !picked))
         } else {
@@ -122,7 +123,7 @@ const Card = (props: Props) => {
     if (currentDocument) {
       dispatch(dialogShowDetails(asset._id))
     } else {
-      if (shiftPressed && !picked) {
+      if (shiftPressed.current && !picked) {
         dispatch(assetsPickRange(lastPicked || asset._id, asset._id))
       } else {
         dispatch(assetsPick(asset._id, !picked))

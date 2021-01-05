@@ -1,13 +1,13 @@
-import {useEffect, useState} from 'react'
+import {RefObject, useEffect, useRef} from 'react'
 
-function useKeyPress(targetKey: string, callback?: Function) {
-  // State for keeping track of whether key is pressed
-  const [keyPressed, setKeyPressed] = useState(false)
+const useKeyPress = (targetKey: string, callback?: () => void): RefObject<boolean> => {
+  const keyPressed = useRef(false)
 
   // If pressed key is our target key then set to true
   function downHandler(e: KeyboardEvent) {
     if (e.key === targetKey) {
-      setKeyPressed(true)
+      keyPressed.current = true
+
       if (callback) {
         callback()
       }
@@ -17,7 +17,7 @@ function useKeyPress(targetKey: string, callback?: Function) {
   // If released key is our target key then set to false
   const upHandler = (e: KeyboardEvent) => {
     if (e.key === targetKey) {
-      setKeyPressed(false)
+      keyPressed.current = false
     }
   }
 
