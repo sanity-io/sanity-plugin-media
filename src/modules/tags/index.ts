@@ -206,7 +206,7 @@ export default function tagsReducerState(
           } else if (tagA.name > tagB.name) {
             return 1
           } else {
-            return 1
+            return 0
           }
         })
         break

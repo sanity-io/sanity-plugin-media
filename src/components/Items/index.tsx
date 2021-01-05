@@ -7,7 +7,6 @@ import InfiniteLoader from 'react-window-infinite-loader'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsLoadNextPage} from '../../modules/assets'
-import {Asset} from '../../types'
 import Cards from '../Cards'
 import PickedBar from '../PickedBar'
 import Table from '../Table'
@@ -30,12 +29,9 @@ const Items: FC = () => {
   const byIds = useTypedSelector(state => state.assets.byIds)
   const fetchCount = useTypedSelector(state => state.assets.fetchCount)
   const fetching = useTypedSelector(state => state.assets.fetching)
-  const order = useTypedSelector(state => state.assets.order)
   const pageSize = useTypedSelector(state => state.assets.pageSize)
   const view = useTypedSelector(state => state.assets.view)
 
-  // TODO: strip / ignore empty values
-  // allIds will contain references to deleted assets during a delete transaction, this could be cleaned up
   const items = allIds.map(id => byIds[id])
 
   // const hasFetchedOnce = totalCount >= 0
@@ -68,29 +64,10 @@ const Items: FC = () => {
   // If there are more items to be loaded then add an extra placeholder row to trigger additional page loads.
   const itemCount = hasMore ? items.length + 1 : items.length
 
-  // TODO: DRY
   const picked = items.filter(item => item?.picked)
   const hasPicked = picked.length > 0
 
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
-
-  // TODO: move this into reducer
-  // Sort items on the client:
-  // Despite specifying manual sort / ordering in our GROQ queries, we sort
-  // on the client to preserve ordering when items have been changed after
-  // any initial fetch.
-  const sortedItems = [...items].sort((a, b) => {
-    const assetFieldA = a.asset[order.field as keyof Asset]
-    const assetFieldB = b.asset[order.field as keyof Asset]
-
-    if (assetFieldA < assetFieldB) {
-      return order.direction === 'asc' ? -1 : 1
-    } else if (assetFieldA > assetFieldB) {
-      return order.direction === 'asc' ? 1 : -1
-    } else {
-      return 0
-    }
-  })
 
   // Layout effects
   // - recalculate picked bar height when picked status changes
@@ -138,7 +115,7 @@ const Items: FC = () => {
                       return (
                         <Table
                           height={height - pickedBarHeight}
-                          items={sortedItems}
+                          items={items}
                           itemCount={itemCount}
                           onItemsRendered={onItemsRendered}
                           ref={ref}
@@ -176,7 +153,7 @@ const Items: FC = () => {
                       return (
                         <Cards
                           height={height - pickedBarHeight}
-                          items={sortedItems}
+                          items={items}
                           itemCount={itemCount}
                           onItemsRendered={newItemsRendered}
                           ref={ref}

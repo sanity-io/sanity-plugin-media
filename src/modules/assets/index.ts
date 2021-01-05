@@ -43,6 +43,7 @@ import {
   AssetsSetOrderAction,
   AssetsSetSearchQueryAction,
   AssetsSetViewAction,
+  AssetsSortAction,
   AssetsUpdateCompleteAction,
   AssetsUpdateErrorAction,
   AssetsUpdateRequestAction
@@ -77,6 +78,7 @@ export enum AssetsActionTypes {
   SET_ORDER = 'ASSETS_SET_ORDER',
   SET_SEARCH_QUERY = 'ASSETS_SET_SEARCH_QUERY',
   SET_VIEW = 'ASSETS_SET_VIEW',
+  SORT = 'ASSETS_SORT',
   UNCAUGHT_EXCEPTION = 'ASSETS_UNCAUGHT_EXCEPTION',
   UPDATE_COMPLETE = 'ASSETS_UPDATE_COMPLETE',
   UPDATE_ERROR = 'ASSETS_UPDATE_ERROR',
@@ -349,6 +351,21 @@ export default function assetsReducerState(
         draft.view = action.payload?.view
         break
 
+      case AssetsActionTypes.SORT:
+        draft.allIds.sort((a, b) => {
+          const tagA = draft.byIds[a].asset[draft.order.field]
+          const tagB = draft.byIds[b].asset[draft.order.field]
+
+          if (tagA < tagB) {
+            return draft.order.direction === 'asc' ? -1 : 1
+          } else if (tagA > tagB) {
+            return draft.order.direction === 'asc' ? 1 : -1
+          } else {
+            return 0
+          }
+        })
+        break
+
       /**
        * An asset has been successfully updated via the client.
        * - Update asset in `byIds`
@@ -585,6 +602,11 @@ export const assetsSetSearchQuery = (searchQuery: string): AssetsSetSearchQueryA
   type: AssetsActionTypes.SET_SEARCH_QUERY
 })
 
+// Sort assets by current field + direction
+export const assetsSort = (): AssetsSortAction => ({
+  type: AssetsActionTypes.SORT
+})
+
 // Update started
 export const assetsUpdate = (
   asset: Asset,
@@ -806,12 +828,27 @@ export const assetsSetOrderEpic = (action$: Observable<AssetsActions>): Observab
   )
 
 /**
+ * Re-sort assets on updates
+ */
+
+export const assetsSortEpic = (action$: Observable<AssetsActions>): Observable<AssetsActions> =>
+  action$.pipe(
+    filter(
+      isOfType([
+        AssetsActionTypes.LISTENER_UPDATE, //
+        AssetsActionTypes.UPDATE_COMPLETE
+      ])
+    ),
+    switchMap(() => {
+      return of(assetsSort())
+    })
+  )
+
+/**
  * Unpick all assets on search / view changes
  */
 
-export const assetsUnpickAssetsEpic = (
-  action$: Observable<AssetsActions>
-): Observable<AssetsActions> =>
+export const assetsUnpickEpic = (action$: Observable<AssetsActions>): Observable<AssetsActions> =>
   action$.pipe(
     filter(
       isOfType([

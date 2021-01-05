@@ -149,6 +149,10 @@ export type AssetsSetViewAction = {
   type: AssetsActionTypes.SET_VIEW
 }
 
+export type AssetsSortAction = {
+  type: AssetsActionTypes.SORT
+}
+
 export type AssetsUpdateCompleteAction = {
   payload: {
     assetId: string
@@ -199,6 +203,7 @@ export type AssetsActions =
   | AssetsSetOrderAction
   | AssetsSetSearchQueryAction
   | AssetsSetViewAction
+  | AssetsSortAction
   | AssetsUpdateCompleteAction
   | AssetsUpdateErrorAction
   | AssetsUpdateRequestAction

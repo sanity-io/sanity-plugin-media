@@ -6,10 +6,11 @@ import assets, {
   assetsDeletePickedEpic,
   assetsFetchEpic,
   assetsFetchNextPageEpic,
+  assetsFetchPageIndexEpic,
   assetsSearchEpic,
   assetsSetOrderEpic,
-  assetsFetchPageIndexEpic,
-  assetsUnpickAssetsEpic,
+  assetsSortEpic,
+  assetsUnpickEpic,
   assetsUpdateEpic
 } from './assets'
 import debug from './debug'
@@ -33,7 +34,8 @@ export const rootEpic = combineEpics(
   assetsFetchPageIndexEpic,
   assetsSearchEpic,
   assetsSetOrderEpic,
-  assetsUnpickAssetsEpic,
+  assetsSortEpic,
+  assetsUnpickEpic,
   assetsUpdateEpic,
   dialogClearOnAssetUpdateEpic,
   notificationsAddDeleteErrorsEpic,
