@@ -112,7 +112,7 @@ export const initialState: AssetsReducerState = {
   fetchingError: null,
   lastPicked: undefined,
   lastTouched: undefined,
-  order: BROWSER_SELECT[0]?.order,
+  order: BROWSER_SELECT[0]?.order as Order,
   pageIndex: 0,
   pageSize: 50,
   searchFacets: [],

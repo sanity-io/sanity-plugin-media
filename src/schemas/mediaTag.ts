@@ -13,7 +13,7 @@ export default {
     select: {
       name: 'name'
     },
-    prepare(selection) {
+    prepare(selection: any) {
       const {name} = selection
       return {
         title: name?.current

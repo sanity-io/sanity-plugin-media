@@ -134,7 +134,7 @@ const TableRow = (props: Props) => {
       style={style}
       sx={{
         gridColumnGap: [2, null, null, 3],
-        gridRowGap: 0,
+        gridRowGap: [0],
         gridTemplateColumns: ['tableSmall', null, null, 'tableLarge'],
         gridTemplateRows: ['auto', null, null, '1fr'],
         opacity: cellOpacity

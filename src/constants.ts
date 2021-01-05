@@ -74,7 +74,7 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
     label: 'does not include'
   },
   empty: {
-    fn: (value, field) => `!defined(${field})`,
+    fn: (_, field) => `!defined(${field})`,
     hideInput: true,
     label: 'is empty'
   },
@@ -111,7 +111,7 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
     label: 'is less than or equal to'
   },
   notEmpty: {
-    fn: (value, field) => `defined(${field})`,
+    fn: (_, field) => `defined(${field})`,
     hideInput: true,
     label: 'is not empty'
   }

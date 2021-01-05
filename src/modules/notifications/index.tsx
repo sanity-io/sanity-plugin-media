@@ -40,7 +40,6 @@ export default function notificationsReducer(
 
         draft.items.push({
           asset,
-          id: String(new Date().getTime() + Math.floor(Math.random() * 10000)),
           status,
           subtitle,
           timeout,
