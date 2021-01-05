@@ -1,6 +1,6 @@
 import {EditIcon, WarningOutlineIcon} from '@sanity/icons'
 import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
-import {Item} from '@types'
+import {AssetItem} from '@types'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo} from 'react'
@@ -19,7 +19,7 @@ import Image from '../Image'
 import TextEllipsis from '../TextEllipsis'
 
 type Props = {
-  item: Item
+  item: AssetItem
   selected: boolean
   style?: CSSProperties
 }

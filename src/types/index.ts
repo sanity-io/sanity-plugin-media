@@ -1,10 +1,17 @@
-import {SanityImageAssetDocument} from '@sanity/client'
+import {SanityDocument, SanityImageAssetDocument} from '@sanity/client'
 import {ReactElement} from 'react'
 
 export type Asset = SanityImageAssetDocument & {
   altText: string
   description: string
   title: string
+}
+
+export type AssetItem = {
+  asset: Asset
+  errorCode?: number
+  picked: boolean
+  updating: boolean
 }
 
 export type Block = {
@@ -48,22 +55,6 @@ export type Document = {
   _updatedAt: string
   name?: string
   title?: string
-}
-
-export type FetchOptions = {
-  filter?: string
-  params?: Record<string, string>
-  projections?: string
-  replace?: boolean
-  selector?: string
-  sort?: string
-}
-
-export type Item = {
-  asset: Asset
-  errorCode?: number
-  picked: boolean
-  updating: boolean
 }
 
 export type MarkDef = {_key: string; _type: string}
@@ -166,4 +157,15 @@ export type Span = {
   _key: string
   text: string
   marks: string[]
+}
+
+export type Tag = SanityDocument & {
+  name: string
+}
+
+export type TagItem = {
+  tag: Tag
+  errorCode?: number
+  picked: boolean
+  updating: boolean
 }

@@ -20,12 +20,11 @@ const DialogDeleteConfirm: FC<Props> = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  // TODO: DRY
   const byIds = useTypedSelector(state => state.assets.byIds)
 
-  const items = byIds ? Object.values(byIds) : []
+  const items = Object.values(byIds)
 
-  const picked = items && items.filter(item => item?.picked)
+  const picked = items?.filter(item => item?.picked)
 
   // Callbacks
   const handleClose = () => {

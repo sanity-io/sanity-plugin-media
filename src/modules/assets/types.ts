@@ -1,11 +1,11 @@
-import {Asset, BrowserView, Item, Order, SearchFacetInputProps} from '@types'
+import {Asset, BrowserView, AssetItem, Order, SearchFacetInputProps} from '@types'
 import {AssetsActionTypes} from './index'
 
 // Reducer
 
 export type AssetsReducerState = {
   allIds: string[]
-  byIds: Record<string, Item>
+  byIds: Record<string, AssetItem>
   fetchCount: number
   fetching: boolean
   fetchingError: any
@@ -29,6 +29,7 @@ export type AssetsClearAction = {
 export type AssetsDeleteCompleteAction = {
   payload: {
     assetId: string
+    options?: {closeDialogId?: string}
   }
   type: AssetsActionTypes.DELETE_COMPLETE
 }
@@ -36,9 +37,7 @@ export type AssetsDeleteCompleteAction = {
 export type AssetsDeleteErrorAction = {
   payload: {
     asset: Asset
-    error: {
-      statusCode: number
-    }
+    error: {statusCode: number}
   }
   type: AssetsActionTypes.DELETE_ERROR
 }
@@ -48,9 +47,7 @@ export type AssetsDeletePickedAction = {
 }
 
 export type AssetsDeleteRequestAction = {
-  payload: {
-    asset: Asset
-  }
+  payload: {asset: Asset; options?: {closeDialogId?: string}}
   type: AssetsActionTypes.DELETE_REQUEST
 }
 
@@ -63,6 +60,7 @@ export type AssetsFetchCompleteAction = {
 }
 
 export type AssetsFetchErrorAction = {
+  payload: {error: any}
   type: AssetsActionTypes.FETCH_ERROR
 }
 
@@ -75,16 +73,12 @@ export type AssetsFetchRequestAction = {
 }
 
 export type AssetsListenerDeleteAction = {
-  payload: {
-    assetId: string
-  }
+  payload: {assetId: string}
   type: AssetsActionTypes.LISTENER_DELETE
 }
 
 export type AssetsListenerUpdateAction = {
-  payload: {
-    asset: Asset
-  }
+  payload: {asset: Asset}
   type: AssetsActionTypes.LISTENER_UPDATE
 }
 
@@ -93,9 +87,7 @@ export type AssetsLoadNextPageAction = {
 }
 
 export type AssetsLoadPageIndexAction = {
-  payload: {
-    pageIndex: number
-  }
+  payload: {pageIndex: number}
   type: AssetsActionTypes.LOAD_PAGE_INDEX
 }
 
@@ -124,9 +116,7 @@ export type AssetsPickRangeAction = {
 }
 
 export type AssetsSearchFacetsAddAction = {
-  payload: {
-    facet: SearchFacetInputProps
-  }
+  payload: {facet: SearchFacetInputProps}
   type: AssetsActionTypes.SEARCH_FACETS_ADD
 }
 
@@ -135,43 +125,34 @@ export type AssetsSearchFacetsClearAction = {
 }
 
 export type AssetsSearchFacetsRemoveAction = {
-  payload: {
-    facetName: string
-  }
+  payload: {facetName: string}
   type: AssetsActionTypes.SEARCH_FACETS_REMOVE
 }
 
 export type AssetsSearchFacetsUpdateAction = {
-  payload: {
-    facet: SearchFacetInputProps
-  }
+  payload: {facet: SearchFacetInputProps}
   type: AssetsActionTypes.SEARCH_FACETS_UPDATE
 }
 
 export type AssetsSetOrderAction = {
-  payload: {
-    order: Order
-  }
+  payload: {order: Order}
   type: AssetsActionTypes.SET_ORDER
 }
 
 export type AssetsSetSearchQueryAction = {
-  payload: {
-    searchQuery: string
-  }
+  payload: {searchQuery: string}
   type: AssetsActionTypes.SET_SEARCH_QUERY
 }
 
 export type AssetsSetViewAction = {
-  payload: {
-    view: BrowserView
-  }
+  payload: {view: BrowserView}
   type: AssetsActionTypes.SET_VIEW
 }
 
 export type AssetsUpdateCompleteAction = {
   payload: {
     asset: Asset
+    options?: {closeDialogId?: string}
   }
   type: AssetsActionTypes.UPDATE_COMPLETE
 }
@@ -179,9 +160,7 @@ export type AssetsUpdateCompleteAction = {
 export type AssetsUpdateErrorAction = {
   payload: {
     asset: Asset
-    error: {
-      statusCode: number
-    }
+    error: {statusCode: number}
   }
   type: AssetsActionTypes.UPDATE_ERROR
 }
@@ -190,6 +169,7 @@ export type AssetsUpdateRequestAction = {
   payload: {
     asset: Asset
     formData: Record<string, any>
+    options?: {closeDialogId?: string}
   }
   type: AssetsActionTypes.UPDATE_REQUEST
 }

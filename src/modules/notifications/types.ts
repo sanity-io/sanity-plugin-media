@@ -3,9 +3,7 @@ import {ReactNode} from 'react'
 import {NotificationsActionTypes} from './index'
 
 type Notification = {
-  // TODO: use type from sanity
-  asset: Asset
-  id: string
+  asset?: Asset
   status?: 'error' | 'warning' | 'success' | 'info'
   subtitle?: string
   timeout?: number

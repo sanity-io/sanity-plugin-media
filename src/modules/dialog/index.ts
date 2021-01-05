@@ -1,10 +1,19 @@
 import produce from 'immer'
-import {ofType} from 'redux-observable'
-import {of} from 'rxjs'
+import {empty, Observable, of} from 'rxjs'
 import {filter, mergeMap} from 'rxjs/operators'
+import {isOfType} from 'typesafe-actions'
 
 import {AssetsActionTypes} from '../assets'
-import {DialogActions, DialogReducerState} from './types'
+import {AssetsActions} from '../assets/types'
+import {
+  DialogActions,
+  DialogClearAction,
+  DialogReducerState,
+  DialogRemoveAction,
+  DialogShowDeleteConfirmAction,
+  DialogShowDetailsAction,
+  DialogShowSearchFacetsAction
+} from './types'
 
 /***********
  * ACTIONS *
@@ -29,7 +38,7 @@ const INITIAL_STATE = {
 export default function dialogReducer(
   state: DialogReducerState = INITIAL_STATE,
   action: DialogActions
-) {
+): DialogReducerState {
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
@@ -78,10 +87,7 @@ export default function dialogReducer(
  * Clear all dialogs
  */
 
-export const dialogClear = () => ({
-  payload: {
-    asset: undefined
-  },
+export const dialogClear = (): DialogClearAction => ({
   type: DialogActionTypes.CLEAR
 })
 
@@ -89,10 +95,8 @@ export const dialogClear = () => ({
  * Clear dialog with ID
  */
 
-export const dialogRemove = (id: string) => ({
-  payload: {
-    id
-  },
+export const dialogRemove = (id: string): DialogRemoveAction => ({
+  payload: {id},
   type: DialogActionTypes.REMOVE
 })
 
@@ -105,7 +109,7 @@ export const dialogShowDeleteConfirm = (
   options?: {
     closeDialogId?: string
   }
-) => ({
+): DialogShowDeleteConfirmAction => ({
   payload: {
     assetId,
     options
@@ -117,10 +121,8 @@ export const dialogShowDeleteConfirm = (
  * Display asset details
  */
 
-export const dialogShowDetails = (assetId: string) => ({
-  payload: {
-    assetId
-  },
+export const dialogShowDetails = (assetId: string): DialogShowDetailsAction => ({
+  payload: {assetId},
   type: DialogActionTypes.SHOW_DETAILS
 })
 
@@ -128,7 +130,7 @@ export const dialogShowDetails = (assetId: string) => ({
  * Display search facets
  */
 
-export const dialogShowSearchFacets = () => ({
+export const dialogShowSearchFacets = (): DialogShowSearchFacetsAction => ({
   type: DialogActionTypes.SHOW_SEARCH_FACETS
 })
 
@@ -140,12 +142,18 @@ export const dialogShowSearchFacets = () => ({
  * Listen for successful asset updates / deletes:
  * - Clear dialog if a dialog ID has been passed
  */
-export const dialogClearOnAssetUpdateEpic = (action$: any, state$: any) =>
+export const dialogClearOnAssetUpdateEpic = (
+  action$: Observable<AssetsActions>
+): Observable<DialogActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.DELETE_COMPLETE, AssetsActionTypes.UPDATE_COMPLETE),
-    filter(action => action?.payload?.options?.closeDialogId),
+    filter(isOfType([AssetsActionTypes.DELETE_COMPLETE, AssetsActionTypes.UPDATE_COMPLETE])),
+    filter(action => !!action?.payload?.options?.closeDialogId),
     mergeMap(action => {
       const dialogId = action?.payload?.options?.closeDialogId
-      return of(dialogRemove(dialogId))
+      if (dialogId) {
+        return of(dialogRemove(dialogId))
+      } else {
+        return empty()
+      }
     })
   )

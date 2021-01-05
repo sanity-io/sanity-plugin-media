@@ -1,5 +1,5 @@
 import {Box} from '@sanity/ui'
-import {Item} from '@types'
+import {AssetItem} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {
   areEqual,
@@ -15,7 +15,7 @@ import TableRow from '../TableRow'
 type Props = {
   height: number
   itemCount: number
-  items: Item[]
+  items: AssetItem[]
   onItemsRendered: (props: ListOnItemsRenderedProps) => any
   width: number
 }

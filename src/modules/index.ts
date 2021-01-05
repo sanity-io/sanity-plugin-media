@@ -23,6 +23,7 @@ import notifications, {
   notificationAddUpdateEpic,
   notificationsAddUpdateErrorEpic
 } from './notifications'
+import tags, {tagsCreateEpic, tagsDeleteEpic, tagsFetchEpic} from './tags'
 
 export const rootEpic = combineEpics(
   assetsDeleteEpic,
@@ -39,7 +40,10 @@ export const rootEpic = combineEpics(
   notificationsAddFetchErrorEpic,
   notificationsAddSuccessEpic,
   notificationAddUpdateEpic,
-  notificationsAddUpdateErrorEpic
+  notificationsAddUpdateErrorEpic,
+  tagsCreateEpic,
+  tagsDeleteEpic,
+  tagsFetchEpic
 )
 
 export const rootReducer = combineReducers({
@@ -48,5 +52,6 @@ export const rootReducer = combineReducers({
   dialog,
   document,
   notifications,
-  selectedAssets
+  selectedAssets,
+  tags
 })

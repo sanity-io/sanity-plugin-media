@@ -4,6 +4,7 @@ import {useDispatch} from 'react-redux'
 
 import {DEBUG_MODE} from '../../config'
 import {assetsLoadPageIndex} from '../../modules/assets'
+import {tagsFetch} from '../../modules/tags'
 import Controls from '../Controls'
 import DebugControls from '../DebugControls'
 import Dialogs from '../Dialogs'
@@ -21,9 +22,13 @@ const Browser: FC<Props> = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
 
-  // Fetch items on mount
+  // Effects
   useEffect(() => {
+    // Fetch assets: first page
     dispatch(assetsLoadPageIndex(0))
+
+    // Fetch all tags
+    dispatch(tagsFetch())
   }, [])
 
   return (

@@ -1,6 +1,6 @@
 import produce from 'immer'
 
-import {DebugActions, DebugReducerState} from './types'
+import {DebugActions, DebugReducerState, DebugSetBadConnectionAction} from './types'
 
 /***********
  * ACTIONS *
@@ -21,7 +21,7 @@ const initialState: DebugReducerState = {
 export default function debugReducer(
   state: DebugReducerState = initialState,
   action: DebugActions
-) {
+): DebugReducerState {
   return produce(state, draft => {
     switch (action.type) {
       case DebugActionTypes.SET_BAD_CONNECTION:
@@ -38,7 +38,7 @@ export default function debugReducer(
  * ACTION CREATORS *
  *******************/
 
-export const debugSetBadConnection = (badConnection: boolean) => ({
+export const debugSetBadConnection = (badConnection: boolean): DebugSetBadConnectionAction => ({
   payload: {
     badConnection
   },

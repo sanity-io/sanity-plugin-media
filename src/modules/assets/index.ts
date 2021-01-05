@@ -1,22 +1,54 @@
-import {Asset, BrowserView, FetchOptions, Order, SearchFacetInputProps} from '@types'
+import {Asset, BrowserView, Order, SearchFacetInputProps} from '@types'
 import groq from 'groq'
 import produce from 'immer'
-import {ofType, ActionsObservable} from 'redux-observable'
-import {from, empty, iif, of, throwError, Observable} from 'rxjs'
+import client from 'part:@sanity/base/client'
+import {StateObservable} from 'redux-observable'
+import {from, empty, of, Observable} from 'rxjs'
 import {
   catchError,
   debounceTime,
-  delay,
+  filter,
   mergeAll,
   mergeMap,
   switchMap,
   withLatestFrom
 } from 'rxjs/operators'
-import client from 'part:@sanity/base/client'
+import {isOfType} from 'typesafe-actions'
 
 import {BROWSER_SELECT} from '../../config'
 import {SEARCH_FACET_OPERATORS} from '../../constants'
-import {AssetsActions, AssetsReducerState} from './types'
+import {debugThrottle} from '../utils'
+import {
+  AssetsActions,
+  AssetsClearAction,
+  AssetsDeleteCompleteAction,
+  AssetsDeleteErrorAction,
+  AssetsDeletePickedAction,
+  AssetsDeleteRequestAction,
+  AssetsFetchCompleteAction,
+  AssetsFetchErrorAction,
+  AssetsFetchRequestAction,
+  AssetsListenerDeleteAction,
+  AssetsListenerUpdateAction,
+  AssetsLoadNextPageAction,
+  AssetsLoadPageIndexAction,
+  AssetsPickAction,
+  AssetsPickAllAction,
+  AssetsPickClearAction,
+  AssetsPickRangeAction,
+  AssetsReducerState,
+  AssetsSearchFacetsAddAction,
+  AssetsSearchFacetsClearAction,
+  AssetsSearchFacetsRemoveAction,
+  AssetsSearchFacetsUpdateAction,
+  AssetsSetOrderAction,
+  AssetsSetSearchQueryAction,
+  AssetsSetViewAction,
+  AssetsUpdateCompleteAction,
+  AssetsUpdateErrorAction,
+  AssetsUpdateRequestAction
+} from './types'
+import {RootReducerState} from '../types'
 
 /***********
  * ACTIONS *
@@ -31,8 +63,8 @@ export enum AssetsActionTypes {
   FETCH_COMPLETE = 'ASSETS_FETCH_COMPLETE',
   FETCH_ERROR = 'ASSETS_FETCH_ERROR',
   FETCH_REQUEST = 'ASSETS_FETCH_REQUEST',
-  LISTENER_DELETE = 'LISTENER_DELETE',
-  LISTENER_UPDATE = 'LISTENER_UPDATE',
+  LISTENER_DELETE = 'ASSETS_LISTENER_DELETE',
+  LISTENER_UPDATE = 'ASSETS_LISTENER_UPDATE',
   LOAD_NEXT_PAGE = 'ASSETS_LOAD_NEXT_PAGE',
   LOAD_PAGE_INDEX = 'ASSETS_LOAD_PAGE_INDEX',
   PICK = 'ASSETS_PICK',
@@ -69,7 +101,7 @@ export enum AssetsActionTypes {
  */
 
 /**
- * `allIds` is an ordered array of all assetIds
+ * `allIds` is an ordered array of all asset IDs
  * `byIds` is an object literal that contains all normalised assets (with asset IDs as keys)
  */
 
@@ -93,7 +125,7 @@ export const initialState: AssetsReducerState = {
 export default function assetsReducerState(
   state: AssetsReducerState = initialState,
   action: AssetsActions
-) {
+): AssetsReducerState {
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
@@ -109,7 +141,7 @@ export default function assetsReducerState(
 
       /**
        * An asset has been successfully deleted via the client.
-       * - Delete asset from the redux store (both the normalised object and ordered assetID).
+       * - Delete asset from the redux store (both the normalised object and ordered asset ID).
        */
       case AssetsActionTypes.DELETE_COMPLETE: {
         const assetId = action.payload?.assetId
@@ -292,7 +324,7 @@ export default function assetsReducerState(
 
       /**
        * An asset has been successfully deleted via the client.
-       * - Delete asset from the redux store (both the normalised object and ordered assetID).
+       * - Delete asset from the redux store (both the normalised object and ordered asset ID).
        */
       case AssetsActionTypes.LISTENER_DELETE: {
         const assetId = action.payload?.assetId
@@ -362,7 +394,7 @@ export default function assetsReducerState(
  *******************/
 
 // Clear all assets
-export const assetsClear = () => ({
+export const assetsClear = (): AssetsClearAction => ({
   type: AssetsActionTypes.CLEAR
 })
 
@@ -372,7 +404,7 @@ export const assetsDelete = (
   options?: {
     closeDialogId?: string
   }
-) => ({
+): AssetsDeleteRequestAction => ({
   payload: {
     asset,
     options
@@ -381,7 +413,10 @@ export const assetsDelete = (
 })
 
 // Delete success
-export const assetsDeleteComplete = (assetId: string, options?: {closeDialogId?: string}) => ({
+export const assetsDeleteComplete = (
+  assetId: string,
+  options?: {closeDialogId?: string}
+): AssetsDeleteCompleteAction => ({
   payload: {
     assetId,
     options
@@ -390,7 +425,7 @@ export const assetsDeleteComplete = (assetId: string, options?: {closeDialogId?:
 })
 
 // Delete error
-export const assetsDeleteError = (asset: Asset, error: any) => ({
+export const assetsDeleteError = (asset: Asset, error: any): AssetsDeleteErrorAction => ({
   payload: {
     asset,
     error
@@ -399,7 +434,7 @@ export const assetsDeleteError = (asset: Asset, error: any) => ({
 })
 
 // Delete all picked assets
-export const assetsDeletePicked = () => ({
+export const assetsDeletePicked = (): AssetsDeletePickedAction => ({
   type: AssetsActionTypes.DELETE_PICKED
 })
 
@@ -424,7 +459,14 @@ export const assetsFetch = ({
   }`,
   selector = ``,
   sort = groq`order(_updatedAt desc)`
-}: FetchOptions) => {
+}: {
+  filter?: string
+  params?: Record<string, string>
+  projections?: string
+  replace?: boolean
+  selector?: string
+  sort?: string
+}): AssetsFetchRequestAction => {
   const pipe = sort || selector ? '|' : ''
 
   // Construct query
@@ -435,10 +477,7 @@ export const assetsFetch = ({
   `
 
   return {
-    payload: {
-      params,
-      query
-    },
+    payload: {params, query},
     type: AssetsActionTypes.FETCH_REQUEST
   }
 }
@@ -447,7 +486,7 @@ export const assetsFetch = ({
 export const assetsFetchComplete = (
   assets: Asset[]
   // totalCount: number
-) => ({
+): AssetsFetchCompleteAction => ({
   payload: {
     assets
     // totalCount
@@ -456,109 +495,97 @@ export const assetsFetchComplete = (
 })
 
 // Fetch failed
-export const assetsFetchError = (error: any) => ({
-  payload: {
-    error
-  },
+export const assetsFetchError = (error: any): AssetsFetchErrorAction => ({
+  payload: {error},
   type: AssetsActionTypes.FETCH_ERROR
 })
 
 // Asset deleted via listener
-export const assetsListenerDelete = (assetId: string) => ({
+export const assetsListenerDelete = (assetId: string): AssetsListenerDeleteAction => ({
   payload: {assetId},
   type: AssetsActionTypes.LISTENER_DELETE
 })
 
 // Asset updated via listener
-export const assetsListenerUpdate = (asset: Asset) => ({
+export const assetsListenerUpdate = (asset: Asset): AssetsListenerUpdateAction => ({
   payload: {asset},
   type: AssetsActionTypes.LISTENER_UPDATE
 })
 
 // Load page assets at page index
-export const assetsLoadPageIndex = (pageIndex: number) => ({
-  payload: {
-    pageIndex
-  },
+export const assetsLoadPageIndex = (pageIndex: number): AssetsLoadPageIndexAction => ({
+  payload: {pageIndex},
   type: AssetsActionTypes.LOAD_PAGE_INDEX
 })
 
 // Load next page
-export const assetsLoadNextPage = () => ({
+export const assetsLoadNextPage = (): AssetsLoadNextPageAction => ({
   type: AssetsActionTypes.LOAD_NEXT_PAGE
 })
 
 // Pick asset
-export const assetsPick = (assetId: string, picked: boolean) => ({
-  payload: {
-    assetId,
-    picked
-  },
+export const assetsPick = (assetId: string, picked: boolean): AssetsPickAction => ({
+  payload: {assetId, picked},
   type: AssetsActionTypes.PICK
 })
 
 // Pick all assets
-export const assetsPickAll = () => ({
+export const assetsPickAll = (): AssetsPickAllAction => ({
   type: AssetsActionTypes.PICK_ALL
 })
 
 // Unpick all assets
-export const assetsPickClear = () => ({
+export const assetsPickClear = (): AssetsPickClearAction => ({
   type: AssetsActionTypes.PICK_CLEAR
 })
 
 // Pick a range of assets
-export const assetsPickRange = (startId: string, endId: string) => ({
-  payload: {
-    endId,
-    startId
-  },
+export const assetsPickRange = (startId: string, endId: string): AssetsPickRangeAction => ({
+  payload: {endId, startId},
   type: AssetsActionTypes.PICK_RANGE
 })
 
 // Add search facet
-export const assetsSearchFacetsAdd = (facet: SearchFacetInputProps) => ({
-  payload: {
-    facet
-  },
+export const assetsSearchFacetsAdd = (
+  facet: SearchFacetInputProps
+): AssetsSearchFacetsAddAction => ({
+  payload: {facet},
   type: AssetsActionTypes.SEARCH_FACETS_ADD
 })
 
 // Clear search facets
-export const assetsSearchFacetsClear = () => ({
+export const assetsSearchFacetsClear = (): AssetsSearchFacetsClearAction => ({
   type: AssetsActionTypes.SEARCH_FACETS_CLEAR
 })
 
 // Remove search facet
-export const assetsSearchFacetsRemove = (facetName: string) => ({
-  payload: {
-    facetName
-  },
+export const assetsSearchFacetsRemove = (facetName: string): AssetsSearchFacetsRemoveAction => ({
+  payload: {facetName},
   type: AssetsActionTypes.SEARCH_FACETS_REMOVE
 })
 
 // Update search facet
-export const assetsSearchFacetsUpdate = (facet: SearchFacetInputProps) => ({
-  payload: {
-    facet
-  },
+export const assetsSearchFacetsUpdate = (
+  facet: SearchFacetInputProps
+): AssetsSearchFacetsUpdateAction => ({
+  payload: {facet},
   type: AssetsActionTypes.SEARCH_FACETS_UPDATE
 })
 
 // Set view mode
-export const assetsSetView = (view: BrowserView) => ({
+export const assetsSetView = (view: BrowserView): AssetsSetViewAction => ({
   payload: {view},
   type: AssetsActionTypes.SET_VIEW
 })
 
 // Set order
-export const assetsSetOrder = (order: Order) => ({
+export const assetsSetOrder = (order: Order): AssetsSetOrderAction => ({
   payload: {order},
   type: AssetsActionTypes.SET_ORDER
 })
 
 // Set search query
-export const assetsSetSearchQuery = (searchQuery: string) => ({
+export const assetsSetSearchQuery = (searchQuery: string): AssetsSetSearchQueryAction => ({
   payload: {searchQuery},
   type: AssetsActionTypes.SET_SEARCH_QUERY
 })
@@ -567,10 +594,8 @@ export const assetsSetSearchQuery = (searchQuery: string) => ({
 export const assetsUpdate = (
   asset: Asset,
   formData: Record<string, any>,
-  options?: {
-    closeDialogId?: string
-  }
-) => ({
+  options?: {closeDialogId?: string}
+): AssetsUpdateRequestAction => ({
   payload: {
     asset,
     formData,
@@ -580,7 +605,10 @@ export const assetsUpdate = (
 })
 
 // Delete success
-export const assetsUpdateComplete = (asset: Asset, options?: {closeDialogId?: string}) => ({
+export const assetsUpdateComplete = (
+  asset: Asset,
+  options?: {closeDialogId?: string}
+): AssetsUpdateCompleteAction => ({
   payload: {
     asset,
     options
@@ -589,7 +617,7 @@ export const assetsUpdateComplete = (asset: Asset, options?: {closeDialogId?: st
 })
 
 // Delete error
-export const assetsUpdateError = (asset: Asset, error: any) => ({
+export const assetsUpdateError = (asset: Asset, error: any): AssetsUpdateErrorAction => ({
   payload: {
     asset,
     error
@@ -606,9 +634,12 @@ export const assetsUpdateError = (asset: Asset, error: any) => ({
  * - make async call to `client.delete`
  * - return a corresponding success or error action
  */
-export const assetsDeleteEpic = (action$: any, state$: any) => {
+export const assetsDeleteEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> => {
   return action$.pipe(
-    ofType(AssetsActionTypes.DELETE_REQUEST),
+    filter(isOfType(AssetsActionTypes.DELETE_REQUEST)),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {asset} = action.payload
@@ -627,12 +658,15 @@ export const assetsDeleteEpic = (action$: any, state$: any) => {
  * - get all picked items not already in the process of updating
  * - invoke delete action creator for all INDIVIDUAL assets
  */
-export const assetsDeletePickedEpic = (action$: any, state$: any) =>
+export const assetsDeletePickedEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.DELETE_PICKED),
+    filter(isOfType(AssetsActionTypes.DELETE_PICKED)),
     withLatestFrom(state$),
     mergeMap(([, state]) => {
-      const availableItems = Object.entries(state.assets.byIds).filter(([, value]: [any, any]) => {
+      const availableItems = Object.entries(state.assets.byIds).filter(([, value]) => {
         return value.picked && !value.updating
       })
 
@@ -652,11 +686,14 @@ export const assetsDeletePickedEpic = (action$: any, state$: any) =>
  * - make async call to `client.fetch`
  * - return a corresponding success or error action
  */
-export const assetsFetchEpic = (action$: any, state$: any) =>
+export const assetsFetchEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.FETCH_REQUEST),
+    filter(isOfType(AssetsActionTypes.FETCH_REQUEST)),
     withLatestFrom(state$),
-    switchMap(([action, state]: [any, any]) => {
+    switchMap(([action, state]) => {
       const params = action.payload?.params
       const query = action.payload?.query
 
@@ -680,9 +717,12 @@ export const assetsFetchEpic = (action$: any, state$: any) =>
  * Listen for page load requests
  * - Fetch assets
  */
-export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
+export const assetsFetchPageIndexEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.LOAD_PAGE_INDEX),
+    filter(isOfType(AssetsActionTypes.LOAD_PAGE_INDEX)),
     withLatestFrom(state$),
     switchMap(([action, state]) => {
       const pageSize = state.assets.pageSize
@@ -711,7 +751,7 @@ export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
             url
           }`,
           selector: groq`[${start}...${end}]`,
-          sort: groq`order(${state.assets.order.field} ${state.assets.order.direction})`
+          sort: groq`order(${state.assets?.order?.field} ${state.assets?.order?.direction})`
         })
       )
     })
@@ -722,9 +762,12 @@ export const assetsFetchPageIndexEpic = (action$: any, state$: any) =>
  * - Clear assets
  * - Load first page
  */
-export const assetsFetchNextPageEpic = (action$: any, state$: any) =>
+export const assetsFetchNextPageEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.LOAD_NEXT_PAGE),
+    filter(isOfType(AssetsActionTypes.LOAD_NEXT_PAGE)),
     withLatestFrom(state$),
     switchMap(([_, state]) => {
       return of(assetsLoadPageIndex(state.assets.pageIndex))
@@ -737,14 +780,16 @@ export const assetsFetchNextPageEpic = (action$: any, state$: any) =>
  * - fetch first page
  */
 
-export const assetsSearchEpic = (action$: any) =>
+export const assetsSearchEpic = (action$: Observable<AssetsActions>): Observable<AssetsActions> =>
   action$.pipe(
-    ofType(
-      AssetsActionTypes.SEARCH_FACETS_ADD,
-      AssetsActionTypes.SEARCH_FACETS_CLEAR,
-      AssetsActionTypes.SEARCH_FACETS_REMOVE,
-      AssetsActionTypes.SEARCH_FACETS_UPDATE,
-      AssetsActionTypes.SET_SEARCH_QUERY
+    filter(
+      isOfType([
+        AssetsActionTypes.SEARCH_FACETS_ADD,
+        AssetsActionTypes.SEARCH_FACETS_CLEAR,
+        AssetsActionTypes.SEARCH_FACETS_REMOVE,
+        AssetsActionTypes.SEARCH_FACETS_UPDATE,
+        AssetsActionTypes.SET_SEARCH_QUERY
+      ])
     ),
     debounceTime(400),
     switchMap(() => {
@@ -757,9 +802,9 @@ export const assetsSearchEpic = (action$: any) =>
  * - clear assets
  * - fetch first page
  */
-export const assetsSetOrderEpic = (action$: any) =>
+export const assetsSetOrderEpic = (action$: Observable<AssetsActions>): Observable<AssetsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.SET_ORDER),
+    filter(isOfType(AssetsActionTypes.SET_ORDER)),
     switchMap(() => {
       return of(assetsClear(), assetsLoadPageIndex(0))
     })
@@ -769,16 +814,20 @@ export const assetsSetOrderEpic = (action$: any) =>
  * Unpick all assets on search / view changes
  */
 
-export const assetsUnpickAssetsEpic = (action$: any) =>
+export const assetsUnpickAssetsEpic = (
+  action$: Observable<AssetsActions>
+): Observable<AssetsActions> =>
   action$.pipe(
-    ofType(
-      AssetsActionTypes.SEARCH_FACETS_ADD,
-      AssetsActionTypes.SEARCH_FACETS_CLEAR,
-      AssetsActionTypes.SEARCH_FACETS_REMOVE,
-      AssetsActionTypes.SEARCH_FACETS_UPDATE,
-      AssetsActionTypes.SET_ORDER,
-      AssetsActionTypes.SET_SEARCH_QUERY,
-      AssetsActionTypes.SET_VIEW
+    filter(
+      isOfType([
+        AssetsActionTypes.SEARCH_FACETS_ADD,
+        AssetsActionTypes.SEARCH_FACETS_CLEAR,
+        AssetsActionTypes.SEARCH_FACETS_REMOVE,
+        AssetsActionTypes.SEARCH_FACETS_UPDATE,
+        AssetsActionTypes.SET_ORDER,
+        AssetsActionTypes.SET_SEARCH_QUERY,
+        AssetsActionTypes.SET_VIEW
+      ])
     ),
     switchMap(() => {
       return of(assetsPickClear())
@@ -790,9 +839,12 @@ export const assetsUnpickAssetsEpic = (action$: any) =>
  * - make async call to `client.patch`
  * - return a corresponding success or error action
  */
-export const assetsUpdateEpic = (action$: any, state$: any) =>
+export const assetsUpdateEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.UPDATE_REQUEST),
+    filter(isOfType(AssetsActionTypes.UPDATE_REQUEST)),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {asset, formData, options} = action.payload
@@ -874,22 +926,4 @@ const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: st
   ].join(' && ')
 
   return constructedQuery
-}
-
-const debugThrottle = (action: any, throttled: boolean) => {
-  return mergeMap(action => {
-    return iif(
-      () => throttled,
-      of(action).pipe(
-        delay(3000),
-        mergeMap(action => {
-          if (Math.random() > 0.5) {
-            return throwError('Test error')
-          }
-          return of(action)
-        })
-      ),
-      of(action)
-    )
-  })
 }

@@ -1,6 +1,6 @@
 import {DownloadIcon} from '@sanity/icons'
 import {Box, Button, Flex, Stack, Text} from '@sanity/ui'
-import {Asset, Item} from '@types'
+import {Asset, AssetItem} from '@types'
 import filesize from 'filesize'
 import React, {FC} from 'react'
 
@@ -8,7 +8,7 @@ import getAssetResolution from '../../util/getAssetResolution'
 
 type Props = {
   asset: Asset
-  item?: Item
+  item?: AssetItem
 }
 
 const AssetMetadata: FC<Props> = (props: Props) => {

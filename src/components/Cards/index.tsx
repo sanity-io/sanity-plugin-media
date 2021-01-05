@@ -1,4 +1,4 @@
-import {Item} from '@types'
+import {AssetItem} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {GridOnItemsRenderedProps, GridChildComponentProps, VariableSizeGrid} from 'react-window'
 import {Box} from 'theme-ui'
@@ -8,7 +8,7 @@ import Card from '../Card'
 
 type Props = {
   height: number
-  items: Item[]
+  items: AssetItem[]
   itemCount: number
   onItemsRendered: (props: GridOnItemsRenderedProps) => any
   width: number

@@ -30,7 +30,7 @@ export type DialogShowDetailsAction = {
 
 export type DialogShowDeleteConfirmAction = {
   payload: {
-    assetId: string
+    assetId?: string
     options?: {
       closeDialogId?: string
     }
@@ -39,9 +39,6 @@ export type DialogShowDeleteConfirmAction = {
 }
 
 export type DialogShowSearchFacetsAction = {
-  payload: {
-    id: string
-  }
   type: DialogActionTypes.SHOW_SEARCH_FACETS
 }
 

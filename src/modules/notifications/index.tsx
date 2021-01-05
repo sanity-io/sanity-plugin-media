@@ -1,11 +1,12 @@
 import {ReactNode} from 'react'
 import pluralize from 'pluralize'
 import produce from 'immer'
-import {ofType} from 'redux-observable'
-import {of} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {bufferTime, filter, mergeMap} from 'rxjs/operators'
 import {AssetsActionTypes} from '../assets'
-import {NotificationsReducerState, NotificationsActions} from './types'
+import {NotificationsReducerState, NotificationsActions, NotificationsAddAction} from './types'
+import {isOfType} from 'typesafe-actions'
+import {AssetsActions} from '../assets/types'
 
 /***********
  * ACTIONS *
@@ -26,7 +27,7 @@ const INITIAL_STATE = {
 export default function notificationsReducer(
   state: NotificationsReducerState = INITIAL_STATE,
   action: NotificationsActions
-) {
+): NotificationsReducerState {
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
@@ -62,7 +63,7 @@ export const notificationsAddError = ({
 }: {
   subtitle?: string
   title: ReactNode
-}) => ({
+}): NotificationsAddAction => ({
   payload: {
     subtitle,
     status: 'error',
@@ -79,7 +80,7 @@ export const notificationsAddSuccess = ({
 }: {
   subtitle?: string
   title: ReactNode
-}) => ({
+}): NotificationsAddAction => ({
   payload: {
     subtitle,
     status: 'success',
@@ -98,13 +99,14 @@ export const notificationsAddSuccess = ({
  * - Display success notification
  * - Buffer responses over 1000ms
  */
-
-export const notificationsAddSuccessEpic = (action$: any) =>
+export const notificationsAddSuccessEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.DELETE_COMPLETE),
+    filter(isOfType(AssetsActionTypes.DELETE_COMPLETE)),
     bufferTime(1000),
-    filter((actions: any) => actions.length > 0),
-    mergeMap((actions: any) => {
+    filter(actions => actions.length > 0),
+    mergeMap(actions => {
       const deletedCount = actions.length
       return of(
         notificationsAddSuccess({
@@ -119,12 +121,14 @@ export const notificationsAddSuccessEpic = (action$: any) =>
  * - Display error notification
  * - Buffer responses over 1000ms
  */
-export const notificationsAddDeleteErrorsEpic = (action$: any) =>
+export const notificationsAddDeleteErrorsEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.DELETE_ERROR),
+    filter(isOfType(AssetsActionTypes.DELETE_ERROR)),
     bufferTime(1000),
-    filter((actions: any) => actions.length > 0),
-    mergeMap((actions: any) => {
+    filter(actions => actions.length > 0),
+    mergeMap(actions => {
       const errorCount = actions.length
       return of(
         notificationsAddError({
@@ -138,10 +142,12 @@ export const notificationsAddDeleteErrorsEpic = (action$: any) =>
  * Listen for asset fetch errors:
  * - Display error notification
  */
-export const notificationsAddFetchErrorEpic = (action$: any) =>
+export const notificationsAddFetchErrorEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.FETCH_ERROR),
-    mergeMap((action: any) => {
+    filter(isOfType(AssetsActionTypes.FETCH_ERROR)),
+    mergeMap(action => {
       const error = action.payload?.error
       return of(
         notificationsAddError({
@@ -156,9 +162,11 @@ export const notificationsAddFetchErrorEpic = (action$: any) =>
  * - Display success notification
  */
 
-export const notificationAddUpdateEpic = (action$: any) =>
+export const notificationAddUpdateEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.UPDATE_COMPLETE),
+    filter(isOfType(AssetsActionTypes.UPDATE_COMPLETE)),
     mergeMap(() =>
       of(
         notificationsAddSuccess({
@@ -172,10 +180,12 @@ export const notificationAddUpdateEpic = (action$: any) =>
  * Listen for asset update errors:
  * - Display error notification
  */
-export const notificationsAddUpdateErrorEpic = (action$: any) =>
+export const notificationsAddUpdateErrorEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
   action$.pipe(
-    ofType(AssetsActionTypes.UPDATE_ERROR),
-    mergeMap((action: any) => {
+    filter(isOfType(AssetsActionTypes.UPDATE_ERROR)),
+    mergeMap(action => {
       const error = action.payload?.error
       return of(
         notificationsAddError({

@@ -8,7 +8,7 @@ export type DebugReducerState = {
 
 // Actions
 
-export type DebugSetBadConnection = {
+export type DebugSetBadConnectionAction = {
   payload: {
     badConnection: boolean
   }
@@ -17,4 +17,4 @@ export type DebugSetBadConnection = {
 
 // All actions
 
-export type DebugActions = DebugSetBadConnection
+export type DebugActions = DebugSetBadConnectionAction

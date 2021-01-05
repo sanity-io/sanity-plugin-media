@@ -255,7 +255,6 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   ref={register}
                   value={assetSnapshot?.tags}
                 />
-
                 {/* Filename */}
                 <FormFieldInputFilename
                   disabled={!item || item?.updating}
