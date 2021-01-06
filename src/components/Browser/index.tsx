@@ -32,9 +32,10 @@ const Browser: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleAssetUpdate = (update: MutationEvent) => {
-    const {documentId, result, transition, type} = update
+    const {documentId, result, transition} = update
 
-    if (type !== 'mutation') {
+    // Ignore draft updates
+    if (documentId.startsWith('drafts.')) {
       return
     }
 
@@ -56,14 +57,15 @@ const Browser: FC<Props> = (props: Props) => {
   }
 
   const handleTagUpdate = (update: MutationEvent) => {
-    const {documentId, result, transition, type} = update
+    const {documentId, result, transition} = update
 
-    if (type !== 'mutation') {
+    // Ignore draft updates
+    if (documentId.startsWith('drafts.')) {
       return
     }
 
     if (transition === 'appear') {
-      dispatch(tagsListenerCreate({...result, name: result?.name?.current} as Tag))
+      dispatch(tagsListenerCreate(result as Tag))
     }
 
     if (transition === 'disappear') {

@@ -1,6 +1,6 @@
 import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
 import {Box, Card, Flex, Text, studioTheme} from '@sanity/ui'
-import React, {forwardRef} from 'react'
+import React, {FC} from 'react'
 import {Controller, FieldError} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {components} from 'react-select'
@@ -18,16 +18,71 @@ type Props = {
   error?: FieldError
   label: string
   name: string
+  options: {
+    label: string
+    value: string
+  }[]
   placeholder?: string
-  value?: string
+  value?: {label: string; value: string}[]
 }
-
-type Ref = HTMLInputElement
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
 const themeDarkPrimaryGray = studioTheme?.color?.dark?.primary?.spot?.gray
 const themeRadius = studioTheme?.radius
 const themeSpace = studioTheme?.space
+
+const customSelectStyles = {
+  control: (styles: any, {isDisabled}: {isDisabled: boolean}) => ({
+    ...styles,
+    backgroundColor: 'transparent',
+    color: 'white',
+    border: 'none',
+    borderRadius: themeRadius[2],
+    boxShadow: 'inset 0 0 0 1px #272a2e', // TODO: use theme value
+    minHeight: '35px',
+    opacity: isDisabled ? 0.5 : 'inherit',
+    outline: 'none'
+  }),
+  input: (styles: any) => ({
+    ...styles,
+    color: 'white',
+    marginLeft: themeSpace[2]
+  }),
+  multiValue: (styles: any) => ({
+    ...styles,
+    backgroundColor: themeDarkPrimaryGray,
+    borderRadius: themeRadius[2]
+  }),
+  multiValueRemove: (styles: any) => ({
+    ...styles,
+    '&:hover': {
+      background: 'transparent',
+      color: 'inherit'
+    }
+  }),
+  option: (styles: any, {isFocused}: {isFocused: boolean}) => ({
+    ...styles,
+    backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
+    borderRadius: themeRadius[2],
+    color: isFocused ? '#1f2123' : 'inherit', // TODO: use theme value
+    padding: '4px 6px', // TODO: use theme value
+    '&:hover': {
+      backgroundColor: themeDarkPrimaryBlue,
+      color: '#1f2123' // TODO: use theme value
+    }
+  }),
+  placeholder: (styles: any) => ({
+    ...styles,
+    marginLeft: themeSpace[2]
+  }),
+  valueContainer: (styles: any) => ({
+    ...styles,
+    marginBottom: themeSpace[1],
+    marginLeft: themeSpace[1],
+    marginTop: themeSpace[1],
+    padding: 0
+  })
+}
 
 const DropdownIndicator = (props: any) => {
   return (
@@ -86,32 +141,14 @@ const Option = (props: any) => {
   )
 }
 
-const FormFieldInputTags = forwardRef<Ref, Props>((props: Props, ref) => {
-  const {control, description, disabled, error, label, name, placeholder, value} = props
+const FormFieldInputTags: FC<Props> = (props: Props) => {
+  const {control, description, disabled, error, label, name, options, placeholder, value} = props
 
   // Redux
   const dispatch = useDispatch()
-  const allIds = useTypedSelector(state => state.tags.allIds)
-  const byIds = useTypedSelector(state => state.tags.byIds)
   const creating = useTypedSelector(state => state.tags.creating)
 
-  const selectTags = allIds.map(id => {
-    const tag = byIds[id].tag
-
-    return {
-      label: tag.name,
-      value: tag.name
-    }
-  })
-
   // Callbacks
-  const handleChange = (newValue: any, actionMeta: any) => {
-    console.group('Value Changed')
-    console.log(newValue)
-    console.log(`action: ${actionMeta.action}`)
-    console.groupEnd()
-  }
-
   const handleCreate = (value: string) => {
     // Dispatch action to create new tag
     dispatch(tagsCreate(value))
@@ -124,84 +161,42 @@ const FormFieldInputTags = forwardRef<Ref, Props>((props: Props, ref) => {
 
       {/* Select */}
       <Controller
-        as={CreatableSelect}
-        cacheOptions={false}
-        components={{
-          DropdownIndicator,
-          IndicatorSeparator: null,
-          Menu,
-          MenuList,
-          MultiValueLabel,
-          MultiValueRemove,
-          Option
-        }}
         control={control}
-        defaultOptions
-        instanceId="tags"
-        isClearable={false} // TODO: re-enable when we're able to correctly (manually) re-validate on clear
-        isDisabled={creating || disabled}
-        isMulti
-        isLoading={creating}
+        defaultValue={value}
         name={name}
-        onChange={handleChange}
-        onCreateOption={handleCreate}
-        options={selectTags}
-        placeholder={placeholder}
-        styles={{
-          control: (styles: any, {isDisabled}: {isDisabled: boolean}) => ({
-            ...styles,
-            backgroundColor: 'transparent',
-            color: 'white',
-            border: 'none',
-            borderRadius: themeRadius[2],
-            boxShadow: 'inset 0 0 0 1px #272a2e', // TODO: use theme value
-            minHeight: '35px',
-            opacity: isDisabled ? 0.5 : 'inherit',
-            outline: 'none'
-          }),
-          input: (styles: any) => ({
-            ...styles,
-            color: 'white',
-            marginLeft: themeSpace[2]
-          }),
-          multiValue: (styles: any) => ({
-            ...styles,
-            backgroundColor: themeDarkPrimaryGray,
-            borderRadius: themeRadius[2]
-          }),
-          multiValueRemove: (styles: any) => ({
-            ...styles,
-            '&:hover': {
-              background: 'transparent',
-              color: 'inherit'
-            }
-          }),
-          option: (styles: any, {isFocused}: {isFocused: boolean}) => ({
-            ...styles,
-            backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
-            borderRadius: themeRadius[2],
-            color: isFocused ? '#1f2123' : 'inherit', // TODO: use theme value
-            padding: '4px 6px', // TODO: use theme value
-            '&:hover': {
-              backgroundColor: themeDarkPrimaryBlue,
-              color: '#1f2123' // TODO: use theme value
-            }
-          }),
-          placeholder: (styles: any) => ({
-            ...styles,
-            marginLeft: themeSpace[2]
-          }),
-          valueContainer: (styles: any) => ({
-            ...styles,
-            marginBottom: themeSpace[1],
-            marginLeft: themeSpace[1],
-            marginTop: themeSpace[1],
-            padding: 0
-          })
+        render={({onBlur, onChange, value: controllerValue}) => {
+          return (
+            <CreatableSelect
+              cacheOptions={false}
+              components={{
+                DropdownIndicator,
+                IndicatorSeparator: null,
+                Menu,
+                MenuList,
+                MultiValueLabel,
+                MultiValueRemove,
+                Option
+              }}
+              defaultOptions
+              instanceId="tags"
+              isClearable={false} // TODO: re-enable when we're able to correctly (manually) re-validate on clear
+              isDisabled={creating || disabled}
+              isLoading={creating}
+              isMulti
+              name={name}
+              onBlur={onBlur}
+              onChange={onChange}
+              onCreateOption={handleCreate}
+              options={options}
+              placeholder={placeholder}
+              styles={customSelectStyles}
+              value={controllerValue}
+            />
+          )
         }}
       />
     </Box>
   )
-})
+}
 
 export default FormFieldInputTags

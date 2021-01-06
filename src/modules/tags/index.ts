@@ -296,7 +296,7 @@ export const tagsFetch = (): TagsFetchRequestAction => {
         _id,
         _rev,
         _type,
-        'name': name.current
+        name
       } | order(name.current asc),
     }
   `

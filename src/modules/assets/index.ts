@@ -764,6 +764,7 @@ export const assetsFetchPageIndexEpic = (
             mimeType,
             originalFilename,
             size,
+            tags,
             title,
             url
           }`,
@@ -884,9 +885,7 @@ export const assetsUpdateEpic = (
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.patch(asset._id).set(formData).commit())),
-        mergeMap((updatedAsset: any) => {
-          return of(assetsUpdateComplete(updatedAsset._id, options))
-        }),
+        mergeMap((updatedAsset: any) => of(assetsUpdateComplete(updatedAsset._id, options))),
         catchError(error => of(assetsUpdateError(asset, error)))
       )
     })

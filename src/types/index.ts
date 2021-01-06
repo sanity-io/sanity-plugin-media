@@ -2,9 +2,10 @@ import {SanityDocument, SanityImageAssetDocument} from '@sanity/client'
 import {ReactElement} from 'react'
 
 export type Asset = SanityImageAssetDocument & {
-  altText: string
-  description: string
-  title: string
+  altText?: string
+  description?: string
+  tags?: SanityReference[]
+  title?: string
 }
 
 export type AssetItem = {
@@ -62,6 +63,12 @@ export type MarkDef = {_key: string; _type: string}
 export type Order = {
   direction: 'asc' | 'desc'
   field: string
+}
+
+export type SanityReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
 }
 
 export type SearchFacetInputProps =
@@ -160,7 +167,10 @@ export type Span = {
 }
 
 export type Tag = SanityDocument & {
-  name: string
+  name: {
+    _type: 'slug'
+    current: string
+  }
 }
 
 export type TagItem = {

@@ -16,7 +16,7 @@ import {
 import {Asset} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
-import React, {FC, ReactNode, useCallback, useEffect, useState} from 'react'
+import React, {FC, ReactNode, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {AspectRatio} from 'theme-ui'
@@ -47,7 +47,7 @@ const formSchema = yup.object().shape({
 })
 
 // Strip keys with empty strings, undefined or null values
-const sanitiseFormData = (formData: FormData) => {
+const sanitizeFormData = (formData: FormData) => {
   return Object.keys(formData).reduce((acc: Record<string, any>, key) => {
     if (formData[key] !== '' && formData[key] != null) {
       acc[key] = formData[key]
@@ -57,27 +57,81 @@ const sanitiseFormData = (formData: FormData) => {
   }, {})
 }
 
+const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
+  const extensionIndex = asset?.originalFilename?.lastIndexOf(`.${asset.extension}`)
+  return asset?.originalFilename?.slice(0, extensionIndex)
+}
+
 const DialogDetails: FC<Props> = (props: Props) => {
   const {asset, children, id} = props
 
   // State
+  // - Generate a snapshot of the current asset
   const [assetSnapshot, setAssetSnapshot] = useState(asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
 
   // Redux
   const dispatch = useDispatch()
   const item = useTypedSelector(state => state.assets.byIds)[asset?._id || '']
+  const tagIds = useTypedSelector(state => state.tags.allIds)
+  const tagsByIds = useTypedSelector(state => state.tags.byIds)
+
+  const currentAsset = item ? asset : assetSnapshot
+
+  const allTagOptions = tagIds.reduce((acc: {label: string; value: string}[], id) => {
+    const tag = tagsByIds[id]?.tag
+
+    if (tag) {
+      acc.push({
+        label: tag?.name?.current,
+        value: tag?._id
+      })
+    }
+
+    return acc
+  }, [])
+
+  // Map tag references to react-select options, skip over items with nullish labels or values
+  const generateTagOptions = (asset?: Asset) => {
+    return asset?.tags?.reduce((acc: {label: string; value: string}[], v) => {
+      const tag = tagsByIds[v._ref]?.tag
+      if (tag) {
+        acc.push({
+          label: tag?.name?.current,
+          value: tag?._id
+        })
+      }
+      return acc
+    }, [])
+  }
+
+  const generateDefaultValues = (asset?: Asset) => ({
+    altText: asset?.altText || '',
+    description: asset?.description || '',
+    originalFilename: asset ? getFilenameWithoutExtension(asset) : undefined,
+    tags: generateTagOptions(asset) || null,
+    title: asset?.title || ''
+  })
+
+  // Generate a string from all current tag labels
+  // This is used purely to determine tag updates to then update the form in real time
+  const currentTagLabels = generateTagOptions(currentAsset)
+    ?.map(tag => tag.label)
+    .join(',')
+
+  const imageUrl = currentAsset ? imageDprUrl(currentAsset, 250) : undefined
 
   // react-hook-form
   const {control, errors, formState, handleSubmit, register, reset} = useForm({
-    mode: 'all', // NOTE: this forces re-renders on all changes!
+    defaultValues: generateDefaultValues(asset),
+    mode: 'onChange',
     resolver: yupResolver(formSchema)
   })
 
   // Callbacks
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     dispatch(dialogRemove(id))
-  }, [])
+  }
 
   const handleDelete = () => {
     if (!asset) {
@@ -91,14 +145,12 @@ const DialogDetails: FC<Props> = (props: Props) => {
     )
   }
 
-  const handleUpdate = (update: MutationEvent) => {
-    const {result, transition, type} = update
+  const handleAssetUpdate = (update: MutationEvent) => {
+    const {result, transition} = update
 
-    if (result && transition === 'update' && type === 'mutation') {
+    if (result && transition === 'update') {
+      // Regenerate asset snapshot
       setAssetSnapshot(result as Asset)
-
-      // Reset react-hook-form
-      reset()
     }
   }
 
@@ -108,16 +160,24 @@ const DialogDetails: FC<Props> = (props: Props) => {
       return
     }
 
-    // Sanitise form data: strip nullish values
-    const sanitisedFormData = sanitiseFormData(formData)
+    // Sanitize form data: strip nullish values
+    const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(
       assetsUpdate(
         asset,
         // Form data
         {
-          ...sanitisedFormData,
-          originalFilename: `${sanitisedFormData.originalFilename}.${asset.extension}` // Append extension to filename
+          ...sanitizedFormData,
+          // Append extension to filename
+          originalFilename: `${sanitizedFormData.originalFilename}.${asset.extension}`,
+          // Map tags to sanity references
+          tags:
+            sanitizedFormData?.tags?.map((tag: {label: string; value: string}) => ({
+              _ref: tag.value,
+              _type: 'reference',
+              _weak: true
+            })) || null
         },
         // Options
         {
@@ -128,26 +188,36 @@ const DialogDetails: FC<Props> = (props: Props) => {
   }
 
   // Effects
-  // - Fetch initial value + initialize subscriber
+  // - Listen for asset mutations and update snapshot
   useEffect(() => {
-    // Remember that Sanity listeners ignore joins, order clauses and projections
-    const QUERY = groq`*[_id == $id]`
-
     if (!asset) {
       return
     }
 
-    // Listen for changes
-    const subscription = client.listen(QUERY, {id: asset._id}).subscribe(handleUpdate)
+    // Remember that Sanity listeners ignore joins, order clauses and projections
+    // - current asset
+    const subscriptionAsset = client
+      .listen(groq`*[_id == $id]`, {id: asset._id})
+      .subscribe(handleAssetUpdate)
 
     return () => {
-      if (subscription) {
-        subscription.unsubscribe()
-      }
+      subscriptionAsset?.unsubscribe()
     }
   }, [])
 
-  const imageUrl = assetSnapshot ? imageDprUrl(assetSnapshot, 250) : undefined
+  // - Partially reset form when current tags have changed
+  useEffect(() => {
+    reset(
+      {
+        tags: generateTagOptions(currentAsset)
+      },
+      {
+        errors: true,
+        dirtyFields: true,
+        isDirty: true
+      }
+    )
+  }, [currentTagLabels])
 
   const Footer = () => (
     <Box padding={3}>
@@ -174,9 +244,6 @@ const DialogDetails: FC<Props> = (props: Props) => {
     </Box>
   )
 
-  const extensionIndex = assetSnapshot?.originalFilename?.lastIndexOf(`.${assetSnapshot.extension}`)
-  const filenameWithoutExtension = assetSnapshot?.originalFilename?.slice(0, extensionIndex)
-
   return (
     <Dialog
       footer={<Footer />}
@@ -190,17 +257,17 @@ const DialogDetails: FC<Props> = (props: Props) => {
         <Box padding={4}>
           {/* Image */}
           {imageUrl && (
-            <AspectRatio ratio={assetSnapshot?.metadata?.dimensions?.aspectRatio}>
+            <AspectRatio ratio={currentAsset?.metadata?.dimensions?.aspectRatio}>
               <Image
                 draggable={false}
-                showCheckerboard={!assetSnapshot?.metadata?.isOpaque}
+                showCheckerboard={!currentAsset?.metadata?.isOpaque}
                 src={imageUrl}
               />
             </AspectRatio>
           )}
 
           {/* Metadata */}
-          {assetSnapshot && <AssetMetadata asset={assetSnapshot} item={item} />}
+          {currentAsset && <AssetMetadata asset={currentAsset} item={item} />}
         </Box>
 
         <Box padding={4}>
@@ -252,18 +319,18 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   error={errors?.tags}
                   label="Tags"
                   name="tags"
-                  ref={register}
-                  value={assetSnapshot?.tags}
+                  options={allTagOptions}
+                  value={generateTagOptions(currentAsset)}
                 />
                 {/* Filename */}
                 <FormFieldInputFilename
                   disabled={!item || item?.updating}
                   error={errors?.originalFilename}
-                  extension={assetSnapshot?.extension || ''}
+                  extension={currentAsset?.extension || ''}
                   label="Filename"
                   name="originalFilename"
                   ref={register}
-                  value={filenameWithoutExtension}
+                  value={getFilenameWithoutExtension(currentAsset)}
                 />
                 {/* Alt text */}
                 <FormFieldInputText
@@ -272,7 +339,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   label="Alt Text"
                   name="altText"
                   ref={register}
-                  value={assetSnapshot?.altText}
+                  value={currentAsset?.altText}
                 />
                 {/* Title */}
                 <FormFieldInputText
@@ -281,7 +348,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   label="Title"
                   name="title"
                   ref={register}
-                  value={assetSnapshot?.title}
+                  value={currentAsset?.title}
                 />
                 {/* Description */}
                 <FormFieldInputTextarea
@@ -291,7 +358,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   name="description"
                   ref={register}
                   rows={3}
-                  value={assetSnapshot?.description}
+                  value={currentAsset?.description}
                 />
               </Stack>
             </TabPanel>
@@ -301,7 +368,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
               hidden={tabSection !== 'references'}
               id="references-panel"
             >
-              {item?.asset && <DocumentList assetId={item.asset._id} />}
+              {asset && <DocumentList assetId={asset._id} />}
             </TabPanel>
           </Box>
         </Box>
