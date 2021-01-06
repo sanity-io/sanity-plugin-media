@@ -1,4 +1,4 @@
-import {Dialog} from '@types'
+import {Dialog, Tag} from '@types'
 
 import {DialogActionTypes} from './index'
 
@@ -9,6 +9,14 @@ export type DialogReducerState = {
 }
 
 // Actions
+
+export type DialogAddCreatedTagAction = {
+  payload: {
+    assetId: string
+    tagId: string
+  }
+  type: DialogActionTypes.ADD_CREATED_TAG
+}
 
 export type DialogClearAction = {
   type: DialogActionTypes.CLEAR
@@ -45,6 +53,7 @@ export type DialogShowSearchFacetsAction = {
 // All actions
 
 export type DialogActions =
+  | DialogAddCreatedTagAction
   | DialogClearAction
   | DialogRemoveAction
   | DialogShowDeleteConfirmAction

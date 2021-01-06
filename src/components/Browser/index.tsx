@@ -34,11 +34,6 @@ const Browser: FC<Props> = (props: Props) => {
   const handleAssetUpdate = (update: MutationEvent) => {
     const {documentId, result, transition} = update
 
-    // Ignore draft updates
-    if (documentId.startsWith('drafts.')) {
-      return
-    }
-
     // TODO: asset added
     if (transition === 'appear') {
       // TODO: how do we deal with 'allIds' ???
@@ -58,11 +53,6 @@ const Browser: FC<Props> = (props: Props) => {
 
   const handleTagUpdate = (update: MutationEvent) => {
     const {documentId, result, transition} = update
-
-    // Ignore draft updates
-    if (documentId.startsWith('drafts.')) {
-      return
-    }
 
     if (transition === 'appear') {
       dispatch(tagsListenerCreate(result as Tag))
@@ -88,11 +78,11 @@ const Browser: FC<Props> = (props: Props) => {
     // Listen for asset + tag changes
     // (Remember that Sanity listeners ignore joins, order clauses and projections!)
     const subscriptionAsset = client
-      .listen(groq`*[_type == "sanity.imageAsset"]`)
+      .listen(groq`*[_type == "sanity.imageAsset" && !(_id in path("drafts.**"))]`)
       .subscribe(handleAssetUpdate)
 
     const subscriptionTag = client //
-      .listen(groq`*[_type == "mediaTag"]`)
+      .listen(groq`*[_type == "mediaTag" && !(_id in path("drafts.**"))]`)
       .subscribe(handleTagUpdate)
 
     return () => {

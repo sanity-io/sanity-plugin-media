@@ -1,5 +1,5 @@
 import {Box, Button, Dialog, Flex, Stack, Text} from '@sanity/ui'
-import {Asset} from '@types'
+import {DialogDeleteConfirm} from '@types'
 import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 
@@ -9,21 +9,23 @@ import {WarningOutlineIcon} from '@sanity/icons'
 import {assetsDelete, assetsDeletePicked} from '../../modules/assets'
 
 type Props = {
-  asset?: Asset
   children?: ReactNode
-  closeDialogId?: string
-  id: string
+  dialog: DialogDeleteConfirm
 }
 
 const DialogDeleteConfirm: FC<Props> = (props: Props) => {
-  const {asset, children, closeDialogId, id} = props
+  const {
+    children,
+    dialog: {assetId, closeDialogId, id}
+  } = props
 
   // Redux
   const dispatch = useDispatch()
   const byIds = useTypedSelector(state => state.assets.byIds)
-
   const items = Object.values(byIds)
 
+  const item = byIds[assetId || '']
+  const asset = item?.asset
   const picked = items?.filter(item => item?.picked)
 
   // Callbacks

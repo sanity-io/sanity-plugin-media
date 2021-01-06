@@ -2,12 +2,10 @@ import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
 import {Box, Card, Flex, Text, studioTheme} from '@sanity/ui'
 import React, {FC} from 'react'
 import {Controller, FieldError} from 'react-hook-form'
-import {useDispatch} from 'react-redux'
 import {components} from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {tagsCreate} from '../../modules/tags'
 
 import FormFieldInputLabel from '../FormFieldInputLabel'
 
@@ -18,6 +16,7 @@ type Props = {
   error?: FieldError
   label: string
   name: string
+  onCreateTag: (tagName: string) => void
   options: {
     label: string
     value: string
@@ -142,17 +141,21 @@ const Option = (props: any) => {
 }
 
 const FormFieldInputTags: FC<Props> = (props: Props) => {
-  const {control, description, disabled, error, label, name, options, placeholder, value} = props
+  const {
+    control,
+    description,
+    disabled,
+    error,
+    label,
+    name,
+    onCreateTag,
+    options,
+    placeholder,
+    value
+  } = props
 
   // Redux
-  const dispatch = useDispatch()
   const creating = useTypedSelector(state => state.tags.creating)
-
-  // Callbacks
-  const handleCreate = (value: string) => {
-    // Dispatch action to create new tag
-    dispatch(tagsCreate(value))
-  }
 
   return (
     <Box style={{zIndex: 9000}}>
@@ -186,7 +189,7 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
               name={name}
               onBlur={onBlur}
               onChange={onChange}
-              onCreateOption={handleCreate}
+              onCreateOption={onCreateTag}
               options={options}
               placeholder={placeholder}
               styles={customSelectStyles}

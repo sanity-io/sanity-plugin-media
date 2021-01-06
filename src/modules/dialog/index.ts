@@ -5,8 +5,11 @@ import {isOfType} from 'typesafe-actions'
 
 import {AssetsActionTypes} from '../assets'
 import {AssetsActions} from '../assets/types'
+import {TagsActionTypes} from '../tags'
+import {TagsActions} from '../tags/types'
 import {
   DialogActions,
+  DialogAddCreatedTagAction,
   DialogClearAction,
   DialogReducerState,
   DialogRemoveAction,
@@ -20,6 +23,7 @@ import {
  ***********/
 
 export enum DialogActionTypes {
+  ADD_CREATED_TAG = 'DIALOG_ADD_CREATED_TAG',
   CLEAR = 'DIALOG_CLEAR',
   REMOVE = 'DIALOG_REMOVE',
   SHOW_DELETE_CONFIRM = 'DIALOG_SHOW_DELETE_CONFIRM',
@@ -42,6 +46,13 @@ export default function dialogReducer(
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
+      case DialogActionTypes.ADD_CREATED_TAG:
+        draft.items.forEach(item => {
+          if (item.type === 'details' && item.assetId === action.payload.assetId) {
+            item.lastCreatedTagId = action.payload.tagId
+          }
+        })
+        break
       case DialogActionTypes.CLEAR:
         draft.items = []
         break
@@ -82,6 +93,15 @@ export default function dialogReducer(
 /*******************
  * ACTION CREATORS *
  *******************/
+
+/**
+ * Add created tag to edit dialog
+ */
+
+export const dialogAddCreatedTag = (tagId: string, assetId: string): DialogAddCreatedTagAction => ({
+  payload: {assetId, tagId},
+  type: DialogActionTypes.ADD_CREATED_TAG
+})
 
 /**
  * Clear all dialogs
@@ -152,6 +172,26 @@ export const dialogClearOnAssetUpdateEpic = (
       const dialogId = action?.payload?.options?.closeDialogId
       if (dialogId) {
         return of(dialogRemove(dialogId))
+      } else {
+        return empty()
+      }
+    })
+  )
+
+/**
+ * Listen for successful tag creates:
+ * - Clear dialog if a dialog ID has been passed
+ */
+
+export const dialogTagCreateEpic = (action$: Observable<TagsActions>): Observable<DialogActions> =>
+  action$.pipe(
+    filter(isOfType(TagsActionTypes.CREATE_COMPLETE)),
+    // filter(action => !!action?.payload?.options?.closeDialogId),
+    mergeMap(action => {
+      const assetId = action?.payload?.options?.assetId
+
+      if (assetId) {
+        return of(dialogAddCreatedTag(action.payload.tag._id, assetId))
       } else {
         return empty()
       }

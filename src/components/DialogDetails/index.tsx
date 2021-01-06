@@ -13,7 +13,7 @@ import {
   TabPanel,
   Text
 } from '@sanity/ui'
-import {Asset} from '@types'
+import {Asset, DialogDetails} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
 import React, {FC, ReactNode, useEffect, useState} from 'react'
@@ -25,6 +25,7 @@ import * as yup from 'yup'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsUpdate} from '../../modules/assets'
 import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
+import {tagsCreate} from '../../modules/tags'
 import imageDprUrl from '../../util/imageDprUrl'
 import AssetMetadata from '../AssetMetadata'
 import DocumentList from '../DocumentList'
@@ -35,9 +36,8 @@ import FormFieldInputTextarea from '../FormFieldInputTextarea'
 import Image from '../Image'
 
 type Props = {
-  asset?: Asset
   children: ReactNode
-  id: string
+  dialog: DialogDetails
 }
 
 type FormData = yup.InferType<typeof formSchema>
@@ -63,18 +63,24 @@ const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
 }
 
 const DialogDetails: FC<Props> = (props: Props) => {
-  const {asset, children, id} = props
+  const {
+    children,
+    dialog: {assetId, id, lastCreatedTagId}
+  } = props
+
+  // Redux
+  const dispatch = useDispatch()
+  const byIds = useTypedSelector(state => state.assets.byIds)
+  const item = byIds[assetId || '']
+  const tagIds = useTypedSelector(state => state.tags.allIds)
+  const tagsByIds = useTypedSelector(state => state.tags.byIds)
+
+  const asset = item?.asset
 
   // State
   // - Generate a snapshot of the current asset
   const [assetSnapshot, setAssetSnapshot] = useState(asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
-
-  // Redux
-  const dispatch = useDispatch()
-  const item = useTypedSelector(state => state.assets.byIds)[asset?._id || '']
-  const tagIds = useTypedSelector(state => state.tags.allIds)
-  const tagsByIds = useTypedSelector(state => state.tags.byIds)
 
   const currentAsset = item ? asset : assetSnapshot
 
@@ -122,7 +128,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
   const imageUrl = currentAsset ? imageDprUrl(currentAsset, 250) : undefined
 
   // react-hook-form
-  const {control, errors, formState, handleSubmit, register, reset} = useForm({
+  const {control, errors, formState, getValues, handleSubmit, register, reset, setValue} = useForm({
     defaultValues: generateDefaultValues(asset),
     mode: 'onChange',
     resolver: yupResolver(formSchema)
@@ -152,6 +158,15 @@ const DialogDetails: FC<Props> = (props: Props) => {
       // Regenerate asset snapshot
       setAssetSnapshot(result as Asset)
     }
+  }
+
+  const handleCreateTag = (tagName: string) => {
+    // Dispatch action to create new tag
+    dispatch(
+      tagsCreate(tagName, {
+        assetId: currentAsset?._id
+      })
+    )
   }
 
   // - submit react-hook-form
@@ -218,6 +233,24 @@ const DialogDetails: FC<Props> = (props: Props) => {
       }
     )
   }, [currentTagLabels])
+
+  // - Update tags field with new tag if one has been created
+  useEffect(() => {
+    if (lastCreatedTagId) {
+      const tag = tagsByIds[lastCreatedTagId]?.tag
+      if (tag) {
+        const existingTags = getValues('tags') || []
+        const updatedTags = existingTags.concat([
+          {
+            label: tag.name.current,
+            value: tag.name.current
+          }
+        ])
+
+        setValue('tags', updatedTags)
+      }
+    }
+  }, [lastCreatedTagId])
 
   const Footer = () => (
     <Box padding={3}>
@@ -319,6 +352,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   error={errors?.tags}
                   label="Tags"
                   name="tags"
+                  onCreateTag={handleCreateTag}
                   options={allTagOptions}
                   value={generateTagOptions(currentAsset)}
                 />

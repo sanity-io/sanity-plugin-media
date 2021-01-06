@@ -14,7 +14,7 @@ import assets, {
   assetsUpdateEpic
 } from './assets'
 import debug from './debug'
-import dialog, {dialogClearOnAssetUpdateEpic} from './dialog'
+import dialog, {dialogClearOnAssetUpdateEpic, dialogTagCreateEpic} from './dialog'
 import document from './document'
 import selectedAssets from './selectedAssets'
 import notifications, {
@@ -38,6 +38,7 @@ export const rootEpic = combineEpics(
   assetsUnpickEpic,
   assetsUpdateEpic,
   dialogClearOnAssetUpdateEpic,
+  dialogTagCreateEpic,
   notificationsAddDeleteErrorsEpic,
   notificationsAddFetchErrorEpic,
   notificationsAddSuccessEpic,

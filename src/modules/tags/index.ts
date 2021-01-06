@@ -104,7 +104,7 @@ export default function tagsReducerState(
       case TagsActionTypes.DELETE_COMPLETE: {
         const tagId = action.payload?.tagId
         const deleteIndex = draft.allIds.indexOf(tagId)
-        if (deleteIndex > 0) {
+        if (deleteIndex >= 0) {
           draft.allIds.splice(deleteIndex, 1)
         }
         delete draft.byIds[tagId]
@@ -219,7 +219,7 @@ export default function tagsReducerState(
       case TagsActionTypes.LISTENER_DELETE: {
         const tagId = action.payload?.tagId
         const deleteIndex = draft.allIds.indexOf(tagId)
-        if (deleteIndex > 0) {
+        if (deleteIndex >= 0) {
           draft.allIds.splice(deleteIndex, 1)
         }
         delete draft.byIds[tagId]
@@ -246,13 +246,22 @@ export default function tagsReducerState(
  *******************/
 
 // Create started
-export const tagsCreate = (name: string): TagsCreateRequestAction => ({
-  payload: {name},
+export const tagsCreate = (
+  name: string,
+  options?: {
+    assetId?: string
+  }
+): TagsCreateRequestAction => ({
+  payload: {name, options},
   type: TagsActionTypes.CREATE_REQUEST
 })
 
 // Create success
-export const tagsCreateComplete = (): TagsCreateCompleteAction => ({
+export const tagsCreateComplete = (
+  tag: Tag,
+  options?: {assetId?: string}
+): TagsCreateCompleteAction => ({
+  payload: {options, tag},
   type: TagsActionTypes.CREATE_COMPLETE
 })
 
@@ -354,7 +363,7 @@ export const tagsCreateEpic = (
     filter(isOfType(TagsActionTypes.CREATE_REQUEST)),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const {name} = action.payload
+      const {name, options} = action.payload
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
@@ -369,7 +378,7 @@ export const tagsCreateEpic = (
             })
           )
         ),
-        mergeMap(() => of(tagsCreateComplete())),
+        mergeMap(result => of(tagsCreateComplete(result as Tag, options))),
         catchError(error => of(tagsCreateError(name, error)))
       )
     })

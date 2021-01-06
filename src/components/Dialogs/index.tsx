@@ -9,7 +9,6 @@ import DialogSearchFacets from '../DialogSearchFacets'
 const Dialogs: FC = () => {
   // Redux
   const dialogs = useTypedSelector(state => state.dialog.items)
-  const byIds = useTypedSelector(state => state.assets.byIds)
 
   const renderDialogs = (dialogs: Dialog[], index: number) => {
     if (dialogs.length === 0 || index >= dialogs.length) {
@@ -17,18 +16,11 @@ const Dialogs: FC = () => {
     }
 
     const dialog = dialogs[index]
-    const item = dialog?.assetId ? byIds[dialog.assetId] : undefined
-
     const childDialogs = renderDialogs(dialogs, index + 1)
 
     if (dialog.type === 'deleteConfirm') {
       return (
-        <DialogDeleteConfirm
-          asset={item?.asset}
-          closeDialogId={dialog.closeDialogId}
-          id={dialog.id}
-          key={index}
-        >
+        <DialogDeleteConfirm dialog={dialog} key={index}>
           {childDialogs}
         </DialogDeleteConfirm>
       )
@@ -36,7 +28,7 @@ const Dialogs: FC = () => {
 
     if (dialog.type === 'details') {
       return (
-        <DialogDetails asset={item?.asset} id={dialog.id} key={index}>
+        <DialogDetails dialog={dialog} key={index}>
           {childDialogs}
         </DialogDetails>
       )
@@ -44,7 +36,7 @@ const Dialogs: FC = () => {
 
     if (dialog.type === 'searchFacets') {
       return (
-        <DialogSearchFacets id={dialog.id} key={index}>
+        <DialogSearchFacets dialog={dialog} key={index}>
           {childDialogs}
         </DialogSearchFacets>
       )

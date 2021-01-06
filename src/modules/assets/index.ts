@@ -147,7 +147,8 @@ export default function assetsReducerState(
       case AssetsActionTypes.DELETE_COMPLETE: {
         const assetId = action.payload?.assetId
         const deleteIndex = draft.allIds.indexOf(assetId)
-        if (deleteIndex > 0) {
+
+        if (deleteIndex >= 0) {
           draft.allIds.splice(deleteIndex, 1)
         }
         delete draft.byIds[assetId]
@@ -235,7 +236,7 @@ export default function assetsReducerState(
       case AssetsActionTypes.LISTENER_DELETE: {
         const assetId = action.payload?.assetId
         const deleteIndex = draft.allIds.indexOf(assetId)
-        if (deleteIndex > 0) {
+        if (deleteIndex >= 0) {
           draft.allIds.splice(deleteIndex, 1)
         }
         draft.lastTouched = new Date().getTime()

@@ -17,6 +17,12 @@ export type TagsReducerState = {
 // Actions
 
 export type TagsCreateCompleteAction = {
+  payload: {
+    options?: {
+      assetId?: string
+    }
+    tag: Tag
+  }
   type: TagsActionTypes.CREATE_COMPLETE
 }
 
@@ -29,7 +35,12 @@ export type TagsCreateErrorAction = {
 }
 
 export type TagsCreateRequestAction = {
-  payload: {name: string}
+  payload: {
+    name: string
+    options?: {
+      assetId?: string
+    }
+  }
   type: TagsActionTypes.CREATE_REQUEST
 }
 
