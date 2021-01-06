@@ -461,7 +461,7 @@ export const assetsDeletePicked = (): AssetsDeletePickedAction => ({
  * @param {String} [options.sort] - GROQ sort
  */
 export const assetsFetch = ({
-  filter = groq`_type == "sanity.imageAsset"`,
+  filter = groq`_type == "sanity.imageAsset" && !(_id in path("drafts.**"))`,
   params = {},
   projections = groq`{
     _id,
@@ -900,7 +900,7 @@ export const assetsUpdateEpic = (
  */
 
 const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: string) => {
-  const baseFilter = groq`_type == "sanity.imageAsset"` // all images
+  const baseFilter = groq`_type == "sanity.imageAsset" && !(_id in path("drafts.**"))` // all images
 
   const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
     const {operatorType, value} = facet
