@@ -961,7 +961,12 @@ const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: st
     // Base filter
     baseFilter,
     // Search query (if present)
-    ...(searchQuery ? [groq` originalFilename match '*${searchQuery.trim()}*'`] : []),
+    // NOTE: Currently this only searches direct fields on sanity.imageAsset and NOT referenced tags
+    // It's possible to add this by adding the following line to the searchQuery, but it's quite slow
+    // references(*[_type == "mediaTag" && name.current == "${searchQuery.trim()}"]._id)
+    ...(searchQuery
+      ? [groq`[altText, description, originalFilename, title] match '*${searchQuery.trim()}*'`]
+      : []),
     // Search facets
     ...searchFacetFragments
   ].join(' && ')

@@ -38,7 +38,7 @@ const TextInputSearch: FC = () => {
         fontSize={1}
         icon={SearchIcon}
         onChange={handleChange}
-        placeholder="Search filename"
+        placeholder="Search"
         radius={2}
         value={searchQuery}
       />
