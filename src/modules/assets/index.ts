@@ -275,20 +275,20 @@ export default function assetsReducerState(
         break
       }
       /**
-       * All assets have been picked.
+       * All (visible) assets have been picked.
        */
       case AssetsActionTypes.PICK_ALL:
-        Object.keys(draft.byIds).forEach(key => {
-          draft.byIds[key].picked = true
+        draft.allIds.forEach(id => {
+          draft.byIds[id].picked = true
         })
         break
       /**
-       * All assets have been unpicked.
+       * All (visible) assets have been unpicked.
        */
       case AssetsActionTypes.PICK_CLEAR:
         draft.lastPicked = undefined
-        Object.keys(draft.byIds).forEach(key => {
-          draft.byIds[key].picked = false
+        draft.allIds.forEach(id => {
+          draft.byIds[id].picked = false
         })
         break
       /**
