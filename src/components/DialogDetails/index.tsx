@@ -34,10 +34,13 @@ const formSchema = yup.object().shape({
   originalFilename: yup.string().required('Filename cannot be empty')
 })
 
-// Strip keys with empty strings, undefined or null values
+// Sanitize form data: convert empty strings and undefined values to null.
+// null values will correctly unset / delete fields
 const sanitizeFormData = (formData: FormData) => {
   return Object.keys(formData).reduce((acc: Record<string, any>, key) => {
-    if (formData[key] !== '' && formData[key] != null) {
+    if (formData[key] === '' || typeof formData[key] === 'undefined') {
+      acc[key] = null
+    } else {
       acc[key] = formData[key]
     }
 
@@ -166,7 +169,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
       return
     }
 
-    // Sanitize form data: strip nullish values
+    // Sanitize form data: convert empty strings and undefined values to null
     const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(
