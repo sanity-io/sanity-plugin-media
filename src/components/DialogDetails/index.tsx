@@ -157,6 +157,9 @@ const DialogDetails: FC<Props> = (props: Props) => {
     if (result && transition === 'update') {
       // Regenerate asset snapshot
       setAssetSnapshot(result as Asset)
+
+      // Reset react-hook-form
+      reset(generateDefaultValues(result as Asset))
     }
   }
 
