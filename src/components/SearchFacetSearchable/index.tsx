@@ -1,37 +1,55 @@
 import {SelectIcon} from '@sanity/icons'
-import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem, TextInput} from '@sanity/ui'
-import {SearchFacetInputStringProps, SearchFacetOperatorType} from '@types'
-import React, {ChangeEvent, FC} from 'react'
+import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
+import {ReactSelectOption, SearchFacetInputSearchableProps, SearchFacetOperatorType} from '@types'
+import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
+import Select from 'react-select'
 
 import {SEARCH_FACET_OPERATORS} from '../../constants'
+import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsSearchFacetsUpdate} from '../../modules/assets'
+import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/single'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
-  facet: SearchFacetInputStringProps
+  facet: SearchFacetInputSearchableProps
 }
 
-const SearchFacetString: FC<Props> = (props: Props) => {
+const SearchFacetSearchable: FC<Props> = (props: Props) => {
   const {facet} = props
 
   // Redux
   const dispatch = useDispatch()
+  const tagIds = useTypedSelector(state => state.tags.allIds)
+  const tagsByIds = useTypedSelector(state => state.tags.byIds)
+
+  const allTagOptions = tagIds.reduce((acc: {label: string; value: string}[], id) => {
+    const tag = tagsByIds[id]?.tag
+
+    if (tag) {
+      acc.push({
+        label: tag?.name?.current,
+        value: tag?._id
+      })
+    }
+
+    return acc
+  }, [])
+
+  const handleChange = (option: ReactSelectOption) => {
+    dispatch(
+      assetsSearchFacetsUpdate({
+        ...facet,
+        value: option
+      })
+    )
+  }
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
       assetsSearchFacetsUpdate({
         ...facet,
         operatorType
-      })
-    )
-  }
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      assetsSearchFacetsUpdate({
-        ...facet,
-        value: e.target.value
       })
     )
   }
@@ -75,13 +93,19 @@ const SearchFacetString: FC<Props> = (props: Props) => {
 
       {/* Value */}
       {!SEARCH_FACET_OPERATORS[selectedOperatorType].hideInput && (
-        <Box marginLeft={1} style={{maxWidth: '125px'}}>
-          <TextInput
-            fontSize={1}
-            onChange={handleChange}
-            padding={2}
-            radius={2}
-            width={2}
+        <Box marginX={1} style={{width: '140px'}}>
+          <Select
+            components={reactSelectComponents}
+            instanceId="facet-searchable"
+            isClearable
+            isSearchable
+            menuPortalTarget={document.body}
+            name="tags-x"
+            noOptionsMessage={() => 'No tags'}
+            onChange={value => handleChange(value as ReactSelectOption)}
+            options={allTagOptions}
+            placeholder="Select"
+            styles={reactSelectStyles}
             value={facet?.value}
           />
         </Box>
@@ -90,4 +114,4 @@ const SearchFacetString: FC<Props> = (props: Props) => {
   )
 }
 
-export default SearchFacetString
+export default SearchFacetSearchable

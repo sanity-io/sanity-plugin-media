@@ -46,8 +46,8 @@ const SearchFacet: FC<Props> = (props: Props) => {
           {children}
 
           {/* Close button */}
-          <Box paddingLeft={3} paddingRight={2} style={{opacity: 0.75}}>
-            <Text size={0}>
+          <Box marginLeft={1} paddingX={2}>
+            <Text muted size={0}>
               <CloseIcon onClick={handleClose} />
             </Text>
           </Box>

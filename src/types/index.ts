@@ -87,6 +87,7 @@ export type SanityReference = {
 
 export type SearchFacetInputProps =
   | SearchFacetInputNumberProps
+  | SearchFacetInputSearchableProps
   | SearchFacetInputSelectProps
   | SearchFacetInputStringProps
 
@@ -110,15 +111,28 @@ export type SearchFacetInputNumberProps = {
   value?: number
 }
 
-export type SearchFacetInputSelectProps = {
+export type SearchFacetInputSearchableProps = {
+  field: string
   name: string
-  title: string
-  type: 'select'
   operatorType: SearchFacetOperatorType
   options?: {
     list?: SearchFacetInputSelectListItemProps[]
     operatorTypes?: (SearchFacetOperatorType | null)[]
   }
+  title: string
+  type: 'searchable'
+  value?: ReactSelectOption
+}
+
+export type SearchFacetInputSelectProps = {
+  name: string
+  operatorType: SearchFacetOperatorType
+  options?: {
+    list?: SearchFacetInputSelectListItemProps[]
+    operatorTypes?: (SearchFacetOperatorType | null)[]
+  }
+  title: string
+  type: 'select'
   value: string
 }
 
@@ -143,6 +157,7 @@ export type SearchFacetInputStringProps = {
 
 export type SearchFacetOperatorType =
   | 'doesNotInclude'
+  | 'doesNotReference'
   | 'empty'
   | 'equalTo'
   | 'greaterThan'
@@ -153,6 +168,7 @@ export type SearchFacetOperatorType =
   | 'lessThan'
   | 'lessThanOrEqualTo'
   | 'notEmpty'
+  | 'references'
 
 export type SearchFacetOperators = Record<
   SearchFacetOperatorType,
@@ -169,8 +185,8 @@ export type SelectedAsset = {
   value: string | File
 }
 
-export type SelectItem = {
-  title: string
+export type ReactSelectOption = {
+  label: string
   value: string
 }
 

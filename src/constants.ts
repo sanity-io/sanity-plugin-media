@@ -73,6 +73,10 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
     fn: (value, field) => (value ? `!(${field} match '*${value}*')` : undefined),
     label: 'does not include'
   },
+  doesNotReference: {
+    fn: (value, _) => (value ? `!references('${value}')` : undefined),
+    label: 'does not includes'
+  },
   empty: {
     fn: (_, field) => `!defined(${field})`,
     hideInput: true,
@@ -114,11 +118,26 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
     fn: (_, field) => `defined(${field})`,
     hideInput: true,
     label: 'is not empty'
+  },
+  references: {
+    fn: (value, _) => (value ? `references('${value}')` : undefined),
+    label: 'includes'
   }
 }
 
 // null values are represented as menu dividers
 export const FACETS: (SearchFacetInputProps | null)[] = [
+  // Tag
+  {
+    field: 'tags',
+    name: 'tag',
+    title: 'Tags',
+    type: 'searchable',
+    operatorType: 'references',
+    options: {
+      operatorTypes: ['references', 'doesNotReference', null, 'empty', 'notEmpty']
+    }
+  },
   // In use
   {
     name: 'inUse',

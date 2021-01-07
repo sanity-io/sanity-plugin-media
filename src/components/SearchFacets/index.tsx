@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import SearchFacetNumber from '../SearchFacetNumber'
+import SearchFacetSearchable from '../SearchFacetSearchable'
 import SearchFacetSelect from '../SearchFacetSelect'
 import SearchFacetString from '../SearchFacetString'
 
@@ -26,6 +27,10 @@ const SearchFacets: FC<Props> = (props: Props) => {
   const Items = searchFacets.map(facet => {
     if (facet.type === 'number') {
       return <SearchFacetNumber facet={facet} key={facet.name} />
+    }
+
+    if (facet.type === 'searchable') {
+      return <SearchFacetSearchable facet={facet} key={facet.name} />
     }
 
     if (facet.type === 'select') {

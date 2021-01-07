@@ -904,11 +904,11 @@ const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: st
   const baseFilter = groq`_type == "sanity.imageAsset" && !(_id in path("drafts.**"))` // all images
 
   const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
-    const {operatorType, value} = facet
+    const {operatorType} = facet
     const operator = SEARCH_FACET_OPERATORS[operatorType]
 
     if (facet.type === 'number') {
-      const {field, modifier, options} = facet
+      const {field, modifier, options, value} = facet
 
       // Get current modifier
       const currentModifier = options?.modifiers?.find(m => m.name === modifier)
@@ -924,8 +924,17 @@ const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: st
       }
     }
 
+    if (facet.type === 'searchable') {
+      const {field, value} = facet
+
+      const fragment = operator.fn(value?.value, field)
+      if (fragment) {
+        acc.push(fragment)
+      }
+    }
+
     if (facet.type === 'select') {
-      const {options} = facet
+      const {options, value} = facet
 
       const currentListValue = options?.list?.find(l => l.name === value)?.value
 
@@ -936,7 +945,7 @@ const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: st
     }
 
     if (facet.type === 'string') {
-      const {field} = facet
+      const {field, value} = facet
 
       const fragment = operator.fn(value, field)
       if (fragment) {
