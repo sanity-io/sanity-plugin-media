@@ -147,7 +147,8 @@ const Card = (props: Props) => {
         <Box
           flex={1}
           style={{
-            cursor: 'pointer'
+            cursor: 'pointer',
+            position: 'relative'
           }}
         >
           <Image
@@ -160,6 +161,23 @@ const Card = (props: Props) => {
               transition: 'opacity 1000ms'
             }}
           />
+
+          {/* Spinner */}
+          {updating && (
+            <Flex
+              align="center"
+              justify="center"
+              style={{
+                height: '100%',
+                left: 0,
+                position: 'absolute',
+                top: 0,
+                width: '100%'
+              }}
+            >
+              <Spinner />
+            </Flex>
+          )}
         </Box>
 
         {/* Footer */}
@@ -220,23 +238,6 @@ const Card = (props: Props) => {
               </Text>
             </Tooltip>
           </Box>
-        )}
-
-        {/* Spinner */}
-        {updating && (
-          <Flex
-            align="center"
-            justify="center"
-            style={{
-              height: '100%',
-              left: 0,
-              position: 'absolute',
-              top: 0,
-              width: '100%'
-            }}
-          >
-            <Spinner />
-          </Flex>
         )}
       </Container>
     </>
