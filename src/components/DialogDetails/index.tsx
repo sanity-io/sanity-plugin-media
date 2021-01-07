@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Dialog, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
-import {Asset, DialogDetails} from '@types'
+import {Asset, DialogDetails, ReactSelectOption} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
 import React, {FC, ReactNode, useEffect, useRef, useState} from 'react'
@@ -78,7 +78,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
   const currentAsset = item ? asset : assetSnapshot
 
-  const allTagOptions = tagIds.reduce((acc: {label: string; value: string}[], id) => {
+  const allTagOptions = tagIds.reduce((acc: ReactSelectOption[], id) => {
     const tag = tagsByIds[id]?.tag
 
     if (tag) {
@@ -92,8 +92,8 @@ const DialogDetails: FC<Props> = (props: Props) => {
   }, [])
 
   // Map tag references to react-select options, skip over items with nullish labels or values
-  const generateTagOptions = (asset?: Asset) => {
-    return asset?.tags?.reduce((acc: {label: string; value: string}[], v) => {
+  const generateTagOptions = (asset?: Asset): ReactSelectOption[] | null => {
+    const tags = asset?.tags?.reduce((acc: ReactSelectOption[], v) => {
       const tag = tagsByIds[v._ref]?.tag
       if (tag) {
         acc.push({
@@ -103,13 +103,19 @@ const DialogDetails: FC<Props> = (props: Props) => {
       }
       return acc
     }, [])
+
+    if (tags && tags?.length > 0) {
+      return tags
+    }
+
+    return null
   }
 
   const generateDefaultValues = (asset?: Asset) => ({
     altText: asset?.altText || '',
     description: asset?.description || '',
     originalFilename: asset ? getFilenameWithoutExtension(asset) : undefined,
-    tags: generateTagOptions(asset) || null,
+    tags: generateTagOptions(asset),
     title: asset?.title || ''
   })
 
@@ -182,7 +188,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
           originalFilename: `${sanitizedFormData.originalFilename}.${asset.extension}`,
           // Map tags to sanity references
           tags:
-            sanitizedFormData?.tags?.map((tag: {label: string; value: string}) => ({
+            sanitizedFormData?.tags?.map((tag: ReactSelectOption) => ({
               _ref: tag.value,
               _type: 'reference',
               _weak: true

@@ -23,7 +23,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
   const tagIds = useTypedSelector(state => state.tags.allIds)
   const tagsByIds = useTypedSelector(state => state.tags.byIds)
 
-  const allTagOptions = tagIds.reduce((acc: {label: string; value: string}[], id) => {
+  const allTagOptions = tagIds.reduce((acc: ReactSelectOption[], id) => {
     const tag = tagsByIds[id]?.tag
 
     if (tag) {

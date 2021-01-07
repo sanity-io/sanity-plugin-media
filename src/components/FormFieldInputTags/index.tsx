@@ -5,6 +5,7 @@ import CreatableSelect from 'react-select/creatable'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/creatable'
+import {ReactSelectOption} from '../../types'
 import FormFieldInputLabel from '../FormFieldInputLabel'
 
 type Props = {
@@ -20,7 +21,7 @@ type Props = {
     value: string
   }[]
   placeholder?: string
-  value?: {label: string; value: string}[]
+  value?: ReactSelectOption[] | null
 }
 
 const FormFieldInputTags: FC<Props> = (props: Props) => {
