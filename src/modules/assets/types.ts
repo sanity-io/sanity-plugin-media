@@ -10,7 +10,6 @@ export type AssetsReducerState = {
   fetching: boolean
   fetchingError: any
   lastPicked?: string
-  lastTouched?: number
   order: Order
   pageIndex: number
   pageSize: number

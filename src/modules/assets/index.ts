@@ -113,7 +113,6 @@ export const initialState: AssetsReducerState = {
   fetching: false,
   fetchingError: null,
   lastPicked: undefined,
-  lastTouched: undefined,
   order: BROWSER_SELECT[0]?.order as Order,
   pageIndex: 0,
   pageSize: 50,
@@ -239,7 +238,6 @@ export default function assetsReducerState(
         if (deleteIndex >= 0) {
           draft.allIds.splice(deleteIndex, 1)
         }
-        draft.lastTouched = new Date().getTime()
         delete draft.byIds[assetId]
         break
       }
@@ -252,8 +250,6 @@ export default function assetsReducerState(
         if (draft.byIds[asset._id]) {
           draft.byIds[asset._id].asset = asset
         }
-
-        draft.lastTouched = new Date().getTime()
         break
       }
 
