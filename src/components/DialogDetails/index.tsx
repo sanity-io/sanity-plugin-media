@@ -299,7 +299,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
         be below the fold).
       */}
       <Flex direction={['column-reverse', 'column-reverse', 'row-reverse']}>
-        <Box flex={1} padding={4}>
+        <Box flex={1} marginTop={[5, 5, 0]} padding={4}>
           {/* Tabs */}
           <TabList space={2}>
             <Tab
@@ -409,13 +409,11 @@ const DialogDetails: FC<Props> = (props: Props) => {
           {/* Image */}
           {imageUrl && (
             <AspectRatio ratio={1}>
-              {/* <AspectRatio ratio={currentAsset?.metadata?.dimensions?.aspectRatio}> */}
               <Image
                 draggable={false}
                 showCheckerboard={!currentAsset?.metadata?.isOpaque}
                 src={imageUrl}
               />
-              {/* </AspectRatio> */}
             </AspectRatio>
           )}
 

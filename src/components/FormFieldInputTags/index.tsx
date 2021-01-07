@@ -63,6 +63,7 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
               isLoading={creating}
               isMulti
               name={name}
+              noOptionsMessage={() => 'No tags'}
               onBlur={onBlur}
               onChange={onChange}
               onCreateOption={onCreateTag}

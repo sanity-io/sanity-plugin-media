@@ -756,6 +756,7 @@ export const assetsFetchPageIndexEpic = (
             extension,
             metadata {
               dimensions,
+              exif,
               isOpaque,
             },
             mimeType,
