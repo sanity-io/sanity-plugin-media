@@ -322,7 +322,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
             {/* Hidden button to enable enter key submissions */}
             <button style={{display: 'none'}} tabIndex={-1} type="submit" />
 
-            {/* Tab panels */}
+            {/* Panel: details */}
             <TabPanel
               aria-labelledby="details"
               hidden={tabSection !== 'details'}
@@ -381,6 +381,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
               </Stack>
             </TabPanel>
 
+            {/* Panel: References */}
             <TabPanel
               aria-labelledby="references"
               hidden={tabSection !== 'references'}
