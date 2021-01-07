@@ -254,7 +254,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
           }
         ])
 
-        setValue('tags', updatedTags)
+        setValue('tags', updatedTags, {shouldDirty: true})
       }
     }
   }, [lastCreatedTagId])
