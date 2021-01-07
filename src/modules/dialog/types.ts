@@ -1,4 +1,4 @@
-import {Dialog, Tag} from '@types'
+import {Dialog} from '@types'
 
 import {DialogActionTypes} from './index'
 

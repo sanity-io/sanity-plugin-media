@@ -100,6 +100,10 @@ export type TagsListenerUpdateAction = {
   type: TagsActionTypes.LISTENER_UPDATE
 }
 
+export type TagsSortAction = {
+  type: TagsActionTypes.SORT
+}
+
 // All actions
 
 export type TagsActions =
@@ -115,3 +119,4 @@ export type TagsActions =
   | TagsListenerCreateAction
   | TagsListenerDeleteAction
   | TagsListenerUpdateAction
+  | TagsSortAction

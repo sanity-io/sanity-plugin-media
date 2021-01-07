@@ -1,10 +1,9 @@
-import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
+import {AddIcon, CloseIcon} from '@sanity/icons'
 import {Box, Card, Flex, Text, studioTheme} from '@sanity/ui'
 import {components} from 'react-select'
 import React from 'react'
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
-const themeDarkPrimaryGray = studioTheme?.color?.dark?.primary?.spot?.gray
 const themeDarkDefaultBaseBg = studioTheme?.color?.dark?.default?.base?.bg
 const themeRadius = studioTheme?.radius
 const themeSpace = studioTheme?.space
@@ -59,6 +58,7 @@ export const reactSelectStyles = {
   }),
   singleValue: (styles: any) => ({
     ...styles,
+    color: '#fff',
     lineHeight: '1em',
     paddingBottom: '1px'
   }),
@@ -86,20 +86,6 @@ const ClearIndicator = (props: any) => {
   )
 }
 
-/*
-const DropdownIndicator = (props: any) => {
-  return (
-    <components.DropdownIndicator {...props}>
-      <Box paddingX={2}>
-        <Text size={0}>
-          <ChevronDownIcon />
-        </Text>
-      </Box>
-    </components.DropdownIndicator>
-  )
-}
-*/
-
 const Menu = (props: any) => {
   return (
     <components.Menu {...props}>
@@ -120,10 +106,7 @@ const NoOptionsMessage = (props: any) => {
 
 const Option = (props: any) => {
   return (
-    <Box
-      padding={1}
-      // style={{padding: '2px'}}
-    >
+    <Box padding={1}>
       <components.Option {...props}>
         <Flex align="center">
           {props.data.__isNew__ && <AddIcon />}
@@ -137,11 +120,7 @@ const Option = (props: any) => {
 const SingleValue = (props: any) => {
   return (
     <components.SingleValue {...props}>
-      <Box paddingX={2}>
-        <Text size={1} weight="semibold">
-          {props.children}
-        </Text>
-      </Box>
+      <Box paddingX={2}>{props.children}</Box>
     </components.SingleValue>
   )
 }

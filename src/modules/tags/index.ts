@@ -21,7 +21,8 @@ import {
   TagsListenerCreateAction,
   TagsListenerDeleteAction,
   TagsListenerUpdateAction,
-  TagsReducerState
+  TagsReducerState,
+  TagsSortAction
 } from './types'
 import debugThrottle from '../../operators/debugThrottle'
 import {RootReducerState} from '../types'
@@ -42,7 +43,8 @@ export enum TagsActionTypes {
   FETCH_REQUEST = 'TAGS_FETCH_REQUEST',
   LISTENER_CREATE = 'TAGS_LISTENER_CREATE',
   LISTENER_DELETE = 'TAGS_LISTENER_DELETE',
-  LISTENER_UPDATE = 'TAGS_LISTENER_UPDATE'
+  LISTENER_UPDATE = 'TAGS_LISTENER_UPDATE',
+  SORT = 'TAGS_SORT'
 }
 
 /***********
@@ -196,19 +198,8 @@ export default function tagsReducerState(
           updating: false
         }
 
-        // Add tag ID and re-order by name (asc)
-        draft.allIds = [...draft.allIds, tag._id].sort((a, b) => {
-          const tagA = draft.byIds[a].tag
-          const tagB = draft.byIds[b].tag
-
-          if (tagA.name < tagB.name) {
-            return -1
-          } else if (tagA.name > tagB.name) {
-            return 1
-          } else {
-            return 0
-          }
-        })
+        // Add tag ID
+        draft.allIds.push(tag._id)
         break
       }
 
@@ -237,6 +228,21 @@ export default function tagsReducerState(
         }
         break
       }
+
+      case TagsActionTypes.SORT:
+        draft.allIds.sort((a, b) => {
+          const tagA = draft.byIds[a].tag.name.current
+          const tagB = draft.byIds[b].tag.name.current
+
+          if (tagA < tagB) {
+            return -1
+          } else if (tagA > tagB) {
+            return 1
+          } else {
+            return 0
+          }
+        })
+        break
     }
   })
 }
@@ -346,6 +352,11 @@ export const tagsListenerUpdate = (tag: Tag): TagsListenerUpdateAction => ({
   type: TagsActionTypes.LISTENER_UPDATE
 })
 
+// Sort tags
+export const tagsSort = (): TagsSortAction => ({
+  type: TagsActionTypes.SORT
+})
+
 /*********
  * EPICS *
  *********/
@@ -437,5 +448,21 @@ export const tagsFetchEpic = (
         }),
         catchError(error => of(tagsFetchError(error)))
       )
+    })
+  )
+
+/**
+ * Re-sort tags on updates
+ */
+export const tagsSortEpic = (action$: Observable<TagsActions>): Observable<TagsActions> =>
+  action$.pipe(
+    filter(
+      isOfType([
+        TagsActionTypes.LISTENER_UPDATE, //
+        TagsActionTypes.LISTENER_CREATE
+      ])
+    ),
+    switchMap(() => {
+      return of(tagsSort())
     })
   )
