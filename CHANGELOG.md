@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0-beta.2](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.1...v0.5.0-beta.2) (2021-01-07)
+
+
+### Features
+
+* fetch and expose a limited subset of exif metadata ([da9f8bb](https://github.com/robinpyon/sanity-plugin-media/commit/da9f8bb5aa31d7bfec3f7434d483f669d339931f))
+
 ## [0.5.0-beta.1](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.0...v0.5.0-beta.1) (2021-01-07)
 
 
