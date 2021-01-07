@@ -363,15 +363,6 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   ref={register}
                   value={getFilenameWithoutExtension(currentAsset)}
                 />
-                {/* Alt text */}
-                <FormFieldInputText
-                  disabled={!item || item?.updating}
-                  error={errors?.altText}
-                  label="Alt Text"
-                  name="altText"
-                  ref={register}
-                  value={currentAsset?.altText}
-                />
                 {/* Title */}
                 <FormFieldInputText
                   disabled={!item || item?.updating}
@@ -380,6 +371,15 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   name="title"
                   ref={register}
                   value={currentAsset?.title}
+                />
+                {/* Alt text */}
+                <FormFieldInputText
+                  disabled={!item || item?.updating}
+                  error={errors?.altText}
+                  label="Alt Text"
+                  name="altText"
+                  ref={register}
+                  value={currentAsset?.altText}
                 />
                 {/* Description */}
                 <FormFieldInputTextarea

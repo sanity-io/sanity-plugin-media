@@ -29,6 +29,7 @@ export const reactSelectStyles = {
   }),
   menuList: (styles: any) => ({
     ...styles,
+    maxHeight: '146px',
     padding: 0
   }),
   noOptionsMessage: (styles: any) => ({

@@ -25,6 +25,10 @@ export const reactSelectStyles = {
     color: 'white',
     marginLeft: themeSpace[2]
   }),
+  menuList: (styles: any) => ({
+    ...styles,
+    maxHeight: '230px'
+  }),
   multiValue: (styles: any) => ({
     ...styles,
     backgroundColor: themeDarkPrimaryGray,

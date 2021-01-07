@@ -19,10 +19,9 @@ import document from './document'
 import selectedAssets from './selectedAssets'
 import notifications, {
   notificationsAddDeleteErrorsEpic,
-  notificationsAddFetchErrorEpic,
+  notificationsAddGenericErrorEpic,
   notificationsAddSuccessEpic,
-  notificationAddUpdateEpic,
-  notificationsAddUpdateErrorEpic
+  notificationsAddUpdateEpic
 } from './notifications'
 import tags, {tagsCreateEpic, tagsDeleteEpic, tagsFetchEpic, tagsSortEpic} from './tags'
 
@@ -40,10 +39,9 @@ export const rootEpic = combineEpics(
   dialogClearOnAssetUpdateEpic,
   dialogTagCreateEpic,
   notificationsAddDeleteErrorsEpic,
-  notificationsAddFetchErrorEpic,
+  notificationsAddGenericErrorEpic,
   notificationsAddSuccessEpic,
-  notificationAddUpdateEpic,
-  notificationsAddUpdateErrorEpic,
+  notificationsAddUpdateEpic,
   tagsCreateEpic,
   tagsDeleteEpic,
   tagsFetchEpic,

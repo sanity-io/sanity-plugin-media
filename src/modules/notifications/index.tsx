@@ -7,6 +7,8 @@ import {AssetsActionTypes} from '../assets'
 import {NotificationsReducerState, NotificationsActions, NotificationsAddAction} from './types'
 import {isOfType} from 'typesafe-actions'
 import {AssetsActions} from '../assets/types'
+import {TagsActionTypes} from '../tags'
+import {TagsActions} from '../tags/types'
 
 /***********
  * ACTIONS *
@@ -138,30 +140,11 @@ export const notificationsAddDeleteErrorsEpic = (
   )
 
 /**
- * Listen for asset fetch errors:
- * - Display error notification
- */
-export const notificationsAddFetchErrorEpic = (
-  action$: Observable<AssetsActions>
-): Observable<NotificationsActions> =>
-  action$.pipe(
-    filter(isOfType(AssetsActionTypes.FETCH_ERROR)),
-    mergeMap(action => {
-      const error = action.payload?.error
-      return of(
-        notificationsAddError({
-          title: `An error occured: ${error.toString()}`
-        })
-      )
-    })
-  )
-
-/**
  * Listen for successful asset updates:
  * - Display success notification
  */
 
-export const notificationAddUpdateEpic = (
+export const notificationsAddUpdateEpic = (
   action$: Observable<AssetsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(
@@ -179,11 +162,17 @@ export const notificationAddUpdateEpic = (
  * Listen for asset update errors:
  * - Display error notification
  */
-export const notificationsAddUpdateErrorEpic = (
-  action$: Observable<AssetsActions>
+export const notificationsAddGenericErrorEpic = (
+  action$: Observable<AssetsActions | TagsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(
-    filter(isOfType(AssetsActionTypes.UPDATE_ERROR)),
+    filter(
+      isOfType([
+        AssetsActionTypes.FETCH_ERROR, //
+        AssetsActionTypes.UPDATE_ERROR,
+        TagsActionTypes.CREATE_ERROR
+      ])
+    ),
     mergeMap(action => {
       const error = action.payload?.error
       return of(
