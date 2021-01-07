@@ -131,7 +131,7 @@ const Card = (props: Props) => {
     }
   }
 
-  const imageUrl = imageDprUrl(asset, 250)
+  const imageUrl = imageDprUrl(asset, {height: 250, width: 250})
 
   return (
     <>

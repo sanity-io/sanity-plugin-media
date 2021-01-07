@@ -128,7 +128,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
     ?.map(tag => tag.label)
     .join(',')
 
-  const imageUrl = currentAsset ? imageDprUrl(currentAsset, 250) : undefined
+  const imageUrl = currentAsset ? imageDprUrl(currentAsset, {height: 600, width: 600}) : undefined
 
   // react-hook-form
   const {control, errors, formState, getValues, handleSubmit, register, reset, setValue} = useForm({
@@ -297,17 +297,23 @@ const DialogDetails: FC<Props> = (props: Props) => {
         <Box padding={4}>
           {/* Image */}
           {imageUrl && (
-            <AspectRatio ratio={currentAsset?.metadata?.dimensions?.aspectRatio}>
+            <AspectRatio ratio={1}>
+              {/* <AspectRatio ratio={currentAsset?.metadata?.dimensions?.aspectRatio}> */}
               <Image
                 draggable={false}
                 showCheckerboard={!currentAsset?.metadata?.isOpaque}
                 src={imageUrl}
               />
+              {/* </AspectRatio> */}
             </AspectRatio>
           )}
 
           {/* Metadata */}
-          {currentAsset && <AssetMetadata asset={currentAsset} item={item} />}
+          {currentAsset && (
+            <Box marginTop={4}>
+              <AssetMetadata asset={currentAsset} item={item} />
+            </Box>
+          )}
         </Box>
 
         <Box padding={4}>
@@ -409,7 +415,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
               hidden={tabSection !== 'references'}
               id="references-panel"
             >
-              {asset && <DocumentList assetId={asset._id} />}
+              <Box marginTop={5}>{asset && <DocumentList assetId={asset._id} />}</Box>
             </TabPanel>
           </Box>
         </Box>

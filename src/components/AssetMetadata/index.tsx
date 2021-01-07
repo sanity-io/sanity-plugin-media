@@ -51,7 +51,7 @@ const AssetMetadata: FC<Props> = (props: Props) => {
           </Text>
         </Flex>
         {/* Download button */}
-        <Box>
+        <Box marginTop={2}>
           <Button
             disabled={!item || item?.updating}
             fontSize={1}

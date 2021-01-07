@@ -125,7 +125,7 @@ const TableRow = (props: Props) => {
 
   const cellOpacity = updating ? 0.5 : 1
 
-  const imageUrl = imageDprUrl(asset, 100)
+  const imageUrl = imageDprUrl(asset, {height: 100, width: 100})
   const imageOpacity = selected || updating ? 0.25 : 1
 
   return (

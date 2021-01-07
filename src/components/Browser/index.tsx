@@ -34,14 +34,6 @@ const Browser: FC<Props> = (props: Props) => {
   const handleAssetUpdate = (update: MutationEvent) => {
     const {documentId, result, transition} = update
 
-    // TODO: asset added
-    if (transition === 'appear') {
-      // TODO: how do we deal with 'allIds' ???
-      // Scenarios:
-      // - search results
-      // - custom search facets
-    }
-
     if (transition === 'disappear') {
       dispatch(assetsListenerDelete(documentId))
     }
