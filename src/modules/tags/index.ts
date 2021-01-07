@@ -376,6 +376,9 @@ export const tagsCreateEpic = (
     mergeMap(([action, state]) => {
       const {name, options} = action.payload
 
+      // Strip whitespace
+      const sanitizedName = name.trim()
+
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() =>
@@ -384,7 +387,7 @@ export const tagsCreateEpic = (
               _type: 'mediaTag',
               name: {
                 _type: 'slug',
-                current: name
+                current: sanitizedName
               }
             })
           )

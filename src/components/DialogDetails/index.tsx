@@ -238,7 +238,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
         const updatedTags = existingTags.concat([
           {
             label: tag.name.current,
-            value: tag.name.current
+            value: tag._id
           }
         ])
 
@@ -338,6 +338,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   name="tags"
                   onCreateTag={handleCreateTag}
                   options={allTagOptions}
+                  placeholder="Select or create..."
                   value={generateTagOptions(currentAsset)}
                 />
                 {/* Filename */}

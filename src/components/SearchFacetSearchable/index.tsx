@@ -104,7 +104,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
             noOptionsMessage={() => 'No tags'}
             onChange={value => handleChange(value as ReactSelectOption)}
             options={allTagOptions}
-            placeholder="Select"
+            placeholder="Select..."
             styles={reactSelectStyles}
             value={facet?.value}
           />
