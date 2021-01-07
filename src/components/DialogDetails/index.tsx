@@ -1,18 +1,6 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import {MutationEvent} from '@sanity/client'
-import {
-  Box,
-  Button,
-  Card,
-  Dialog,
-  Flex,
-  Grid,
-  Stack,
-  Tab,
-  TabList,
-  TabPanel,
-  Text
-} from '@sanity/ui'
+import {Box, Button, Card, Dialog, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
 import {Asset, DialogDetails} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
@@ -293,30 +281,13 @@ const DialogDetails: FC<Props> = (props: Props) => {
       scheme="dark"
       width={3}
     >
-      <Grid columns={[1, 1, 2]}>
-        <Box padding={4}>
-          {/* Image */}
-          {imageUrl && (
-            <AspectRatio ratio={1}>
-              {/* <AspectRatio ratio={currentAsset?.metadata?.dimensions?.aspectRatio}> */}
-              <Image
-                draggable={false}
-                showCheckerboard={!currentAsset?.metadata?.isOpaque}
-                src={imageUrl}
-              />
-              {/* </AspectRatio> */}
-            </AspectRatio>
-          )}
-
-          {/* Metadata */}
-          {currentAsset && (
-            <Box marginTop={4}>
-              <AssetMetadata asset={currentAsset} item={item} />
-            </Box>
-          )}
-        </Box>
-
-        <Box padding={4}>
+      {/*
+        We reverse direction to ensure the download button doesn't appear (in the DOM) before other tabbable items.
+        This ensures that the dialog doesn't scroll down to the download button (which on smaller screens, can sometimes
+        be below the fold).
+      */}
+      <Flex direction={['column-reverse', 'column-reverse', 'row-reverse']}>
+        <Box flex={1} padding={4}>
           {/* Tabs */}
           <TabList space={2}>
             <Tab
@@ -419,7 +390,29 @@ const DialogDetails: FC<Props> = (props: Props) => {
             </TabPanel>
           </Box>
         </Box>
-      </Grid>
+
+        <Box flex={1} padding={4}>
+          {/* Image */}
+          {imageUrl && (
+            <AspectRatio ratio={1}>
+              {/* <AspectRatio ratio={currentAsset?.metadata?.dimensions?.aspectRatio}> */}
+              <Image
+                draggable={false}
+                showCheckerboard={!currentAsset?.metadata?.isOpaque}
+                src={imageUrl}
+              />
+              {/* </AspectRatio> */}
+            </AspectRatio>
+          )}
+
+          {/* Metadata */}
+          {currentAsset && (
+            <Box marginTop={4}>
+              <AssetMetadata asset={currentAsset} item={item} />
+            </Box>
+          )}
+        </Box>
+      </Flex>
 
       {children}
     </Dialog>
