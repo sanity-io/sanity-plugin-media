@@ -9,8 +9,6 @@ const themeRadius = studioTheme?.radius
 const themeSpace = studioTheme?.space
 const themeTextSizes = studioTheme?.fonts?.text?.sizes
 
-console.log('studioTheme', studioTheme)
-
 export const reactSelectStyles = {
   control: (styles: any, {isDisabled}: {isDisabled: boolean}) => ({
     ...styles,

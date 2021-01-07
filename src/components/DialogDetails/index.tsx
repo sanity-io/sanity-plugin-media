@@ -16,7 +16,7 @@ import {
 import {Asset, DialogDetails} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
-import React, {FC, ReactNode, useEffect, useState} from 'react'
+import React, {FC, ReactNode, useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {AspectRatio} from 'theme-ui'
@@ -76,6 +76,9 @@ const DialogDetails: FC<Props> = (props: Props) => {
   const tagsByIds = useTypedSelector(state => state.tags.byIds)
 
   const asset = item?.asset
+
+  // Refs
+  const isMounted = useRef(false)
 
   // State
   // - Generate a snapshot of the current asset
@@ -210,7 +213,6 @@ const DialogDetails: FC<Props> = (props: Props) => {
     }
 
     // Remember that Sanity listeners ignore joins, order clauses and projections
-    // - current asset
     const subscriptionAsset = client
       .listen(groq`*[_id == $id]`, {id: asset._id})
       .subscribe(handleAssetUpdate)
@@ -220,18 +222,23 @@ const DialogDetails: FC<Props> = (props: Props) => {
     }
   }, [])
 
-  // - Partially reset form when current tags have changed
+  // - Partially reset form when current tags have changed (and after initial mount)
   useEffect(() => {
-    reset(
-      {
-        tags: generateTagOptions(currentAsset)
-      },
-      {
-        errors: true,
-        dirtyFields: true,
-        isDirty: true
-      }
-    )
+    if (isMounted.current) {
+      reset(
+        {
+          tags: generateTagOptions(currentAsset)
+        },
+        {
+          errors: true,
+          dirtyFields: true,
+          isDirty: true
+        }
+      )
+    }
+
+    // Mark as mounted
+    isMounted.current = true
   }, [currentTagLabels])
 
   // - Update tags field with new tag if one has been created
