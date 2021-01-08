@@ -1,6 +1,6 @@
 import {MutationEvent} from '@sanity/client'
 import {Card, Flex} from '@sanity/ui'
-import {Asset, Tag} from '@types'
+import {ImageAsset, Tag} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
 import React, {FC, useEffect} from 'react'
@@ -39,7 +39,7 @@ const Browser: FC<Props> = (props: Props) => {
     }
 
     if (transition === 'update') {
-      dispatch(assetsListenerUpdate(result as Asset))
+      dispatch(assetsListenerUpdate(result as ImageAsset))
     }
   }
 
@@ -70,7 +70,9 @@ const Browser: FC<Props> = (props: Props) => {
     // Listen for asset + tag changes
     // (Remember that Sanity listeners ignore joins, order clauses and projections!)
     const subscriptionAsset = client
-      .listen(groq`*[_type == "sanity.imageAsset" && !(_id in path("drafts.**"))]`)
+      .listen(
+        groq`*[_type in ["sanity.fileAsset", "sanity.imageAsset"] && !(_id in path("drafts.**"))]`
+      )
       .subscribe(handleAssetUpdate)
 
     const subscriptionTag = client //

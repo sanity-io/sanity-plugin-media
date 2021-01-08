@@ -15,8 +15,10 @@ import {assetsUpdate} from '../../modules/assets'
 import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
 import {tagsCreate} from '../../modules/tags'
 import imageDprUrl from '../../util/imageDprUrl'
+import {isFileAsset, isImageAsset} from '../../util/typeGuards'
 import AssetMetadata from '../AssetMetadata'
 import DocumentList from '../DocumentList'
+import FileAssetPreview from '../FileAssetPreview'
 import FormFieldInputFilename from '../FormFieldInputFilename'
 import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
@@ -124,8 +126,6 @@ const DialogDetails: FC<Props> = (props: Props) => {
   const currentTagLabels = generateTagOptions(currentAsset)
     ?.map(tag => tag.label)
     .join(',')
-
-  const imageUrl = currentAsset ? imageDprUrl(currentAsset, {height: 600, width: 600}) : undefined
 
   // react-hook-form
   const {control, errors, formState, getValues, handleSubmit, register, reset, setValue} = useForm({
@@ -406,16 +406,19 @@ const DialogDetails: FC<Props> = (props: Props) => {
         </Box>
 
         <Box flex={1} padding={4}>
-          {/* Image */}
-          {imageUrl && (
-            <AspectRatio ratio={1}>
+          <AspectRatio ratio={1}>
+            {/* File */}
+            {isFileAsset(currentAsset) && <FileAssetPreview asset={currentAsset} />}
+
+            {/* Image */}
+            {isImageAsset(currentAsset) && (
               <Image
                 draggable={false}
                 showCheckerboard={!currentAsset?.metadata?.isOpaque}
-                src={imageUrl}
+                src={imageDprUrl(currentAsset, {height: 600, width: 600})}
               />
-            </AspectRatio>
-          )}
+            )}
+          </AspectRatio>
 
           {/* Metadata */}
           {currentAsset && (

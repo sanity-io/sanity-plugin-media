@@ -1,5 +1,5 @@
-import {Asset} from '@types'
+import {ImageAsset} from '@types'
 
 // Reducer
 
-export type SelectedAssetsReducerState = Asset[]
+export type SelectedAssetsReducerState = ImageAsset[]

@@ -1,15 +1,17 @@
-import {SanityDocument, SanityImageAssetDocument} from '@sanity/client'
+import {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
 import {ReactElement} from 'react'
 
-export type Asset = SanityImageAssetDocument & {
+type CustomFields = {
   altText?: string
   description?: string
   tags?: SanityReference[]
   title?: string
 }
 
+export type Asset = FileAsset | ImageAsset
+
 export type AssetItem = {
-  asset: Asset
+  asset: FileAsset | ImageAsset
   errorCode?: number
   picked: boolean
   updating: boolean
@@ -71,6 +73,16 @@ export type Document = {
   name?: string
   title?: string
 }
+
+export type FileAsset = SanityAssetDocument &
+  CustomFields & {
+    _type: 'sanity.fileAsset'
+  }
+
+export type ImageAsset = SanityImageAssetDocument &
+  CustomFields & {
+    _type: 'sanity.imageAsset'
+  }
 
 export type MarkDef = {_key: string; _type: string}
 

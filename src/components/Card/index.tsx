@@ -5,12 +5,14 @@ import React, {CSSProperties, MouseEvent, RefObject, memo} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
 
+import FileIcon from '../../components/FileIcon'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsPick, assetsPickRange} from '../../modules/assets'
 import {dialogShowDetails} from '../../modules/dialog'
 import imageDprUrl from '../../util/imageDprUrl'
+import {isFileAsset, isImageAsset} from '../../util/typeGuards'
 import Image from '../Image'
 import TextEllipsis from '../TextEllipsis'
 
@@ -92,7 +94,7 @@ const Card = (props: Props) => {
   }
 
   // Callbacks
-  const handlePictureClick = (e: MouseEvent) => {
+  const handleAssetClick = (e: MouseEvent) => {
     e.stopPropagation()
 
     if (currentDocument) {
@@ -131,8 +133,6 @@ const Card = (props: Props) => {
     }
   }
 
-  const imageUrl = imageDprUrl(asset, {height: 250, width: 250})
-
   return (
     <>
       <Container
@@ -151,16 +151,22 @@ const Card = (props: Props) => {
             position: 'relative'
           }}
         >
-          <Image
-            onClick={handlePictureClick}
-            showCheckerboard={!isOpaque}
-            src={imageUrl}
-            style={{
-              draggable: false,
-              opacity: updating ? 0.25 : 1,
-              transition: 'opacity 1000ms'
-            }}
-          />
+          {/* File icon */}
+          {isFileAsset(asset) && <FileIcon asset={asset} onClick={handleAssetClick} width="80px" />}
+
+          {/* Image */}
+          {isImageAsset(asset) && (
+            <Image
+              onClick={handleAssetClick}
+              showCheckerboard={!isOpaque}
+              src={imageDprUrl(asset, {height: 250, width: 250})}
+              style={{
+                draggable: false,
+                opacity: updating ? 0.25 : 1,
+                transition: 'opacity 1000ms'
+              }}
+            />
+          )}
 
           {/* Spinner */}
           {updating && (

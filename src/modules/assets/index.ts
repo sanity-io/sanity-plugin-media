@@ -458,20 +458,13 @@ export const assetsDeletePicked = (): AssetsDeletePickedAction => ({
  * @param {String} [options.sort] - GROQ sort
  */
 export const assetsFetch = ({
-  filter = groq`_type == "sanity.imageAsset" && !(_id in path("drafts.**"))`,
+  filter,
   params = {},
-  projections = groq`{
-    _id,
-    metadata {dimensions},
-    originalFilename,
-    url
-  }`,
   selector = ``,
   sort = groq`order(_updatedAt desc)`
 }: {
-  filter?: string
+  filter: string
   params?: Record<string, string>
-  projections?: string
   replace?: boolean
   selector?: string
   sort?: string
@@ -481,7 +474,25 @@ export const assetsFetch = ({
   // Construct query
   const query = groq`
     {
-      "items": *[${filter}] ${projections} ${pipe} ${sort} ${selector},
+      "items": *[${filter}] {
+        _id,
+        _type,
+        _updatedAt,
+        altText,
+        description,
+        extension,
+        metadata {
+          dimensions,
+          exif,
+          isOpaque,
+        },
+        mimeType,
+        originalFilename,
+        size,
+        tags,
+        title,
+        url
+      } ${pipe} ${sort} ${selector},
     }
   `
 
@@ -745,27 +756,13 @@ export const assetsFetchPageIndexEpic = (
 
       return of(
         assetsFetch({
-          filter: constructFilter(state.assets.searchFacets, state.assets.searchQuery),
+          filter: constructFilter({
+            hasDocument: !!state.document,
+            searchFacets: state.assets.searchFacets,
+            searchQuery: state.assets.searchQuery
+          }),
           // Document ID can be null when operating on pristine / unsaved drafts
           ...(state?.document ? {params: {documentId: state?.document?._id}} : {}),
-          projections: groq`{
-            _id,
-            _updatedAt,
-            altText,
-            description,
-            extension,
-            metadata {
-              dimensions,
-              exif,
-              isOpaque,
-            },
-            mimeType,
-            originalFilename,
-            size,
-            tags,
-            title,
-            url
-          }`,
           selector: groq`[${start}...${end}]`,
           sort: groq`order(${state.assets?.order?.field} ${state.assets?.order?.direction})`
         })
@@ -897,8 +894,20 @@ export const assetsUpdateEpic = (
  * Construct GROQ filter based off search facets and query
  */
 
-const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: string) => {
-  const baseFilter = groq`_type == "sanity.imageAsset" && !(_id in path("drafts.**"))` // all images
+const constructFilter = ({
+  hasDocument,
+  searchFacets,
+  searchQuery
+}: {
+  hasDocument?: boolean
+  searchFacets: SearchFacetInputProps[]
+  searchQuery?: string
+}) => {
+  // Fetch both images and files if being used as a tool
+  // Otherwise, only fetch images. Sanity will crash you try and insert a file into an image field!
+  const baseFilter = hasDocument
+    ? groq`_type == "sanity.imageAsset" && !(_id in path("drafts.**"))`
+    : groq`_type in ["sanity.fileAsset", "sanity.imageAsset"] && !(_id in path("drafts.**"))`
 
   const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
     const {operatorType} = facet
@@ -958,7 +967,7 @@ const constructFilter = (searchFacets: SearchFacetInputProps[], searchQuery?: st
     // Base filter
     baseFilter,
     // Search query (if present)
-    // NOTE: Currently this only searches direct fields on sanity.imageAsset and NOT referenced tags
+    // NOTE: Currently this only searches direct fields on sanity.fileAsset/sanity.imageAsset and NOT referenced tags
     // It's possible to add this by adding the following line to the searchQuery, but it's quite slow
     // references(*[_type == "mediaTag" && name.current == "${searchQuery.trim()}"]._id)
     ...(searchQuery

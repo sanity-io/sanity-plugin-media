@@ -14,7 +14,9 @@ import {dialogShowDetails} from '../../modules/dialog'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import getAssetResolution from '../../util/getAssetResolution'
+import {isFileAsset, isImageAsset} from '../../util/typeGuards'
 import imageDprUrl from '../../util/imageDprUrl'
+import FileIcon from '../FileIcon'
 import Image from '../Image'
 import TextEllipsis from '../TextEllipsis'
 
@@ -125,7 +127,6 @@ const TableRow = (props: Props) => {
 
   const cellOpacity = updating ? 0.5 : 1
 
-  const imageUrl = imageDprUrl(asset, {height: 100, width: 100})
   const imageOpacity = selected || updating ? 0.25 : 1
 
   return (
@@ -182,14 +183,20 @@ const TableRow = (props: Props) => {
         }}
       >
         <AspectRatio ratio={4 / 3}>
-          <Image
-            draggable={false}
-            showCheckerboard={!isOpaque}
-            src={imageUrl}
-            style={{
-              opacity: imageOpacity
-            }}
-          />
+          {/* File icon */}
+          {isFileAsset(asset) && <FileIcon asset={asset} width="50px" />}
+
+          {/* Image */}
+          {isImageAsset(asset) && (
+            <Image
+              draggable={false}
+              showCheckerboard={!isOpaque}
+              src={imageDprUrl(asset, {height: 100, width: 100})}
+              style={{
+                opacity: imageOpacity
+              }}
+            />
+          )}
 
           {/* Spinner */}
           {updating && (
@@ -228,7 +235,7 @@ const TableRow = (props: Props) => {
         }}
       >
         <TextEllipsis muted size={1}>
-          {getAssetResolution(asset)}
+          {isImageAsset(asset) && getAssetResolution(asset)}
         </TextEllipsis>
       </LegacyBox>
 

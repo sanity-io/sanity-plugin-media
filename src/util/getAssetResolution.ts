@@ -1,6 +1,6 @@
-import {Asset} from '@types'
+import {ImageAsset} from '@types'
 
-const getAssetResolution = (asset: Asset) => {
+const getAssetResolution = (asset: ImageAsset) => {
   return `${asset.metadata.dimensions.width}x${asset.metadata.dimensions.height}px`
 }
 

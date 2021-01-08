@@ -1,9 +1,9 @@
-import {Asset} from '@types'
+import {ImageAsset} from '@types'
 import {ReactNode} from 'react'
 import {NotificationsActionTypes} from './index'
 
 type Notification = {
-  asset?: Asset
+  asset?: ImageAsset
   status?: 'error' | 'warning' | 'success' | 'info'
   subtitle?: string
   timeout?: number

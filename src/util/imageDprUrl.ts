@@ -1,7 +1,7 @@
-import {Asset} from '@types'
+import {ImageAsset} from '@types'
 
 const imageDprUrl = (
-  asset: Asset,
+  asset: ImageAsset,
   options: {
     width: number
     height?: number
