@@ -5,8 +5,8 @@ import format from 'date-fns/format'
 import filesize from 'filesize'
 import React, {FC, ReactNode} from 'react'
 
-import getAssetResolution from '../../util/getAssetResolution'
-import {isImageAsset} from '../../util/typeGuards'
+import getAssetResolution from '../../utils/getAssetResolution'
+import {isImageAsset} from '../../utils/typeGuards'
 
 type Props = {
   asset: FileAsset | ImageAsset
