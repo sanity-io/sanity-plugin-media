@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0-beta.5](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.4...v0.5.0-beta.5) (2021-01-10)
+
+
+### Features
+
+* add support for context-specific search facets ([86a9c6d](https://github.com/robinpyon/sanity-plugin-media/commit/86a9c6da51f917ce9bb5424efa58eab9c8bf7e7a))
+
 ## [0.5.0-beta.4](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.3...v0.5.0-beta.4) (2021-01-10)
 
 
