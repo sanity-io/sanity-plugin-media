@@ -22,15 +22,15 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
 
-  const list = facet?.options?.list
+  const options = facet?.options
 
-  const selectedItem = list?.find(v => v.name === facet?.value)
+  const selectedItem = options?.find(v => v.name === facet?.value)
 
-  const handleListItemClick = (list: SearchFacetInputSelectListItemProps) => {
+  const handleListItemClick = (option: SearchFacetInputSelectListItemProps) => {
     dispatch(
       assetsSearchFacetsUpdate({
         ...facet,
-        value: list.name
+        value: option.name
       })
     )
   }
@@ -49,7 +49,7 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
   return (
     <SearchFacet facet={facet}>
       {/* Optional operators */}
-      {facet?.options?.operatorTypes && (
+      {facet?.operatorTypes && (
         <MenuButton
           button={
             <Button
@@ -65,13 +65,15 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
           id="operators"
           menu={
             <Menu>
-              {facet.options.operatorTypes.map((operatorType, index) => {
+              {facet.operatorTypes.map((operatorType, index) => {
                 if (operatorType) {
                   return (
                     <MenuItem
                       disabled={operatorType === selectedOperatorType}
+                      fontSize={1}
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
+                      padding={2}
                       text={SEARCH_FACET_OPERATORS[operatorType].label}
                     />
                   )
@@ -92,17 +94,18 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
             iconRight={SelectIcon}
             padding={2} //
             text={selectedItem?.title}
-            tone="primary"
           />
         }
         id="list"
         menu={
           <Menu>
-            {list?.map((item, index) => (
+            {options?.map((item, index) => (
               <MenuItem
                 disabled={item.name === selectedItem?.name}
+                fontSize={1}
                 key={item.name}
-                onClick={() => handleListItemClick(list[index])}
+                onClick={() => handleListItemClick(options[index])}
+                padding={2}
                 text={item.title}
               />
             ))}

@@ -103,6 +103,16 @@ export type SearchFacetInputProps =
   | SearchFacetInputSelectProps
   | SearchFacetInputStringProps
 
+export type SearchFacetDivider = {
+  type: 'divider'
+}
+
+export type SearchFacetGroup = {
+  facets: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[]
+  title: string
+  type: 'group'
+}
+
 export type SearchFacetInputNumberModifier = {
   fieldModifier?: (fieldName: string) => string
   name: string
@@ -112,12 +122,10 @@ export type SearchFacetInputNumberModifier = {
 export type SearchFacetInputNumberProps = {
   field: string
   modifier?: string
+  modifiers?: SearchFacetInputNumberModifier[]
   name: string
   operatorType: SearchFacetOperatorType
-  options?: {
-    modifiers?: SearchFacetInputNumberModifier[]
-    operatorTypes?: (SearchFacetOperatorType | null)[]
-  }
+  operatorTypes?: (SearchFacetOperatorType | null)[]
   title: string
   type: 'number'
   value?: number
@@ -127,22 +135,19 @@ export type SearchFacetInputSearchableProps = {
   field: string
   name: string
   operatorType: SearchFacetOperatorType
-  options?: {
-    list?: SearchFacetInputSelectListItemProps[]
-    operatorTypes?: (SearchFacetOperatorType | null)[]
-  }
+  operatorTypes?: (SearchFacetOperatorType | null)[]
+  options?: SearchFacetInputSelectListItemProps[]
   title: string
   type: 'searchable'
   value?: ReactSelectOption
 }
 
 export type SearchFacetInputSelectProps = {
+  field?: string
   name: string
   operatorType: SearchFacetOperatorType
-  options?: {
-    list?: SearchFacetInputSelectListItemProps[]
-    operatorTypes?: (SearchFacetOperatorType | null)[]
-  }
+  operatorTypes?: (SearchFacetOperatorType | null)[]
+  options: SearchFacetInputSelectListItemProps[]
   title: string
   type: 'select'
   value: string
@@ -159,9 +164,7 @@ export type SearchFacetInputStringProps = {
   modifier?: string
   name: string
   operatorType: SearchFacetOperatorType
-  options?: {
-    operatorTypes?: (SearchFacetOperatorType | null)[]
-  }
+  operatorTypes?: (SearchFacetOperatorType | null)[]
   title: string
   type: 'string'
   value?: string

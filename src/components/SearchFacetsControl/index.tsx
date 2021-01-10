@@ -1,5 +1,6 @@
 import {AddCircleIcon} from '@sanity/icons'
-import {Button, Flex, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
+import {Button, Flex, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem} from '@sanity/ui'
+import {SearchFacetDivider, SearchFacetGroup, SearchFacetInputProps} from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
@@ -15,6 +16,40 @@ const SearchFacetsControl: FC = () => {
   // Determine if there are any remaining facets
   // (This operates under the assumption that only one of each facet can be active at any given time)
   const remainingSearchFacets = FACETS.filter(facet => facet).length - searchFacets.length > 0
+
+  const renderMenuFacets = (
+    facets: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[]
+  ) => {
+    return (
+      <>
+        {facets?.map((facet, index) => {
+          if (facet.type === 'divider') {
+            return <MenuDivider key={index} />
+          }
+
+          // Recursively render menu facets
+          if (facet.type === 'group') {
+            return <MenuGroup title={facet.title}>{renderMenuFacets(facet.facets)}</MenuGroup>
+          }
+
+          if (facet) {
+            const isPresent = !!searchFacets.find(v => v.name === facet.name)
+
+            return (
+              <MenuItem
+                disabled={isPresent}
+                fontSize={1}
+                key={facet.name}
+                onClick={() => dispatch(assetsSearchFacetsAdd(facet))}
+                padding={2}
+                text={facet.title}
+              />
+            )
+          }
+        })}
+      </>
+    )
+  }
 
   return (
     <Flex>
@@ -32,28 +67,8 @@ const SearchFacetsControl: FC = () => {
           />
         }
         id="facets"
-        menu={
-          <Menu>
-            {FACETS?.map((facet, index) => {
-              if (facet) {
-                const isPresent = !!searchFacets.find(v => v.name === facet.name)
-
-                return (
-                  <MenuItem
-                    disabled={isPresent}
-                    fontSize={1}
-                    key={facet.name}
-                    onClick={() => dispatch(assetsSearchFacetsAdd(facet))}
-                    padding={2}
-                    text={facet.title}
-                  />
-                )
-              }
-
-              return <MenuDivider key={index} />
-            })}
-          </Menu>
-        }
+        menu={<Menu>{renderMenuFacets(FACETS)}</Menu>}
+        placement="right-start"
       />
 
       {/* Clear facets button */}

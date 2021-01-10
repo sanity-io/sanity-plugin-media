@@ -23,7 +23,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
 
-  const modifiers = facet?.options?.modifiers
+  const modifiers = facet?.modifiers
   const selectedModifier = facet?.modifier
     ? modifiers?.find(modifier => modifier.name === facet?.modifier)
     : modifiers?.[0]
@@ -60,7 +60,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
   return (
     <SearchFacet facet={facet}>
       {/* Optional operators */}
-      {facet?.options?.operatorTypes && (
+      {facet?.operatorTypes && (
         <MenuButton
           button={
             <Button
@@ -73,13 +73,15 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
           id="operators"
           menu={
             <Menu>
-              {facet.options.operatorTypes.map((operatorType, index) => {
+              {facet.operatorTypes.map((operatorType, index) => {
                 if (operatorType) {
                   return (
                     <MenuItem
                       disabled={operatorType === selectedOperatorType}
+                      fontSize={1}
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
+                      padding={2}
                       text={SEARCH_FACET_OPERATORS[operatorType].label}
                     />
                   )
@@ -113,7 +115,6 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
               iconRight={SelectIcon}
               padding={2} //
               text={selectedModifier?.title}
-              tone="primary"
             />
           }
           id="modifier"
@@ -122,8 +123,10 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
               {modifiers.map(modifier => (
                 <MenuItem
                   disabled={modifier.name === facet.modifier}
+                  fontSize={1}
                   key={modifier.name}
                   onClick={() => handleModifierClick(modifier)}
+                  padding={2}
                   text={modifier.title}
                 />
               ))}

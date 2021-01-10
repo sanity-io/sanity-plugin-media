@@ -59,7 +59,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
   return (
     <SearchFacet facet={facet}>
       {/* Optional operators */}
-      {facet?.options?.operatorTypes && (
+      {facet?.operatorTypes && (
         <MenuButton
           button={
             <Button
@@ -72,13 +72,15 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
           id="operators"
           menu={
             <Menu>
-              {facet.options.operatorTypes.map((operatorType, index) => {
+              {facet.operatorTypes.map((operatorType, index) => {
                 if (operatorType) {
                   return (
                     <MenuItem
                       disabled={operatorType === selectedOperatorType}
+                      fontSize={1}
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
+                      padding={2}
                       text={SEARCH_FACET_OPERATORS[operatorType].label}
                     />
                   )

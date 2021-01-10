@@ -184,7 +184,7 @@ const TableRow = (props: Props) => {
       >
         <AspectRatio ratio={4 / 3}>
           {/* File icon */}
-          {isFileAsset(asset) && <FileIcon asset={asset} width="50px" />}
+          {isFileAsset(asset) && <FileIcon asset={asset} width="40px" />}
 
           {/* Image */}
           {isImageAsset(asset) && (

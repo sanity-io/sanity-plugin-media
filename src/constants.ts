@@ -1,4 +1,10 @@
-import {BrowserSelect, SearchFacetOperators, SearchFacetInputProps} from '@types'
+import {
+  BrowserSelect,
+  SearchFacetOperators,
+  SearchFacetInputProps,
+  SearchFacetDivider,
+  SearchFacetGroup
+} from '@types'
 import groq from 'groq'
 
 // Sort order dropdown options
@@ -75,7 +81,7 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
   },
   doesNotReference: {
     fn: (value, _) => (value ? `!references('${value}')` : undefined),
-    label: 'does not includes'
+    label: 'does not include'
   },
   empty: {
     fn: (_, field) => `!defined(${field})`,
@@ -99,11 +105,11 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
     label: 'includes'
   },
   is: {
-    fn: value => `${value}`,
+    fn: (value, _) => `${value}`,
     label: 'is'
   },
   isNot: {
-    fn: value => `!(${value})`,
+    fn: (value, _) => `!(${value})`,
     label: 'is not'
   },
   lessThan: {
@@ -126,179 +132,222 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
 }
 
 // null values are represented as menu dividers
-export const FACETS: (SearchFacetInputProps | null)[] = [
-  // Tag
+export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[] = [
+  // Tags
   {
     field: 'tags',
     name: 'tag',
-    title: 'Tags',
-    type: 'searchable',
     operatorType: 'references',
-    options: {
-      operatorTypes: ['references', 'doesNotReference', null, 'empty', 'notEmpty']
-    }
+    operatorTypes: ['references', 'doesNotReference', null, 'empty', 'notEmpty'],
+    title: 'Tags',
+    type: 'searchable'
   },
   // In use
   {
     name: 'inUse',
-    type: 'select',
-    title: 'In use',
     operatorType: 'is',
-    options: {
-      list: [
-        {
-          name: 'true',
-          title: 'True',
-          value: groq`count(*[references(^._id)]) > 0`
-        },
-        {
-          name: 'false',
-          title: 'False',
-          value: groq`count(*[references(^._id)]) == 0`
-        }
-      ]
-    },
+    options: [
+      {
+        name: 'true',
+        title: 'True',
+        value: groq`count(*[references(^._id)]) > 0`
+      },
+      {
+        name: 'false',
+        title: 'False',
+        value: groq`count(*[references(^._id)]) == 0`
+      }
+    ],
+    title: 'In Use',
+    type: 'select',
     value: 'true'
   },
-  // TODO: tags
   // Divider
-  null,
+  {
+    type: 'divider'
+  },
   // Title
   {
-    name: 'title',
-    type: 'string',
-    title: 'Title',
     field: 'title',
+    name: 'title',
     operatorType: 'empty',
-    options: {
-      operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude']
-    },
+    operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
+    title: 'Title',
+    type: 'string',
     value: ''
   },
   // Alt text
   {
-    name: 'altText',
-    type: 'string',
-    title: 'Alt Text',
     field: 'altText',
+    name: 'altText',
     operatorType: 'empty',
-    options: {
-      operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude']
-    },
+    operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
+    title: 'Alt Text',
+    type: 'string',
     value: ''
   },
   // Description
   {
-    name: 'description',
-    type: 'string',
-    title: 'Description',
     field: 'description',
+    name: 'description',
     operatorType: 'empty',
-    options: {
-      operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude']
-    },
+    operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
+    title: 'Description',
+    type: 'string',
     value: ''
   },
   // Divider
-  null,
-  // Size
   {
-    name: 'size',
-    type: 'number',
-    title: 'File size',
-    field: 'size',
-    modifier: 'kb',
-    operatorType: 'greaterThan',
-    options: {
-      modifiers: [
-        {
-          name: 'kb',
-          title: 'KB',
-          fieldModifier: fieldName => `round(${fieldName} / 1000)`
-        },
-        {
-          name: 'mb',
-          title: 'MB',
-          fieldModifier: fieldName => `round(${fieldName} / 1000000)`
-        }
-      ],
-      operatorTypes: [
-        'greaterThan',
-        'greaterThanOrEqualTo',
-        'lessThan',
-        'lessThanOrEqualTo',
-        null,
-        'equalTo'
-      ]
-    },
-    value: 0
+    type: 'divider'
+  },
+  // Has transparency
+  {
+    field: 'metadata.isOpaque',
+    name: 'isOpaque',
+    operatorType: 'equalTo',
+    options: [
+      {
+        name: 'true',
+        title: 'True',
+        value: `false`
+      },
+      {
+        name: 'false',
+        title: 'False',
+        value: `true`
+      }
+    ],
+    title: 'Has Transparency',
+    type: 'select',
+    value: 'true'
   },
   // Divider
-  null,
+  {
+    type: 'divider'
+  },
+  // Size
+  {
+    field: 'size',
+    modifier: 'kb',
+    modifiers: [
+      {
+        name: 'kb',
+        title: 'KB',
+        fieldModifier: fieldName => `round(${fieldName} / 1000)`
+      },
+      {
+        name: 'mb',
+        title: 'MB',
+        fieldModifier: fieldName => `round(${fieldName} / 1000000)`
+      }
+    ],
+    name: 'size',
+    operatorType: 'greaterThan',
+    operatorTypes: [
+      'greaterThan',
+      'greaterThanOrEqualTo',
+      'lessThan',
+      'lessThanOrEqualTo',
+      null,
+      'equalTo'
+    ],
+    title: 'File Size',
+    type: 'number',
+    value: 0
+  },
+  // File type
+  {
+    name: 'type',
+    operatorType: 'is',
+    operatorTypes: ['is', 'isNot'],
+    options: [
+      {
+        name: 'image',
+        title: 'Image',
+        value: 'mimeType match "image*"'
+      },
+      {
+        name: 'video',
+        title: 'Video',
+        value: 'mimeType match "video*"'
+      },
+      {
+        name: 'audio',
+        title: 'Audio',
+        value: 'mimeType match "audio*"'
+      },
+      {
+        name: 'pdf',
+        title: 'PDF',
+        value: 'mimeType == "application/pdf"'
+      }
+    ],
+    title: 'File Type',
+    type: 'select',
+    value: 'image'
+  },
+  // Divider
+  {
+    type: 'divider'
+  },
   // Orientation
   {
     name: 'orientation',
-    type: 'select',
-    title: 'Orientation',
     operatorType: 'is',
-    options: {
-      list: [
-        {
-          name: 'portrait',
-          title: 'Portrait',
-          value: 'metadata.dimensions.aspectRatio < 1'
-        },
-        {
-          name: 'landscape',
-          title: 'Landscape',
-          value: 'metadata.dimensions.aspectRatio > 1'
-        },
-        {
-          name: 'square',
-          title: 'Square',
-          value: 'metadata.dimensions.aspectRatio == 1'
-        }
-      ],
-      operatorTypes: ['is', 'isNot']
-    },
+    operatorTypes: ['is', 'isNot'],
+    options: [
+      {
+        name: 'portrait',
+        title: 'Portrait',
+        value: 'metadata.dimensions.aspectRatio < 1'
+      },
+      {
+        name: 'landscape',
+        title: 'Landscape',
+        value: 'metadata.dimensions.aspectRatio > 1'
+      },
+      {
+        name: 'square',
+        title: 'Square',
+        value: 'metadata.dimensions.aspectRatio == 1'
+      }
+    ],
+    title: 'Orientation',
+    type: 'select',
     value: 'portrait'
   },
-  // Width (with modifiers)
+  // Width
   {
-    name: 'width',
-    type: 'number',
-    title: 'Width',
     field: 'metadata.dimensions.width',
-    options: {
-      operatorTypes: [
-        'greaterThan',
-        'greaterThanOrEqualTo',
-        'lessThan',
-        'lessThanOrEqualTo',
-        null,
-        'equalTo'
-      ]
-    },
+    name: 'width',
     operatorType: 'greaterThan',
+    operatorTypes: [
+      'greaterThan',
+      'greaterThanOrEqualTo',
+      'lessThan',
+      'lessThanOrEqualTo',
+      null,
+      'equalTo'
+    ],
+    title: 'Width',
+    type: 'number',
     value: 400
   },
-  // Height (with modifiers)
+  // Height
   {
-    name: 'height',
-    type: 'number',
-    title: 'Height',
     field: 'metadata.dimensions.height',
-    options: {
-      operatorTypes: [
-        'greaterThan',
-        'greaterThanOrEqualTo',
-        'lessThan',
-        'lessThanOrEqualTo',
-        null,
-        'equalTo'
-      ]
-    },
+    name: 'height',
     operatorType: 'greaterThan',
+    operatorTypes: [
+      'greaterThan',
+      'greaterThanOrEqualTo',
+      'lessThan',
+      'lessThanOrEqualTo',
+      null,
+      'equalTo'
+    ],
+    title: 'Height',
+    type: 'number',
     value: 400
   }
 ]

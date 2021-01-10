@@ -910,14 +910,12 @@ const constructFilter = ({
     : groq`_type in ["sanity.fileAsset", "sanity.imageAsset"] && !(_id in path("drafts.**"))`
 
   const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
-    const {operatorType} = facet
-    const operator = SEARCH_FACET_OPERATORS[operatorType]
-
     if (facet.type === 'number') {
-      const {field, modifier, options, value} = facet
+      const {field, modifier, modifiers, operatorType, value} = facet
+      const operator = SEARCH_FACET_OPERATORS[operatorType]
 
       // Get current modifier
-      const currentModifier = options?.modifiers?.find(m => m.name === modifier)
+      const currentModifier = modifiers?.find(m => m.name === modifier)
 
       // Apply field modifier function (if present)
       const facetField = currentModifier?.fieldModifier
@@ -931,7 +929,8 @@ const constructFilter = ({
     }
 
     if (facet.type === 'searchable') {
-      const {field, value} = facet
+      const {field, operatorType, value} = facet
+      const operator = SEARCH_FACET_OPERATORS[operatorType]
 
       const fragment = operator.fn(value?.value, field)
       if (fragment) {
@@ -940,18 +939,20 @@ const constructFilter = ({
     }
 
     if (facet.type === 'select') {
-      const {options, value} = facet
+      const {field, operatorType, options, value} = facet
+      const operator = SEARCH_FACET_OPERATORS[operatorType]
 
-      const currentListValue = options?.list?.find(l => l.name === value)?.value
+      const currentOptionValue = options?.find(l => l.name === value)?.value
 
-      const fragment = operator.fn(currentListValue)
+      const fragment = operator.fn(currentOptionValue, field)
       if (fragment) {
         acc.push(fragment)
       }
     }
 
     if (facet.type === 'string') {
-      const {field, value} = facet
+      const {field, operatorType, value} = facet
+      const operator = SEARCH_FACET_OPERATORS[operatorType]
 
       const fragment = operator.fn(value, field)
       if (fragment) {
