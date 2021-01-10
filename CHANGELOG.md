@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0-beta.4](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.3...v0.5.0-beta.4) (2021-01-10)
+
+
+### Features
+
+* add initial support for displaying file assets ([cc01d00](https://github.com/robinpyon/sanity-plugin-media/commit/cc01d00ffdf039915e941d27d515af3b33c725c8))
+* add support for future facet groups, re-work facet schema slightly, use smaller menu item size ([bc3046b](https://github.com/robinpyon/sanity-plugin-media/commit/bc3046b621c3819f644e0d404e8559f5834ff564))
+
+
+### Bug Fixes
+
+* hide text overflow on asset metadata rows ([7f104eb](https://github.com/robinpyon/sanity-plugin-media/commit/7f104ebdb0ffc4231973b80482cb6a2c904f1585))
+
 ## [0.5.0-beta.3](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.2...v0.5.0-beta.3) (2021-01-08)
 
 ## [0.5.0-beta.2](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.1...v0.5.0-beta.2) (2021-01-07)
