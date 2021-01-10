@@ -111,7 +111,7 @@ export const notificationsAddSuccessEpic = (
       const deletedCount = actions.length
       return of(
         notificationsAddSuccess({
-          title: `${deletedCount} ${pluralize('image', deletedCount)} deleted`
+          title: `${deletedCount} ${pluralize('asset', deletedCount)} deleted`
         })
       )
     })
@@ -133,7 +133,7 @@ export const notificationsAddDeleteErrorsEpic = (
       const errorCount = actions.length
       return of(
         notificationsAddError({
-          title: `Unable to delete ${errorCount} ${pluralize('image', errorCount)}`
+          title: `Unable to delete ${errorCount} ${pluralize('asset', errorCount)}`
         })
       )
     })

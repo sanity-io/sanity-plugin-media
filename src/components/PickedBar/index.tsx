@@ -55,7 +55,7 @@ const PickedBar: FC = () => {
           <Inline space={2}>
             <Box marginRight={2}>
               <Text size={1}>
-                {picked.length} {pluralize('image', picked.length)} selected
+                {picked.length} {pluralize('asset', picked.length)} selected
               </Text>
             </Box>
             {/* Deselect button */}
