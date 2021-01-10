@@ -135,6 +135,7 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
 export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[] = [
   // Tags
   {
+    contexts: 'all',
     field: 'tags',
     name: 'tag',
     operatorType: 'references',
@@ -144,6 +145,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // In use
   {
+    contexts: 'all',
     name: 'inUse',
     operatorType: 'is',
     options: [
@@ -168,6 +170,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // Title
   {
+    contexts: 'all',
     field: 'title',
     name: 'title',
     operatorType: 'empty',
@@ -178,6 +181,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // Alt text
   {
+    contexts: 'all',
     field: 'altText',
     name: 'altText',
     operatorType: 'empty',
@@ -188,6 +192,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // Description
   {
+    contexts: 'all',
     field: 'description',
     name: 'description',
     operatorType: 'empty',
@@ -202,6 +207,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // Has transparency
   {
+    contexts: ['image', 'tool'],
     field: 'metadata.isOpaque',
     name: 'isOpaque',
     operatorType: 'equalTo',
@@ -227,6 +233,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // Size
   {
+    contexts: 'all',
     field: 'size',
     modifier: 'kb',
     modifiers: [
@@ -257,6 +264,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // File type
   {
+    contexts: ['file', 'tool'],
     name: 'type',
     operatorType: 'is',
     operatorTypes: ['is', 'isNot'],
@@ -292,6 +300,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // Orientation
   {
+    contexts: ['image', 'tool'],
     name: 'orientation',
     operatorType: 'is',
     operatorTypes: ['is', 'isNot'],
@@ -318,6 +327,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // Width
   {
+    contexts: ['image', 'tool'],
     field: 'metadata.dimensions.width',
     name: 'width',
     operatorType: 'greaterThan',
@@ -335,6 +345,7 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   },
   // Height
   {
+    contexts: ['image', 'tool'],
     field: 'metadata.dimensions.height',
     name: 'height',
     operatorType: 'greaterThan',

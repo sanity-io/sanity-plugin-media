@@ -12,10 +12,34 @@ const SearchFacetsControl: FC = () => {
   // Redux
   const dispatch = useDispatch()
   const searchFacets = useTypedSelector(state => state.assets.searchFacets)
+  const document = useTypedSelector(state => state.document)
+
+  const isTool = !document
+
+  // Manually filter facets based on current context, whether it's invoked as a tool, or via selection through
+  // via custom asset source.
+  const filteredFacets = FACETS.filter(facet => {
+    if (facet.type === 'group' || facet.type === 'divider') {
+      return true
+    }
+
+    if (facet.contexts === 'all') {
+      return true
+    }
+
+    if (isTool) {
+      return facet.contexts.includes('tool')
+    } else {
+      // TODO: in future, determine whether we're inserting into a file or image field.
+      // For now, it's only possible to insert into image fields.
+      return facet.contexts.includes('image')
+    }
+  })
 
   // Determine if there are any remaining facets
   // (This operates under the assumption that only one of each facet can be active at any given time)
-  const remainingSearchFacets = FACETS.filter(facet => facet).length - searchFacets.length > 0
+  const remainingSearchFacets =
+    filteredFacets.filter(facet => facet).length - searchFacets.length > 0
 
   const renderMenuFacets = (
     facets: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[]
@@ -61,13 +85,12 @@ const SearchFacetsControl: FC = () => {
             fontSize={1}
             icon={AddCircleIcon}
             mode="bleed"
-            // mode="ghost"
             text="Add filter"
             tone="primary"
           />
         }
         id="facets"
-        menu={<Menu>{renderMenuFacets(FACETS)}</Menu>}
+        menu={<Menu>{renderMenuFacets(filteredFacets)}</Menu>}
         placement="right-start"
       />
 
@@ -75,7 +98,6 @@ const SearchFacetsControl: FC = () => {
       {searchFacets.length > 0 && (
         <Button
           fontSize={1}
-          // mode="ghost"
           mode="bleed"
           onClick={() => dispatch(assetsSearchFacetsClear())}
           text="Clear"

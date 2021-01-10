@@ -21,7 +21,7 @@ const Header: FC<Props> = (props: Props) => {
         {/* Label */}
         <Box marginX={3}>
           <Inline space={2}>
-            <Text weight="semibold">{currentDocument ? 'Insert Media' : 'Browse Media'}</Text>
+            <Text weight="semibold">{currentDocument ? 'Insert Image' : 'Browse Assets'}</Text>
             {currentDocument && (
               <Text>
                 <Icon symbol="arrow-right" />

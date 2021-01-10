@@ -8,6 +8,14 @@ type CustomFields = {
   title?: string
 }
 
+type SearchFacetInputCommon = {
+  contexts: 'all' | ('file' | 'image' | 'tool')[]
+  name: string
+  operatorType: SearchFacetOperatorType
+  operatorTypes?: (SearchFacetOperatorType | null)[]
+  title: string
+}
+
 export type Asset = FileAsset | ImageAsset
 
 export type AssetItem = {
@@ -119,36 +127,25 @@ export type SearchFacetInputNumberModifier = {
   title: string
 }
 
-export type SearchFacetInputNumberProps = {
+export type SearchFacetInputNumberProps = SearchFacetInputCommon & {
   field: string
   modifier?: string
   modifiers?: SearchFacetInputNumberModifier[]
-  name: string
-  operatorType: SearchFacetOperatorType
-  operatorTypes?: (SearchFacetOperatorType | null)[]
-  title: string
   type: 'number'
   value?: number
 }
 
-export type SearchFacetInputSearchableProps = {
+export type SearchFacetInputSearchableProps = SearchFacetInputCommon & {
   field: string
   name: string
-  operatorType: SearchFacetOperatorType
-  operatorTypes?: (SearchFacetOperatorType | null)[]
   options?: SearchFacetInputSelectListItemProps[]
-  title: string
   type: 'searchable'
   value?: ReactSelectOption
 }
 
-export type SearchFacetInputSelectProps = {
+export type SearchFacetInputSelectProps = SearchFacetInputCommon & {
   field?: string
-  name: string
-  operatorType: SearchFacetOperatorType
-  operatorTypes?: (SearchFacetOperatorType | null)[]
   options: SearchFacetInputSelectListItemProps[]
-  title: string
   type: 'select'
   value: string
 }
@@ -159,13 +156,9 @@ export type SearchFacetInputSelectListItemProps = {
   value: string
 }
 
-export type SearchFacetInputStringProps = {
+export type SearchFacetInputStringProps = SearchFacetInputCommon & {
   field: string
   modifier?: string
-  name: string
-  operatorType: SearchFacetOperatorType
-  operatorTypes?: (SearchFacetOperatorType | null)[]
-  title: string
   type: 'string'
   value?: string
 }
