@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0-beta.6](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.5...v0.5.0-beta.6) (2021-01-10)
+
+
+### Bug Fixes
+
+* use generic 'asset' term when displaying errors, picked status and delete confirmation ([74eb4ba](https://github.com/robinpyon/sanity-plugin-media/commit/74eb4baeeb5f53d1eb92666b480f1115f0ca57f5))
+
 ## [0.5.0-beta.5](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.4...v0.5.0-beta.5) (2021-01-10)
 
 
