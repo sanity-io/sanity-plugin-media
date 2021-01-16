@@ -4,7 +4,11 @@ import {ReactElement} from 'react'
 type CustomFields = {
   altText?: string
   description?: string
-  tags?: SanityReference[]
+  opt?: {
+    media?: {
+      tags?: SanityReference[]
+    }
+  }
   title?: string
 }
 

@@ -95,7 +95,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
   // Map tag references to react-select options, skip over items with nullish labels or values
   const generateTagOptions = (asset?: Asset): ReactSelectOption[] | null => {
-    const tags = asset?.tags?.reduce((acc: ReactSelectOption[], v) => {
+    const tags = asset?.opt?.media?.tags?.reduce((acc: ReactSelectOption[], v) => {
       const tag = tagsByIds[v._ref]?.tag
       if (tag) {
         acc.push({
@@ -117,7 +117,11 @@ const DialogDetails: FC<Props> = (props: Props) => {
     altText: asset?.altText || '',
     description: asset?.description || '',
     originalFilename: asset ? getFilenameWithoutExtension(asset) : undefined,
-    tags: generateTagOptions(asset),
+    opt: {
+      media: {
+        tags: generateTagOptions(asset)
+      }
+    },
     title: asset?.title || ''
   })
 
@@ -187,15 +191,20 @@ const DialogDetails: FC<Props> = (props: Props) => {
         // Form data
         {
           ...sanitizedFormData,
-          // Append extension to filename
-          originalFilename: `${sanitizedFormData.originalFilename}.${asset.extension}`,
           // Map tags to sanity references
-          tags:
-            sanitizedFormData?.tags?.map((tag: ReactSelectOption) => ({
-              _ref: tag.value,
-              _type: 'reference',
-              _weak: true
-            })) || null
+          opt: {
+            media: {
+              ...sanitizedFormData.opt.media,
+              tags:
+                sanitizedFormData.opt.media.tags?.map((tag: ReactSelectOption) => ({
+                  _ref: tag.value,
+                  _type: 'reference',
+                  _weak: true
+                })) || null
+            }
+          },
+          // Append extension to filename
+          originalFilename: `${sanitizedFormData.originalFilename}.${asset.extension}`
         },
         // Options
         {
@@ -227,7 +236,11 @@ const DialogDetails: FC<Props> = (props: Props) => {
     if (isMounted.current) {
       reset(
         {
-          tags: generateTagOptions(currentAsset)
+          opt: {
+            media: {
+              tags: generateTagOptions(currentAsset)
+            }
+          }
         },
         {
           errors: true,
@@ -246,7 +259,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
     if (lastCreatedTagId) {
       const tag = tagsByIds[lastCreatedTagId]?.tag
       if (tag) {
-        const existingTags = getValues('tags') || []
+        const existingTags = (getValues('opt.media.tags') as ReactSelectOption[]) || []
         const updatedTags = existingTags.concat([
           {
             label: tag.name.current,
@@ -254,7 +267,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
           }
         ])
 
-        setValue('tags', updatedTags, {shouldDirty: true})
+        setValue('opt.media.tags', updatedTags, {shouldDirty: true})
       }
     }
   }, [lastCreatedTagId])
@@ -345,9 +358,9 @@ const DialogDetails: FC<Props> = (props: Props) => {
                 <FormFieldInputTags
                   control={control}
                   disabled={!item || item?.updating}
-                  error={errors?.tags}
+                  error={errors?.opt?.media?.tags}
                   label="Tags"
-                  name="tags"
+                  name="opt.media.tags"
                   onCreateTag={handleCreateTag}
                   options={allTagOptions}
                   placeholder="Select or create..."

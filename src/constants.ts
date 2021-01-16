@@ -131,12 +131,11 @@ export const SEARCH_FACET_OPERATORS: SearchFacetOperators = {
   }
 }
 
-// null values are represented as menu dividers
 export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[] = [
   // Tags
   {
     contexts: 'all',
-    field: 'tags',
+    field: 'opt.media.tags',
     name: 'tag',
     operatorType: 'references',
     operatorTypes: ['references', 'doesNotReference', null, 'empty', 'notEmpty'],
@@ -362,3 +361,5 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
     value: 400
   }
 ]
+
+export const TAG_DOCUMENT_NAME = 'media.tag'

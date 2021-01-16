@@ -487,9 +487,11 @@ export const assetsFetch = ({
           isOpaque,
         },
         mimeType,
+        opt {
+          media
+        },
         originalFilename,
         size,
-        tags,
         title,
         url
       } ${pipe} ${sort} ${selector},
@@ -879,7 +881,16 @@ export const assetsUpdateEpic = (
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        mergeMap(() => from(client.patch(asset._id).set(formData).commit())),
+        mergeMap(() =>
+          from(
+            client
+              .patch(asset._id)
+              .setIfMissing({opt: {}})
+              .setIfMissing({'opt.media': {}})
+              .set(formData)
+              .commit()
+          )
+        ),
         mergeMap((updatedAsset: any) => of(assetsUpdateComplete(updatedAsset._id, options))),
         catchError(error => of(assetsUpdateError(asset, error)))
       )
@@ -970,7 +981,7 @@ const constructFilter = ({
     // Search query (if present)
     // NOTE: Currently this only searches direct fields on sanity.fileAsset/sanity.imageAsset and NOT referenced tags
     // It's possible to add this by adding the following line to the searchQuery, but it's quite slow
-    // references(*[_type == "mediaTag" && name.current == "${searchQuery.trim()}"]._id)
+    // references(*[_type == "media.tag" && name.current == "${searchQuery.trim()}"]._id)
     ...(searchQuery
       ? [groq`[altText, description, originalFilename, title] match '*${searchQuery.trim()}*'`]
       : []),

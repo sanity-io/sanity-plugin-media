@@ -7,6 +7,7 @@ import {Observable, from, of} from 'rxjs'
 import {catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
 import {isOfType} from 'typesafe-actions'
 
+import {TAG_DOCUMENT_NAME} from '../../constants'
 import {
   TagsActions,
   TagsCreateCompleteAction,
@@ -303,7 +304,7 @@ export const tagsFetch = (): TagsFetchRequestAction => {
   const query = groq`
     {
       "items": *[
-        _type == "mediaTag"
+        _type == "${TAG_DOCUMENT_NAME}"
         && !(_id in path("drafts.**"))
       ] {
         _createdAt,
@@ -384,7 +385,7 @@ export const tagsCreateEpic = (
         mergeMap(() =>
           from(
             client.create({
-              _type: 'mediaTag',
+              _type: TAG_DOCUMENT_NAME,
               name: {
                 _type: 'slug',
                 current: sanitizedName

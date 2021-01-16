@@ -6,6 +6,7 @@ import client from 'part:@sanity/base/client'
 import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 
+import {TAG_DOCUMENT_NAME} from '../../constants'
 import {assetsListenerDelete, assetsListenerUpdate, assetsLoadPageIndex} from '../../modules/assets'
 import {
   tagsListenerDelete,
@@ -75,8 +76,8 @@ const Browser: FC<Props> = (props: Props) => {
       )
       .subscribe(handleAssetUpdate)
 
-    const subscriptionTag = client //
-      .listen(groq`*[_type == "mediaTag" && !(_id in path("drafts.**"))]`)
+    const subscriptionTag = client
+      .listen(groq`*[_type == "${TAG_DOCUMENT_NAME}" && !(_id in path("drafts.**"))]`)
       .subscribe(handleTagUpdate)
 
     return () => {
