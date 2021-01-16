@@ -152,7 +152,7 @@ export const notificationsAddUpdateEpic = (
     mergeMap(() =>
       of(
         notificationsAddSuccess({
-          title: `Image updated`
+          title: `Asset updated`
         })
       )
     )
