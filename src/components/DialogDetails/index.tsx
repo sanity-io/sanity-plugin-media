@@ -150,7 +150,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
     dispatch(
       dialogShowDeleteConfirm(asset._id, {
-        closeDialogId: id
+        closeDialogId: asset._id
       })
     )
   }
@@ -208,7 +208,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
         },
         // Options
         {
-          closeDialogId: id
+          closeDialogId: asset._id
         }
       )
     )

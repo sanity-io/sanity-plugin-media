@@ -65,7 +65,7 @@ export default function dialogReducer(
         const {assetId} = action.payload
         draft.items.push({
           assetId,
-          id: 'details',
+          id: assetId,
           type: 'details'
         })
         break
@@ -186,7 +186,6 @@ export const dialogClearOnAssetUpdateEpic = (
 export const dialogTagCreateEpic = (action$: Observable<TagsActions>): Observable<DialogActions> =>
   action$.pipe(
     filter(isOfType(TagsActionTypes.CREATE_COMPLETE)),
-    // filter(action => !!action?.payload?.options?.closeDialogId),
     mergeMap(action => {
       const assetId = action?.payload?.options?.assetId
 

@@ -1,5 +1,5 @@
 import {CloseIcon, Icon} from '@sanity/icons'
-import {Box, Button, Flex, Inline, Text} from '@sanity/ui'
+import {Box, Button, Flex} from '@sanity/ui'
 import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
