@@ -1,4 +1,4 @@
-import {EditIcon, WarningOutlineIcon} from '@sanity/icons'
+import {CheckmarkCircleIcon, EditIcon, WarningOutlineIcon} from '@sanity/icons'
 import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
 import formatRelative from 'date-fns/formatRelative'
@@ -26,9 +26,9 @@ type Props = {
   style?: CSSProperties
 }
 
-const ContainerGrid = styled(LegacyGrid)<{updating?: boolean}>`
+const ContainerGrid = styled(LegacyGrid)<{selected?: boolean; updating?: boolean}>`
   align-items: center;
-  cursor: pointer;
+  cursor: ${props => (props.selected ? 'default' : 'pointer')};
   pointer-events: ${props => (props.updating ? 'none' : 'auto')};
   user-select: none;
   white-space: nowrap;
@@ -125,20 +125,20 @@ const TableRow = (props: Props) => {
     }
   }
 
-  const cellOpacity = updating ? 0.5 : 1
-
-  const imageOpacity = selected || updating ? 0.25 : 1
+  const opacityContainer = updating ? 0.5 : 1
+  const opacityPreview = selected || updating ? 0.25 : 1
 
   return (
     <ContainerGrid
-      onClick={handleClick}
+      onClick={selected ? undefined : handleClick}
+      selected={selected}
       style={style}
       sx={{
         gridColumnGap: [2, null, null, 3],
         gridRowGap: [0],
         gridTemplateColumns: ['tableSmall', null, null, 'tableLarge'],
         gridTemplateRows: ['auto', null, null, '1fr'],
-        opacity: cellOpacity
+        opacity: opacityContainer
       }}
       updating={item.updating}
     >
@@ -183,19 +183,37 @@ const TableRow = (props: Props) => {
         }}
       >
         <AspectRatio ratio={4 / 3}>
-          {/* File icon */}
-          {isFileAsset(asset) && <FileIcon asset={asset} width="40px" />}
+          <div style={{height: '100%', opacity: opacityPreview}}>
+            {/* File icon */}
+            {isFileAsset(asset) && <FileIcon asset={asset} width="40px" />}
 
-          {/* Image */}
-          {isImageAsset(asset) && (
-            <Image
-              draggable={false}
-              showCheckerboard={!isOpaque}
-              src={imageDprUrl(asset, {height: 100, width: 100})}
+            {/* Image */}
+            {isImageAsset(asset) && (
+              <Image
+                draggable={false}
+                showCheckerboard={!isOpaque}
+                src={imageDprUrl(asset, {height: 100, width: 100})}
+              />
+            )}
+          </div>
+
+          {/* Selected check icon */}
+          {selected && !updating && (
+            <Flex
+              align="center"
+              justify="center"
               style={{
-                opacity: imageOpacity
+                height: '100%',
+                left: 0,
+                position: 'absolute',
+                top: 0,
+                width: '100%'
               }}
-            />
+            >
+              <Text size={2}>
+                <CheckmarkCircleIcon />
+              </Text>
+            </Flex>
           )}
 
           {/* Spinner */}

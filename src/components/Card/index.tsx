@@ -1,4 +1,4 @@
-import {EditIcon, WarningOutlineIcon} from '@sanity/icons'
+import {CheckmarkCircleIcon, EditIcon, WarningOutlineIcon} from '@sanity/icons'
 import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
 import React, {CSSProperties, MouseEvent, RefObject, memo} from 'react'
@@ -49,7 +49,7 @@ const Container = styled(Flex)<{picked?: boolean; updating?: boolean}>`
 `
 
 const ContextActionContainer = styled(Box)`
-  cursor: pointer;
+  cursor: ${props => (props.selected ? 'default' : 'pointer')};
   transition: all 300ms;
 
   @media (hover: hover) and (pointer: fine) {
@@ -66,11 +66,7 @@ const StyledWarningOutlineIcon = styled(WarningOutlineIcon)(({theme}) => {
 })
 
 const Card = (props: Props) => {
-  const {
-    item,
-    // selected,
-    style
-  } = props
+  const {item, selected, style} = props
 
   // Refs
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
@@ -133,39 +129,61 @@ const Card = (props: Props) => {
     }
   }
 
+  const opacityContainer = updating ? 0.5 : 1
+  const opacityPreview = selected || updating ? 0.25 : 1
+
   return (
     <>
-      <Container
-        direction="column"
-        picked={picked}
-        style={{
-          ...style
-        }}
-        updating={item.updating}
-      >
+      <Container direction="column" picked={picked} style={{...style}} updating={item.updating}>
         {/* Image */}
         <Box
           flex={1}
           style={{
-            cursor: 'pointer',
+            cursor: selected ? 'default' : 'pointer',
+            opacity: opacityContainer,
             position: 'relative'
           }}
         >
-          {/* File icon */}
-          {isFileAsset(asset) && <FileIcon asset={asset} onClick={handleAssetClick} width="80px" />}
+          <div
+            onClick={handleAssetClick}
+            style={{
+              height: '100%',
+              opacity: opacityPreview
+            }}
+          >
+            {/* File icon */}
+            {isFileAsset(asset) && <FileIcon asset={asset} width="80px" />}
 
-          {/* Image */}
-          {isImageAsset(asset) && (
-            <Image
-              onClick={handleAssetClick}
-              showCheckerboard={!isOpaque}
-              src={imageDprUrl(asset, {height: 250, width: 250})}
+            {/* Image */}
+            {isImageAsset(asset) && (
+              <Image
+                showCheckerboard={!isOpaque}
+                src={imageDprUrl(asset, {height: 250, width: 250})}
+                style={{
+                  draggable: false,
+                  transition: 'opacity 1000ms'
+                }}
+              />
+            )}
+          </div>
+
+          {/* Selected check icon */}
+          {selected && !updating && (
+            <Flex
+              align="center"
+              justify="center"
               style={{
-                draggable: false,
-                opacity: updating ? 0.25 : 1,
-                transition: 'opacity 1000ms'
+                height: '100%',
+                left: 0,
+                position: 'absolute',
+                top: 0,
+                width: '100%'
               }}
-            />
+            >
+              <Text size={2}>
+                <CheckmarkCircleIcon />
+              </Text>
+            </Flex>
           )}
 
           {/* Spinner */}
