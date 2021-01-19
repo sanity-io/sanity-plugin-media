@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0-beta.7](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.6...v0.5.0-beta.7) (2021-01-19)
+
+
+### Features
+
+* display checkmark icons and prevent click actions on selected assets ([30d174d](https://github.com/robinpyon/sanity-plugin-media/commit/30d174d2bd51a2543b8e4b9dfe6a368fe5d139d2))
+
+
+### Bug Fixes
+
+* add text-overflow: ellipsis to header ([6f39d28](https://github.com/robinpyon/sanity-plugin-media/commit/6f39d284a1fea47ff82818353a1e97d9404e077e))
+* dont close all edit dialogs on update/delete ([e18565d](https://github.com/robinpyon/sanity-plugin-media/commit/e18565d487dd9a14b1c81e0707cea1dd609ba815))
+* fix asset update notification label ([9a2ae2a](https://github.com/robinpyon/sanity-plugin-media/commit/9a2ae2a1589956e0bb57205a91caceb42bf4bedc))
+* rename tag document name, move media-specific fields into opt.media namespace ([d5666fc](https://github.com/robinpyon/sanity-plugin-media/commit/d5666fc32b62056be76379d50fcf64415047b7f9))
+
 ## [0.5.0-beta.6](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.5...v0.5.0-beta.6) (2021-01-10)
 
 
