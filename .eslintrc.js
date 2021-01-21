@@ -5,12 +5,13 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:import/errors',
+    'plugin:import/typescript',
     'plugin:import/warnings',
     'plugin:prettier/recommended',
     'plugin:react/recommended',
+    'prettier',
     'prettier/@typescript-eslint'
   ],
   parser: '@typescript-eslint/parser',
@@ -20,6 +21,7 @@ module.exports = {
     },
     project: './tsconfig.json'
   },
+  plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-unused-vars': 'error',
@@ -38,6 +40,5 @@ module.exports = {
         project: './tsconfig.json'
       }
     }
-  },
-  plugins: []
+  }
 }

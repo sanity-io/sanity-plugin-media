@@ -16,6 +16,6 @@
   ],
   "paths": {
     "source": "./src",
-    "compiled": "./lib"
+    "compiled": "./dist"
   }
 }
