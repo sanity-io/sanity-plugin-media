@@ -2,11 +2,12 @@
 
 ![npm](https://img.shields.io/npm/dw/sanity-plugin-media)
 
-<!-- ![example](https://user-images.githubusercontent.com/209129/96188577-e2a44880-0f36-11eb-96dd-f19c12bef017.jpg) -->
-
 A convenient way to browse, manage and select all your [Sanity](https://www.sanity.io/) assets.
 
 Use it standalone as a browser, or optionally hook it up as a [custom asset source](https://www.sanity.io/docs/custom-asset-sources) and use it to power asset selection too.
+
+![Grid view](https://user-images.githubusercontent.com/209129/105532350-9d847500-5ce2-11eb-8ba8-19655c416829.png)
+![Asset view](https://user-images.githubusercontent.com/209129/105532355-9fe6cf00-5ce2-11eb-9982-b2bfd22f3409.png)
 
 ## Features
 
@@ -18,7 +19,8 @@ Use it standalone as a browser, or optionally hook it up as a [custom asset sour
 - Previews for audio and video files
 - Edit text fields native to Sanity's asset documents, such as `title`, `description`, `altText` and even `originalFilename`
 - View asset metadata and a limited subset of EXIF data (if present)
-- Virtualized grid + tabular views for super speedy browsing
+- Virtualized grid + tabular views for super speedy browsing, even with thousands of assets
+- Utilises Sanity's [real time updates](https://www.sanity.io/docs/realtime-updates) - for live concurrent changes from other studio members
 - Multiple asset selection and deletion
 - Fully responsive and mobile friendly
 
@@ -32,7 +34,7 @@ sanity install media
 
 This will add the Media button to your studio menu. If this is all you're after – that's all you need to do!
 
-### Enabling it as a global custom asset source
+### Enabling it as a global [custom asset source](https://www.sanity.io/docs/custom-asset-sources)
 
 You'll need to do this if you want to use the plugin when selecting images.
 
@@ -55,9 +57,7 @@ import MediaAssetSource from 'part:sanity-plugin-media/asset-source'
 export default [MediaAssetSource]
 ```
 
-Now clicking 'select' on every image field will invoke the plugin.
-
-Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custom-asset-sources).
+That's it! The browser will now pop up every time you try select an image.
 
 ## FAQ
 
@@ -66,8 +66,19 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 <br />
 
 - This plugin defines the document type `media.tag`.
-- All tags are stored as _weak_ references, and being a third-party plugin, are stored in the namespaced object `opt.media`
-- This behaviour differs from asset fields such as `title`, `description` and `altText` which are stored directly on the asset as they're part of the official asset schema
+- All tags are stored as _weak_ references and being a third-party plugin, are stored in the namespaced object `opt.media`
+- This behaviour differs from asset fields such as `title`, `description` and `altText` which are stored directly on the asset as they're part of Sanity's defined asset schema
+
+</details>
+
+<br />
+
+<details>
+<summary>How can I hide the <em>Media Tag</em> document type which has now appeared in my desk?</summary>
+<br />
+
+- **If you're not using a custom desk**, Sanity attaches custom schema defined by third party plugins to your desk. This is currently the default behaviour.
+- However, you can override this behaviour by defining your own custom desk with Sanity's [structure builder](https://www.sanity.io/docs/structure-builder-typical-use-cases) and simply omit the `media.tag` document type in your definition.
 
 </details>
 
@@ -77,11 +88,9 @@ Read more about Sanity's [custom asset sources](https://www.sanity.io/docs/custo
 <summary>How can I edit and / or delete tags I've already created?</summary>
 <br />
 
-- _Right now_, the only way to do this is through Sanity's desk or via the API
+- _Currently_, the only way to do this is through Sanity's desk or via the API
 - **If you're not using a custom desk**, then this will be automatically added for you once you've installed the plugin. You'll be then be able to edit tags like you do any other documents.
-- **If you are using a custom desk**, you'll need to expose the `media.tag` document type as you see fit.
-
-Read more about custom desks with Sanity's structure builder [structure builder](https://www.sanity.io/docs/structure-builder-typical-use-cases)
+- **If you are using a custom desk**, then you'll need to expose the `media.tag` document type as you see fit, provided you want to expose them at all.
 
 </details>
 
@@ -133,9 +142,27 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 
 </details>
 
-## Good to know
+<br />
+
+<details>
+<summary>How come the images downloaded with the <em>download</em> button aren't the same listed size?</summary>
+<br />
+
+- Any images downloaded here are those already _processed_ by Sanity without any [image transformations](https://www.sanity.io/docs/image-urls) applied. Please note these are not the _original_ uploaded images, and will be stripped of any EXIF data.
+- _Currently_, it's not possible in Sanity to grab these original image assets within the studio - but this may change in future!
+
+</details>
+
+<br />
+
+<details>
+<summary>What is API usage like?</summary>
+<br />
 
 - Batch deleting assets invokes multiple API requests - this is because [Sanity's transactions are atomic](https://www.sanity.io/docs/transactions). In other words, deleting 10 selected assets will use 10 API requests.
+- You _probably_ don't want to be batch deleting hundreds of thousands of images through this plugin - such a task would be better suited to a custom script!
+
+</details>
 
 ## Roadmap
 
