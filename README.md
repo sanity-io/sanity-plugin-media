@@ -71,8 +71,6 @@ That's it! The browser will now pop up every time you try select an image.
 
 </details>
 
-<br />
-
 <details>
 <summary>How can I hide the <em>Media Tag</em> document type which has now appeared in my desk?</summary>
 <br />
@@ -81,8 +79,6 @@ That's it! The browser will now pop up every time you try select an image.
 - However, you can override this behaviour by defining your own custom desk with Sanity's [structure builder](https://www.sanity.io/docs/structure-builder-typical-use-cases) and simply omit the `media.tag` document type in your definition.
 
 </details>
-
-<br />
 
 <details>
 <summary>How can I edit and / or delete tags I've already created?</summary>
@@ -94,8 +90,6 @@ That's it! The browser will now pop up every time you try select an image.
 
 </details>
 
-<br />
-
 <details>
 <summary>Can I use this to pick file (non-image) assets?</summary>
 <br />
@@ -103,8 +97,6 @@ That's it! The browser will now pop up every time you try select an image.
 - Not just yet unfortunately! This will be possible if and when Sanity enables custom asset sources on `file` fields.
 
 </details>
-
-<br />
 
 <details>
 <summary>What EXIF fields are displayed and how can I get these to show up?</summary>
@@ -114,8 +106,6 @@ That's it! The browser will now pop up every time you try select an image.
 - By default, Sanity won't automatically extract EXIF data unless you explicitly tell it to. Manully tell Sanity to process EXIF metadata by [updating your image field options accordingly](https://www.sanity.io/docs/image-type#metadata-5fe564e516d8)
 
 </details>
-
-<br />
 
 <details>
 <summary>OK, I've updated some asset fields and assigned tags – how do I go about querying this data?</summary>
@@ -142,8 +132,6 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 
 </details>
 
-<br />
-
 <details>
 <summary>How come the images downloaded with the <em>download</em> button aren't the same listed size?</summary>
 <br />
@@ -152,8 +140,6 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 - _Currently_, it's not possible in Sanity to grab these original image assets within the studio - but this may change in future!
 
 </details>
-
-<br />
 
 <details>
 <summary>What is API usage like?</summary>
