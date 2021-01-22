@@ -63,7 +63,6 @@ That's it! The browser will now pop up every time you try select an image.
 
 <details>
 <summary>How and where are asset tags stored?</summary>
-<br />
 
 - This plugin defines the document type `media.tag`.
 - All tags are stored as _weak_ references and being a third-party plugin, are stored in the namespaced object `opt.media`
@@ -73,7 +72,6 @@ That's it! The browser will now pop up every time you try select an image.
 
 <details>
 <summary>How can I hide the <em>Media Tag</em> document type which has now appeared in my desk?</summary>
-<br />
 
 - **If you're not using a custom desk**, Sanity attaches custom schema defined by third party plugins to your desk. This is currently the default behaviour.
 - However, you can override this behaviour by defining your own custom desk with Sanity's [structure builder](https://www.sanity.io/docs/structure-builder-typical-use-cases) and simply omit the `media.tag` document type in your definition.
@@ -82,9 +80,8 @@ That's it! The browser will now pop up every time you try select an image.
 
 <details>
 <summary>How can I edit and / or delete tags I've already created?</summary>
-<br />
 
-- _Currently_, the only way to do this is through Sanity's desk or via the API
+- Currently, the only way to do this is through Sanity's desk or via the API
 - **If you're not using a custom desk**, then this will be automatically added for you once you've installed the plugin. You'll be then be able to edit tags like you do any other documents.
 - **If you are using a custom desk**, then you'll need to expose the `media.tag` document type as you see fit, provided you want to expose them at all.
 
@@ -92,7 +89,6 @@ That's it! The browser will now pop up every time you try select an image.
 
 <details>
 <summary>Can I use this to pick file (non-image) assets?</summary>
-<br />
 
 - Not just yet unfortunately! This will be possible if and when Sanity enables custom asset sources on `file` fields.
 
@@ -100,16 +96,14 @@ That's it! The browser will now pop up every time you try select an image.
 
 <details>
 <summary>What EXIF fields are displayed and how can I get these to show up?</summary>
-<br />
 
 - ISO, aperture, focal length, exposure time and original date are displayed
-- By default, Sanity won't automatically extract EXIF data unless you explicitly tell it to. Manully tell Sanity to process EXIF metadata by [updating your image field options accordingly](https://www.sanity.io/docs/image-type#metadata-5fe564e516d8)
+- By default, Sanity won't automatically extract EXIF data unless you explicitly tell it to. Manually tell Sanity to process EXIF metadata by [updating your image field options accordingly](https://www.sanity.io/docs/image-type#metadata-5fe564e516d8)
 
 </details>
 
 <details>
 <summary>OK, I've updated some asset fields and assigned tags – how do I go about querying this data?</summary>
-<br />
 
 The following GROQ query would return an image with additional asset text fields as well as an array of tag names.
 
@@ -133,17 +127,15 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 </details>
 
 <details>
-<summary>How come the images downloaded with the <em>download</em> button aren't the same listed size?</summary>
-<br />
+<summary>How come images downloaded with the <em>download</em> button aren't the same as their listed size?</summary>
 
 - Any images downloaded here are those already _processed_ by Sanity without any [image transformations](https://www.sanity.io/docs/image-urls) applied. Please note these are not the _original_ uploaded images, and will be stripped of any EXIF data.
-- _Currently_, it's not possible in Sanity to grab these original image assets within the studio - but this may change in future!
+- Currently, it's not possible in Sanity to grab these original image assets within the studio - but this may change in future!
 
 </details>
 
 <details>
 <summary>What is API usage like?</summary>
-<br />
 
 - Batch deleting assets invokes multiple API requests - this is because [Sanity's transactions are atomic](https://www.sanity.io/docs/transactions). In other words, deleting 10 selected assets will use 10 API requests.
 - You _probably_ don't want to be batch deleting hundreds of thousands of images through this plugin - such a task would be better suited to a custom script!
