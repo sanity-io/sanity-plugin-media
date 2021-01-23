@@ -756,6 +756,8 @@ export const assetsFetchPageIndexEpic = (
       const start = action.payload.pageIndex * pageSize
       const end = start + pageSize
 
+      const documentId = state?.document?._id
+
       return of(
         assetsFetch({
           filter: constructFilter({
@@ -764,7 +766,7 @@ export const assetsFetchPageIndexEpic = (
             searchQuery: state.assets.searchQuery
           }),
           // Document ID can be null when operating on pristine / unsaved drafts
-          ...(state?.document ? {params: {documentId: state?.document?._id}} : {}),
+          ...(documentId ? {params: {documentId}} : {}),
           selector: groq`[${start}...${end}]`,
           sort: groq`order(${state.assets?.order?.field} ${state.assets?.order?.direction})`
         })
