@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.0.0...v1.0.1) (2021-01-23)
+
+
+### Bug Fixes
+
+* don't query for document ID when operating on pristine / unsaved drafts ([4083fc2](https://github.com/robinpyon/sanity-plugin-media/commit/4083fc29944c745dd019bdb7974475f9e75fbb6e)), closes [#20](https://github.com/robinpyon/sanity-plugin-media/issues/20)
+
 ## [1.0.0](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.8...v1.0.0) (2021-01-22)
 
 ## [0.5.0-beta.8](https://github.com/robinpyon/sanity-plugin-media/compare/v0.5.0-beta.7...v0.5.0-beta.8) (2021-01-21)
