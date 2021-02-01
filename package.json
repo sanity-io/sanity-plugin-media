@@ -44,7 +44,7 @@
     "date-fns": "2.16.1",
     "filesize": "6.1.0",
     "groq": "2.0.9",
-    "immer": "8.0.0",
+    "immer": "8.0.1",
     "is-hotkey": "0.2.0",
     "pluralize": "8.0.0",
     "react-file-icon": "1.0.0",
