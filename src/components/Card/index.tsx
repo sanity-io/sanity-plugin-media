@@ -14,7 +14,6 @@ import {dialogShowDetails} from '../../modules/dialog'
 import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import Image from '../Image'
-import TextEllipsis from '../TextEllipsis'
 
 type Props = {
   item: AssetItem
@@ -226,8 +225,10 @@ const Card = (props: Props) => {
               />
             )}
 
-            <Box marginLeft={2} style={{overflow: 'hidden'}}>
-              <TextEllipsis size={0}>{asset.originalFilename}</TextEllipsis>
+            <Box marginLeft={2}>
+              <Text size={0} textOverflow="ellipsis">
+                {asset.originalFilename}
+              </Text>
             </Box>
           </Flex>
         </ContextActionContainer>

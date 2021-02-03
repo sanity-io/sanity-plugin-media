@@ -38,7 +38,6 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
   )
 }
 
-// const VirtualRow = memo(({data, index, style}: VirtualRowProps) => {
 const VirtualRow = memo((props: ListChildComponentProps) => {
   const {data, index, style} = props
 
@@ -52,8 +51,8 @@ const VirtualRow = memo((props: ListChildComponentProps) => {
   // Add padding to virtual rows
   const rowStyle = {
     ...style,
-    top: Number(style.top) + 2,
-    height: Number(style.height) - 2
+    top: Number(style.top),
+    height: Number(style.height)
   } as CSSProperties
 
   return <TableRow item={item} selected={selectedIds.includes(assetId)} style={rowStyle} />

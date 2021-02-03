@@ -39,7 +39,7 @@
     "@hookform/resolvers": "2.0.0-beta.3",
     "@sanity/components": "2.1.0",
     "@sanity/icons": "1.0.1",
-    "@sanity/ui": "0.32.2",
+    "@sanity/ui": "0.33.0",
     "@tanem/react-nprogress": "3.0.52",
     "date-fns": "2.16.1",
     "filesize": "6.1.0",

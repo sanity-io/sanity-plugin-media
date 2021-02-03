@@ -1,9 +1,8 @@
 import {CloseIcon, Icon} from '@sanity/icons'
-import {Box, Button, Flex} from '@sanity/ui'
+import {Box, Button, Flex, Text} from '@sanity/ui'
 import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import TextEllipsis from '../TextEllipsis'
 
 type Props = {
   onClose?: () => void
@@ -21,7 +20,7 @@ const Header: FC<Props> = (props: Props) => {
       <Flex align="center" justify="space-between">
         {/* Label */}
         <Box flex={1} marginX={3}>
-          <TextEllipsis weight="semibold">
+          <Text textOverflow="ellipsis" weight="semibold">
             <span>{currentDocument ? 'Insert Image' : 'Browse Assets'}</span>
             {currentDocument && (
               <>
@@ -41,7 +40,7 @@ const Header: FC<Props> = (props: Props) => {
                 </span>
               </>
             )}
-          </TextEllipsis>
+          </Text>
         </Box>
 
         {/* Close */}

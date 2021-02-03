@@ -50,7 +50,7 @@ const TableHeader: FC = () => {
         alignItems: 'center',
         bg: '#0a0a0a', // TODO: use theme color
         display: ['none', null, null, 'grid'],
-        gridColumnGap: [2, null, null, 3],
+        gridColumnGap: [0, null, null, 3],
         gridTemplateColumns: 'tableLarge',
         height: '2em',
         letterSpacing: '0.025em',

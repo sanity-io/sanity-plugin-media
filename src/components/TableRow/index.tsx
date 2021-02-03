@@ -6,7 +6,7 @@ import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
-import {AspectRatio, Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
+import {Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import {assetsPick, assetsPickRange} from '../../modules/assets'
@@ -18,7 +18,6 @@ import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import imageDprUrl from '../../utils/imageDprUrl'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
-import TextEllipsis from '../TextEllipsis'
 
 type Props = {
   item: AssetItem
@@ -134,7 +133,7 @@ const TableRow = (props: Props) => {
       selected={selected}
       style={style}
       sx={{
-        gridColumnGap: [2, null, null, 3],
+        gridColumnGap: [0, null, null, 3],
         gridRowGap: [0],
         gridTemplateColumns: ['tableSmall', null, null, 'tableLarge'],
         gridTemplateRows: ['auto', null, null, '1fr'],
@@ -147,7 +146,7 @@ const TableRow = (props: Props) => {
         onClick={handleContextActionClick}
         sx={{
           alignItems: 'center',
-          gridColumn: [1, null, null, 1],
+          gridColumn: 1,
           gridRowStart: ['1', null, null, 'auto'],
           gridRowEnd: ['span 5', null, null, 'auto'],
           height: '100%',
@@ -177,84 +176,88 @@ const TableRow = (props: Props) => {
       {/* Preview image + spinner */}
       <LegacyBox
         sx={{
-          gridColumn: [2, null, null, 2],
+          gridColumn: [2],
           gridRowStart: ['1', null, null, 'auto'],
-          gridRowEnd: ['span 5', null, null, 'auto']
+          gridRowEnd: ['span 5', null, null, 'auto'],
+          height: '90px',
+          width: '100px'
         }}
       >
-        <AspectRatio ratio={4 / 3}>
-          <div style={{height: '100%', opacity: opacityPreview}}>
-            {/* File icon */}
-            {isFileAsset(asset) && <FileIcon asset={asset} width="40px" />}
+        <div style={{height: '100%', opacity: opacityPreview, position: 'relative', width: '100%'}}>
+          {/* File icon */}
+          {isFileAsset(asset) && <FileIcon asset={asset} width="40px" />}
 
-            {/* Image */}
-            {isImageAsset(asset) && (
-              <Image
-                draggable={false}
-                showCheckerboard={!isOpaque}
-                src={imageDprUrl(asset, {height: 100, width: 100})}
-              />
-            )}
-          </div>
-
-          {/* Selected check icon */}
-          {selected && !updating && (
-            <Flex
-              align="center"
-              justify="center"
-              style={{
-                height: '100%',
-                left: 0,
-                position: 'absolute',
-                top: 0,
-                width: '100%'
-              }}
-            >
-              <Text size={2}>
-                <CheckmarkCircleIcon />
-              </Text>
-            </Flex>
+          {/* Image */}
+          {isImageAsset(asset) && (
+            <Image
+              draggable={false}
+              showCheckerboard={!isOpaque}
+              src={imageDprUrl(asset, {height: 100, width: 100})}
+            />
           )}
+        </div>
 
-          {/* Spinner */}
-          {updating && (
-            <Flex
-              align="center"
-              justify="center"
-              style={{
-                height: '100%',
-                left: 0,
-                position: 'absolute',
-                top: 0,
-                width: '100%'
-              }}
-            >
-              <Spinner />
-            </Flex>
-          )}
-        </AspectRatio>
+        {/* Selected check icon */}
+        {selected && !updating && (
+          <Flex
+            align="center"
+            justify="center"
+            style={{
+              height: '100%',
+              left: 0,
+              position: 'absolute',
+              top: 0,
+              width: '100%'
+            }}
+          >
+            <Text size={2}>
+              <CheckmarkCircleIcon />
+            </Text>
+          </Flex>
+        )}
+
+        {/* Spinner */}
+        {updating && (
+          <Flex
+            align="center"
+            justify="center"
+            style={{
+              height: '100%',
+              left: 0,
+              position: 'absolute',
+              top: 0,
+              width: '100%'
+            }}
+          >
+            <Spinner />
+          </Flex>
+        )}
       </LegacyBox>
 
       {/* Filename */}
       <LegacyBox
         sx={{
-          gridColumn: [3, null, null, 3],
-          gridRow: [2, null, null, 'auto']
+          gridColumn: [3],
+          gridRow: [2, null, null, 'auto'],
+          marginLeft: [3, null, null, 0]
         }}
       >
-        <TextEllipsis size={1}>{asset.originalFilename}</TextEllipsis>
+        <Text size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+          {asset.originalFilename}
+        </Text>
       </LegacyBox>
 
       {/* Resolution */}
       <LegacyBox
         sx={{
           gridColumn: [3, null, null, 4],
-          gridRow: [3, null, null, 'auto']
+          gridRow: [3, null, null, 'auto'],
+          marginLeft: [3, null, null, 0]
         }}
       >
-        <TextEllipsis muted size={1}>
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {isImageAsset(asset) && getAssetResolution(asset)}
-        </TextEllipsis>
+        </Text>
       </LegacyBox>
 
       {/* MIME type */}
@@ -265,9 +268,9 @@ const TableRow = (props: Props) => {
           gridRow: 'auto'
         }}
       >
-        <TextEllipsis muted size={1}>
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {asset.mimeType}
-        </TextEllipsis>
+        </Text>
       </LegacyBox>
 
       {/* Size */}
@@ -278,21 +281,22 @@ const TableRow = (props: Props) => {
           gridRow: 'auto'
         }}
       >
-        <TextEllipsis muted size={1}>
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {filesize(asset.size, {base: 10, round: 0})}
-        </TextEllipsis>
+        </Text>
       </LegacyBox>
 
       {/* Last updated */}
       <LegacyBox
         sx={{
           gridColumn: [3, null, null, 7],
-          gridRow: [4, null, null, 'auto']
+          gridRow: [4, null, null, 'auto'],
+          marginLeft: [3, null, null, 0]
         }}
       >
-        <TextEllipsis muted size={1}>
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {formatRelative(new Date(asset._updatedAt), new Date())}
-        </TextEllipsis>
+        </Text>
       </LegacyBox>
 
       {/* Error */}
