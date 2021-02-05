@@ -68,7 +68,7 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
 
   return (
     <FixedSizeList
-      // className="custom-scrollbar"
+      className="media-custom-scrollbar"
       height={height}
       innerElementType={innerElementType}
       itemData={{

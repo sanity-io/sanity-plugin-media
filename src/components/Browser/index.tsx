@@ -1,5 +1,5 @@
 import {MutationEvent} from '@sanity/client'
-import {Card, Flex} from '@sanity/ui'
+import {Box, Card, Flex} from '@sanity/ui'
 import {ImageAsset, Tag} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
@@ -20,6 +20,7 @@ import Dialogs from '../Dialogs'
 import Header from '../Header'
 import Items from '../Items'
 import Notifications from '../Notifications'
+import PickedBar from '../PickedBar'
 
 type Props = {
   onClose?: () => void
@@ -111,8 +112,12 @@ const Browser: FC<Props> = (props: Props) => {
           {/* Browser Controls */}
           <Controls />
 
+          <Box flex={1}>
+            <Items />
+          </Box>
+
           {/* Items */}
-          <Items />
+          <PickedBar />
 
           {/* Debug */}
           <DebugControls />

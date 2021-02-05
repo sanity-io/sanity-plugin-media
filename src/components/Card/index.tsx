@@ -204,7 +204,7 @@ const Card = (props: Props) => {
         </Box>
 
         {/* Footer */}
-        <ContextActionContainer onClick={handleContextActionClick} padding={2}>
+        <ContextActionContainer onClick={handleContextActionClick} paddingX={1} paddingY={2}>
           <Flex align="center">
             {currentDocument ? (
               <EditIcon

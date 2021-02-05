@@ -12,6 +12,7 @@ export type TagsReducerState = {
   fetching: boolean
   fetchingError: any
   // totalCount: number
+  panelVisible: boolean
 }
 
 // Actions
@@ -100,6 +101,11 @@ export type TagsListenerUpdateAction = {
   type: TagsActionTypes.LISTENER_UPDATE
 }
 
+export type TagsPanelVisibleSetAction = {
+  payload: {panelVisible: boolean}
+  type: TagsActionTypes.PANEL_VISIBLE_SET
+}
+
 export type TagsSortAction = {
   type: TagsActionTypes.SORT
 }
@@ -119,4 +125,5 @@ export type TagsActions =
   | TagsListenerCreateAction
   | TagsListenerDeleteAction
   | TagsListenerUpdateAction
+  | TagsPanelVisibleSetAction
   | TagsSortAction

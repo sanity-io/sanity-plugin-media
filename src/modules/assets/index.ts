@@ -1,4 +1,4 @@
-import {Asset, BrowserView, Order, SearchFacetInputProps} from '@types'
+import {Asset, AssetItem, BrowserView, Order, SearchFacetInputProps} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
@@ -992,4 +992,26 @@ const constructFilter = ({
   ].join(' && ')
 
   return constructedQuery
+}
+
+/*************
+ * SELECTORS *
+ *************/
+
+export const selectAssetById = (id?: string) => (
+  state: RootReducerState
+): AssetItem | undefined => {
+  if (!id) {
+    return undefined
+  }
+
+  return state.assets.byIds[id]
+}
+
+export const selectAssets = (state: RootReducerState): AssetItem[] => {
+  return state.assets.allIds.map(id => state.assets.byIds[id])
+}
+
+export const selectAssetsPicked = (state: RootReducerState): AssetItem[] => {
+  return Object.values(state.assets.byIds)?.filter(item => item?.picked)
 }

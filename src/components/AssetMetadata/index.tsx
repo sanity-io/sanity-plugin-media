@@ -1,6 +1,6 @@
 import {DownloadIcon} from '@sanity/icons'
 import {Box, Button, Flex, Stack, Text} from '@sanity/ui'
-import {AssetItem, ImageAsset, FileAsset} from '@types'
+import {Asset, AssetItem} from '@types'
 import format from 'date-fns/format'
 import filesize from 'filesize'
 import React, {FC, ReactNode} from 'react'
@@ -9,7 +9,7 @@ import getAssetResolution from '../../utils/getAssetResolution'
 import {isImageAsset} from '../../utils/typeGuards'
 
 type Props = {
-  asset: FileAsset | ImageAsset
+  asset: Asset
   item?: AssetItem
 }
 

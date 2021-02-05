@@ -23,7 +23,7 @@ type SearchFacetInputCommon = {
 export type Asset = FileAsset | ImageAsset
 
 export type AssetItem = {
-  asset: FileAsset | ImageAsset
+  asset: Asset
   errorCode?: number
   picked: boolean
   updating: boolean
@@ -45,7 +45,7 @@ export type BrowserView = 'grid' | 'table'
 
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
 
-export type Dialog = DialogDeleteConfirm | DialogDetails | DialogSearchFacets
+export type Dialog = DialogDeleteConfirm | DialogDetails | DialogSearchFacets | DialogTagCreate
 
 export type DialogDeleteConfirm = {
   assetId?: string
@@ -66,6 +66,12 @@ export type DialogSearchFacets = {
   closeDialogId?: string
   id: string
   type: 'searchFacets'
+}
+
+export type DialogTagCreate = {
+  closeDialogId?: string
+  id: string
+  type: 'tagCreate'
 }
 
 export type DialogAction = {

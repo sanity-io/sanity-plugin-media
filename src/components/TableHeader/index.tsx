@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import {Box as LegacyBox} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsPickAll, assetsPickClear} from '../../modules/assets'
+import {assetsPickAll, assetsPickClear, selectAssets} from '../../modules/assets'
 import TableHeaderItem from '../TableHeaderItem'
 
 // TODO: DRY
@@ -26,9 +26,7 @@ const TableHeader: FC = () => {
 
   const fetching = useTypedSelector(state => state.assets.fetching)
   const currentDocument = useTypedSelector(state => state.document)
-  const byIds = useTypedSelector(state => state.assets.byIds)
-
-  const items = byIds ? Object.values(byIds) : []
+  const items = useTypedSelector(selectAssets)
 
   const numPicked = items.filter(item => item.picked).length
   const allSelected = numPicked === items.length
@@ -48,11 +46,12 @@ const TableHeader: FC = () => {
     <LegacyBox
       sx={{
         alignItems: 'center',
-        bg: '#0a0a0a', // TODO: use theme color
+        bg: '#0F1112', // TODO: use theme color
+        borderBottom: '1px solid #333', // TODO: use theme colors
         display: ['none', null, null, 'grid'],
         gridColumnGap: [0, null, null, 3],
         gridTemplateColumns: 'tableLarge',
-        height: '2em',
+        height: '2.0em',
         letterSpacing: '0.025em',
         position: 'sticky',
         textTransform: 'uppercase',

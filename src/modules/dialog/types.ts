@@ -50,6 +50,10 @@ export type DialogShowSearchFacetsAction = {
   type: DialogActionTypes.SHOW_SEARCH_FACETS
 }
 
+export type DialogShowTagCreateAction = {
+  type: DialogActionTypes.SHOW_TAG_CREATE
+}
+
 // All actions
 
 export type DialogActions =
@@ -59,3 +63,4 @@ export type DialogActions =
   | DialogShowDeleteConfirmAction
   | DialogShowDetailsAction
   | DialogShowSearchFacetsAction
+  | DialogShowTagCreateAction

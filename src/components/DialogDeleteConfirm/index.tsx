@@ -6,7 +6,12 @@ import {useDispatch} from 'react-redux'
 import {dialogRemove} from '../../modules/dialog'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {WarningOutlineIcon} from '@sanity/icons'
-import {assetsDelete, assetsDeletePicked} from '../../modules/assets'
+import {
+  assetsDelete,
+  assetsDeletePicked,
+  selectAssetById,
+  selectAssetsPicked
+} from '../../modules/assets'
 
 type Props = {
   children?: ReactNode
@@ -21,12 +26,8 @@ const DialogDeleteConfirm: FC<Props> = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const byIds = useTypedSelector(state => state.assets.byIds)
-  const items = Object.values(byIds)
-
-  const item = byIds[assetId || '']
-  const asset = item?.asset
-  const picked = items?.filter(item => item?.picked)
+  const asset = useTypedSelector(selectAssetById(assetId))?.asset
+  const picked = useTypedSelector(selectAssetsPicked)
 
   // Callbacks
   const handleClose = () => {

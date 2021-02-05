@@ -15,7 +15,8 @@ import {
   DialogRemoveAction,
   DialogShowDeleteConfirmAction,
   DialogShowDetailsAction,
-  DialogShowSearchFacetsAction
+  DialogShowSearchFacetsAction,
+  DialogShowTagCreateAction
 } from './types'
 
 /***********
@@ -28,7 +29,8 @@ export enum DialogActionTypes {
   REMOVE = 'DIALOG_REMOVE',
   SHOW_DELETE_CONFIRM = 'DIALOG_SHOW_DELETE_CONFIRM',
   SHOW_DETAILS = 'DIALOG_SHOW_DETAILS',
-  SHOW_SEARCH_FACETS = 'DIALOG_SHOW_SEARCH_FACETS'
+  SHOW_SEARCH_FACETS = 'DIALOG_SHOW_SEARCH_FACETS',
+  SHOW_TAG_CREATE = 'DIALOG_SHOW_TAG_CREATE'
 }
 
 /***********
@@ -84,6 +86,12 @@ export default function dialogReducer(
         draft.items.push({
           id: 'searchFacets',
           type: 'searchFacets'
+        })
+        break
+      case DialogActionTypes.SHOW_TAG_CREATE:
+        draft.items.push({
+          id: 'tagCreate',
+          type: 'tagCreate'
         })
         break
     }
@@ -152,6 +160,14 @@ export const dialogShowDetails = (assetId: string): DialogShowDetailsAction => (
 
 export const dialogShowSearchFacets = (): DialogShowSearchFacetsAction => ({
   type: DialogActionTypes.SHOW_SEARCH_FACETS
+})
+
+/**
+ * Display create tag
+ */
+
+export const dialogShowTagCreate = (): DialogShowTagCreateAction => ({
+  type: DialogActionTypes.SHOW_TAG_CREATE
 })
 
 /*********

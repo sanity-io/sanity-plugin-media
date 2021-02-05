@@ -6,6 +6,7 @@ import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContex
 import withRedux from './helpers/withRedux'
 import Browser from './components/Browser'
 import useKeyPress from './hooks/useKeyPress'
+import GlobalStyle from './styled/GlobalStyles'
 import theme from './styled/theme'
 
 type Props = {
@@ -85,6 +86,8 @@ const AssetBrowser = (props: Props) => {
       <LegacyThemeProvider theme={theme}>
         <ToastProvider>
           <AssetBrowserDispatchProvider onSelect={onSelect}>
+            <GlobalStyle />
+
             {tool ? (
               <Box
                 style={{

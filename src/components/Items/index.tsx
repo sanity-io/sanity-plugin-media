@@ -1,15 +1,16 @@
 import {Box, Text} from '@sanity/ui'
-import React, {FC, Ref, useLayoutEffect, useRef, useState} from 'react'
+import React, {FC, Ref} from 'react'
 import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 
+import {TAGS_PANEL_WIDTH} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsLoadNextPage} from '../../modules/assets'
+import {assetsLoadNextPage, selectAssets} from '../../modules/assets'
 import Cards from '../Cards'
-import PickedBar from '../PickedBar'
 import Table from '../Table'
+// import TagsPanel from '../TagsPanel'
 
 type InfiniteLoaderRenderProps = {
   onItemsRendered: (props: ListOnItemsRenderedProps) => any
@@ -17,22 +18,14 @@ type InfiniteLoaderRenderProps = {
 }
 
 const Items: FC = () => {
-  // Refs
-  const refPickedBar = useRef<HTMLDivElement>(null)
-
-  // State
-  const [pickedBarHeight, setPickedBarHeight] = useState(0)
-
   // Redux
   const dispatch = useDispatch()
-  const allIds = useTypedSelector(state => state.assets.allIds)
-  const byIds = useTypedSelector(state => state.assets.byIds)
   const fetchCount = useTypedSelector(state => state.assets.fetchCount)
   const fetching = useTypedSelector(state => state.assets.fetching)
   const pageSize = useTypedSelector(state => state.assets.pageSize)
+  const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
   const view = useTypedSelector(state => state.assets.view)
-
-  const items = allIds.map(id => byIds[id])
+  const items = useTypedSelector(selectAssets)
 
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
@@ -64,17 +57,7 @@ const Items: FC = () => {
   // If there are more items to be loaded then add an extra placeholder row to trigger additional page loads.
   const itemCount = hasMore ? items.length + 1 : items.length
 
-  const picked = items.filter(item => item?.picked)
-  const hasPicked = picked.length > 0
-
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
-
-  // Layout effects
-  // - recalculate picked bar height when picked status changes
-  useLayoutEffect(() => {
-    const height = refPickedBar?.current?.offsetHeight
-    setPickedBarHeight(height || 0)
-  }, [hasPicked])
 
   if (isEmpty) {
     return (
@@ -88,86 +71,81 @@ const Items: FC = () => {
 
   return (
     <Box
-      flex={1}
       style={{
-        overflow: 'hidden',
-        width: '100%'
+        height: '100%'
       }}
     >
-      {/* Picked bar */}
-      <div ref={refPickedBar}>
-        <PickedBar />
-      </div>
-
       {(view === 'grid' || 'table') && (
         <AutoSizer>
           {({height, width}) => {
+            const itemsWidth = tagsPanelVisible ? width - TAGS_PANEL_WIDTH : width
+
             return (
-              <>
-                <InfiniteLoader
-                  isItemLoaded={isItemLoaded}
-                  itemCount={itemCount}
-                  loadMoreItems={handleLoadMoreItems}
-                >
-                  {({onItemsRendered, ref}: InfiniteLoaderRenderProps) => {
-                    // View: Table
-                    if (view === 'table') {
-                      return (
-                        <Table
-                          height={height - pickedBarHeight}
-                          items={items}
-                          itemCount={itemCount}
-                          onItemsRendered={onItemsRendered}
-                          ref={ref}
-                          width={width}
-                        />
-                      )
+              <InfiniteLoader
+                isItemLoaded={isItemLoaded}
+                itemCount={itemCount}
+                loadMoreItems={handleLoadMoreItems}
+              >
+                {({onItemsRendered, ref}: InfiniteLoaderRenderProps) => {
+                  // View: Table
+                  if (view === 'table') {
+                    return (
+                      <Table
+                        height={height}
+                        items={items}
+                        itemCount={itemCount}
+                        onItemsRendered={onItemsRendered}
+                        ref={ref}
+                        width={itemsWidth}
+                      />
+                    )
+                  }
+
+                  // View: Grid
+                  if (view === 'grid') {
+                    // The `onItemsRendered` method signature for `react-window` grids is different and
+                    // requires an adaptor, below.
+                    // Source: https://github.com/bvaughn/react-window-infinite-loader/issues/3
+                    const newItemsRendered = (gridData: GridOnItemsRenderedProps) => {
+                      const {
+                        overscanRowStartIndex,
+                        overscanRowStopIndex,
+                        overscanColumnStopIndex
+                      } = gridData
+
+                      const endCol = overscanColumnStopIndex + 1
+                      const startRow = overscanRowStartIndex
+                      const endRow = overscanRowStopIndex
+                      const visibleStartIndex = startRow * endCol
+                      const visibleStopIndex = endRow * endCol
+
+                      onItemsRendered({
+                        overscanStartIndex: visibleStartIndex - 10,
+                        overscanStopIndex: visibleStopIndex + 10,
+                        visibleStartIndex,
+                        visibleStopIndex
+                      })
                     }
 
-                    // View: Grid
-                    if (view === 'grid') {
-                      // The `onItemsRendered` method signature for `react-window` grids is different and
-                      // requires an adaptor, below.
-                      // Source: https://github.com/bvaughn/react-window-infinite-loader/issues/3
-                      const newItemsRendered = (gridData: GridOnItemsRenderedProps) => {
-                        const {
-                          overscanRowStartIndex,
-                          overscanRowStopIndex,
-                          overscanColumnStopIndex
-                        } = gridData
-
-                        const endCol = overscanColumnStopIndex + 1
-                        const startRow = overscanRowStartIndex
-                        const endRow = overscanRowStopIndex
-                        const visibleStartIndex = startRow * endCol
-                        const visibleStopIndex = endRow * endCol
-
-                        onItemsRendered({
-                          overscanStartIndex: visibleStartIndex - 10,
-                          overscanStopIndex: visibleStopIndex + 10,
-                          visibleStartIndex,
-                          visibleStopIndex
-                        })
-                      }
-
-                      return (
-                        <Cards
-                          height={height - pickedBarHeight}
-                          items={items}
-                          itemCount={itemCount}
-                          onItemsRendered={newItemsRendered}
-                          ref={ref}
-                          width={width}
-                        />
-                      )
-                    }
-                  }}
-                </InfiniteLoader>
-              </>
+                    return (
+                      <Cards
+                        height={height}
+                        items={items}
+                        itemCount={itemCount}
+                        onItemsRendered={newItemsRendered}
+                        ref={ref}
+                        width={itemsWidth}
+                      />
+                    )
+                  }
+                }}
+              </InfiniteLoader>
             )
           }}
         </AutoSizer>
       )}
+      {/* Tag panel */}
+      {/* <TagsPanel /> */}
     </Box>
   )
 }

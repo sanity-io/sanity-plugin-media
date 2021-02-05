@@ -1,10 +1,11 @@
-import {EditIcon} from '@sanity/icons'
-import {Box, Button, Flex} from '@sanity/ui'
+// import {SplitVerticalIcon} from '@sanity/icons'
+import {Box, Button, Flex, Inline} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogShowSearchFacets} from '../../modules/dialog'
+// import {tagsPanelVisibleSet} from '../../modules/tags'
 import ButtonViewGroup from '../ButtonViewGroup'
 import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
@@ -18,11 +19,18 @@ const Controls: FC = () => {
   const fetching = useTypedSelector(state => state.assets.fetching)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.assets.searchFacets)
+  // const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
 
   // Callbacks
   const handleShowSearchFacetDialog = () => {
     dispatch(dialogShowSearchFacets())
   }
+
+  /*
+  const toggleTagsPanelToggle = () => {
+    dispatch(tagsPanelVisibleSet(!tagsPanelVisible))
+  }
+  */
 
   return (
     <Box
@@ -43,20 +51,13 @@ const Controls: FC = () => {
             flex={1}
             style={{
               alignItems: 'flex-start',
-              // alignItems: 'center',
-              // border: '2px solid red',
               height: '100%',
               justifyContent: 'flex-start',
               position: 'relative',
               width: '100%'
             }}
           >
-            <Box
-              marginX={2}
-              style={{
-                minWidth: '200px'
-              }}
-            >
+            <Box marginX={2} style={{minWidth: '200px'}}>
               {/* Search */}
               <TextInputSearch />
             </Box>
@@ -69,29 +70,56 @@ const Controls: FC = () => {
             </Box>
 
             <Box display={['block', 'block', 'none']}>
-              <Button
-                fontSize={1}
-                icon={EditIcon}
-                mode="ghost"
-                onClick={handleShowSearchFacetDialog}
-                text={`Filters${searchFacets.length > 0 ? ' (' + searchFacets.length + ')' : ''}`}
-                tone="primary"
-              />
+              <Inline space={2}>
+                {/* Filters button (small) */}
+                <Button
+                  fontSize={1}
+                  mode="ghost"
+                  onClick={handleShowSearchFacetDialog}
+                  text={`Filters${searchFacets.length > 0 ? ' (' + searchFacets.length + ')' : ''}`}
+                  tone="primary"
+                />
+
+                {/* Tags button (small) */}
+                {/*
+                <Button
+                  fontSize={1}
+                  // icon={EditIcon}
+                  mode="ghost"
+                  // onClick={handleShowSearchFacetDialog}
+                  text={`Tags`}
+                  tone="primary"
+                />
+                */}
+              </Inline>
             </Box>
           </Flex>
         </Flex>
       </Box>
 
-      {/* Views + filters + orders*/}
       <Box>
         <Flex align="center" justify={['space-between']}>
+          {/* Views */}
           <Box marginX={2}>
             <ButtonViewGroup />
           </Box>
 
-          <Box marginX={2}>
+          <Flex marginX={2}>
+            {/* Orders */}
             <OrderSelect />
-          </Box>
+            {/* Tags panel toggle */}
+            {/*
+            <Box display={['none', 'none', 'block']} marginLeft={2}>
+              <Button
+                fontSize={1}
+                icon={SplitVerticalIcon}
+                onClick={toggleTagsPanelToggle}
+                mode={tagsPanelVisible ? 'default' : 'ghost'}
+                text={tagsPanelVisible ? 'Tags' : ''}
+              />
+            </Box>
+            */}
+          </Flex>
         </Flex>
       </Box>
 

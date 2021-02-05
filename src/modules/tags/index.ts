@@ -1,4 +1,4 @@
-import {Tag} from '@types'
+import {Asset, ReactSelectOption, Tag, TagItem} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
@@ -22,11 +22,13 @@ import {
   TagsListenerCreateAction,
   TagsListenerDeleteAction,
   TagsListenerUpdateAction,
+  TagsPanelVisibleSetAction,
   TagsReducerState,
   TagsSortAction
 } from './types'
 import debugThrottle from '../../operators/debugThrottle'
 import {RootReducerState} from '../types'
+import getTagSelectOptions from '../../utils/getTagSelectOptions'
 
 /***********
  * ACTIONS *
@@ -45,6 +47,7 @@ export enum TagsActionTypes {
   LISTENER_CREATE = 'TAGS_LISTENER_CREATE',
   LISTENER_DELETE = 'TAGS_LISTENER_DELETE',
   LISTENER_UPDATE = 'TAGS_LISTENER_UPDATE',
+  PANEL_VISIBLE_SET = 'TAGS_PANEL_VISIBLE_SET',
   SORT = 'TAGS_SORT'
 }
 
@@ -64,8 +67,8 @@ export const initialState: TagsReducerState = {
   creatingError: null,
   fetchCount: -1,
   fetching: false,
-  fetchingError: null
-  // totalCount: -1
+  fetchingError: null,
+  panelVisible: false
 }
 
 export default function tagsReducerState(
@@ -230,6 +233,11 @@ export default function tagsReducerState(
         break
       }
 
+      case TagsActionTypes.PANEL_VISIBLE_SET: {
+        draft.panelVisible = action.payload?.panelVisible
+        break
+      }
+
       case TagsActionTypes.SORT:
         draft.allIds.sort((a, b) => {
           const tagA = draft.byIds[a].tag.name.current
@@ -353,6 +361,11 @@ export const tagsListenerUpdate = (tag: Tag): TagsListenerUpdateAction => ({
   type: TagsActionTypes.LISTENER_UPDATE
 })
 
+export const tagsPanelVisibleSet = (panelVisible: boolean): TagsPanelVisibleSetAction => ({
+  payload: {panelVisible},
+  type: TagsActionTypes.PANEL_VISIBLE_SET
+})
+
 // Sort tags
 export const tagsSort = (): TagsSortAction => ({
   type: TagsActionTypes.SORT
@@ -443,10 +456,7 @@ export const tagsFetchEpic = (
         debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.fetch(query, params))),
         mergeMap((result: any) => {
-          const {
-            items
-            // totalCount
-          } = result
+          const {items} = result
 
           return of(tagsFetchComplete(items))
         }),
@@ -470,3 +480,30 @@ export const tagsSortEpic = (action$: Observable<TagsActions>): Observable<TagsA
       return of(tagsSort())
     })
   )
+
+/*************
+ * SELECTORS *
+ *************/
+
+export const selectTags = (state: RootReducerState): TagItem[] => {
+  return state.tags.allIds.map(id => state.tags.byIds[id])
+}
+
+// Map tag references to react-select options, skipping over items with no linked tags
+export const selectTagSelectOptions = (asset?: Asset) => (
+  state: RootReducerState
+): ReactSelectOption[] | null => {
+  const tags = asset?.opt?.media?.tags?.reduce((acc: TagItem[], v) => {
+    const tagItem = state.tags.byIds[v._ref]
+    if (tagItem?.tag) {
+      acc.push(tagItem)
+    }
+    return acc
+  }, [])
+
+  if (tags && tags?.length > 0) {
+    return getTagSelectOptions(tags)
+  }
+
+  return null
+}

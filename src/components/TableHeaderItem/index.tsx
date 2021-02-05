@@ -44,7 +44,7 @@ const TableHeaderItem: FC<Props> = (props: Props) => {
   }
 
   return (
-    <Label muted={!field} size={1}>
+    <Label muted={!field} size={0}>
       <Box
         onClick={field ? handleClick : undefined}
         style={{

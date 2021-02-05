@@ -8,7 +8,9 @@ import Select from 'react-select'
 import {SEARCH_FACET_OPERATORS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsSearchFacetsUpdate} from '../../modules/assets'
+import {selectTags} from '../../modules/tags'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/single'
+import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
@@ -20,21 +22,8 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const tagIds = useTypedSelector(state => state.tags.allIds)
-  const tagsByIds = useTypedSelector(state => state.tags.byIds)
-
-  const allTagOptions = tagIds.reduce((acc: ReactSelectOption[], id) => {
-    const tag = tagsByIds[id]?.tag
-
-    if (tag) {
-      acc.push({
-        label: tag?.name?.current,
-        value: tag?._id
-      })
-    }
-
-    return acc
-  }, [])
+  const tags = useTypedSelector(selectTags)
+  const allTagOptions = getTagSelectOptions(tags)
 
   const handleChange = (option: ReactSelectOption) => {
     dispatch(

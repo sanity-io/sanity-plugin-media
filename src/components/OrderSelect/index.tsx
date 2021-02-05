@@ -25,7 +25,6 @@ const OrderSelect: FC = () => {
           iconRight={SelectIcon}
           mode="ghost"
           padding={3}
-          style={{margin: '0 4px'}}
           text={selectedOrder?.title}
         />
       }

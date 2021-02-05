@@ -1,4 +1,4 @@
-import {CloseIcon, Icon} from '@sanity/icons'
+import {CloseIcon, Icon, UploadIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text} from '@sanity/ui'
 import React, {FC} from 'react'
 
@@ -43,24 +43,34 @@ const Header: FC<Props> = (props: Props) => {
           </Text>
         </Box>
 
-        {/* Close */}
-        <Box
-          marginX={3}
-          style={{
-            flexShrink: 0
-          }}
-        >
+        <Flex marginX={3}>
           <Button
-            disabled={!onClose}
-            icon={CloseIcon}
+            disabled={true}
+            fontSize={1}
+            icon={UploadIcon}
             mode="bleed"
-            onClick={onClose}
-            radius={2}
-            style={{
-              opacity: onClose ? 1 : 0
-            }}
+            text="Upload assets"
+            tone="primary"
           />
-        </Box>
+
+          {/* Close */}
+          <Box
+            // marginLeft={3}
+            style={{
+              flexShrink: 0
+            }}
+          >
+            {onClose && (
+              <Button
+                disabled={!onClose}
+                icon={CloseIcon}
+                mode="bleed"
+                onClick={onClose}
+                radius={2}
+              />
+            )}
+          </Box>
+        </Flex>
       </Flex>
     </Box>
   )

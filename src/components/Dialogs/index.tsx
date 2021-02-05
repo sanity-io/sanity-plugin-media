@@ -5,6 +5,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import DialogDeleteConfirm from '../DialogDeleteConfirm'
 import DialogDetails from '../DialogDetails'
 import DialogSearchFacets from '../DialogSearchFacets'
+import DialogTagCreate from '../DialogTagCreate'
 
 const Dialogs: FC = () => {
   // Redux
@@ -39,6 +40,14 @@ const Dialogs: FC = () => {
         <DialogSearchFacets dialog={dialog} key={index}>
           {childDialogs}
         </DialogSearchFacets>
+      )
+    }
+
+    if (dialog.type === 'tagCreate') {
+      return (
+        <DialogTagCreate dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogTagCreate>
       )
     }
 

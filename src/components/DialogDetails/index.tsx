@@ -11,9 +11,10 @@ import {AspectRatio} from 'theme-ui'
 import * as yup from 'yup'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsUpdate} from '../../modules/assets'
+import {assetsUpdate, selectAssetById} from '../../modules/assets'
 import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
-import {tagsCreate} from '../../modules/tags'
+import {selectTags, selectTagSelectOptions, tagsCreate} from '../../modules/tags'
+import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import AssetMetadata from '../AssetMetadata'
@@ -63,77 +64,38 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const byIds = useTypedSelector(state => state.assets.byIds)
-  const item = byIds[assetId || '']
-  const tagIds = useTypedSelector(state => state.tags.allIds)
-  const tagsByIds = useTypedSelector(state => state.tags.byIds)
-
-  const asset = item?.asset
+  const item = useTypedSelector(selectAssetById(assetId))
+  const tags = useTypedSelector(selectTags)
 
   // Refs
   const isMounted = useRef(false)
 
   // State
   // - Generate a snapshot of the current asset
-  const [assetSnapshot, setAssetSnapshot] = useState(asset)
+  const [assetSnapshot, setAssetSnapshot] = useState(item?.asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
 
-  const currentAsset = item ? asset : assetSnapshot
+  const currentAsset = item ? item?.asset : assetSnapshot
+  const allTagOptions = getTagSelectOptions(tags)
 
-  const allTagOptions = tagIds.reduce((acc: ReactSelectOption[], id) => {
-    const tag = tagsByIds[id]?.tag
-
-    if (tag) {
-      acc.push({
-        label: tag?.name?.current,
-        value: tag?._id
-      })
-    }
-
-    return acc
-  }, [])
-
-  // Map tag references to react-select options, skip over items with nullish labels or values
-  const generateTagOptions = (asset?: Asset): ReactSelectOption[] | null => {
-    const tags = asset?.opt?.media?.tags?.reduce((acc: ReactSelectOption[], v) => {
-      const tag = tagsByIds[v._ref]?.tag
-      if (tag) {
-        acc.push({
-          label: tag?.name?.current,
-          value: tag?._id
-        })
-      }
-      return acc
-    }, [])
-
-    if (tags && tags?.length > 0) {
-      return tags
-    }
-
-    return null
-  }
+  // Redux
+  const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
 
   const generateDefaultValues = (asset?: Asset) => ({
     altText: asset?.altText || '',
     description: asset?.description || '',
     originalFilename: asset ? getFilenameWithoutExtension(asset) : undefined,
-    opt: {
-      media: {
-        tags: generateTagOptions(asset)
-      }
-    },
+    opt: {media: {tags: assetTagOptions}},
     title: asset?.title || ''
   })
 
   // Generate a string from all current tag labels
   // This is used purely to determine tag updates to then update the form in real time
-  const currentTagLabels = generateTagOptions(currentAsset)
-    ?.map(tag => tag.label)
-    .join(',')
+  const currentTagLabels = assetTagOptions?.map(tag => tag.label).join(',')
 
   // react-hook-form
   const {control, errors, formState, getValues, handleSubmit, register, reset, setValue} = useForm({
-    defaultValues: generateDefaultValues(asset),
+    defaultValues: generateDefaultValues(item?.asset),
     mode: 'onChange',
     resolver: yupResolver(formSchema)
   })
@@ -144,13 +106,13 @@ const DialogDetails: FC<Props> = (props: Props) => {
   }
 
   const handleDelete = () => {
-    if (!asset) {
+    if (!item?.asset) {
       return
     }
 
     dispatch(
-      dialogShowDeleteConfirm(asset._id, {
-        closeDialogId: asset._id
+      dialogShowDeleteConfirm(item?.asset._id, {
+        closeDialogId: item?.asset._id
       })
     )
   }
@@ -178,7 +140,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
   // - submit react-hook-form
   const onSubmit = async (formData: FormData) => {
-    if (!asset) {
+    if (!item?.asset) {
       return
     }
 
@@ -187,7 +149,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
     dispatch(
       assetsUpdate(
-        asset,
+        item?.asset,
         // Form data
         {
           ...sanitizedFormData,
@@ -204,11 +166,11 @@ const DialogDetails: FC<Props> = (props: Props) => {
             }
           },
           // Append extension to filename
-          originalFilename: `${sanitizedFormData.originalFilename}.${asset.extension}`
+          originalFilename: `${sanitizedFormData.originalFilename}.${item?.asset.extension}`
         },
         // Options
         {
-          closeDialogId: asset._id
+          closeDialogId: item?.asset._id
         }
       )
     )
@@ -217,13 +179,13 @@ const DialogDetails: FC<Props> = (props: Props) => {
   // Effects
   // - Listen for asset mutations and update snapshot
   useEffect(() => {
-    if (!asset) {
+    if (!item?.asset) {
       return
     }
 
     // Remember that Sanity listeners ignore joins, order clauses and projections
     const subscriptionAsset = client
-      .listen(groq`*[_id == $id]`, {id: asset._id})
+      .listen(groq`*[_id == $id]`, {id: item?.asset._id})
       .subscribe(handleAssetUpdate)
 
     return () => {
@@ -237,9 +199,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
       reset(
         {
           opt: {
-            media: {
-              tags: generateTagOptions(currentAsset)
-            }
+            media: {tags: assetTagOptions}
           }
         },
         {
@@ -257,7 +217,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
   // - Update tags field with new tag if one has been created
   useEffect(() => {
     if (lastCreatedTagId) {
-      const tag = tagsByIds[lastCreatedTagId]?.tag
+      const tag = tags?.find(tag => tag?.tag?._id === lastCreatedTagId)?.tag
       if (tag) {
         const existingTags = (getValues('opt.media.tags') as ReactSelectOption[]) || []
         const updatedTags = existingTags.concat([
@@ -266,7 +226,6 @@ const DialogDetails: FC<Props> = (props: Props) => {
             value: tag._id
           }
         ])
-
         setValue('opt.media.tags', updatedTags, {shouldDirty: true})
       }
     }
@@ -296,6 +255,10 @@ const DialogDetails: FC<Props> = (props: Props) => {
       </Flex>
     </Box>
   )
+
+  if (!currentAsset) {
+    return null
+  }
 
   return (
     <Dialog
@@ -364,7 +327,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
                   onCreateTag={handleCreateTag}
                   options={allTagOptions}
                   placeholder="Select or create..."
-                  value={generateTagOptions(currentAsset)}
+                  value={assetTagOptions}
                 />
                 {/* Filename */}
                 <FormFieldInputFilename
@@ -413,7 +376,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
               hidden={tabSection !== 'references'}
               id="references-panel"
             >
-              <Box marginTop={5}>{asset && <DocumentList assetId={asset._id} />}</Box>
+              <Box marginTop={5}>{item?.asset && <DocumentList assetId={item?.asset._id} />}</Box>
             </TabPanel>
           </Box>
         </Box>

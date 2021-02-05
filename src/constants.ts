@@ -363,3 +363,5 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
 ]
 
 export const TAG_DOCUMENT_NAME = 'media.tag'
+
+export const TAGS_PANEL_WIDTH = 250 // px

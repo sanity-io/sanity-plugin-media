@@ -38,8 +38,8 @@ const VirtualCell = memo((props: GridChildComponentProps) => {
   const assetId = item?.asset?._id
 
   // Add padding to virtual cells
-  const MARGIN_X = 10
-  const MARGIN_Y = 10
+  const MARGIN_X = 2
+  const MARGIN_Y = 2
 
   const cellStyle = {
     ...style,
@@ -77,7 +77,7 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
 
   return (
     <VariableSizeGrid
-      // className="custom-scrollbar"
+      className="media-custom-scrollbar"
       columnCount={columnCount}
       columnWidth={() => cardWidth}
       height={height}
