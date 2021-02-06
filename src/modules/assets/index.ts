@@ -283,8 +283,8 @@ export default function assetsReducerState(
        */
       case AssetsActionTypes.PICK_CLEAR:
         draft.lastPicked = undefined
-        draft.allIds.forEach(id => {
-          draft.byIds[id].picked = false
+        Object.values(draft.byIds).forEach(asset => {
+          draft.byIds[asset.asset._id].picked = false
         })
         break
       /**
