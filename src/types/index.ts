@@ -36,11 +36,6 @@ export type Block = {
   markDefs: MarkDef[]
 }
 
-export type BrowserSelect = {
-  order: Order
-  title: string
-}
-
 export type BrowserView = 'grid' | 'table'
 
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
@@ -105,9 +100,12 @@ export type ImageAsset = SanityImageAssetDocument &
 export type MarkDef = {_key: string; _type: string}
 
 export type Order = {
-  direction: 'asc' | 'desc'
+  direction: OrderDirection
   field: string
+  title: string
 }
+
+export type OrderDirection = 'asc' | 'desc'
 
 export type SanityReference = {
   _ref: string

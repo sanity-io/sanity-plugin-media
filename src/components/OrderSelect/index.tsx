@@ -3,7 +3,7 @@ import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {BROWSER_SELECT} from '../../constants'
+import {ORDER_OPTIONS, ORDER_DICTIONARY} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsSetOrder} from '../../modules/assets'
 
@@ -11,10 +11,6 @@ const OrderSelect: FC = () => {
   // Redux
   const dispatch = useDispatch()
   const order = useTypedSelector(state => state.assets.order)
-
-  const selectedOrder = BROWSER_SELECT.find(
-    v => v?.order.field === order.field && v?.order.direction === order.direction
-  )
 
   return (
     <MenuButton
@@ -25,26 +21,24 @@ const OrderSelect: FC = () => {
           iconRight={SelectIcon}
           mode="ghost"
           padding={3}
-          text={selectedOrder?.title}
+          text={order?.title}
         />
       }
       id="order"
       menu={
         <Menu>
-          {BROWSER_SELECT?.map((item, index) => {
+          {ORDER_OPTIONS?.map((item, index) => {
             if (item) {
               return (
                 <MenuItem
-                  disabled={
-                    order.field === item.order.field && order.direction === item.order.direction
-                  }
+                  disabled={order.field === item.field && order.direction === item.direction}
                   fontSize={1}
                   key={index}
                   onClick={() => {
-                    dispatch(assetsSetOrder(item.order))
+                    dispatch(assetsSetOrder(item.field, item.direction))
                   }}
                   padding={2}
-                  text={item.title}
+                  text={ORDER_DICTIONARY[item.field][item.direction]}
                 />
               )
             }

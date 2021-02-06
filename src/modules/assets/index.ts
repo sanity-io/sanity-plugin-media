@@ -1,4 +1,4 @@
-import {Asset, AssetItem, BrowserView, Order, SearchFacetInputProps} from '@types'
+import {Asset, AssetItem, BrowserView, OrderDirection, SearchFacetInputProps} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
@@ -15,7 +15,7 @@ import {
 } from 'rxjs/operators'
 import {isOfType} from 'typesafe-actions'
 
-import {BROWSER_SELECT, SEARCH_FACET_OPERATORS} from '../../constants'
+import {ORDER_OPTIONS, ORDER_DICTIONARY, SEARCH_FACET_OPERATORS} from '../../constants'
 import debugThrottle from '../../operators/debugThrottle'
 import {
   AssetsActions,
@@ -106,6 +106,11 @@ export enum AssetsActionTypes {
  * `byIds` is an object literal that contains all normalised assets (with asset IDs as keys)
  */
 
+const defaultOrder = ORDER_OPTIONS[0] as {
+  direction: OrderDirection
+  field: string
+}
+
 export const initialState: AssetsReducerState = {
   allIds: [],
   byIds: {},
@@ -113,7 +118,18 @@ export const initialState: AssetsReducerState = {
   fetching: false,
   fetchingError: null,
   lastPicked: undefined,
-  order: BROWSER_SELECT[0]?.order as Order,
+  order: {
+    direction: defaultOrder.direction,
+    field: defaultOrder.field,
+    title: ORDER_DICTIONARY[defaultOrder.field][defaultOrder.direction]
+  },
+  /*
+  order: {
+    direction: defaultOrder.direction,
+    field: defaultOrder.field,
+    title: ORDER_DICTIONARY[defaultOrder.field][defaultOrder.direction]
+  } as Order,
+  */
   pageIndex: 0,
   pageSize: 50,
   searchFacets: [],
@@ -601,8 +617,14 @@ export const assetsSetView = (view: BrowserView): AssetsSetViewAction => ({
 })
 
 // Set order
-export const assetsSetOrder = (order: Order): AssetsSetOrderAction => ({
-  payload: {order},
+export const assetsSetOrder = (field: string, direction: OrderDirection): AssetsSetOrderAction => ({
+  payload: {
+    order: {
+      direction,
+      field,
+      title: ORDER_DICTIONARY[field][direction]
+    }
+  },
   type: AssetsActionTypes.SET_ORDER
 })
 

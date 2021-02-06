@@ -22,24 +22,15 @@ const TableHeaderItem: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleClick = () => {
-    if (!field) {
+    if (!field || !title) {
       return
     }
 
     if (isActive) {
-      dispatch(
-        assetsSetOrder({
-          field,
-          direction: order.direction === 'asc' ? 'desc' : 'asc'
-        })
-      )
+      const direction = order.direction === 'asc' ? 'desc' : 'asc'
+      dispatch(assetsSetOrder(field, direction))
     } else {
-      dispatch(
-        assetsSetOrder({
-          field,
-          direction: 'asc'
-        })
-      )
+      dispatch(assetsSetOrder(field, 'asc'))
     }
   }
 

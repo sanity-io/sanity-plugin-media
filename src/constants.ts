@@ -1,76 +1,75 @@
 import {
-  BrowserSelect,
   SearchFacetOperators,
   SearchFacetInputProps,
   SearchFacetDivider,
-  SearchFacetGroup
+  SearchFacetGroup,
+  OrderDirection
 } from '@types'
 import groq from 'groq'
 
+export const ORDER_DICTIONARY: Record<string, {asc: string; desc: string}> = {
+  _createdAt: {
+    asc: 'Last created: Oldest first',
+    desc: 'Last created: Newest first'
+  },
+  _updatedAt: {
+    asc: 'Last updated: Oldest first',
+    desc: 'Last updated: Newest first'
+  },
+  mimeType: {
+    asc: 'MIME type: A to Z',
+    desc: 'MIME type: Z to A'
+  },
+  originalFilename: {
+    asc: 'File name: A to Z',
+    desc: 'File name: Z to A'
+  },
+  size: {
+    asc: 'File size: Smallest first',
+    desc: 'File size: Largest first'
+  }
+}
+
 // Sort order dropdown options
 // null values are represented as menu dividers
-export const BROWSER_SELECT: (BrowserSelect | null)[] = [
+export const ORDER_OPTIONS: ({direction: OrderDirection; field: string} | null)[] = [
   {
-    order: {
-      direction: 'desc',
-      field: '_createdAt'
-    },
-    title: 'Last created: Newest first'
+    direction: 'desc',
+    field: '_createdAt'
   },
   {
-    order: {
-      direction: 'asc',
-      field: '_createdAt'
-    },
-    title: 'Last created: Oldest first'
+    direction: 'asc',
+    field: '_createdAt'
   },
   // Divider
   null,
   {
-    order: {
-      direction: 'desc',
-      field: '_updatedAt'
-    },
-    title: 'Last updated: Newest first'
+    direction: 'desc',
+    field: '_updatedAt'
   },
   {
-    order: {
-      direction: 'asc',
-      field: '_updatedAt'
-    },
-    title: 'Last updated: Oldest first'
+    direction: 'asc',
+    field: '_updatedAt'
   },
   // Divider
   null,
   {
-    order: {
-      direction: 'asc',
-      field: 'originalFilename'
-    },
-    title: 'File name: A to Z'
+    direction: 'asc',
+    field: 'originalFilename'
   },
   {
-    order: {
-      direction: 'desc',
-      field: 'originalFilename'
-    },
-    title: 'File name: Z to A'
+    direction: 'desc',
+    field: 'originalFilename'
   },
   // Divider
   null,
   {
-    order: {
-      direction: 'desc',
-      field: 'size'
-    },
-    title: 'File size: Largest first'
+    direction: 'desc',
+    field: 'size'
   },
   {
-    order: {
-      direction: 'asc',
-      field: 'size'
-    },
-    title: 'File size: Smallest first'
+    direction: 'asc',
+    field: 'size'
   }
 ]
 
