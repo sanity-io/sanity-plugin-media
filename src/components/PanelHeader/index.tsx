@@ -1,3 +1,4 @@
+import {black, hues} from '@sanity/color'
 import {Flex} from '@sanity/ui'
 import React, {FC, ReactNode} from 'react'
 
@@ -14,8 +15,8 @@ const PanelHeader: FC<Props> = (props: Props) => {
       justify="space-between"
       paddingLeft={3}
       style={{
-        background: '#0F1112', // TODO: use theme colors
-        borderBottom: '1px solid #333', // TODO: use theme colors
+        background: black.hex,
+        borderBottom: `1px solid ${hues.gray?.[900].hex}`,
         height: '2.0em'
         // position: 'sticky',
         // top: 0

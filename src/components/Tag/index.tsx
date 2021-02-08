@@ -1,3 +1,4 @@
+import {hues} from '@sanity/color'
 import {CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text} from '@sanity/ui'
 import {TagItem} from '@types'
@@ -20,7 +21,7 @@ type Props = {
 const Container = styled(Flex)`
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: rgba(0, 0, 0, 0.25); // TODO: use theme colors
+      background: ${hues.gray?.[950].hex};
     }
   }
 `

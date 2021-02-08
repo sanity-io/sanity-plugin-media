@@ -1,3 +1,4 @@
+import {hues} from '@sanity/color'
 import {CheckmarkCircleIcon, EditIcon, WarningOutlineIcon} from '@sanity/icons'
 import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
@@ -22,7 +23,7 @@ type Props = {
 }
 
 const Container = styled(Flex)<{picked?: boolean; updating?: boolean}>`
-  background: #222; // TODO: use theme colors
+  background: ${hues.gray[950].hex};
   border: 1px solid transparent;
   border-radius: 3px;
   overflow: hidden;
@@ -53,7 +54,7 @@ const ContextActionContainer = styled(Box)`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: #1a1a1a; // TODO: use theme colors
+      background: ${hues.gray[900].hex};
     }
   }
 `

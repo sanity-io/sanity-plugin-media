@@ -1,3 +1,4 @@
+import {hues} from '@sanity/color'
 import {Box} from '@sanity/ui'
 import React, {FC} from 'react'
 
@@ -16,9 +17,8 @@ const TagsPanel: FC = () => {
   return (
     <Box
       className="media-custom-scrollbar"
-      // padding={1}
       style={{
-        borderLeft: '1px solid #333', // TODO: use theme colors
+        borderLeft: `1px solid ${hues.gray?.[900].hex}`,
         height: '100%',
         overflowY: 'auto',
         position: 'absolute',

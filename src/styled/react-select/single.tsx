@@ -1,3 +1,4 @@
+import {black, hues} from '@sanity/color'
 import {AddIcon, CloseIcon} from '@sanity/icons'
 import {Box, Card, Flex, Text, studioTheme} from '@sanity/ui'
 import {components} from 'react-select'
@@ -16,7 +17,7 @@ export const reactSelectStyles = {
     color: 'white',
     border: 'none',
     borderRadius: themeRadius[2],
-    boxShadow: 'inset 0 0 0 1px #272a2e', // TODO: use theme value
+    boxShadow: `inset 0 0 0 1px ${hues.gray[900].hex}`,
     fontSize: themeTextSizes[1].fontSize,
     minHeight: '25px',
     opacity: isDisabled ? 0.5 : 'inherit',
@@ -41,13 +42,13 @@ export const reactSelectStyles = {
     ...styles,
     backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
     borderRadius: themeRadius[2],
-    color: isFocused ? '#1f2123' : 'inherit', // TODO: use theme value
+    color: isFocused ? black.hex : 'inherit',
     fontSize: themeTextSizes[1].fontSize,
     lineHeight: '1em',
     padding: '4px 6px', // TODO: use theme value
     '&:hover': {
       backgroundColor: themeDarkPrimaryBlue,
-      color: '#1f2123' // TODO: use theme value
+      color: black.hex
     }
   }),
   placeholder: (styles: any) => ({

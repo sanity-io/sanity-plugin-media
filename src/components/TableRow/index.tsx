@@ -1,3 +1,4 @@
+import {hues} from '@sanity/color'
 import {CheckmarkCircleIcon, EditIcon, WarningOutlineIcon} from '@sanity/icons'
 import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
@@ -37,7 +38,7 @@ const ContainerGrid = styled(LegacyGrid)<{selected?: boolean; updating?: boolean
     css`
       @media (hover: hover) and (pointer: fine) {
         &:hover {
-          background: rgba(0, 0, 0, 0.25); // TODO: use theme colors
+          background: ${hues.gray?.[950].hex};
         }
       }
     `}
@@ -45,11 +46,10 @@ const ContainerGrid = styled(LegacyGrid)<{selected?: boolean; updating?: boolean
 
 const ContextActionContainer = styled(LegacyFlex)`
   cursor: pointer;
-  transition: all 300ms;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: #000; // TODO: use theme colors
+      background: ${hues.gray?.[900].hex};
     }
   }
 `

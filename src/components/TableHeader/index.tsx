@@ -1,3 +1,4 @@
+import {black, hues} from '@sanity/color'
 import {Checkbox, Flex} from '@sanity/ui'
 import React, {FC, MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
@@ -11,11 +12,10 @@ import TableHeaderItem from '../TableHeaderItem'
 // TODO: DRY
 const ContextActionContainer = styled(Flex)`
   cursor: pointer;
-  transition: all 300ms;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: #000; // TODO: use theme colors
+      background: ${hues.gray?.[900].hex};
     }
   }
 `
@@ -46,8 +46,8 @@ const TableHeader: FC = () => {
     <LegacyBox
       sx={{
         alignItems: 'center',
-        bg: '#0F1112', // TODO: use theme color
-        borderBottom: '1px solid #333', // TODO: use theme colors
+        bg: black.hex,
+        borderBottom: `1px solid ${hues.gray?.[900].hex}`,
         display: ['none', null, null, 'grid'],
         gridColumnGap: [0, null, null, 3],
         gridTemplateColumns: 'tableLarge',

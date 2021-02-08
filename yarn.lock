@@ -560,6 +560,11 @@
     make-error "^1.3.0"
     object-assign "^4.1.1"
 
+"@sanity/color@2.0.12", "@sanity/color@^2.0.12":
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/@sanity/color/-/color-2.0.12.tgz#b5a9e3aaadbc28779f8589ee07e1a747ea5ea0cf"
+  integrity sha512-xZ2NoOBceSX0MTPpVRpuefdqjJZDUufblh2UJcg2bLMlS4FJABfc/T6qxUqfM1HyHp//f6fVHNbQ9Cxpv3hxEg==
+
 "@sanity/color@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@sanity/color/-/color-1.0.0.tgz#6cc44d4a8f6da4567828f52f141deed4d17aa31e"
@@ -569,11 +574,6 @@
   version "2.0.11"
   resolved "https://registry.yarnpkg.com/@sanity/color/-/color-2.0.11.tgz#5933e40b0e91bbdaa4fbda46f7dcdd90d5b2c43e"
   integrity sha512-XVwHXIx78OA8i3y8aIZ9nq6/6hdC4K0FB6jW9I5sLbP4IooXSPoeRL/3Fab6jEzSuhAe7GEhREXqORZC6bfEnw==
-
-"@sanity/color@^2.0.12":
-  version "2.0.12"
-  resolved "https://registry.yarnpkg.com/@sanity/color/-/color-2.0.12.tgz#b5a9e3aaadbc28779f8589ee07e1a747ea5ea0cf"
-  integrity sha512-xZ2NoOBceSX0MTPpVRpuefdqjJZDUufblh2UJcg2bLMlS4FJABfc/T6qxUqfM1HyHp//f6fVHNbQ9Cxpv3hxEg==
 
 "@sanity/eventsource@1.150.1":
   version "1.150.1"

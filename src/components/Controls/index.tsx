@@ -1,3 +1,4 @@
+import {hues} from '@sanity/color'
 import {SplitVerticalIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline} from '@sanity/ui'
 import React, {FC} from 'react'
@@ -38,7 +39,7 @@ const Controls: FC = () => {
     <Box
       paddingY={2}
       style={{
-        borderBottom: '1px solid #333' // TODO: use theme colors
+        borderBottom: `1px solid ${hues.gray?.[900].hex}`
       }}
     >
       {/* Rows: search / filters / orders  */}
