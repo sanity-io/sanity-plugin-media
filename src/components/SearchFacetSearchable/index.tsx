@@ -7,7 +7,7 @@ import Select from 'react-select'
 
 import {SEARCH_FACET_OPERATORS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {searchSearchFacetsUpdate} from '../../modules/search'
+import {searchFacetsUpdate} from '../../modules/search'
 import {selectTags} from '../../modules/tags'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/single'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
@@ -27,7 +27,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
 
   const handleChange = (option: ReactSelectOption) => {
     dispatch(
-      searchSearchFacetsUpdate({
+      searchFacetsUpdate({
         name: facet.name,
         value: option
       })
@@ -36,7 +36,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
-      searchSearchFacetsUpdate({
+      searchFacetsUpdate({
         name: facet.name,
         operatorType
       })

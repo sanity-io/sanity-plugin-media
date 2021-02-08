@@ -24,7 +24,7 @@ import notifications, {
   notificationsAssetUpdateCompleteEpic,
   notificationsTagDeleteCompleteEpic
 } from './notifications'
-import search, {searchSearchFacetTagRemoveEpic, searchSearchFacetTagUpdateEpic} from './search'
+import search, {searchFacetTagRemoveEpic, searchFacetTagUpdateEpic} from './search'
 import tags, {
   tagsCreateEpic,
   tagsDeleteEpic,
@@ -51,8 +51,8 @@ export const rootEpic = combineEpics(
   notificationsAssetDeleteCompleteEpic,
   notificationsAssetUpdateCompleteEpic,
   notificationsTagDeleteCompleteEpic,
-  searchSearchFacetTagRemoveEpic,
-  searchSearchFacetTagUpdateEpic,
+  searchFacetTagRemoveEpic,
+  searchFacetTagUpdateEpic,
   tagsCreateEpic,
   tagsDeleteEpic,
   tagsFetchEpic,

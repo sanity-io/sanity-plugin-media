@@ -7,8 +7,8 @@ import styled from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {
-  assetsSearchFacetsRemove,
-  searchSearchFacetTagAddOrUpdate,
+  searchFacetsRemove,
+  searchFacetTagAddOrUpdate,
   selectIsSearchFacetTag
 } from '../../modules/search'
 import {dialogShowDeleteConfirm, dialogShowTagEdit} from '../../modules/dialog'
@@ -59,11 +59,11 @@ const Tag: FC<Props> = (props: Props) => {
   }
 
   const handleSearchFacetTagAddOrUpdate = () => {
-    dispatch(searchSearchFacetTagAddOrUpdate(tag?.tag))
+    dispatch(searchFacetTagAddOrUpdate(tag?.tag))
   }
 
   const handleSearchFacetTagRemove = () => {
-    dispatch(assetsSearchFacetsRemove('tag'))
+    dispatch(searchFacetsRemove('tag'))
   }
 
   return (

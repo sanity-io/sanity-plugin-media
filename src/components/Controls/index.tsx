@@ -18,7 +18,7 @@ const Controls: FC = () => {
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
-  const searchFacets = useTypedSelector(state => state.search.searchFacets)
+  const searchFacets = useTypedSelector(state => state.search.facets)
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
 
   // Callbacks

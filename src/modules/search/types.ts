@@ -5,37 +5,27 @@ import {SearchActionTypes} from './index'
 // Reducer
 
 export type SearchReducerState = {
-  searchFacets: SearchFacetInputProps[]
-  searchQuery: string
+  facets: SearchFacetInputProps[]
+  query: string
 }
 
 // Actions
 
-export type SearchSetSearchQueryAction = {
-  payload: {searchQuery: string}
-  type: SearchActionTypes.SET_SEARCH_QUERY
-}
-
-export type SearchSearchFacetTagAddOrUpdate = {
-  payload: {tag: Tag}
-  type: SearchActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE
-}
-
-export type SearchSearchFacetsAddAction = {
+export type SearchFacetsAddAction = {
   payload: {facet: SearchFacetInputProps}
   type: SearchActionTypes.SEARCH_FACETS_ADD
 }
 
-export type SearchSearchFacetsClearAction = {
+export type SearchFacetsClearAction = {
   type: SearchActionTypes.SEARCH_FACETS_CLEAR
 }
 
-export type SearchSearchFacetsRemoveAction = {
+export type SearchFacetsRemoveAction = {
   payload: {facetName: string}
   type: SearchActionTypes.SEARCH_FACETS_REMOVE
 }
 
-export type SearchSearchFacetsUpdateAction = {
+export type SearchFacetsUpdateAction = {
   payload: {
     modifier?: string
     name: string
@@ -45,12 +35,22 @@ export type SearchSearchFacetsUpdateAction = {
   type: SearchActionTypes.SEARCH_FACETS_UPDATE
 }
 
+export type SearchQuerySetAction = {
+  payload: {searchQuery: string}
+  type: SearchActionTypes.SEARCH_QUERY_SET
+}
+
+export type SearchFacetsTagAddOrUpdate = {
+  payload: {tag: Tag}
+  type: SearchActionTypes.SEARCH_FACETS_TAG_ADD_OR_UPDATE
+}
+
 // All actions
 
 export type SearchActions =
-  | SearchSearchFacetTagAddOrUpdate
-  | SearchSearchFacetsAddAction
-  | SearchSearchFacetsClearAction
-  | SearchSearchFacetsRemoveAction
-  | SearchSearchFacetsUpdateAction
-  | SearchSetSearchQueryAction
+  | SearchFacetsAddAction
+  | SearchFacetsClearAction
+  | SearchFacetsRemoveAction
+  | SearchFacetsTagAddOrUpdate
+  | SearchFacetsUpdateAction
+  | SearchQuerySetAction

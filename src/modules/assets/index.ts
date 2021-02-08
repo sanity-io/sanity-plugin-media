@@ -364,7 +364,7 @@ export default function assetsReducerState(
       }
 
       // TODO: should this be moved into an epic + extra action?
-      case SearchActionTypes.SET_SEARCH_QUERY:
+      case SearchActionTypes.SEARCH_QUERY_SET:
         draft.pageIndex = 0
         break
     }
@@ -715,14 +715,12 @@ export const assetsFetchPageIndexEpic = (
 
       const documentId = state?.document?._id
 
-      console.log('state.search', state.search)
-
       return of(
         assetsFetch({
           filter: constructFilter({
             hasDocument: !!state.document,
-            searchFacets: state.search.searchFacets,
-            searchQuery: state.search.searchQuery
+            searchFacets: state.search.facets,
+            searchQuery: state.search.query
           }),
           // Document ID can be null when operating on pristine / unsaved drafts
           ...(documentId ? {params: {documentId}} : {}),
@@ -760,12 +758,12 @@ export const assetsSearchEpic = (action$: Observable<AssetsActions>): Observable
   action$.pipe(
     filter(
       isOfType([
-        SearchActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE,
+        SearchActionTypes.SEARCH_FACETS_TAG_ADD_OR_UPDATE,
         SearchActionTypes.SEARCH_FACETS_ADD,
         SearchActionTypes.SEARCH_FACETS_CLEAR,
         SearchActionTypes.SEARCH_FACETS_REMOVE,
         SearchActionTypes.SEARCH_FACETS_UPDATE,
-        SearchActionTypes.SET_SEARCH_QUERY
+        SearchActionTypes.SEARCH_QUERY_SET
       ])
     ),
     debounceTime(400),
@@ -814,12 +812,12 @@ export const assetsUnpickEpic = (action$: Observable<AssetsActions>): Observable
       isOfType([
         AssetsActionTypes.SET_ORDER,
         AssetsActionTypes.SET_VIEW,
-        SearchActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE,
+        SearchActionTypes.SEARCH_FACETS_TAG_ADD_OR_UPDATE,
         SearchActionTypes.SEARCH_FACETS_ADD,
         SearchActionTypes.SEARCH_FACETS_CLEAR,
         SearchActionTypes.SEARCH_FACETS_REMOVE,
         SearchActionTypes.SEARCH_FACETS_UPDATE,
-        SearchActionTypes.SET_SEARCH_QUERY
+        SearchActionTypes.SEARCH_QUERY_SET
       ])
     ),
     switchMap(() => {
