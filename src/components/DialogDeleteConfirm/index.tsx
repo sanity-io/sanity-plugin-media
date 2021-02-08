@@ -1,5 +1,5 @@
 import {Box, Button, Dialog, Flex, Stack, Text} from '@sanity/ui'
-import {DialogDeleteConfirm} from '@types'
+import {Asset, DialogDeleteConfirm, Tag} from '@types'
 import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 
@@ -12,6 +12,7 @@ import {
   selectAssetById,
   selectAssetsPicked
 } from '../../modules/assets'
+import {selectTagById, tagsDelete} from '../../modules/tags'
 
 type Props = {
   children?: ReactNode
@@ -21,13 +22,21 @@ type Props = {
 const DialogDeleteConfirm: FC<Props> = (props: Props) => {
   const {
     children,
-    dialog: {assetId, closeDialogId, id}
+    dialog: {documentId, documentType, closeDialogId, id}
   } = props
 
   // Redux
   const dispatch = useDispatch()
-  const asset = useTypedSelector(selectAssetById(assetId))?.asset
   const picked = useTypedSelector(selectAssetsPicked)
+
+  let asset: Asset
+  let tag: Tag
+  if (documentType === 'asset') {
+    asset = useTypedSelector(state => selectAssetById(state, String(documentId)))?.asset // TODO: check casting
+  }
+  if (documentType === 'tag') {
+    tag = useTypedSelector(state => selectTagById(state, String(documentId)))?.tag // TODO: check casting
+  }
 
   // Callbacks
   const handleClose = () => {
@@ -40,19 +49,29 @@ const DialogDeleteConfirm: FC<Props> = (props: Props) => {
       dispatch(dialogRemove(closeDialogId))
     }
 
-    if (asset) {
-      // Delete single asset
-      dispatch(assetsDelete(asset))
-    } else {
-      // Delete picked assets
-      dispatch(assetsDeletePicked())
+    switch (documentType) {
+      case 'asset':
+        if (asset) {
+          // Delete single asset
+          dispatch(assetsDelete({asset}))
+        } else {
+          // Delete picked assets
+          dispatch(assetsDeletePicked())
+        }
+        break
+      case 'tag':
+        if (tag) {
+          // Delete single tag
+          dispatch(tagsDelete(tag))
+        }
+        break
     }
 
     // Close self
     handleClose()
   }
 
-  const suffix = picked.length > 1 ? `${picked.length} assets` : 'asset'
+  const suffix = picked.length > 1 ? `${picked.length} ${documentType}s` : documentType
 
   const Footer = () => (
     <Box padding={3}>

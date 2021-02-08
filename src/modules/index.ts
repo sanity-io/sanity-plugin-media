@@ -8,6 +8,8 @@ import assets, {
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
   assetsSearchEpic,
+  assetsSearchFacetTagRemoveEpic,
+  assetsSearchFacetTagUpdateEpic,
   assetsSetOrderEpic,
   assetsSortEpic,
   assetsUnpickEpic,
@@ -18,12 +20,19 @@ import dialog, {dialogClearOnAssetUpdateEpic, dialogTagCreateEpic} from './dialo
 import document from './document'
 import selectedAssets from './selectedAssets'
 import notifications, {
-  notificationsAddDeleteErrorsEpic,
-  notificationsAddGenericErrorEpic,
-  notificationsAddSuccessEpic,
-  notificationsAddUpdateEpic
+  notificationsAssetDeleteErrorEpic,
+  notificationsGenericErrorEpic,
+  notificationsAssetDeleteCompleteEpic,
+  notificationsAssetUpdateCompleteEpic,
+  notificationsTagDeleteCompleteEpic
 } from './notifications'
-import tags, {tagsCreateEpic, tagsDeleteEpic, tagsFetchEpic, tagsSortEpic} from './tags'
+import tags, {
+  tagsCreateEpic,
+  tagsDeleteEpic,
+  tagsFetchEpic,
+  tagsSortEpic,
+  tagsUpdateEpic
+} from './tags'
 
 export const rootEpic = combineEpics(
   assetsDeleteEpic,
@@ -32,20 +41,24 @@ export const rootEpic = combineEpics(
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
   assetsSearchEpic,
+  assetsSearchFacetTagRemoveEpic,
+  assetsSearchFacetTagUpdateEpic,
   assetsSetOrderEpic,
   assetsSortEpic,
   assetsUnpickEpic,
   assetsUpdateEpic,
   dialogClearOnAssetUpdateEpic,
   dialogTagCreateEpic,
-  notificationsAddDeleteErrorsEpic,
-  notificationsAddGenericErrorEpic,
-  notificationsAddSuccessEpic,
-  notificationsAddUpdateEpic,
+  notificationsAssetDeleteErrorEpic,
+  notificationsGenericErrorEpic,
+  notificationsAssetDeleteCompleteEpic,
+  notificationsAssetUpdateCompleteEpic,
+  notificationsTagDeleteCompleteEpic,
   tagsCreateEpic,
   tagsDeleteEpic,
   tagsFetchEpic,
-  tagsSortEpic
+  tagsSortEpic,
+  tagsUpdateEpic
 )
 
 export const rootReducer = combineReducers({

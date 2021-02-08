@@ -72,7 +72,7 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
   const cardWidth = 260
   const cardHeight = 220
 
-  const columnCount = Math.floor(width / cardWidth)
+  const columnCount = Math.max(1, Math.floor(width / cardWidth))
   const rowCount = Math.ceil(itemCount / columnCount)
 
   return (

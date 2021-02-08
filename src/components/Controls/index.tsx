@@ -1,11 +1,11 @@
-// import {SplitVerticalIcon} from '@sanity/icons'
+import {SplitVerticalIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {dialogShowSearchFacets} from '../../modules/dialog'
-// import {tagsPanelVisibleSet} from '../../modules/tags'
+import {dialogShowSearchFacets, dialogShowTags} from '../../modules/dialog'
+import {tagsPanelVisibleSet} from '../../modules/tags'
 import ButtonViewGroup from '../ButtonViewGroup'
 import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
@@ -19,18 +19,20 @@ const Controls: FC = () => {
   const fetching = useTypedSelector(state => state.assets.fetching)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.assets.searchFacets)
-  // const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
+  const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
 
   // Callbacks
   const handleShowSearchFacetDialog = () => {
     dispatch(dialogShowSearchFacets())
   }
 
-  /*
+  const handleShowTagsDialog = () => {
+    dispatch(dialogShowTags())
+  }
+
   const toggleTagsPanelToggle = () => {
     dispatch(tagsPanelVisibleSet(!tagsPanelVisible))
   }
-  */
 
   return (
     <Box
@@ -81,16 +83,13 @@ const Controls: FC = () => {
                 />
 
                 {/* Tags button (small) */}
-                {/*
                 <Button
                   fontSize={1}
-                  // icon={EditIcon}
                   mode="ghost"
-                  // onClick={handleShowSearchFacetDialog}
+                  onClick={handleShowTagsDialog}
                   text={`Tags`}
                   tone="primary"
                 />
-                */}
               </Inline>
             </Box>
           </Flex>
@@ -108,7 +107,6 @@ const Controls: FC = () => {
             {/* Orders */}
             <OrderSelect />
             {/* Tags panel toggle */}
-            {/*
             <Box display={['none', 'none', 'block']} marginLeft={2}>
               <Button
                 fontSize={1}
@@ -118,7 +116,6 @@ const Controls: FC = () => {
                 text={tagsPanelVisible ? 'Tags' : ''}
               />
             </Box>
-            */}
           </Flex>
         </Flex>
       </Box>

@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "2.0.0-beta.3",
+    "@reduxjs/toolkit": "1.5.0",
     "@sanity/icons": "1.0.1",
     "@sanity/ui": "0.33.0",
     "@tanem/react-nprogress": "3.0.52",

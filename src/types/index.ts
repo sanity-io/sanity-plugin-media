@@ -40,11 +40,18 @@ export type BrowserView = 'grid' | 'table'
 
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
 
-export type Dialog = DialogDeleteConfirm | DialogDetails | DialogSearchFacets | DialogTagCreate
+export type Dialog =
+  | DialogDeleteConfirm
+  | DialogDetails
+  | DialogSearchFacets
+  | DialogTagCreate
+  | DialogTagEdit
+  | DialogTags
 
 export type DialogDeleteConfirm = {
-  assetId?: string
   closeDialogId?: string
+  documentId?: string
+  documentType: 'asset' | 'tag'
   id: string
   type: 'deleteConfirm'
 }
@@ -63,10 +70,23 @@ export type DialogSearchFacets = {
   type: 'searchFacets'
 }
 
+export type DialogTags = {
+  closeDialogId?: string
+  id: string
+  type: 'tags'
+}
+
 export type DialogTagCreate = {
   closeDialogId?: string
   id: string
   type: 'tagCreate'
+}
+
+export type DialogTagEdit = {
+  closeDialogId?: string
+  id: string
+  tagId?: string
+  type: 'tagEdit'
 }
 
 export type DialogAction = {

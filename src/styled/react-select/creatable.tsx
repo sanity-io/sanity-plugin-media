@@ -88,7 +88,11 @@ const Menu = (props: any) => {
 }
 
 const MenuList = (props: any) => {
-  return <components.MenuList {...props}>{props.children}</components.MenuList>
+  return (
+    <components.MenuList {...props} className="media-custom-scrollbar">
+      {props.children}
+    </components.MenuList>
+  )
 }
 
 const MultiValueLabel = (props: any) => {

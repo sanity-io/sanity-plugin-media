@@ -29,7 +29,11 @@ const PickedBar: FC = () => {
 
   const handleDeletePicked = () => {
     // TODO: consider creating dedicated action for delete confirmation on picked / multiple items
-    dispatch(dialogShowDeleteConfirm())
+    dispatch(
+      dialogShowDeleteConfirm({
+        documentType: 'asset'
+      })
+    )
   }
 
   return (

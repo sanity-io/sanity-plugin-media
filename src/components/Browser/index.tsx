@@ -21,6 +21,7 @@ import Header from '../Header'
 import Items from '../Items'
 import Notifications from '../Notifications'
 import PickedBar from '../PickedBar'
+import TagsPanel from '../TagsPanel'
 
 type Props = {
   onClose?: () => void
@@ -112,8 +113,9 @@ const Browser: FC<Props> = (props: Props) => {
           {/* Browser Controls */}
           <Controls />
 
-          <Box flex={1}>
+          <Box flex={1} style={{position: 'relative'}}>
             <Items />
+            <TagsPanel />
           </Box>
 
           {/* Items */}

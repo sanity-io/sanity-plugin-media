@@ -1,4 +1,12 @@
-import {Asset, BrowserView, AssetItem, Order, SearchFacetInputProps} from '@types'
+import {
+  Asset,
+  BrowserView,
+  AssetItem,
+  Order,
+  SearchFacetInputProps,
+  SearchFacetOperatorType,
+  Tag
+} from '@types'
 import {AssetsActionTypes} from './index'
 
 // Reducer
@@ -28,7 +36,7 @@ export type AssetsClearAction = {
 export type AssetsDeleteCompleteAction = {
   payload: {
     assetId: string
-    options?: {closeDialogId?: string}
+    closeDialogId?: string
   }
   type: AssetsActionTypes.DELETE_COMPLETE
 }
@@ -46,7 +54,7 @@ export type AssetsDeletePickedAction = {
 }
 
 export type AssetsDeleteRequestAction = {
-  payload: {asset: Asset; options?: {closeDialogId?: string}}
+  payload: {asset: Asset; closeDialogId?: string}
   type: AssetsActionTypes.DELETE_REQUEST
 }
 
@@ -114,6 +122,11 @@ export type AssetsPickRangeAction = {
   type: AssetsActionTypes.PICK_RANGE
 }
 
+export type AssetsSearchFacetTagAddOrUpdate = {
+  payload: {tag: Tag}
+  type: AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE
+}
+
 export type AssetsSearchFacetsAddAction = {
   payload: {facet: SearchFacetInputProps}
   type: AssetsActionTypes.SEARCH_FACETS_ADD
@@ -129,7 +142,12 @@ export type AssetsSearchFacetsRemoveAction = {
 }
 
 export type AssetsSearchFacetsUpdateAction = {
-  payload: {facet: SearchFacetInputProps}
+  payload: {
+    modifier?: string
+    name: string
+    operatorType?: SearchFacetOperatorType
+    value?: any // TODO: type correctly
+  }
   type: AssetsActionTypes.SEARCH_FACETS_UPDATE
 }
 
@@ -155,7 +173,7 @@ export type AssetsSortAction = {
 export type AssetsUpdateCompleteAction = {
   payload: {
     assetId: string
-    options?: {closeDialogId?: string}
+    closeDialogId?: string
   }
   type: AssetsActionTypes.UPDATE_COMPLETE
 }
@@ -171,8 +189,8 @@ export type AssetsUpdateErrorAction = {
 export type AssetsUpdateRequestAction = {
   payload: {
     asset: Asset
+    closeDialogId?: string
     formData: Record<string, any>
-    options?: {closeDialogId?: string}
   }
   type: AssetsActionTypes.UPDATE_REQUEST
 }
@@ -195,6 +213,7 @@ export type AssetsActions =
   | AssetsPickAllAction
   | AssetsPickClearAction
   | AssetsPickRangeAction
+  | AssetsSearchFacetTagAddOrUpdate
   | AssetsSearchFacetsAddAction
   | AssetsSearchFacetsClearAction
   | AssetsSearchFacetsRemoveAction

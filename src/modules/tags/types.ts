@@ -19,9 +19,7 @@ export type TagsReducerState = {
 
 export type TagsCreateCompleteAction = {
   payload: {
-    options?: {
-      assetId?: string
-    }
+    assetId?: string
     tag: Tag
   }
   type: TagsActionTypes.CREATE_COMPLETE
@@ -37,10 +35,8 @@ export type TagsCreateErrorAction = {
 
 export type TagsCreateRequestAction = {
   payload: {
+    assetId?: string
     name: string
-    options?: {
-      assetId?: string
-    }
   }
   type: TagsActionTypes.CREATE_REQUEST
 }
@@ -110,6 +106,31 @@ export type TagsSortAction = {
   type: TagsActionTypes.SORT
 }
 
+export type TagsUpdateCompleteAction = {
+  payload: {
+    closeDialogId?: string
+    tagId: string
+  }
+  type: TagsActionTypes.UPDATE_COMPLETE
+}
+
+export type TagsUpdateErrorAction = {
+  payload: {
+    error: {statusCode: number}
+    tag: Tag
+  }
+  type: TagsActionTypes.UPDATE_ERROR
+}
+
+export type TagsUpdateRequestAction = {
+  payload: {
+    closeDialogId?: string
+    formData: Record<string, any>
+    tag: Tag
+  }
+  type: TagsActionTypes.UPDATE_REQUEST
+}
+
 // All actions
 
 export type TagsActions =
@@ -127,3 +148,6 @@ export type TagsActions =
   | TagsListenerUpdateAction
   | TagsPanelVisibleSetAction
   | TagsSortAction
+  | TagsUpdateCompleteAction
+  | TagsUpdateErrorAction
+  | TagsUpdateRequestAction

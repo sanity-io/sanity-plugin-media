@@ -96,11 +96,11 @@ export const notificationsAddSuccess = ({
  *********/
 
 /**
- * Listen for successful asset deletions:
+ * Listen for asset delete completions:
  * - Display success notification
  * - Buffer responses over 1000ms
  */
-export const notificationsAddSuccessEpic = (
+export const notificationsAssetDeleteCompleteEpic = (
   action$: Observable<AssetsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(
@@ -118,11 +118,11 @@ export const notificationsAddSuccessEpic = (
   )
 
 /**
- * Listen for asset delete errors
+ * Listen for asset delete errors:
  * - Display error notification
  * - Buffer responses over 1000ms
  */
-export const notificationsAddDeleteErrorsEpic = (
+export const notificationsAssetDeleteErrorEpic = (
   action$: Observable<AssetsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(
@@ -143,8 +143,7 @@ export const notificationsAddDeleteErrorsEpic = (
  * Listen for successful asset updates:
  * - Display success notification
  */
-
-export const notificationsAddUpdateEpic = (
+export const notificationsAssetUpdateCompleteEpic = (
   action$: Observable<AssetsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(
@@ -162,7 +161,7 @@ export const notificationsAddUpdateEpic = (
  * Listen for asset update errors:
  * - Display error notification
  */
-export const notificationsAddGenericErrorEpic = (
+export const notificationsGenericErrorEpic = (
   action$: Observable<AssetsActions | TagsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(
@@ -170,7 +169,8 @@ export const notificationsAddGenericErrorEpic = (
       isOfType([
         AssetsActionTypes.FETCH_ERROR, //
         AssetsActionTypes.UPDATE_ERROR,
-        TagsActionTypes.CREATE_ERROR
+        TagsActionTypes.CREATE_ERROR,
+        TagsActionTypes.FETCH_ERROR
       ])
     ),
     mergeMap(action => {
@@ -178,6 +178,24 @@ export const notificationsAddGenericErrorEpic = (
       return of(
         notificationsAddError({
           title: `An error occured: ${error.toString()}`
+        })
+      )
+    })
+  )
+
+/**
+ * Listen for tag delete completions:
+ * - Display success notification
+ */
+export const notificationsTagDeleteCompleteEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
+  action$.pipe(
+    filter(isOfType(TagsActionTypes.DELETE_COMPLETE)),
+    mergeMap(() => {
+      return of(
+        notificationsAddSuccess({
+          title: `Tag deleted`
         })
       )
     })

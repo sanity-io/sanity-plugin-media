@@ -1,16 +1,17 @@
 import {Box, Text} from '@sanity/ui'
-import React, {FC, Ref} from 'react'
+import React, {FC, Ref, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 
 import {TAGS_PANEL_WIDTH} from '../../constants'
+import useBreakpointIndex from '../../hooks/useBreakpointIndex'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsLoadNextPage, selectAssets} from '../../modules/assets'
+import {tagsPanelVisibleSet} from '../../modules/tags'
 import Cards from '../Cards'
 import Table from '../Table'
-// import TagsPanel from '../TagsPanel'
 
 type InfiniteLoaderRenderProps = {
   onItemsRendered: (props: ListOnItemsRenderedProps) => any
@@ -26,6 +27,8 @@ const Items: FC = () => {
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
   const view = useTypedSelector(state => state.assets.view)
   const items = useTypedSelector(selectAssets)
+
+  const breakpointIndex = useBreakpointIndex()
 
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
@@ -45,6 +48,15 @@ const Items: FC = () => {
     return new Promise(() => {})
   }
 
+  // Effects
+
+  // - Hide tag panel on smaller breakpoints
+  useEffect(() => {
+    if (breakpointIndex <= 1 && tagsPanelVisible) {
+      dispatch(tagsPanelVisibleSet(false))
+    }
+  }, [breakpointIndex])
+
   // NOTE: The below is a workaround and can be inaccurate in certain cases.
   // e.g. if `pageSize` is 10 and you have fetched 10 items, `hasMore` will still be true
   // and another fetch will invoked on next page (which will return 0 items).
@@ -59,23 +71,16 @@ const Items: FC = () => {
 
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
 
-  if (isEmpty) {
-    return (
-      <Box padding={4}>
-        <Text size={1} weight="semibold">
-          No results for the current query
-        </Text>
-      </Box>
-    )
-  }
-
   return (
-    <Box
-      style={{
-        height: '100%'
-      }}
-    >
-      {(view === 'grid' || 'table') && (
+    <Box style={{height: '100%'}}>
+      {isEmpty && (
+        <Box padding={4}>
+          <Text size={1} weight="semibold">
+            No results for the current query
+          </Text>
+        </Box>
+      )}
+      {!isEmpty && (view === 'grid' || 'table') && (
         <AutoSizer>
           {({height, width}) => {
             const itemsWidth = tagsPanelVisible ? width - TAGS_PANEL_WIDTH : width
@@ -144,8 +149,6 @@ const Items: FC = () => {
           }}
         </AutoSizer>
       )}
-      {/* Tag panel */}
-      {/* <TagsPanel /> */}
     </Box>
   )
 }

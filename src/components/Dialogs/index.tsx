@@ -6,6 +6,8 @@ import DialogDeleteConfirm from '../DialogDeleteConfirm'
 import DialogDetails from '../DialogDetails'
 import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
+import DialogTagEdit from '../DialogTagEdit'
+import DialogTags from '../DialogTags'
 
 const Dialogs: FC = () => {
   // Redux
@@ -48,6 +50,22 @@ const Dialogs: FC = () => {
         <DialogTagCreate dialog={dialog} key={index}>
           {childDialogs}
         </DialogTagCreate>
+      )
+    }
+
+    if (dialog.type === 'tagEdit') {
+      return (
+        <DialogTagEdit dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogTagEdit>
+      )
+    }
+
+    if (dialog.type === 'tags') {
+      return (
+        <DialogTags dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogTags>
       )
     }
 

@@ -29,7 +29,7 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
   const handleListItemClick = (option: SearchFacetInputSelectListItemProps) => {
     dispatch(
       assetsSearchFacetsUpdate({
-        ...facet,
+        name: facet.name,
         value: option.name
       })
     )
@@ -38,7 +38,7 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
       assetsSearchFacetsUpdate({
-        ...facet,
+        name: facet.name,
         operatorType
       })
     )

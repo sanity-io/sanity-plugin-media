@@ -1,3 +1,4 @@
+import {createSelector} from '@reduxjs/toolkit'
 import {Asset, ReactSelectOption, Tag, TagItem} from '@types'
 import groq from 'groq'
 import produce from 'immer'
@@ -24,11 +25,15 @@ import {
   TagsListenerUpdateAction,
   TagsPanelVisibleSetAction,
   TagsReducerState,
-  TagsSortAction
+  TagsSortAction,
+  TagsUpdateCompleteAction,
+  TagsUpdateRequestAction,
+  TagsUpdateErrorAction
 } from './types'
 import debugThrottle from '../../operators/debugThrottle'
 import {RootReducerState} from '../types'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
+import {Selector} from 'react-redux'
 
 /***********
  * ACTIONS *
@@ -48,7 +53,10 @@ export enum TagsActionTypes {
   LISTENER_DELETE = 'TAGS_LISTENER_DELETE',
   LISTENER_UPDATE = 'TAGS_LISTENER_UPDATE',
   PANEL_VISIBLE_SET = 'TAGS_PANEL_VISIBLE_SET',
-  SORT = 'TAGS_SORT'
+  SORT = 'TAGS_SORT',
+  UPDATE_COMPLETE = 'TAGS_UPDATE_COMPLETE',
+  UPDATE_ERROR = 'TAGS_UPDATE_ERROR',
+  UPDATE_REQUEST = 'TAGS_UPDATE_REQUEST'
 }
 
 /***********
@@ -68,7 +76,7 @@ export const initialState: TagsReducerState = {
   fetchCount: -1,
   fetching: false,
   fetchingError: null,
-  panelVisible: false
+  panelVisible: true
 }
 
 export default function tagsReducerState(
@@ -252,6 +260,40 @@ export default function tagsReducerState(
           }
         })
         break
+
+      /**
+       * A tag has been successfully updated via the client.
+       * - Update asset in `byIds`
+       */
+      case TagsActionTypes.UPDATE_COMPLETE: {
+        const tagId = action.payload?.tagId
+        draft.byIds[tagId].updating = false
+        break
+      }
+
+      /**
+       * A tag was unable to be updated via the client.
+       * - Store the error code on asset in question to optionally display to the user.
+       * - Clear updating status on asset in question.
+       */
+      case TagsActionTypes.UPDATE_ERROR: {
+        const tagId = action.payload?.tag?._id
+        const errorCode = action.payload?.error?.statusCode
+        draft.byIds[tagId].errorCode = errorCode
+        draft.byIds[tagId].updating = false
+        break
+      }
+
+      /**
+       * A request to update a tag has been made (and not yet completed).
+       * - Set updating status on target asset.
+       * - Clear any existing asset errors.
+       */
+      case TagsActionTypes.UPDATE_REQUEST: {
+        const tagId = action.payload?.tag?._id
+        draft.byIds[tagId].updating = true
+        break
+      }
     }
   })
 }
@@ -261,22 +303,26 @@ export default function tagsReducerState(
  *******************/
 
 // Create started
-export const tagsCreate = (
-  name: string,
-  options?: {
-    assetId?: string
-  }
-): TagsCreateRequestAction => ({
-  payload: {name, options},
+export const tagsCreate = ({
+  assetId,
+  name
+}: {
+  assetId?: string
+  name: string
+}): TagsCreateRequestAction => ({
+  payload: {assetId, name},
   type: TagsActionTypes.CREATE_REQUEST
 })
 
 // Create success
-export const tagsCreateComplete = (
-  tag: Tag,
-  options?: {assetId?: string}
-): TagsCreateCompleteAction => ({
-  payload: {options, tag},
+export const tagsCreateComplete = ({
+  assetId,
+  tag
+}: {
+  assetId?: string
+  tag: Tag
+}): TagsCreateCompleteAction => ({
+  payload: {assetId, tag},
   type: TagsActionTypes.CREATE_COMPLETE
 })
 
@@ -371,6 +417,48 @@ export const tagsSort = (): TagsSortAction => ({
   type: TagsActionTypes.SORT
 })
 
+// Update started
+export const tagsUpdate = ({
+  closeDialogId,
+  formData,
+  tag
+}: {
+  closeDialogId?: string
+  formData: Record<string, any>
+  tag: Tag
+}): TagsUpdateRequestAction => ({
+  payload: {
+    closeDialogId,
+    formData,
+    tag
+  },
+  type: TagsActionTypes.UPDATE_REQUEST
+})
+
+// Delete success
+export const tagsUpdateComplete = ({
+  closeDialogId,
+  tagId
+}: {
+  closeDialogId?: string
+  tagId: string
+}): TagsUpdateCompleteAction => ({
+  payload: {
+    closeDialogId,
+    tagId
+  },
+  type: TagsActionTypes.UPDATE_COMPLETE
+})
+
+// Update error
+export const tagsUpdateError = (tag: Tag, error: any): TagsUpdateErrorAction => ({
+  payload: {
+    error,
+    tag
+  },
+  type: TagsActionTypes.UPDATE_ERROR
+})
+
 /*********
  * EPICS *
  *********/
@@ -388,7 +476,7 @@ export const tagsCreateEpic = (
     filter(isOfType(TagsActionTypes.CREATE_REQUEST)),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const {name, options} = action.payload
+      const {assetId, name} = action.payload
 
       // Strip whitespace
       const sanitizedName = name.trim()
@@ -406,7 +494,7 @@ export const tagsCreateEpic = (
             })
           )
         ),
-        mergeMap(result => of(tagsCreateComplete(result as Tag, options))),
+        mergeMap(result => of(tagsCreateComplete({assetId, tag: result as Tag}))),
         catchError(error => of(tagsCreateError(name, error)))
       )
     })
@@ -481,13 +569,52 @@ export const tagsSortEpic = (action$: Observable<TagsActions>): Observable<TagsA
     })
   )
 
+/**
+ * Listen for asset update requests:
+ * - make async call to `client.patch`
+ * - return a corresponding success or error action
+ */
+export const tagsUpdateEpic = (
+  action$: Observable<TagsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<TagsActions> =>
+  action$.pipe(
+    filter(isOfType(TagsActionTypes.UPDATE_REQUEST)),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {closeDialogId, formData, tag} = action.payload
+
+      return of(action).pipe(
+        debugThrottle(state.debug.badConnection),
+        mergeMap(() => from(client.patch(tag._id).set(formData).commit())),
+        mergeMap((updatedTag: any) =>
+          of(
+            tagsUpdateComplete({
+              closeDialogId,
+              tagId: updatedTag._id
+            })
+          )
+        ),
+        catchError(error => of(tagsUpdateError(tag, error)))
+      )
+    })
+  )
+
 /*************
  * SELECTORS *
  *************/
 
-export const selectTags = (state: RootReducerState): TagItem[] => {
-  return state.tags.allIds.map(id => state.tags.byIds[id])
-}
+const selectTagsByIds = (state: RootReducerState) => state.tags.byIds
+
+export const selectTags: Selector<RootReducerState, TagItem[]> = createSelector(
+  [selectTagsByIds, state => state.tags.allIds],
+  (byIds, allIds) => allIds.map(id => byIds[id])
+)
+
+export const selectTagById = createSelector(
+  [selectTagsByIds, (_state: RootReducerState, tagId: string) => tagId],
+  (byIds, tagId) => byIds[tagId]
+)
 
 // Map tag references to react-select options, skipping over items with no linked tags
 export const selectTagSelectOptions = (asset?: Asset) => (

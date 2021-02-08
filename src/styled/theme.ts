@@ -1,3 +1,5 @@
+import {studioTheme} from '@sanity/ui'
+
 const sizes: string[] & Record<string, any> = []
 
 const space: string[] & Record<string, any> = [
@@ -10,7 +12,7 @@ const space: string[] & Record<string, any> = [
 ]
 
 const theme = {
-  breakpoints: ['320px', '640px', '960px', '1280px', '1600px', '1920px'],
+  breakpoints: studioTheme.container.map(width => `${width}px`),
   gridTemplateColumns: {
     tableSmall: '3rem 100px auto 1.5rem',
     tableLarge: '3rem 100px auto 5.5rem 5.5rem 3.5rem 8.5rem 2rem'

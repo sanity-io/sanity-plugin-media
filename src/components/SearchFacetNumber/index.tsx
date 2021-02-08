@@ -31,7 +31,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
       assetsSearchFacetsUpdate({
-        ...facet,
+        name: facet.name,
         operatorType
       })
     )
@@ -40,7 +40,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
   const handleModifierClick = (modifier: SearchFacetInputNumberModifier) => {
     dispatch(
       assetsSearchFacetsUpdate({
-        ...facet,
+        name: facet.name,
         modifier: modifier.name
       })
     )
@@ -49,7 +49,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
   const handleValueChange = (value: number) => {
     dispatch(
       assetsSearchFacetsUpdate({
-        ...facet,
+        name: facet.name,
         value
       })
     )

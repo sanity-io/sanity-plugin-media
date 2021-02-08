@@ -64,7 +64,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const item = useTypedSelector(selectAssetById(assetId))
+  const item = useTypedSelector(state => selectAssetById(state, String(assetId))) // TODO: check casting
   const tags = useTypedSelector(selectTags)
 
   // Refs
@@ -94,7 +94,17 @@ const DialogDetails: FC<Props> = (props: Props) => {
   const currentTagLabels = assetTagOptions?.map(tag => tag.label).join(',')
 
   // react-hook-form
-  const {control, errors, formState, getValues, handleSubmit, register, reset, setValue} = useForm({
+  const {
+    control,
+    errors,
+    // Read the formState before render to subscribe the form state through Proxy
+    formState: {isDirty, isValid},
+    getValues,
+    handleSubmit,
+    register,
+    reset,
+    setValue
+  } = useForm({
     defaultValues: generateDefaultValues(item?.asset),
     mode: 'onChange',
     resolver: yupResolver(formSchema)
@@ -111,8 +121,10 @@ const DialogDetails: FC<Props> = (props: Props) => {
     }
 
     dispatch(
-      dialogShowDeleteConfirm(item?.asset._id, {
-        closeDialogId: item?.asset._id
+      dialogShowDeleteConfirm({
+        closeDialogId: item?.asset._id,
+        documentId: item?.asset._id,
+        documentType: 'asset'
       })
     )
   }
@@ -132,8 +144,9 @@ const DialogDetails: FC<Props> = (props: Props) => {
   const handleCreateTag = (tagName: string) => {
     // Dispatch action to create new tag
     dispatch(
-      tagsCreate(tagName, {
-        assetId: currentAsset?._id
+      tagsCreate({
+        assetId: currentAsset?._id,
+        name: tagName
       })
     )
   }
@@ -148,10 +161,10 @@ const DialogDetails: FC<Props> = (props: Props) => {
     const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(
-      assetsUpdate(
-        item?.asset,
-        // Form data
-        {
+      assetsUpdate({
+        asset: item?.asset,
+        closeDialogId: item?.asset._id,
+        formData: {
           ...sanitizedFormData,
           // Map tags to sanity references
           opt: {
@@ -167,12 +180,8 @@ const DialogDetails: FC<Props> = (props: Props) => {
           },
           // Append extension to filename
           originalFilename: `${sanitizedFormData.originalFilename}.${item?.asset.extension}`
-        },
-        // Options
-        {
-          closeDialogId: item?.asset._id
         }
-      )
+      })
     )
   }
 
@@ -246,7 +255,7 @@ const DialogDetails: FC<Props> = (props: Props) => {
 
         {/* Submit button */}
         <Button
-          disabled={!item || item?.updating || !formState.isDirty || !formState.isValid}
+          disabled={!item || item?.updating || !isDirty || !isValid}
           fontSize={1}
           onClick={handleSubmit(onSubmit)}
           text="Save and close"

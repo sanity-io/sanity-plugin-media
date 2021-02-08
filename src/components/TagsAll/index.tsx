@@ -1,46 +1,34 @@
 import {ComposeIcon} from '@sanity/icons'
-import {Box, Button, Flex, Label} from '@sanity/ui'
-import {TagItem} from '@types'
+import {Box, Button, Label} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
+import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogShowTagCreate} from '../../modules/dialog'
+import {selectTags} from '../../modules/tags'
+import PanelHeader from '../PanelHeader'
+import Tag from '../Tag'
 
-type Props = {
-  tags: TagItem[]
-}
-
-const TagsAll: FC<Props> = (props: Props) => {
-  const {tags} = props
+const TagsAll: FC = () => {
+  const tags = useTypedSelector(state => selectTags(state))
 
   // Redux
   const dispatch = useDispatch()
+  const tagsCreating = useTypedSelector(state => state.tags.creating)
 
   // Callbacks
   const handleTagCreate = () => {
-    console.log('tag create')
     dispatch(dialogShowTagCreate())
   }
 
   return (
     <Box>
-      <Flex
-        align="center"
-        justify="space-between"
-        paddingLeft={3}
-        style={{
-          background: '#0F1112', // TODO: use theme colors
-          borderBottom: '1px solid #333', // TODO: use theme colors
-          height: '2.0em',
-          position: 'sticky',
-          top: 0,
-          zIndex: 1
-        }}
-      >
+      <PanelHeader>
         <Label size={0}>All Tags ({tags?.length})</Label>
 
         {/* Create new tag button */}
         <Button
+          disabled={tagsCreating}
           fontSize={1} //
           icon={ComposeIcon}
           mode="bleed"
@@ -51,37 +39,11 @@ const TagsAll: FC<Props> = (props: Props) => {
           }}
           tone="primary"
         />
-      </Flex>
+      </PanelHeader>
 
       <Box>
         {tags?.map(tag => (
-          <Box key={tag?.tag?._id} marginLeft={1}>
-            <Button
-              fontSize={1}
-              justify="flex-start"
-              mode="bleed"
-              padding={2}
-              style={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-              text={tag?.tag?.name?.current}
-            />
-
-            {/*
-            <Flex>
-              <Button
-                fontSize={0}
-                icon={EditIcon}
-                mode="bleed"
-                padding={3}
-                style={{
-                  opacity: 0.0
-                }}
-              />
-              */}
-          </Box>
+          <Tag key={tag?.tag?._id} tag={tag} />
         ))}
       </Box>
     </Box>

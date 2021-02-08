@@ -8,15 +8,17 @@ import {AssetsActions} from '../assets/types'
 import {TagsActionTypes} from '../tags'
 import {TagsActions} from '../tags/types'
 import {
-  DialogActions,
   DialogAddCreatedTagAction,
+  DialogActions,
   DialogClearAction,
   DialogReducerState,
   DialogRemoveAction,
   DialogShowDeleteConfirmAction,
   DialogShowDetailsAction,
   DialogShowSearchFacetsAction,
-  DialogShowTagCreateAction
+  DialogShowTagCreateAction,
+  DialogShowTagEditAction,
+  DialogShowTagsAction
 } from './types'
 
 /***********
@@ -30,7 +32,9 @@ export enum DialogActionTypes {
   SHOW_DELETE_CONFIRM = 'DIALOG_SHOW_DELETE_CONFIRM',
   SHOW_DETAILS = 'DIALOG_SHOW_DETAILS',
   SHOW_SEARCH_FACETS = 'DIALOG_SHOW_SEARCH_FACETS',
-  SHOW_TAG_CREATE = 'DIALOG_SHOW_TAG_CREATE'
+  SHOW_TAG_CREATE = 'DIALOG_SHOW_TAG_CREATE',
+  SHOW_TAG_EDIT = 'DIALOG_SHOW_TAG_EDIT',
+  SHOW_TAGS = 'DIALOG_SHOW_TAGS'
 }
 
 /***********
@@ -73,10 +77,11 @@ export default function dialogReducer(
         break
       }
       case DialogActionTypes.SHOW_DELETE_CONFIRM: {
-        const {assetId, options} = action.payload
+        const {closeDialogId, documentId, documentType} = action.payload
         draft.items.push({
-          assetId,
-          closeDialogId: options?.closeDialogId,
+          closeDialogId,
+          documentId,
+          documentType,
           id: 'deleteConfirm',
           type: 'deleteConfirm'
         })
@@ -88,12 +93,27 @@ export default function dialogReducer(
           type: 'searchFacets'
         })
         break
+      case DialogActionTypes.SHOW_TAGS:
+        draft.items.push({
+          id: 'tags',
+          type: 'tags'
+        })
+        break
       case DialogActionTypes.SHOW_TAG_CREATE:
         draft.items.push({
           id: 'tagCreate',
           type: 'tagCreate'
         })
         break
+      case DialogActionTypes.SHOW_TAG_EDIT: {
+        const {tagId} = action.payload
+        draft.items.push({
+          id: tagId,
+          tagId,
+          type: 'tagEdit'
+        })
+        break
+      }
     }
   })
 }
@@ -106,7 +126,13 @@ export default function dialogReducer(
  * Add created tag to edit dialog
  */
 
-export const dialogAddCreatedTag = (tagId: string, assetId: string): DialogAddCreatedTagAction => ({
+export const dialogAddCreatedTag = ({
+  assetId,
+  tagId
+}: {
+  assetId: string
+  tagId: string
+}): DialogAddCreatedTagAction => ({
   payload: {assetId, tagId},
   type: DialogActionTypes.ADD_CREATED_TAG
 })
@@ -114,7 +140,6 @@ export const dialogAddCreatedTag = (tagId: string, assetId: string): DialogAddCr
 /**
  * Clear all dialogs
  */
-
 export const dialogClear = (): DialogClearAction => ({
   type: DialogActionTypes.CLEAR
 })
@@ -122,7 +147,6 @@ export const dialogClear = (): DialogClearAction => ({
 /**
  * Clear dialog with ID
  */
-
 export const dialogRemove = (id: string): DialogRemoveAction => ({
   payload: {id},
   type: DialogActionTypes.REMOVE
@@ -131,16 +155,19 @@ export const dialogRemove = (id: string): DialogRemoveAction => ({
 /**
  * Display asset delete confirmation
  */
-
-export const dialogShowDeleteConfirm = (
-  assetId?: string,
-  options?: {
-    closeDialogId?: string
-  }
-): DialogShowDeleteConfirmAction => ({
+export const dialogShowDeleteConfirm = ({
+  closeDialogId,
+  documentId,
+  documentType
+}: {
+  closeDialogId?: string
+  documentId?: string
+  documentType: 'asset' | 'tag'
+}): DialogShowDeleteConfirmAction => ({
   payload: {
-    assetId,
-    options
+    closeDialogId,
+    documentId,
+    documentType
   },
   type: DialogActionTypes.SHOW_DELETE_CONFIRM
 })
@@ -148,7 +175,6 @@ export const dialogShowDeleteConfirm = (
 /**
  * Display asset details
  */
-
 export const dialogShowDetails = (assetId: string): DialogShowDetailsAction => ({
   payload: {assetId},
   type: DialogActionTypes.SHOW_DETAILS
@@ -157,7 +183,6 @@ export const dialogShowDetails = (assetId: string): DialogShowDetailsAction => (
 /**
  * Display search facets
  */
-
 export const dialogShowSearchFacets = (): DialogShowSearchFacetsAction => ({
   type: DialogActionTypes.SHOW_SEARCH_FACETS
 })
@@ -165,9 +190,25 @@ export const dialogShowSearchFacets = (): DialogShowSearchFacetsAction => ({
 /**
  * Display create tag
  */
-
 export const dialogShowTagCreate = (): DialogShowTagCreateAction => ({
   type: DialogActionTypes.SHOW_TAG_CREATE
+})
+
+/**
+ * Display edit tag
+ */
+export const dialogShowTagEdit = (tagId: string): DialogShowTagEditAction => ({
+  payload: {
+    tagId
+  },
+  type: DialogActionTypes.SHOW_TAG_EDIT
+})
+
+/**
+ * Display all tags
+ */
+export const dialogShowTags = (): DialogShowTagsAction => ({
+  type: DialogActionTypes.SHOW_TAGS
 })
 
 /*********
@@ -182,10 +223,17 @@ export const dialogClearOnAssetUpdateEpic = (
   action$: Observable<AssetsActions>
 ): Observable<DialogActions> =>
   action$.pipe(
-    filter(isOfType([AssetsActionTypes.DELETE_COMPLETE, AssetsActionTypes.UPDATE_COMPLETE])),
-    filter(action => !!action?.payload?.options?.closeDialogId),
+    filter(
+      isOfType([
+        AssetsActionTypes.DELETE_COMPLETE,
+        AssetsActionTypes.UPDATE_COMPLETE,
+        TagsActionTypes.DELETE_COMPLETE,
+        TagsActionTypes.UPDATE_COMPLETE
+      ])
+    ),
+    filter(action => !!action?.payload?.closeDialogId),
     mergeMap(action => {
-      const dialogId = action?.payload?.options?.closeDialogId
+      const dialogId = action?.payload?.closeDialogId
       if (dialogId) {
         return of(dialogRemove(dialogId))
       } else {
@@ -198,17 +246,20 @@ export const dialogClearOnAssetUpdateEpic = (
  * Listen for successful tag creates:
  * - Clear dialog if a dialog ID has been passed
  */
-
 export const dialogTagCreateEpic = (action$: Observable<TagsActions>): Observable<DialogActions> =>
   action$.pipe(
     filter(isOfType(TagsActionTypes.CREATE_COMPLETE)),
     mergeMap(action => {
-      const assetId = action?.payload?.options?.assetId
+      const {assetId, tag} = action?.payload
 
       if (assetId) {
-        return of(dialogAddCreatedTag(action.payload.tag._id, assetId))
-      } else {
-        return empty()
+        return of(dialogAddCreatedTag({tagId: tag._id, assetId}))
       }
+
+      if (tag._id) {
+        return of(dialogRemove('tagCreate'))
+      }
+
+      return empty()
     })
   )

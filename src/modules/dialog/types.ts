@@ -38,10 +38,9 @@ export type DialogShowDetailsAction = {
 
 export type DialogShowDeleteConfirmAction = {
   payload: {
-    assetId?: string
-    options?: {
-      closeDialogId?: string
-    }
+    closeDialogId?: string
+    documentId?: string
+    documentType: 'asset' | 'tag'
   }
   type: DialogActionTypes.SHOW_DELETE_CONFIRM
 }
@@ -54,6 +53,18 @@ export type DialogShowTagCreateAction = {
   type: DialogActionTypes.SHOW_TAG_CREATE
 }
 
+export type DialogShowTagEditAction = {
+  payload: {
+    closeDialogId?: string
+    tagId?: string
+  }
+  type: DialogActionTypes.SHOW_TAG_EDIT
+}
+
+export type DialogShowTagsAction = {
+  type: DialogActionTypes.SHOW_TAGS
+}
+
 // All actions
 
 export type DialogActions =
@@ -64,3 +75,5 @@ export type DialogActions =
   | DialogShowDetailsAction
   | DialogShowSearchFacetsAction
   | DialogShowTagCreateAction
+  | DialogShowTagEditAction
+  | DialogShowTagsAction

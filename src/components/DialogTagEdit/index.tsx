@@ -1,19 +1,19 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import {Box, Button, Dialog, Flex} from '@sanity/ui'
-import {DialogTagCreate} from '@types'
+import {DialogTagEdit} from '@types'
 import React, {FC, ReactNode} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
-import useTypedSelector from '../../hooks/useTypedSelector'
 
-import {dialogClear} from '../../modules/dialog'
-import {tagsCreate} from '../../modules/tags'
+import useTypedSelector from '../../hooks/useTypedSelector'
+import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
+import {selectTagById, tagsUpdate} from '../../modules/tags'
 import FormFieldInputText from '../FormFieldInputText'
 
 type Props = {
   children: ReactNode
-  dialog: DialogTagCreate
+  dialog: DialogTagEdit
 }
 
 type FormData = yup.InferType<typeof formSchema>
@@ -22,17 +22,15 @@ const formSchema = yup.object().shape({
   name: yup.string().required('Name cannot be empty')
 })
 
-const DialogTagCreate: FC<Props> = (props: Props) => {
+const DialogTagEdit: FC<Props> = (props: Props) => {
   const {
     children,
-    dialog: {id}
+    dialog: {id, tagId}
   } = props
 
   // Redux
   const dispatch = useDispatch()
-
-  // State
-  const creating = useTypedSelector(state => state.tags.creating)
+  const tagItem = useTypedSelector(state => selectTagById(state, String(tagId))) // TODO: double check string cast
 
   // react-hook-form
   const {
@@ -43,7 +41,7 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
     register
   } = useForm({
     defaultValues: {
-      name: ''
+      name: tagItem?.tag?.name?.current
     },
     mode: 'onChange',
     resolver: yupResolver(formSchema)
@@ -51,20 +49,59 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleClose = () => {
-    dispatch(dialogClear())
+    dispatch(dialogRemove(id))
   }
 
   // - submit react-hook-form
   const onSubmit = async (formData: FormData) => {
-    dispatch(tagsCreate({name: formData.name}))
+    if (!tagItem?.tag) {
+      return
+    }
+
+    dispatch(
+      tagsUpdate({
+        closeDialogId: tagItem?.tag?._id,
+        formData: {
+          name: {
+            _type: 'slug',
+            current: formData.name
+          }
+        },
+        tag: tagItem?.tag
+      })
+    )
+  }
+
+  const handleDelete = () => {
+    if (!tagItem?.tag) {
+      return
+    }
+
+    dispatch(
+      dialogShowDeleteConfirm({
+        closeDialogId: tagItem?.tag?._id,
+        documentId: tagItem?.tag?._id,
+        documentType: 'tag'
+      })
+    )
   }
 
   const Footer = () => (
     <Box padding={3}>
-      <Flex justify="flex-end">
+      <Flex justify="space-between">
+        {/* Delete button */}
+        <Button
+          disabled={!tagItem || tagItem?.updating}
+          fontSize={1}
+          mode="bleed"
+          onClick={handleDelete}
+          text="Delete"
+          tone="critical"
+        />
+
         {/* Submit button */}
         <Button
-          disabled={creating || !isDirty || !isValid}
+          disabled={!tagItem || tagItem?.updating || !isDirty || !isValid}
           fontSize={1}
           onClick={handleSubmit(onSubmit)}
           text="Save and close"
@@ -77,7 +114,7 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
   return (
     <Dialog
       footer={<Footer />}
-      header="Create Tag"
+      header="Edit Tag"
       id={id}
       onClose={handleClose}
       scheme="dark"
@@ -90,7 +127,7 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
 
         {/* Title */}
         <FormFieldInputText
-          disabled={creating}
+          disabled={!tagItem || tagItem?.updating}
           error={errors?.name}
           label="Name"
           name="name"
@@ -103,4 +140,4 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
   )
 }
 
-export default DialogTagCreate
+export default DialogTagEdit

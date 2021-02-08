@@ -22,13 +22,13 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const tags = useTypedSelector(selectTags)
+  const tags = useTypedSelector(state => selectTags(state))
   const allTagOptions = getTagSelectOptions(tags)
 
   const handleChange = (option: ReactSelectOption) => {
     dispatch(
       assetsSearchFacetsUpdate({
-        ...facet,
+        name: facet.name,
         value: option
       })
     )
@@ -37,7 +37,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
       assetsSearchFacetsUpdate({
-        ...facet,
+        name: facet.name,
         operatorType
       })
     )

@@ -1,7 +1,18 @@
-import {Asset, AssetItem, BrowserView, OrderDirection, SearchFacetInputProps} from '@types'
+import {createSelector} from '@reduxjs/toolkit'
+import {
+  Asset,
+  AssetItem,
+  BrowserView,
+  OrderDirection,
+  SearchFacetInputProps,
+  SearchFacetInputSearchableProps,
+  SearchFacetOperatorType,
+  Tag
+} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
+import {Selector} from 'react-redux'
 import {StateObservable} from 'redux-observable'
 import {from, empty, of, Observable} from 'rxjs'
 import {
@@ -36,6 +47,7 @@ import {
   AssetsPickClearAction,
   AssetsPickRangeAction,
   AssetsReducerState,
+  AssetsSearchFacetTagAddOrUpdate,
   AssetsSearchFacetsAddAction,
   AssetsSearchFacetsClearAction,
   AssetsSearchFacetsRemoveAction,
@@ -49,6 +61,8 @@ import {
   AssetsUpdateRequestAction
 } from './types'
 import {RootReducerState} from '../types'
+import {TagsActionTypes} from '../tags'
+import {TagsActions} from '../tags/types'
 
 /***********
  * ACTIONS *
@@ -75,11 +89,11 @@ export enum AssetsActionTypes {
   SEARCH_FACETS_CLEAR = 'ASSETS_SEARCH_FACET_CLEAR',
   SEARCH_FACETS_REMOVE = 'ASSETS_SEARCH_FACET_REMOVE',
   SEARCH_FACETS_UPDATE = 'ASSETS_SEARCH_FACET_UPDATE',
+  SEARCH_FACET_TAG_ADD_OR_UPDATE = 'ASSETS_SEARCH_FACET_TAG_ADD_OR_UPDATE',
   SET_ORDER = 'ASSETS_SET_ORDER',
   SET_SEARCH_QUERY = 'ASSETS_SET_SEARCH_QUERY',
   SET_VIEW = 'ASSETS_SET_VIEW',
   SORT = 'ASSETS_SORT',
-  UNCAUGHT_EXCEPTION = 'ASSETS_UNCAUGHT_EXCEPTION',
   UPDATE_COMPLETE = 'ASSETS_UPDATE_COMPLETE',
   UPDATE_ERROR = 'ASSETS_UPDATE_ERROR',
   UPDATE_REQUEST = 'ASSETS_UPDATE_REQUEST'
@@ -123,13 +137,6 @@ export const initialState: AssetsReducerState = {
     field: defaultOrder.field,
     title: ORDER_DICTIONARY[defaultOrder.field][defaultOrder.direction]
   },
-  /*
-  order: {
-    direction: defaultOrder.direction,
-    field: defaultOrder.field,
-    title: ORDER_DICTIONARY[defaultOrder.field][defaultOrder.direction]
-  } as Order,
-  */
   pageIndex: 0,
   pageSize: 50,
   searchFacets: [],
@@ -344,13 +351,52 @@ export default function assetsReducerState(
       /**
        * A single search facet has been updated
        */
-      case AssetsActionTypes.SEARCH_FACETS_UPDATE:
+      case AssetsActionTypes.SEARCH_FACETS_UPDATE: {
+        const {modifier, name, operatorType, value} = action.payload
+
         draft.searchFacets.forEach((facet, index) => {
-          if (facet.name === action.payload.facet.name) {
-            draft.searchFacets[index] = action.payload.facet
+          if (facet.name === name) {
+            if (facet.type === 'number') {
+              facet.modifier = modifier
+            }
+            if (operatorType) {
+              facet.operatorType = operatorType
+            }
+            if (typeof value !== 'undefined') {
+              draft.searchFacets[index].value = value
+            }
           }
         })
         break
+      }
+
+      case AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE: {
+        const tag = action?.payload?.tag
+        const searchFacetTagIndex = draft.searchFacets.findIndex(facet => facet.name === 'tag')
+
+        // TODO: DRY
+        const searchFacet = {
+          contexts: 'all',
+          field: 'opt.media.tags',
+          name: 'tag',
+          operatorType: 'references',
+          operatorTypes: ['references', 'doesNotReference', null, 'empty', 'notEmpty'],
+          title: 'Tags',
+          type: 'searchable',
+          value: {
+            label: tag?.name?.current,
+            value: tag?._id
+          }
+        } as SearchFacetInputSearchableProps
+
+        if (searchFacetTagIndex >= 0) {
+          draft.searchFacets[searchFacetTagIndex] = searchFacet
+        } else {
+          draft.searchFacets.push(searchFacet as SearchFacetInputSearchableProps)
+        }
+
+        break
+      }
 
       case AssetsActionTypes.SET_ORDER:
         draft.order = action.payload?.order
@@ -388,6 +434,7 @@ export default function assetsReducerState(
         draft.byIds[assetId].updating = false
         break
       }
+
       /**
        * An asset was unable to be updated via the client.
        * - Store the error code on asset in question to optionally display to the user.
@@ -400,6 +447,7 @@ export default function assetsReducerState(
         draft.byIds[assetId].updating = false
         break
       }
+
       /**
        * A request to update an asset has been made (and not yet completed).
        * - Set updating status on target asset.
@@ -424,27 +472,31 @@ export const assetsClear = (): AssetsClearAction => ({
 })
 
 // Delete started
-export const assetsDelete = (
-  asset: Asset,
-  options?: {
-    closeDialogId?: string
-  }
-): AssetsDeleteRequestAction => ({
+export const assetsDelete = ({
+  asset,
+  closeDialogId
+}: {
+  asset: Asset
+  closeDialogId?: string
+}): AssetsDeleteRequestAction => ({
   payload: {
     asset,
-    options
+    closeDialogId
   },
   type: AssetsActionTypes.DELETE_REQUEST
 })
 
 // Delete success
-export const assetsDeleteComplete = (
-  assetId: string,
-  options?: {closeDialogId?: string}
-): AssetsDeleteCompleteAction => ({
+export const assetsDeleteComplete = ({
+  assetId,
+  closeDialogId
+}: {
+  assetId: string
+  closeDialogId?: string
+}): AssetsDeleteCompleteAction => ({
   payload: {
     assetId,
-    options
+    closeDialogId
   },
   type: AssetsActionTypes.DELETE_COMPLETE
 })
@@ -603,11 +655,30 @@ export const assetsSearchFacetsRemove = (facetName: string): AssetsSearchFacetsR
 })
 
 // Update search facet
-export const assetsSearchFacetsUpdate = (
-  facet: SearchFacetInputProps
-): AssetsSearchFacetsUpdateAction => ({
-  payload: {facet},
+export const assetsSearchFacetsUpdate = ({
+  modifier,
+  name,
+  operatorType,
+  value
+}: {
+  modifier?: string
+  name: string
+  operatorType?: SearchFacetOperatorType
+  value?: any // TODO: type correctly
+}): AssetsSearchFacetsUpdateAction => ({
+  payload: {
+    modifier,
+    name,
+    operatorType,
+    value
+  },
   type: AssetsActionTypes.SEARCH_FACETS_UPDATE
+})
+
+// Add or update existing tag search facet
+export const assetsSearchFacetTagAddOrUpdate = (tag: Tag): AssetsSearchFacetTagAddOrUpdate => ({
+  payload: {tag},
+  type: AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE
 })
 
 // Set view mode
@@ -640,32 +711,39 @@ export const assetsSort = (): AssetsSortAction => ({
 })
 
 // Update started
-export const assetsUpdate = (
-  asset: Asset,
-  formData: Record<string, any>,
-  options?: {closeDialogId?: string}
-): AssetsUpdateRequestAction => ({
+export const assetsUpdate = ({
+  asset,
+  closeDialogId,
+  formData
+}: {
+  asset: Asset
+  closeDialogId?: string
+  formData: Record<string, any>
+}): AssetsUpdateRequestAction => ({
   payload: {
     asset,
-    formData,
-    options
+    closeDialogId,
+    formData
   },
   type: AssetsActionTypes.UPDATE_REQUEST
 })
 
 // Delete success
-export const assetsUpdateComplete = (
-  assetId: string,
-  options?: {closeDialogId?: string}
-): AssetsUpdateCompleteAction => ({
+export const assetsUpdateComplete = ({
+  assetId,
+  closeDialogId
+}: {
+  assetId: string
+  closeDialogId?: string
+}): AssetsUpdateCompleteAction => ({
   payload: {
     assetId,
-    options
+    closeDialogId
   },
   type: AssetsActionTypes.UPDATE_COMPLETE
 })
 
-// Delete error
+// Update error
 export const assetsUpdateError = (asset: Asset, error: any): AssetsUpdateErrorAction => ({
   payload: {
     asset,
@@ -695,7 +773,7 @@ export const assetsDeleteEpic = (
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.delete(asset._id))),
-        mergeMap(() => of(assetsDeleteComplete(asset._id))),
+        mergeMap(() => of(assetsDeleteComplete({assetId: asset._id}))),
         catchError(error => of(assetsDeleteError(asset, error)))
       )
     })
@@ -727,7 +805,7 @@ export const assetsDeletePickedEpic = (
       return of(assets)
     }),
     mergeAll(),
-    mergeMap((asset: any) => of(assetsDelete(asset)))
+    mergeMap((asset: any) => of(assetsDelete({asset})))
   )
 
 /**
@@ -823,6 +901,7 @@ export const assetsSearchEpic = (action$: Observable<AssetsActions>): Observable
   action$.pipe(
     filter(
       isOfType([
+        AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE,
         AssetsActionTypes.SEARCH_FACETS_ADD,
         AssetsActionTypes.SEARCH_FACETS_CLEAR,
         AssetsActionTypes.SEARCH_FACETS_REMOVE,
@@ -874,6 +953,7 @@ export const assetsUnpickEpic = (action$: Observable<AssetsActions>): Observable
   action$.pipe(
     filter(
       isOfType([
+        AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE,
         AssetsActionTypes.SEARCH_FACETS_ADD,
         AssetsActionTypes.SEARCH_FACETS_CLEAR,
         AssetsActionTypes.SEARCH_FACETS_REMOVE,
@@ -901,7 +981,7 @@ export const assetsUpdateEpic = (
     filter(isOfType(AssetsActionTypes.UPDATE_REQUEST)),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const {asset, formData, options} = action.payload
+      const {asset, closeDialogId, formData} = action.payload
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
@@ -915,9 +995,75 @@ export const assetsUpdateEpic = (
               .commit()
           )
         ),
-        mergeMap((updatedAsset: any) => of(assetsUpdateComplete(updatedAsset._id, options))),
+        mergeMap((updatedAsset: any) =>
+          of(
+            assetsUpdateComplete({
+              assetId: updatedAsset._id,
+              closeDialogId
+            })
+          )
+        ),
         catchError(error => of(assetsUpdateError(asset, error)))
       )
+    })
+  )
+
+/**
+ * Listen for tag delete completions:
+ * - clear tag search facet (if present and set to the recently deleted tag)
+ */
+export const assetsSearchFacetTagRemoveEpic = (
+  action$: Observable<TagsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> =>
+  action$.pipe(
+    filter(isOfType(TagsActionTypes.DELETE_COMPLETE)),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const currentSearchFacetTag = state.assets.searchFacets?.find(facet => facet.name === 'tag')
+
+      if (currentSearchFacetTag?.type === 'searchable') {
+        if (currentSearchFacetTag.value?.value === action?.payload?.tagId) {
+          return of(assetsSearchFacetsRemove('tag'))
+        }
+      }
+
+      return empty()
+    })
+  )
+
+/**
+ * Listen for tag update completions:
+ * - update tag search facet (if present and set to the recently deleted tag)
+ */
+export const assetsSearchFacetTagUpdateEpic = (
+  action$: Observable<TagsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> =>
+  action$.pipe(
+    filter(isOfType(TagsActionTypes.UPDATE_COMPLETE)),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {tagId} = action.payload
+
+      const currentSearchFacetTag = state.assets.searchFacets?.find(facet => facet.name === 'tag')
+      const tagItem = state.tags.byIds[tagId]
+
+      if (currentSearchFacetTag?.type === 'searchable') {
+        if (currentSearchFacetTag.value?.value === tagId) {
+          return of(
+            assetsSearchFacetsUpdate({
+              name: 'tag',
+              value: {
+                label: tagItem?.tag?.name?.current,
+                value: tagItem?.tag?._id
+              }
+            })
+          )
+        }
+      }
+
+      return empty()
     })
   )
 
@@ -1020,15 +1166,13 @@ const constructFilter = ({
  * SELECTORS *
  *************/
 
-export const selectAssetById = (id?: string) => (
-  state: RootReducerState
-): AssetItem | undefined => {
-  if (!id) {
-    return undefined
-  }
-
-  return state.assets.byIds[id]
-}
+export const selectAssetById = createSelector(
+  [
+    (state: RootReducerState) => state.assets.byIds,
+    (_state: RootReducerState, assetId: string) => assetId
+  ],
+  (byIds, assetId) => byIds[assetId]
+)
 
 export const selectAssets = (state: RootReducerState): AssetItem[] => {
   return state.assets.allIds.map(id => state.assets.byIds[id])
@@ -1037,3 +1181,35 @@ export const selectAssets = (state: RootReducerState): AssetItem[] => {
 export const selectAssetsPicked = (state: RootReducerState): AssetItem[] => {
   return Object.values(state.assets.byIds)?.filter(item => item?.picked)
 }
+
+export const selectAssetsPickedLength = (state: RootReducerState): number => {
+  return Object.values(state.assets.byIds)?.filter(item => item?.picked)?.length || 0
+}
+
+export const selectHasSearchFacetTag: Selector<RootReducerState, boolean> = createSelector(
+  state => state.assets.searchFacets,
+  searchFacets => !!searchFacets?.find(facet => facet.name === 'tag')?.value
+)
+
+export const selectIsSearchFacetTag = createSelector(
+  [
+    (state: RootReducerState) => state.tags.byIds,
+    state => state.assets.searchFacets,
+    (_state: RootReducerState, tagId: string) => tagId
+  ],
+  (tagsByIds, searchFacets, tagId) => {
+    const searchFacet = searchFacets?.find(facet => facet.name === 'tag')
+
+    if (searchFacet?.type === 'searchable') {
+      const searchFacetTagId = searchFacet.value?.value
+      if (searchFacetTagId) {
+        return (
+          tagsByIds[searchFacetTagId]?.tag?._id === tagId &&
+          searchFacet?.operatorType === 'references'
+        )
+      }
+    }
+
+    return false
+  }
+)
