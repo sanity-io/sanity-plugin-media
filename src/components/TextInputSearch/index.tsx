@@ -4,22 +4,22 @@ import React, {ChangeEvent, FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsSetSearchQuery} from '../../modules/assets'
+import {searchSetSearchQuery} from '../../modules/search'
 
 const TextInputSearch: FC = () => {
   // Redux
-  const searchQuery = useTypedSelector(state => state.assets.searchQuery)
+  const searchQuery = useTypedSelector(state => state.search.searchQuery)
 
   // Redux
   const dispatch = useDispatch()
 
   // Callbacks
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(assetsSetSearchQuery(e.currentTarget.value))
+    dispatch(searchSetSearchQuery(e.currentTarget.value))
   }
 
   const handleClear = () => {
-    dispatch(assetsSetSearchQuery(''))
+    dispatch(searchSetSearchQuery(''))
   }
 
   return (

@@ -108,7 +108,7 @@ export default function dialogReducer(
       case DialogActionTypes.SHOW_TAG_EDIT: {
         const {tagId} = action.payload
         draft.items.push({
-          id: tagId,
+          id: String(tagId), // TODO: double check casting
           tagId,
           type: 'tagEdit'
         })

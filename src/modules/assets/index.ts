@@ -1,18 +1,8 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {
-  Asset,
-  AssetItem,
-  BrowserView,
-  OrderDirection,
-  SearchFacetInputProps,
-  SearchFacetInputSearchableProps,
-  SearchFacetOperatorType,
-  Tag
-} from '@types'
+import {Asset, AssetItem, BrowserView, OrderDirection, SearchFacetInputProps} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
-import {Selector} from 'react-redux'
 import {StateObservable} from 'redux-observable'
 import {from, empty, of, Observable} from 'rxjs'
 import {
@@ -47,13 +37,7 @@ import {
   AssetsPickClearAction,
   AssetsPickRangeAction,
   AssetsReducerState,
-  AssetsSearchFacetTagAddOrUpdate,
-  AssetsSearchFacetsAddAction,
-  AssetsSearchFacetsClearAction,
-  AssetsSearchFacetsRemoveAction,
-  AssetsSearchFacetsUpdateAction,
   AssetsSetOrderAction,
-  AssetsSetSearchQueryAction,
   AssetsSetViewAction,
   AssetsSortAction,
   AssetsUpdateCompleteAction,
@@ -61,8 +45,8 @@ import {
   AssetsUpdateRequestAction
 } from './types'
 import {RootReducerState} from '../types'
-import {TagsActionTypes} from '../tags'
-import {TagsActions} from '../tags/types'
+import {SearchActionTypes} from '../search'
+import {SearchActions} from '../search/types'
 
 /***********
  * ACTIONS *
@@ -85,11 +69,6 @@ export enum AssetsActionTypes {
   PICK_ALL = 'ASSETS_PICK_ALL',
   PICK_CLEAR = 'ASSETS_PICK_CLEAR',
   PICK_RANGE = 'ASSETS_PICK_RANGE',
-  SEARCH_FACETS_ADD = 'ASSETS_SEARCH_FACET_ADD',
-  SEARCH_FACETS_CLEAR = 'ASSETS_SEARCH_FACET_CLEAR',
-  SEARCH_FACETS_REMOVE = 'ASSETS_SEARCH_FACET_REMOVE',
-  SEARCH_FACETS_UPDATE = 'ASSETS_SEARCH_FACET_UPDATE',
-  SEARCH_FACET_TAG_ADD_OR_UPDATE = 'ASSETS_SEARCH_FACET_TAG_ADD_OR_UPDATE',
   SET_ORDER = 'ASSETS_SET_ORDER',
   SET_SEARCH_QUERY = 'ASSETS_SET_SEARCH_QUERY',
   SET_VIEW = 'ASSETS_SET_VIEW',
@@ -139,15 +118,13 @@ export const initialState: AssetsReducerState = {
   },
   pageIndex: 0,
   pageSize: 50,
-  searchFacets: [],
-  searchQuery: '',
   view: 'grid'
   // totalCount: -1
 }
 
 export default function assetsReducerState(
   state: AssetsReducerState = initialState,
-  action: AssetsActions
+  action: AssetsActions | SearchActions
 ): AssetsReducerState {
   return produce(state, draft => {
     // eslint-disable-next-line default-case
@@ -328,84 +305,11 @@ export default function assetsReducerState(
         break
       }
 
-      /**
-       * A search facet has been added
-       */
-      case AssetsActionTypes.SEARCH_FACETS_ADD:
-        draft.searchFacets.push(action.payload.facet)
-        break
-      /**
-       * All search facet have been clear
-       */
-      case AssetsActionTypes.SEARCH_FACETS_CLEAR:
-        draft.searchFacets = []
-        break
-      /**
-       * A single search facet has been removed
-       */
-      case AssetsActionTypes.SEARCH_FACETS_REMOVE:
-        draft.searchFacets = draft.searchFacets.filter(
-          facet => facet.name !== action.payload.facetName
-        )
-        break
-      /**
-       * A single search facet has been updated
-       */
-      case AssetsActionTypes.SEARCH_FACETS_UPDATE: {
-        const {modifier, name, operatorType, value} = action.payload
-
-        draft.searchFacets.forEach((facet, index) => {
-          if (facet.name === name) {
-            if (facet.type === 'number') {
-              facet.modifier = modifier
-            }
-            if (operatorType) {
-              facet.operatorType = operatorType
-            }
-            if (typeof value !== 'undefined') {
-              draft.searchFacets[index].value = value
-            }
-          }
-        })
-        break
-      }
-
-      case AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE: {
-        const tag = action?.payload?.tag
-        const searchFacetTagIndex = draft.searchFacets.findIndex(facet => facet.name === 'tag')
-
-        // TODO: DRY
-        const searchFacet = {
-          contexts: 'all',
-          field: 'opt.media.tags',
-          name: 'tag',
-          operatorType: 'references',
-          operatorTypes: ['references', 'doesNotReference', null, 'empty', 'notEmpty'],
-          title: 'Tags',
-          type: 'searchable',
-          value: {
-            label: tag?.name?.current,
-            value: tag?._id
-          }
-        } as SearchFacetInputSearchableProps
-
-        if (searchFacetTagIndex >= 0) {
-          draft.searchFacets[searchFacetTagIndex] = searchFacet
-        } else {
-          draft.searchFacets.push(searchFacet as SearchFacetInputSearchableProps)
-        }
-
-        break
-      }
-
       case AssetsActionTypes.SET_ORDER:
         draft.order = action.payload?.order
         draft.pageIndex = 0
         break
-      case AssetsActionTypes.SET_SEARCH_QUERY:
-        draft.searchQuery = action.payload?.searchQuery
-        draft.pageIndex = 0
-        break
+
       case AssetsActionTypes.SET_VIEW:
         draft.view = action.payload?.view
         break
@@ -458,6 +362,11 @@ export default function assetsReducerState(
         draft.byIds[assetId].updating = true
         break
       }
+
+      // TODO: should this be moved into an epic + extra action?
+      case SearchActionTypes.SET_SEARCH_QUERY:
+        draft.pageIndex = 0
+        break
     }
   })
 }
@@ -635,52 +544,6 @@ export const assetsPickRange = (startId: string, endId: string): AssetsPickRange
   type: AssetsActionTypes.PICK_RANGE
 })
 
-// Add search facet
-export const assetsSearchFacetsAdd = (
-  facet: SearchFacetInputProps
-): AssetsSearchFacetsAddAction => ({
-  payload: {facet},
-  type: AssetsActionTypes.SEARCH_FACETS_ADD
-})
-
-// Clear search facets
-export const assetsSearchFacetsClear = (): AssetsSearchFacetsClearAction => ({
-  type: AssetsActionTypes.SEARCH_FACETS_CLEAR
-})
-
-// Remove search facet
-export const assetsSearchFacetsRemove = (facetName: string): AssetsSearchFacetsRemoveAction => ({
-  payload: {facetName},
-  type: AssetsActionTypes.SEARCH_FACETS_REMOVE
-})
-
-// Update search facet
-export const assetsSearchFacetsUpdate = ({
-  modifier,
-  name,
-  operatorType,
-  value
-}: {
-  modifier?: string
-  name: string
-  operatorType?: SearchFacetOperatorType
-  value?: any // TODO: type correctly
-}): AssetsSearchFacetsUpdateAction => ({
-  payload: {
-    modifier,
-    name,
-    operatorType,
-    value
-  },
-  type: AssetsActionTypes.SEARCH_FACETS_UPDATE
-})
-
-// Add or update existing tag search facet
-export const assetsSearchFacetTagAddOrUpdate = (tag: Tag): AssetsSearchFacetTagAddOrUpdate => ({
-  payload: {tag},
-  type: AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE
-})
-
 // Set view mode
 export const assetsSetView = (view: BrowserView): AssetsSetViewAction => ({
   payload: {view},
@@ -697,12 +560,6 @@ export const assetsSetOrder = (field: string, direction: OrderDirection): Assets
     }
   },
   type: AssetsActionTypes.SET_ORDER
-})
-
-// Set search query
-export const assetsSetSearchQuery = (searchQuery: string): AssetsSetSearchQueryAction => ({
-  payload: {searchQuery},
-  type: AssetsActionTypes.SET_SEARCH_QUERY
 })
 
 // Sort assets by current field + direction
@@ -858,12 +715,14 @@ export const assetsFetchPageIndexEpic = (
 
       const documentId = state?.document?._id
 
+      console.log('state.search', state.search)
+
       return of(
         assetsFetch({
           filter: constructFilter({
             hasDocument: !!state.document,
-            searchFacets: state.assets.searchFacets,
-            searchQuery: state.assets.searchQuery
+            searchFacets: state.search.searchFacets,
+            searchQuery: state.search.searchQuery
           }),
           // Document ID can be null when operating on pristine / unsaved drafts
           ...(documentId ? {params: {documentId}} : {}),
@@ -901,12 +760,12 @@ export const assetsSearchEpic = (action$: Observable<AssetsActions>): Observable
   action$.pipe(
     filter(
       isOfType([
-        AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE,
-        AssetsActionTypes.SEARCH_FACETS_ADD,
-        AssetsActionTypes.SEARCH_FACETS_CLEAR,
-        AssetsActionTypes.SEARCH_FACETS_REMOVE,
-        AssetsActionTypes.SEARCH_FACETS_UPDATE,
-        AssetsActionTypes.SET_SEARCH_QUERY
+        SearchActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE,
+        SearchActionTypes.SEARCH_FACETS_ADD,
+        SearchActionTypes.SEARCH_FACETS_CLEAR,
+        SearchActionTypes.SEARCH_FACETS_REMOVE,
+        SearchActionTypes.SEARCH_FACETS_UPDATE,
+        SearchActionTypes.SET_SEARCH_QUERY
       ])
     ),
     debounceTime(400),
@@ -953,14 +812,14 @@ export const assetsUnpickEpic = (action$: Observable<AssetsActions>): Observable
   action$.pipe(
     filter(
       isOfType([
-        AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE,
-        AssetsActionTypes.SEARCH_FACETS_ADD,
-        AssetsActionTypes.SEARCH_FACETS_CLEAR,
-        AssetsActionTypes.SEARCH_FACETS_REMOVE,
-        AssetsActionTypes.SEARCH_FACETS_UPDATE,
         AssetsActionTypes.SET_ORDER,
-        AssetsActionTypes.SET_SEARCH_QUERY,
-        AssetsActionTypes.SET_VIEW
+        AssetsActionTypes.SET_VIEW,
+        SearchActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE,
+        SearchActionTypes.SEARCH_FACETS_ADD,
+        SearchActionTypes.SEARCH_FACETS_CLEAR,
+        SearchActionTypes.SEARCH_FACETS_REMOVE,
+        SearchActionTypes.SEARCH_FACETS_UPDATE,
+        SearchActionTypes.SET_SEARCH_QUERY
       ])
     ),
     switchMap(() => {
@@ -1005,65 +864,6 @@ export const assetsUpdateEpic = (
         ),
         catchError(error => of(assetsUpdateError(asset, error)))
       )
-    })
-  )
-
-/**
- * Listen for tag delete completions:
- * - clear tag search facet (if present and set to the recently deleted tag)
- */
-export const assetsSearchFacetTagRemoveEpic = (
-  action$: Observable<TagsActions>,
-  state$: StateObservable<RootReducerState>
-): Observable<AssetsActions> =>
-  action$.pipe(
-    filter(isOfType(TagsActionTypes.DELETE_COMPLETE)),
-    withLatestFrom(state$),
-    mergeMap(([action, state]) => {
-      const currentSearchFacetTag = state.assets.searchFacets?.find(facet => facet.name === 'tag')
-
-      if (currentSearchFacetTag?.type === 'searchable') {
-        if (currentSearchFacetTag.value?.value === action?.payload?.tagId) {
-          return of(assetsSearchFacetsRemove('tag'))
-        }
-      }
-
-      return empty()
-    })
-  )
-
-/**
- * Listen for tag update completions:
- * - update tag search facet (if present and set to the recently deleted tag)
- */
-export const assetsSearchFacetTagUpdateEpic = (
-  action$: Observable<TagsActions>,
-  state$: StateObservable<RootReducerState>
-): Observable<AssetsActions> =>
-  action$.pipe(
-    filter(isOfType(TagsActionTypes.UPDATE_COMPLETE)),
-    withLatestFrom(state$),
-    mergeMap(([action, state]) => {
-      const {tagId} = action.payload
-
-      const currentSearchFacetTag = state.assets.searchFacets?.find(facet => facet.name === 'tag')
-      const tagItem = state.tags.byIds[tagId]
-
-      if (currentSearchFacetTag?.type === 'searchable') {
-        if (currentSearchFacetTag.value?.value === tagId) {
-          return of(
-            assetsSearchFacetsUpdate({
-              name: 'tag',
-              value: {
-                label: tagItem?.tag?.name?.current,
-                value: tagItem?.tag?._id
-              }
-            })
-          )
-        }
-      }
-
-      return empty()
     })
   )
 
@@ -1185,31 +985,3 @@ export const selectAssetsPicked = (state: RootReducerState): AssetItem[] => {
 export const selectAssetsPickedLength = (state: RootReducerState): number => {
   return Object.values(state.assets.byIds)?.filter(item => item?.picked)?.length || 0
 }
-
-export const selectHasSearchFacetTag: Selector<RootReducerState, boolean> = createSelector(
-  state => state.assets.searchFacets,
-  searchFacets => !!searchFacets?.find(facet => facet.name === 'tag')?.value
-)
-
-export const selectIsSearchFacetTag = createSelector(
-  [
-    (state: RootReducerState) => state.tags.byIds,
-    state => state.assets.searchFacets,
-    (_state: RootReducerState, tagId: string) => tagId
-  ],
-  (tagsByIds, searchFacets, tagId) => {
-    const searchFacet = searchFacets?.find(facet => facet.name === 'tag')
-
-    if (searchFacet?.type === 'searchable') {
-      const searchFacetTagId = searchFacet.value?.value
-      if (searchFacetTagId) {
-        return (
-          tagsByIds[searchFacetTagId]?.tag?._id === tagId &&
-          searchFacet?.operatorType === 'references'
-        )
-      }
-    }
-
-    return false
-  }
-)

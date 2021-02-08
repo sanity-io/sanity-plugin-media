@@ -8,8 +8,6 @@ import assets, {
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
   assetsSearchEpic,
-  assetsSearchFacetTagRemoveEpic,
-  assetsSearchFacetTagUpdateEpic,
   assetsSetOrderEpic,
   assetsSortEpic,
   assetsUnpickEpic,
@@ -26,6 +24,7 @@ import notifications, {
   notificationsAssetUpdateCompleteEpic,
   notificationsTagDeleteCompleteEpic
 } from './notifications'
+import search, {searchSearchFacetTagRemoveEpic, searchSearchFacetTagUpdateEpic} from './search'
 import tags, {
   tagsCreateEpic,
   tagsDeleteEpic,
@@ -41,8 +40,6 @@ export const rootEpic = combineEpics(
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
   assetsSearchEpic,
-  assetsSearchFacetTagRemoveEpic,
-  assetsSearchFacetTagUpdateEpic,
   assetsSetOrderEpic,
   assetsSortEpic,
   assetsUnpickEpic,
@@ -54,6 +51,8 @@ export const rootEpic = combineEpics(
   notificationsAssetDeleteCompleteEpic,
   notificationsAssetUpdateCompleteEpic,
   notificationsTagDeleteCompleteEpic,
+  searchSearchFacetTagRemoveEpic,
+  searchSearchFacetTagUpdateEpic,
   tagsCreateEpic,
   tagsDeleteEpic,
   tagsFetchEpic,
@@ -67,6 +66,7 @@ export const rootReducer = combineReducers({
   dialog,
   document,
   notifications,
+  search,
   selectedAssets,
   tags
 })

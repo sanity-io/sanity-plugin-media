@@ -9,7 +9,7 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {SEARCH_FACET_OPERATORS} from '../../constants'
-import {assetsSearchFacetsUpdate} from '../../modules/assets'
+import {searchSearchFacetsUpdate} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 import TextInputNumber from '../TextInputNumber'
 
@@ -30,7 +30,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
-      assetsSearchFacetsUpdate({
+      searchSearchFacetsUpdate({
         name: facet.name,
         operatorType
       })
@@ -39,7 +39,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
 
   const handleModifierClick = (modifier: SearchFacetInputNumberModifier) => {
     dispatch(
-      assetsSearchFacetsUpdate({
+      searchSearchFacetsUpdate({
         name: facet.name,
         modifier: modifier.name
       })
@@ -48,7 +48,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
 
   const handleValueChange = (value: number) => {
     dispatch(
-      assetsSearchFacetsUpdate({
+      searchSearchFacetsUpdate({
         name: facet.name,
         value
       })

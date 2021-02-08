@@ -6,12 +6,12 @@ import {useDispatch} from 'react-redux'
 
 import {FACETS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsSearchFacetsAdd, assetsSearchFacetsClear} from '../../modules/assets'
+import {searchSearchFacetsAdd, searchSearchFacetsClear} from '../../modules/search'
 
 const SearchFacetsControl: FC = () => {
   // Redux
   const dispatch = useDispatch()
-  const searchFacets = useTypedSelector(state => state.assets.searchFacets)
+  const searchFacets = useTypedSelector(state => state.search.searchFacets)
   const document = useTypedSelector(state => state.document)
 
   const isTool = !document
@@ -64,7 +64,7 @@ const SearchFacetsControl: FC = () => {
                 disabled={isPresent}
                 fontSize={1}
                 key={facet.name}
-                onClick={() => dispatch(assetsSearchFacetsAdd(facet))}
+                onClick={() => dispatch(searchSearchFacetsAdd(facet))}
                 padding={2}
                 text={facet.title}
               />
@@ -99,7 +99,7 @@ const SearchFacetsControl: FC = () => {
         <Button
           fontSize={1}
           mode="bleed"
-          onClick={() => dispatch(assetsSearchFacetsClear())}
+          onClick={() => dispatch(searchSearchFacetsClear())}
           text="Clear"
         />
       )}

@@ -1,12 +1,5 @@
-import {
-  Asset,
-  BrowserView,
-  AssetItem,
-  Order,
-  SearchFacetInputProps,
-  SearchFacetOperatorType,
-  Tag
-} from '@types'
+import {Asset, BrowserView, AssetItem, Order} from '@types'
+
 import {AssetsActionTypes} from './index'
 
 // Reducer
@@ -21,8 +14,6 @@ export type AssetsReducerState = {
   order: Order
   pageIndex: number
   pageSize: number
-  searchFacets: SearchFacetInputProps[]
-  searchQuery: string
   view: BrowserView
   // totalCount: number
 }
@@ -122,43 +113,9 @@ export type AssetsPickRangeAction = {
   type: AssetsActionTypes.PICK_RANGE
 }
 
-export type AssetsSearchFacetTagAddOrUpdate = {
-  payload: {tag: Tag}
-  type: AssetsActionTypes.SEARCH_FACET_TAG_ADD_OR_UPDATE
-}
-
-export type AssetsSearchFacetsAddAction = {
-  payload: {facet: SearchFacetInputProps}
-  type: AssetsActionTypes.SEARCH_FACETS_ADD
-}
-
-export type AssetsSearchFacetsClearAction = {
-  type: AssetsActionTypes.SEARCH_FACETS_CLEAR
-}
-
-export type AssetsSearchFacetsRemoveAction = {
-  payload: {facetName: string}
-  type: AssetsActionTypes.SEARCH_FACETS_REMOVE
-}
-
-export type AssetsSearchFacetsUpdateAction = {
-  payload: {
-    modifier?: string
-    name: string
-    operatorType?: SearchFacetOperatorType
-    value?: any // TODO: type correctly
-  }
-  type: AssetsActionTypes.SEARCH_FACETS_UPDATE
-}
-
 export type AssetsSetOrderAction = {
   payload: {order: Order}
   type: AssetsActionTypes.SET_ORDER
-}
-
-export type AssetsSetSearchQueryAction = {
-  payload: {searchQuery: string}
-  type: AssetsActionTypes.SET_SEARCH_QUERY
 }
 
 export type AssetsSetViewAction = {
@@ -213,13 +170,7 @@ export type AssetsActions =
   | AssetsPickAllAction
   | AssetsPickClearAction
   | AssetsPickRangeAction
-  | AssetsSearchFacetTagAddOrUpdate
-  | AssetsSearchFacetsAddAction
-  | AssetsSearchFacetsClearAction
-  | AssetsSearchFacetsRemoveAction
-  | AssetsSearchFacetsUpdateAction
   | AssetsSetOrderAction
-  | AssetsSetSearchQueryAction
   | AssetsSetViewAction
   | AssetsSortAction
   | AssetsUpdateCompleteAction

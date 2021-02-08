@@ -1,4 +1,4 @@
-import {CloseIcon, EditIcon, TrashIcon} from '@sanity/icons'
+import {CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text} from '@sanity/ui'
 import {TagItem} from '@types'
 import React, {FC} from 'react'
@@ -6,7 +6,11 @@ import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsSearchFacetTagAddOrUpdate, selectIsSearchFacetTag} from '../../modules/assets'
+import {
+  assetsSearchFacetsRemove,
+  searchSearchFacetTagAddOrUpdate,
+  selectIsSearchFacetTag
+} from '../../modules/search'
 import {dialogShowDeleteConfirm, dialogShowTagEdit} from '../../modules/dialog'
 
 type Props = {
@@ -22,10 +26,14 @@ const Container = styled(Flex)`
 `
 
 const ButtonContainer = styled(Flex)`
-  visibility: hidden;
+  @media (pointer: fine) {
+    visibility: hidden;
+  }
 
-  ${Container}:hover & {
-    visibility: visible;
+  @media (hover: hover) and (pointer: fine) {
+    ${Container}:hover & {
+      visibility: visible;
+    }
   }
 `
 
@@ -50,13 +58,17 @@ const Tag: FC<Props> = (props: Props) => {
     dispatch(dialogShowTagEdit(tagId))
   }
 
-  const handleSetSearchFacet = () => {
-    dispatch(assetsSearchFacetTagAddOrUpdate(tag?.tag))
+  const handleSearchFacetTagAddOrUpdate = () => {
+    dispatch(searchSearchFacetTagAddOrUpdate(tag?.tag))
+  }
+
+  const handleSearchFacetTagRemove = () => {
+    dispatch(assetsSearchFacetsRemove('tag'))
   }
 
   return (
     <Container align="center" justify="space-between">
-      <Box flex={1} onClick={handleSetSearchFacet} paddingLeft={3} paddingY={3}>
+      <Box flex={1} paddingLeft={3} paddingY={3}>
         <Text
           muted={!isSearchFacetTag}
           size={1}
@@ -69,6 +81,20 @@ const Tag: FC<Props> = (props: Props) => {
       </Box>
 
       <ButtonContainer align="center" paddingRight={1} style={{flexShrink: 0}}>
+        {/* Search (facet) icon */}
+        <Button
+          fontSize={1}
+          icon={isSearchFacetTag ? CloseIcon : SearchIcon}
+          mode="bleed"
+          onClick={isSearchFacetTag ? handleSearchFacetTagRemove : handleSearchFacetTagAddOrUpdate}
+          padding={2}
+          style={{
+            background: 'none',
+            boxShadow: 'none',
+            opacity: 0.5
+          }}
+        />
+
         {/* Edit icon */}
         <Button
           fontSize={1}
@@ -79,7 +105,7 @@ const Tag: FC<Props> = (props: Props) => {
           style={{
             background: 'none',
             boxShadow: 'none',
-            opacity: 0.75
+            opacity: 0.5
           }}
         />
 

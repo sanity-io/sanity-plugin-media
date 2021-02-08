@@ -5,7 +5,7 @@ import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
-import {assetsSearchFacetsRemove} from '../../modules/assets'
+import {assetsSearchFacetsRemove} from '../../modules/search'
 
 type Props = {
   children: ReactNode

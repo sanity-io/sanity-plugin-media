@@ -22,7 +22,7 @@ const SearchFacets: FC<Props> = (props: Props) => {
   const {layout = 'inline'} = props
 
   // Redux
-  const searchFacets = useTypedSelector(state => state.assets.searchFacets)
+  const searchFacets = useTypedSelector(state => state.search.searchFacets)
 
   const Items = searchFacets.map(facet => {
     if (facet.type === 'number') {
