@@ -7,10 +7,10 @@ export type TagsReducerState = {
   allIds: string[]
   byIds: Record<string, TagItem>
   creating: boolean
-  creatingError: any
+  creatingError?: HttpError
   fetchCount: number
   fetching: boolean
-  fetchingError: any
+  fetchingError?: HttpError
   // totalCount: number
   panelVisible: boolean
 }

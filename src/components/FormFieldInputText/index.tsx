@@ -23,7 +23,6 @@ const FormFieldInputText = forwardRef<Ref, Props>((props: Props, ref) => {
     <Box>
       {/* Label */}
       <FormFieldInputLabel description={description} error={error} label={label} name={name} />
-
       {/* Input */}
       <TextInput
         autoComplete="off"

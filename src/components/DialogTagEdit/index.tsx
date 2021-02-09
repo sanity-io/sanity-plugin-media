@@ -48,6 +48,8 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     resolver: yupResolver(formSchema)
   })
 
+  const formUpdating = !tagItem || tagItem?.updating
+
   // Callbacks
   const handleClose = () => {
     dispatch(dialogRemove(id))
@@ -89,7 +91,6 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   }
 
   // Effects
-
   useEffect(() => {
     if (tagItem.error) {
       setError('name', {
@@ -103,7 +104,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
       <Flex justify="space-between">
         {/* Delete button */}
         <Button
-          disabled={!tagItem || tagItem?.updating}
+          disabled={formUpdating}
           fontSize={1}
           mode="bleed"
           onClick={handleDelete}
@@ -113,7 +114,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
 
         {/* Submit button */}
         <Button
-          disabled={!tagItem || tagItem?.updating || !isDirty || !isValid}
+          disabled={formUpdating || !isDirty || !isValid}
           fontSize={1}
           onClick={handleSubmit(onSubmit)}
           text="Save and close"
@@ -139,7 +140,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
 
         {/* Title */}
         <FormFieldInputText
-          disabled={!tagItem || tagItem?.updating}
+          disabled={formUpdating}
           error={errors?.name}
           label="Name"
           name="name"

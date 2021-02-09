@@ -177,13 +177,20 @@ export const notificationsGenericErrorEpic = (
     ),
     mergeMap(action => {
       const error = action.payload?.error
-      return of(
-        notificationsAddError({
-          // title: `An error occured: ${error.toString()}`
-          title: `An error occured: ${error.message}`
-        })
-      )
+      return of(notificationsAddError({title: `An error occured: ${error.message}`}))
     })
+  )
+
+/**
+ * Listen for tag delete completions:
+ * - Display success notification
+ */
+export const notificationsTagCreateCompleteEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
+  action$.pipe(
+    filter(isOfType(TagsActionTypes.CREATE_COMPLETE)),
+    mergeMap(() => of(notificationsAddSuccess({title: `Tag created`})))
   )
 
 /**
@@ -195,11 +202,5 @@ export const notificationsTagDeleteCompleteEpic = (
 ): Observable<NotificationsActions> =>
   action$.pipe(
     filter(isOfType(TagsActionTypes.DELETE_COMPLETE)),
-    mergeMap(() => {
-      return of(
-        notificationsAddSuccess({
-          title: `Tag deleted`
-        })
-      )
-    })
+    mergeMap(() => of(notificationsAddSuccess({title: `Tag deleted`})))
   )

@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import {Box, Button, Dialog, Flex} from '@sanity/ui'
 import {DialogTagCreate} from '@types'
-import React, {FC, ReactNode} from 'react'
+import React, {FC, ReactNode, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
@@ -33,6 +33,7 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
 
   // State
   const creating = useTypedSelector(state => state.tags.creating)
+  const creatingError = useTypedSelector(state => state.tags.creatingError)
 
   // react-hook-form
   const {
@@ -40,7 +41,8 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
     // Read the formState before render to subscribe the form state through Proxy
     formState: {isDirty, isValid},
     handleSubmit,
-    register
+    register,
+    setError
   } = useForm({
     defaultValues: {
       name: ''
@@ -49,22 +51,34 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
     resolver: yupResolver(formSchema)
   })
 
+  const formUpdating = creating
+
   // Callbacks
   const handleClose = () => {
     dispatch(dialogClear())
   }
 
   // - submit react-hook-form
+  // TODO: sanitize form submission (trim whitespace)
   const onSubmit = async (formData: FormData) => {
     dispatch(tagsCreate({name: formData.name}))
   }
+
+  // Effects
+  useEffect(() => {
+    if (creatingError) {
+      setError('name', {
+        message: creatingError?.message
+      })
+    }
+  }, [creatingError])
 
   const Footer = () => (
     <Box padding={3}>
       <Flex justify="flex-end">
         {/* Submit button */}
         <Button
-          disabled={creating || !isDirty || !isValid}
+          disabled={formUpdating || !isDirty || !isValid}
           fontSize={1}
           onClick={handleSubmit(onSubmit)}
           text="Save and close"
@@ -90,7 +104,7 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
 
         {/* Title */}
         <FormFieldInputText
-          disabled={creating}
+          disabled={formUpdating}
           error={errors?.name}
           label="Name"
           name="name"

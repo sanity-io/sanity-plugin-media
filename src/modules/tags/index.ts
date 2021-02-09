@@ -37,6 +37,7 @@ import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import {Selector} from 'react-redux'
 import {DialogActions} from '../dialog/types'
 import {DialogActionTypes} from '../dialog'
+import checkTagName from '../../operators/checkTagName'
 
 /***********
  * ACTIONS *
@@ -75,10 +76,10 @@ export const initialState: TagsReducerState = {
   allIds: [],
   byIds: {},
   creating: false,
-  creatingError: null,
+  creatingError: undefined,
   fetchCount: -1,
   fetching: false,
-  fetchingError: null,
+  fetchingError: undefined,
   panelVisible: true
 }
 
@@ -89,6 +90,11 @@ export default function tagsReducerState(
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
+      // Create tag creation errors when tag create form is displayed
+      case DialogActionTypes.SHOW_TAG_CREATE:
+        delete draft.creatingError
+        break
+
       // Clear tag errors when tag edit form is displayed
       case DialogActionTypes.SHOW_TAG_EDIT: {
         const {tagId} = action.payload
@@ -118,7 +124,7 @@ export default function tagsReducerState(
        */
       case TagsActionTypes.CREATE_REQUEST:
         draft.creating = true
-        draft.creatingError = null
+        delete draft.creatingError
         break
 
       /**
@@ -183,7 +189,7 @@ export default function tagsReducerState(
 
         draft.fetching = false
         draft.fetchCount = tags.length || 0
-        draft.fetchingError = null
+        delete draft.fetchingError
         break
       }
       /**
@@ -193,7 +199,7 @@ export default function tagsReducerState(
        */
       case TagsActionTypes.FETCH_ERROR: {
         draft.fetching = false
-        draft.fetchingError = true
+        draft.fetchingError = action.payload.error
         break
       }
 
@@ -204,7 +210,7 @@ export default function tagsReducerState(
        */
       case TagsActionTypes.FETCH_REQUEST:
         draft.fetching = true
-        draft.fetchingError = null
+        delete draft.fetchingError
         break
 
       /**
@@ -506,6 +512,7 @@ export const tagsCreateEpic = (
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
+        checkTagName(sanitizedName),
         mergeMap(() =>
           from(
             client.create({
@@ -640,31 +647,24 @@ export const tagsUpdateEpic = (
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        mergeMap(() =>
-          from(
-            client.fetch(`count(*[_type == "${TAG_DOCUMENT_NAME}" && name.current == $name])`, {
-              name: formData?.name?.current
-            })
-          )
+        checkTagName(formData?.name?.current),
+        mergeMap(
+          () =>
+            from(
+              client
+                .patch(tag._id)
+                .set({name: {_type: 'slug', current: formData?.name.current}})
+                .commit()
+            ) as Observable<Tag>
         ),
-        mergeMap((existingTagCount: any) => {
-          if (existingTagCount > 0) {
-            return throwError({
-              message: 'Tag already exists',
-              statusCode: 409
-            } as HttpError)
-          }
-
-          return from(client.patch(tag._id).set(formData).commit())
-        }),
-        mergeMap((updatedTag: any) =>
-          of(
+        mergeMap((updatedTag: Tag) => {
+          return of(
             tagsUpdateComplete({
               closeDialogId,
               tagId: updatedTag._id
             })
           )
-        ),
+        }),
         catchError((error: ClientError) =>
           of(
             tagsUpdateError({

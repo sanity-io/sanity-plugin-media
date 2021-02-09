@@ -64,7 +64,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const item = useTypedSelector(state => selectAssetById(state, String(assetId))) // TODO: check casting
+  const assetItem = useTypedSelector(state => selectAssetById(state, String(assetId))) // TODO: check casting
   const tags = useTypedSelector(selectTags)
 
   // Refs
@@ -72,10 +72,10 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
 
   // State
   // - Generate a snapshot of the current asset
-  const [assetSnapshot, setAssetSnapshot] = useState(item?.asset)
+  const [assetSnapshot, setAssetSnapshot] = useState(assetItem?.asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
 
-  const currentAsset = item ? item?.asset : assetSnapshot
+  const currentAsset = assetItem ? assetItem?.asset : assetSnapshot
   const allTagOptions = getTagSelectOptions(tags)
 
   // Redux
@@ -105,12 +105,12 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     reset,
     setValue
   } = useForm({
-    defaultValues: generateDefaultValues(item?.asset),
+    defaultValues: generateDefaultValues(assetItem?.asset),
     mode: 'onChange',
     resolver: yupResolver(formSchema)
   })
 
-  const formUpdating = !item || item?.updating
+  const formUpdating = !assetItem || assetItem?.updating
 
   // Callbacks
   const handleClose = () => {
@@ -118,14 +118,14 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   }
 
   const handleDelete = () => {
-    if (!item?.asset) {
+    if (!assetItem?.asset) {
       return
     }
 
     dispatch(
       dialogShowDeleteConfirm({
-        closeDialogId: item?.asset._id,
-        documentId: item?.asset._id,
+        closeDialogId: assetItem?.asset._id,
+        documentId: assetItem?.asset._id,
         documentType: 'asset'
       })
     )
@@ -155,7 +155,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
 
   // - submit react-hook-form
   const onSubmit = async (formData: FormData) => {
-    if (!item?.asset) {
+    if (!assetItem?.asset) {
       return
     }
 
@@ -164,8 +164,8 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
 
     dispatch(
       assetsUpdate({
-        asset: item?.asset,
-        closeDialogId: item?.asset._id,
+        asset: assetItem?.asset,
+        closeDialogId: assetItem?.asset._id,
         formData: {
           ...sanitizedFormData,
           // Map tags to sanity references
@@ -181,7 +181,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
             }
           },
           // Append extension to filename
-          originalFilename: `${sanitizedFormData.originalFilename}.${item?.asset.extension}`
+          originalFilename: `${sanitizedFormData.originalFilename}.${assetItem?.asset.extension}`
         }
       })
     )
@@ -190,13 +190,13 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   // Effects
   // - Listen for asset mutations and update snapshot
   useEffect(() => {
-    if (!item?.asset) {
+    if (!assetItem?.asset) {
       return
     }
 
     // Remember that Sanity listeners ignore joins, order clauses and projections
     const subscriptionAsset = client
-      .listen(groq`*[_id == $id]`, {id: item?.asset._id})
+      .listen(groq`*[_id == $id]`, {id: assetItem?.asset._id})
       .subscribe(handleAssetUpdate)
 
     return () => {
@@ -312,7 +312,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
           {/* Form fields */}
           <Box as="form" marginTop={4} onSubmit={handleSubmit(onSubmit)}>
             {/* Deleted notification */}
-            {!item && (
+            {!assetItem && (
               <Card marginBottom={3} padding={3} radius={2} shadow={1} tone="critical">
                 <Text size={1}>This file cannot be found – it may have been deleted.</Text>
               </Card>
@@ -387,7 +387,9 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
               hidden={tabSection !== 'references'}
               id="references-panel"
             >
-              <Box marginTop={5}>{item?.asset && <DocumentList assetId={item?.asset._id} />}</Box>
+              <Box marginTop={5}>
+                {assetItem?.asset && <DocumentList assetId={assetItem?.asset._id} />}
+              </Box>
             </TabPanel>
           </Box>
         </Box>
@@ -410,7 +412,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
           {/* Metadata */}
           {currentAsset && (
             <Box marginTop={4}>
-              <AssetMetadata asset={currentAsset} item={item} />
+              <AssetMetadata asset={currentAsset} item={assetItem} />
             </Box>
           )}
         </Box>
