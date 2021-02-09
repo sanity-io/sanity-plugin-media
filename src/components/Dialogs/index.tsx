@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import DialogDeleteConfirm from '../DialogDeleteConfirm'
-import DialogDetails from '../DialogDetails'
+import DialogAssetEdit from '../DialogAssetEdit'
 import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'
@@ -21,19 +21,19 @@ const Dialogs: FC = () => {
     const dialog = dialogs[index]
     const childDialogs = renderDialogs(dialogs, index + 1)
 
+    if (dialog.type === 'assetEdit') {
+      return (
+        <DialogAssetEdit dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogAssetEdit>
+      )
+    }
+
     if (dialog.type === 'deleteConfirm') {
       return (
         <DialogDeleteConfirm dialog={dialog} key={index}>
           {childDialogs}
         </DialogDeleteConfirm>
-      )
-    }
-
-    if (dialog.type === 'details') {
-      return (
-        <DialogDetails dialog={dialog} key={index}>
-          {childDialogs}
-        </DialogDetails>
       )
     }
 

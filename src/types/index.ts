@@ -24,7 +24,7 @@ export type Asset = FileAsset | ImageAsset
 
 export type AssetItem = {
   asset: Asset
-  errorCode?: number
+  error?: HttpError
   picked: boolean
   updating: boolean
 }
@@ -41,12 +41,20 @@ export type BrowserView = 'grid' | 'table'
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
 
 export type Dialog =
+  | DialogAssetEdit
   | DialogDeleteConfirm
-  | DialogDetails
   | DialogSearchFacets
   | DialogTagCreate
   | DialogTagEdit
   | DialogTags
+
+export type DialogAssetEdit = {
+  assetId?: string
+  closeDialogId?: string
+  id: string
+  lastCreatedTagId?: string
+  type: 'assetEdit'
+}
 
 export type DialogDeleteConfirm = {
   closeDialogId?: string
@@ -54,14 +62,6 @@ export type DialogDeleteConfirm = {
   documentType: 'asset' | 'tag'
   id: string
   type: 'deleteConfirm'
-}
-
-export type DialogDetails = {
-  assetId?: string
-  closeDialogId?: string
-  id: string
-  lastCreatedTagId?: string
-  type: 'details'
 }
 
 export type DialogSearchFacets = {
@@ -105,6 +105,11 @@ export type Document = {
   _updatedAt: string
   name?: string
   title?: string
+}
+
+export type HttpError = {
+  message: string
+  statusCode: number
 }
 
 export type FileAsset = SanityAssetDocument &
@@ -241,7 +246,7 @@ export type Tag = SanityDocument & {
 
 export type TagItem = {
   tag: Tag
-  errorCode?: number
+  error?: HttpError
   picked: boolean
   updating: boolean
 }

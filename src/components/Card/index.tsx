@@ -77,7 +77,7 @@ const Card = (props: Props) => {
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
 
   const asset = item?.asset
-  const errorCode = item?.errorCode
+  const error = item?.error
   const isOpaque = item?.asset?.metadata?.isOpaque
   const picked = item?.picked
   const updating = item?.updating
@@ -236,7 +236,7 @@ const Card = (props: Props) => {
 
         {/* TODO: DRY */}
         {/* Error button */}
-        {errorCode && (
+        {error && (
           <Box
             padding={3}
             style={{
@@ -249,12 +249,15 @@ const Card = (props: Props) => {
               content={
                 <Box
                   padding={2}
-                  style={{
-                    minWidth: '110px', // TODO: is this necessary?
-                    textAlign: 'center'
-                  }}
+                  style={
+                    {
+                      // minWidth: '110px', // TODO: is this necessary?
+                      // textAlign: 'center'
+                    }
+                  }
                 >
-                  <Text size={1}>has references</Text>
+                  {/* <Text size={1}>has references</Text> */}
+                  <Text size={1}>{error.message}</Text>
                 </Box>
               }
               placement="left"

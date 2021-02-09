@@ -1,5 +1,13 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {Asset, AssetItem, BrowserView, OrderDirection, SearchFacetInputProps} from '@types'
+import {ClientError} from '@sanity/client'
+import {
+  Asset,
+  AssetItem,
+  BrowserView,
+  HttpError,
+  OrderDirection,
+  SearchFacetInputProps
+} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
@@ -160,9 +168,9 @@ export default function assetsReducerState(
        * - Clear updating status on asset in question.
        */
       case AssetsActionTypes.DELETE_ERROR: {
-        const assetId = action.payload?.asset?._id
-        const errorCode = action.payload?.error?.statusCode
-        draft.byIds[assetId].errorCode = errorCode
+        const {asset, error} = action.payload
+        const assetId = asset?._id
+        draft.byIds[assetId].error = error
         draft.byIds[assetId].updating = false
         break
       }
@@ -177,7 +185,7 @@ export default function assetsReducerState(
         draft.byIds[assetId].updating = true
 
         Object.keys(draft.byIds).forEach(key => {
-          delete draft.byIds[key].errorCode
+          delete draft.byIds[key].error
         })
 
         break
@@ -345,9 +353,10 @@ export default function assetsReducerState(
        * - Clear updating status on asset in question.
        */
       case AssetsActionTypes.UPDATE_ERROR: {
-        const assetId = action.payload?.asset?._id
-        const errorCode = action.payload?.error?.statusCode
-        draft.byIds[assetId].errorCode = errorCode
+        const {asset, error} = action.payload
+
+        const assetId = asset?._id
+        draft.byIds[assetId].error = error
         draft.byIds[assetId].updating = false
         break
       }
@@ -411,13 +420,22 @@ export const assetsDeleteComplete = ({
 })
 
 // Delete error
-export const assetsDeleteError = (asset: Asset, error: any): AssetsDeleteErrorAction => ({
-  payload: {
-    asset,
-    error
-  },
-  type: AssetsActionTypes.DELETE_ERROR
-})
+export const assetsDeleteError = ({
+  asset,
+  error
+}: {
+  asset: Asset
+  error: HttpError
+}): AssetsDeleteErrorAction => {
+  console.log('error', error)
+  return {
+    payload: {
+      asset,
+      error
+    },
+    type: AssetsActionTypes.DELETE_ERROR
+  }
+}
 
 // Delete all picked assets
 export const assetsDeletePicked = (): AssetsDeletePickedAction => ({
@@ -494,7 +512,7 @@ export const assetsFetchComplete = (
 })
 
 // Fetch failed
-export const assetsFetchError = (error: any): AssetsFetchErrorAction => ({
+export const assetsFetchError = (error: HttpError): AssetsFetchErrorAction => ({
   payload: {error},
   type: AssetsActionTypes.FETCH_ERROR
 })
@@ -552,13 +570,7 @@ export const assetsSetView = (view: BrowserView): AssetsSetViewAction => ({
 
 // Set order
 export const assetsSetOrder = (field: string, direction: OrderDirection): AssetsSetOrderAction => ({
-  payload: {
-    order: {
-      direction,
-      field,
-      title: ORDER_DICTIONARY[field][direction]
-    }
-  },
+  payload: {order: {direction, field, title: ORDER_DICTIONARY[field][direction]}},
   type: AssetsActionTypes.SET_ORDER
 })
 
@@ -577,11 +589,7 @@ export const assetsUpdate = ({
   closeDialogId?: string
   formData: Record<string, any>
 }): AssetsUpdateRequestAction => ({
-  payload: {
-    asset,
-    closeDialogId,
-    formData
-  },
+  payload: {asset, closeDialogId, formData},
   type: AssetsActionTypes.UPDATE_REQUEST
 })
 
@@ -593,19 +601,19 @@ export const assetsUpdateComplete = ({
   assetId: string
   closeDialogId?: string
 }): AssetsUpdateCompleteAction => ({
-  payload: {
-    assetId,
-    closeDialogId
-  },
+  payload: {assetId, closeDialogId},
   type: AssetsActionTypes.UPDATE_COMPLETE
 })
 
 // Update error
-export const assetsUpdateError = (asset: Asset, error: any): AssetsUpdateErrorAction => ({
-  payload: {
-    asset,
-    error
-  },
+export const assetsUpdateError = ({
+  asset,
+  error
+}: {
+  asset: Asset
+  error: HttpError
+}): AssetsUpdateErrorAction => ({
+  payload: {asset, error},
   type: AssetsActionTypes.UPDATE_ERROR
 })
 
@@ -631,7 +639,17 @@ export const assetsDeleteEpic = (
         debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.delete(asset._id))),
         mergeMap(() => of(assetsDeleteComplete({assetId: asset._id}))),
-        catchError(error => of(assetsDeleteError(asset, error)))
+        catchError((error: ClientError) =>
+          of(
+            assetsDeleteError({
+              asset,
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              }
+            })
+          )
+        )
       )
     })
   )
@@ -692,7 +710,14 @@ export const assetsFetchEpic = (
 
           return of(assetsFetchComplete(items))
         }),
-        catchError(error => of(assetsFetchError(error)))
+        catchError((error: ClientError) =>
+          of(
+            assetsFetchError({
+              message: error?.message || 'Internal error',
+              statusCode: error?.statusCode || 500
+            })
+          )
+        )
       )
     })
   )
@@ -860,7 +885,17 @@ export const assetsUpdateEpic = (
             })
           )
         ),
-        catchError(error => of(assetsUpdateError(asset, error)))
+        catchError((error: ClientError) =>
+          of(
+            assetsUpdateError({
+              asset,
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              }
+            })
+          )
+        )
       )
     })
   )

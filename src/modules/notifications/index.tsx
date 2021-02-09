@@ -132,6 +132,7 @@ export const notificationsAssetDeleteErrorEpic = (
     mergeMap(actions => {
       const errorCount = actions.length
       return of(
+        // TODO: add error message if count === 1
         notificationsAddError({
           title: `Unable to delete ${errorCount} ${pluralize('asset', errorCount)}`
         })
@@ -170,14 +171,16 @@ export const notificationsGenericErrorEpic = (
         AssetsActionTypes.FETCH_ERROR, //
         AssetsActionTypes.UPDATE_ERROR,
         TagsActionTypes.CREATE_ERROR,
-        TagsActionTypes.FETCH_ERROR
+        TagsActionTypes.FETCH_ERROR,
+        TagsActionTypes.UPDATE_ERROR
       ])
     ),
     mergeMap(action => {
       const error = action.payload?.error
       return of(
         notificationsAddError({
-          title: `An error occured: ${error.toString()}`
+          // title: `An error occured: ${error.toString()}`
+          title: `An error occured: ${error.message}`
         })
       )
     })

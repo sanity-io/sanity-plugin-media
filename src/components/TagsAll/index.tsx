@@ -24,7 +24,7 @@ const TagsAll: FC = () => {
   return (
     <Box>
       <PanelHeader>
-        <Label size={0}>All Tags ({tags?.length})</Label>
+        <Label size={0}>Tags ({tags?.length})</Label>
 
         {/* Create new tag button */}
         <Button

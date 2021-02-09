@@ -56,7 +56,7 @@ export type DialogShowTagCreateAction = {
 export type DialogShowTagEditAction = {
   payload: {
     closeDialogId?: string
-    tagId?: string
+    tagId: string
   }
   type: DialogActionTypes.SHOW_TAG_EDIT
 }

@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import {Box, Button, Dialog, Flex} from '@sanity/ui'
 import {DialogTagEdit} from '@types'
-import React, {FC, ReactNode} from 'react'
+import React, {FC, ReactNode, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
@@ -38,7 +38,8 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     // Read the formState before render to subscribe the form state through Proxy
     formState: {isDirty, isValid},
     handleSubmit,
-    register
+    register,
+    setError
   } = useForm({
     defaultValues: {
       name: tagItem?.tag?.name?.current
@@ -53,6 +54,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   }
 
   // - submit react-hook-form
+  // TODO: sanitize form submission (trim whitespace)
   const onSubmit = async (formData: FormData) => {
     if (!tagItem?.tag) {
       return
@@ -85,6 +87,16 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
       })
     )
   }
+
+  // Effects
+
+  useEffect(() => {
+    if (tagItem.error) {
+      setError('name', {
+        message: tagItem.error?.message
+      })
+    }
+  }, [tagItem.error])
 
   const Footer = () => (
     <Box padding={3}>

@@ -1,4 +1,4 @@
-import {Asset, BrowserView, AssetItem, Order} from '@types'
+import {Asset, BrowserView, AssetItem, HttpError, Order} from '@types'
 
 import {AssetsActionTypes} from './index'
 
@@ -35,7 +35,7 @@ export type AssetsDeleteCompleteAction = {
 export type AssetsDeleteErrorAction = {
   payload: {
     asset: Asset
-    error: {statusCode: number}
+    error: HttpError
   }
   type: AssetsActionTypes.DELETE_ERROR
 }
@@ -58,7 +58,7 @@ export type AssetsFetchCompleteAction = {
 }
 
 export type AssetsFetchErrorAction = {
-  payload: {error: any}
+  payload: {error: HttpError}
   type: AssetsActionTypes.FETCH_ERROR
 }
 
@@ -138,7 +138,7 @@ export type AssetsUpdateCompleteAction = {
 export type AssetsUpdateErrorAction = {
   payload: {
     asset: Asset
-    error: {statusCode: number}
+    error: HttpError
   }
   type: AssetsActionTypes.UPDATE_ERROR
 }

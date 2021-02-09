@@ -6,11 +6,11 @@ const TagsPicked: FC = () => {
   return (
     <Box>
       <PanelHeader>
-        <Label size={0}>Applied to all</Label>
+        <Label size={0}>Tags [applied to all]</Label>
       </PanelHeader>
 
       <PanelHeader>
-        <Label size={0}>Applied to some</Label>
+        <Label size={0}>Tags [applied to some]</Label>
       </PanelHeader>
     </Box>
   )

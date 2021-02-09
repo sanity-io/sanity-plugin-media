@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Dialog, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
-import {Asset, DialogDetails, ReactSelectOption} from '@types'
+import {Asset, DialogAssetEdit as DialogAssetEdit, ReactSelectOption} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
 import React, {FC, ReactNode, useEffect, useRef, useState} from 'react'
@@ -28,7 +28,7 @@ import Image from '../Image'
 
 type Props = {
   children: ReactNode
-  dialog: DialogDetails
+  dialog: DialogAssetEdit
 }
 
 type FormData = yup.InferType<typeof formSchema>
@@ -56,7 +56,7 @@ const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
   return asset?.originalFilename?.slice(0, extensionIndex)
 }
 
-const DialogDetails: FC<Props> = (props: Props) => {
+const DialogAssetEdit: FC<Props> = (props: Props) => {
   const {
     children,
     dialog: {assetId, id, lastCreatedTagId}
@@ -419,4 +419,4 @@ const DialogDetails: FC<Props> = (props: Props) => {
   )
 }
 
-export default DialogDetails
+export default DialogAssetEdit

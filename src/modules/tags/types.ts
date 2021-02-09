@@ -1,4 +1,4 @@
-import {Tag, TagItem} from '@types'
+import {HttpError, Tag, TagItem} from '@types'
 import {TagsActionTypes} from './index'
 
 // Reducer
@@ -27,7 +27,7 @@ export type TagsCreateCompleteAction = {
 
 export type TagsCreateErrorAction = {
   payload: {
-    error: {statusCode: number}
+    error: HttpError
     name: string
   }
   type: TagsActionTypes.CREATE_ERROR
@@ -48,7 +48,7 @@ export type TagsDeleteCompleteAction = {
 
 export type TagsDeleteErrorAction = {
   payload: {
-    error: {statusCode: number}
+    error: HttpError
     tag: Tag
   }
   type: TagsActionTypes.DELETE_ERROR
@@ -69,7 +69,7 @@ export type TagsFetchCompleteAction = {
 
 export type TagsFetchErrorAction = {
   payload: {
-    error: any
+    error: HttpError
   }
   type: TagsActionTypes.FETCH_ERROR
 }
@@ -116,7 +116,7 @@ export type TagsUpdateCompleteAction = {
 
 export type TagsUpdateErrorAction = {
   payload: {
-    error: {statusCode: number}
+    error: HttpError
     tag: Tag
   }
   type: TagsActionTypes.UPDATE_ERROR

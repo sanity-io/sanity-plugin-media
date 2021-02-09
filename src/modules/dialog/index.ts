@@ -54,7 +54,7 @@ export default function dialogReducer(
     switch (action.type) {
       case DialogActionTypes.ADD_CREATED_TAG:
         draft.items.forEach(item => {
-          if (item.type === 'details' && item.assetId === action.payload.assetId) {
+          if (item.type === 'assetEdit' && item.assetId === action.payload.assetId) {
             item.lastCreatedTagId = action.payload.tagId
           }
         })
@@ -72,7 +72,7 @@ export default function dialogReducer(
         draft.items.push({
           assetId,
           id: assetId,
-          type: 'details'
+          type: 'assetEdit'
         })
         break
       }

@@ -72,7 +72,7 @@ const TableRow = (props: Props) => {
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
 
   const asset = item?.asset
-  const errorCode = item?.errorCode
+  const error = item?.error
   const isOpaque = item?.asset?.metadata?.isOpaque
   const picked = item?.picked
   const updating = item?.updating
@@ -310,7 +310,7 @@ const TableRow = (props: Props) => {
       >
         {/* TODO: DRY */}
         {/* Error button */}
-        {errorCode && (
+        {error && (
           <Box padding={3}>
             <Tooltip
               content={

@@ -1,10 +1,11 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {Asset, ReactSelectOption, Tag, TagItem} from '@types'
+import {ClientError} from '@sanity/client'
+import {Asset, HttpError, ReactSelectOption, Tag, TagItem} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
 import {StateObservable} from 'redux-observable'
-import {Observable, from, of} from 'rxjs'
+import {Observable, from, of, throwError} from 'rxjs'
 import {catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
 import {isOfType} from 'typesafe-actions'
 
@@ -34,6 +35,8 @@ import debugThrottle from '../../operators/debugThrottle'
 import {RootReducerState} from '../types'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import {Selector} from 'react-redux'
+import {DialogActions} from '../dialog/types'
+import {DialogActionTypes} from '../dialog'
 
 /***********
  * ACTIONS *
@@ -81,11 +84,18 @@ export const initialState: TagsReducerState = {
 
 export default function tagsReducerState(
   state: TagsReducerState = initialState,
-  action: TagsActions
+  action: DialogActions | TagsActions
 ): TagsReducerState {
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
+      // Clear tag errors when tag edit form is displayed
+      case DialogActionTypes.SHOW_TAG_EDIT: {
+        const {tagId} = action.payload
+        delete draft.byIds[tagId].error
+        break
+      }
+
       /**
        * A tag has been successfully created via the client.
        * - Add tag from the redux store (both the normalised object and ordered tag id).
@@ -130,9 +140,10 @@ export default function tagsReducerState(
        * - Clear updating status on tag in question.
        */
       case TagsActionTypes.DELETE_ERROR: {
-        const tagId = action.payload?.tag?._id
-        const errorCode = action.payload?.error?.statusCode
-        draft.byIds[tagId].errorCode = errorCode
+        const {error, tag} = action.payload
+
+        const tagId = tag?._id
+        draft.byIds[tagId].error = error
         draft.byIds[tagId].updating = false
         break
       }
@@ -147,7 +158,7 @@ export default function tagsReducerState(
         draft.byIds[tagId].updating = true
 
         Object.keys(draft.byIds).forEach(key => {
-          delete draft.byIds[key].errorCode
+          delete draft.byIds[key].error
         })
 
         break
@@ -277,9 +288,9 @@ export default function tagsReducerState(
        * - Clear updating status on asset in question.
        */
       case TagsActionTypes.UPDATE_ERROR: {
-        const tagId = action.payload?.tag?._id
-        const errorCode = action.payload?.error?.statusCode
-        draft.byIds[tagId].errorCode = errorCode
+        const {error, tag} = action.payload
+        const tagId = tag?._id
+        draft.byIds[tagId].error = error
         draft.byIds[tagId].updating = false
         break
       }
@@ -327,7 +338,13 @@ export const tagsCreateComplete = ({
 })
 
 // Create error
-export const tagsCreateError = (name: string, error: any): TagsCreateErrorAction => ({
+export const tagsCreateError = ({
+  error,
+  name
+}: {
+  name: string
+  error: HttpError
+}): TagsCreateErrorAction => ({
   payload: {error, name},
   type: TagsActionTypes.CREATE_ERROR
 })
@@ -345,7 +362,13 @@ export const tagsDeleteComplete = (tagId: string): TagsDeleteCompleteAction => (
 })
 
 // Delete error
-export const tagsDeleteError = (tag: Tag, error: any): TagsDeleteErrorAction => ({
+export const tagsDeleteError = ({
+  error,
+  tag
+}: {
+  error: HttpError
+  tag: Tag
+}): TagsDeleteErrorAction => ({
   payload: {error, tag},
   type: TagsActionTypes.DELETE_ERROR
 })
@@ -384,7 +407,7 @@ export const tagsFetchComplete = (tags: Tag[]): TagsFetchCompleteAction => ({
 })
 
 // Fetch failed
-export const tagsFetchError = (error: any): TagsFetchErrorAction => ({
+export const tagsFetchError = (error: HttpError): TagsFetchErrorAction => ({
   payload: {error},
   type: TagsActionTypes.FETCH_ERROR
 })
@@ -451,7 +474,7 @@ export const tagsUpdateComplete = ({
 })
 
 // Update error
-export const tagsUpdateError = (tag: Tag, error: any): TagsUpdateErrorAction => ({
+export const tagsUpdateError = ({error, tag}: {tag: Tag; error: any}): TagsUpdateErrorAction => ({
   payload: {
     error,
     tag
@@ -495,7 +518,17 @@ export const tagsCreateEpic = (
           )
         ),
         mergeMap(result => of(tagsCreateComplete({assetId, tag: result as Tag}))),
-        catchError(error => of(tagsCreateError(name, error)))
+        catchError((error: ClientError) =>
+          of(
+            tagsCreateError({
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              name
+            })
+          )
+        )
       )
     })
   )
@@ -516,9 +549,23 @@ export const tagsDeleteEpic = (
       const {tag} = action.payload
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
+        // TODO: create transaction
+        // - get all assets that reference this tag
+        // - remove tag reference from asset
+        // - finally, delete tag itself
         mergeMap(() => from(client.delete(tag._id))),
         mergeMap(() => of(tagsDeleteComplete(tag._id))),
-        catchError(error => of(tagsDeleteError(tag, error)))
+        catchError((error: ClientError) =>
+          of(
+            tagsDeleteError({
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              tag
+            })
+          )
+        )
       )
     })
   )
@@ -548,7 +595,14 @@ export const tagsFetchEpic = (
 
           return of(tagsFetchComplete(items))
         }),
-        catchError(error => of(tagsFetchError(error)))
+        catchError((error: ClientError) =>
+          of(
+            tagsFetchError({
+              message: error?.message || 'Internal error',
+              statusCode: error?.statusCode || 500
+            })
+          )
+        )
       )
     })
   )
@@ -586,7 +640,23 @@ export const tagsUpdateEpic = (
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        mergeMap(() => from(client.patch(tag._id).set(formData).commit())),
+        mergeMap(() =>
+          from(
+            client.fetch(`count(*[_type == "${TAG_DOCUMENT_NAME}" && name.current == $name])`, {
+              name: formData?.name?.current
+            })
+          )
+        ),
+        mergeMap((existingTagCount: any) => {
+          if (existingTagCount > 0) {
+            return throwError({
+              message: 'Tag already exists',
+              statusCode: 409
+            } as HttpError)
+          }
+
+          return from(client.patch(tag._id).set(formData).commit())
+        }),
         mergeMap((updatedTag: any) =>
           of(
             tagsUpdateComplete({
@@ -595,7 +665,17 @@ export const tagsUpdateEpic = (
             })
           )
         ),
-        catchError(error => of(tagsUpdateError(tag, error)))
+        catchError((error: ClientError) =>
+          of(
+            tagsUpdateError({
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              tag
+            })
+          )
+        )
       )
     })
   )

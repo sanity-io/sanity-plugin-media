@@ -1,5 +1,5 @@
 import {hues} from '@sanity/color'
-import {CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
+import {EditIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text} from '@sanity/ui'
 import {TagItem} from '@types'
 import React, {FC} from 'react'
@@ -69,7 +69,12 @@ const Tag: FC<Props> = (props: Props) => {
 
   return (
     <Container align="center" justify="space-between">
-      <Box flex={1} paddingLeft={3} paddingY={3}>
+      <Box
+        flex={1}
+        onClick={isSearchFacetTag ? handleSearchFacetTagRemove : handleSearchFacetTagAddOrUpdate}
+        paddingLeft={3}
+        paddingY={3}
+      >
         <Text
           muted={!isSearchFacetTag}
           size={1}
@@ -82,20 +87,6 @@ const Tag: FC<Props> = (props: Props) => {
       </Box>
 
       <ButtonContainer align="center" paddingRight={1} style={{flexShrink: 0}}>
-        {/* Search (facet) icon */}
-        <Button
-          fontSize={1}
-          icon={isSearchFacetTag ? CloseIcon : SearchIcon}
-          mode="bleed"
-          onClick={isSearchFacetTag ? handleSearchFacetTagRemove : handleSearchFacetTagAddOrUpdate}
-          padding={2}
-          style={{
-            background: 'none',
-            boxShadow: 'none',
-            opacity: 0.5
-          }}
-        />
-
         {/* Edit icon */}
         <Button
           fontSize={1}
@@ -106,7 +97,7 @@ const Tag: FC<Props> = (props: Props) => {
           style={{
             background: 'none',
             boxShadow: 'none',
-            opacity: 0.5
+            opacity: 0.75
           }}
         />
 
