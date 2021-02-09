@@ -110,6 +110,8 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     resolver: yupResolver(formSchema)
   })
 
+  const formUpdating = !item || item?.updating
+
   // Callbacks
   const handleClose = () => {
     dispatch(dialogRemove(id))
@@ -245,7 +247,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
       <Flex justify="space-between">
         {/* Delete button */}
         <Button
-          disabled={!item || item?.updating}
+          disabled={formUpdating}
           fontSize={1}
           mode="bleed"
           onClick={handleDelete}
@@ -255,7 +257,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
 
         {/* Submit button */}
         <Button
-          disabled={!item || item?.updating || !isDirty || !isValid}
+          disabled={formUpdating || !isDirty || !isValid}
           fontSize={1}
           onClick={handleSubmit(onSubmit)}
           text="Save and close"
@@ -289,7 +291,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
           <TabList space={2}>
             <Tab
               aria-controls="details-panel"
-              disabled={!item}
+              disabled={formUpdating}
               id="details-tab"
               label="Details"
               onClick={() => setTabSection('details')}
@@ -298,7 +300,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
             />
             <Tab
               aria-controls="references-panel"
-              disabled={!item}
+              disabled={formUpdating}
               id="references-tab"
               label="References"
               onClick={() => setTabSection('references')}
@@ -329,7 +331,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
                 {/* Tags */}
                 <FormFieldInputTags
                   control={control}
-                  disabled={!item || item?.updating}
+                  disabled={formUpdating}
                   error={errors?.opt?.media?.tags}
                   label="Tags"
                   name="opt.media.tags"
@@ -340,7 +342,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
                 />
                 {/* Filename */}
                 <FormFieldInputFilename
-                  disabled={!item || item?.updating}
+                  disabled={formUpdating}
                   error={errors?.originalFilename}
                   extension={currentAsset?.extension || ''}
                   label="Filename"
@@ -350,7 +352,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
                 />
                 {/* Title */}
                 <FormFieldInputText
-                  disabled={!item || item?.updating}
+                  disabled={formUpdating}
                   error={errors?.title}
                   label="Title"
                   name="title"
@@ -359,7 +361,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
                 />
                 {/* Alt text */}
                 <FormFieldInputText
-                  disabled={!item || item?.updating}
+                  disabled={formUpdating}
                   error={errors?.altText}
                   label="Alt Text"
                   name="altText"
@@ -368,7 +370,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
                 />
                 {/* Description */}
                 <FormFieldInputTextarea
-                  disabled={!item || item?.updating}
+                  disabled={formUpdating}
                   error={errors?.description}
                   label="Description"
                   name="description"
