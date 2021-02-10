@@ -78,7 +78,10 @@ const Tag: FC<Props> = (props: Props) => {
         <Text
           muted={!isSearchFacetTag}
           size={1}
-          style={{userSelect: 'none'}}
+          style={{
+            opacity: tag?.updating ? 0.25 : 1,
+            userSelect: 'none'
+          }}
           textOverflow="ellipsis"
           weight={isSearchFacetTag ? 'bold' : 'regular'}
         >
@@ -89,6 +92,7 @@ const Tag: FC<Props> = (props: Props) => {
       <ButtonContainer align="center" paddingRight={1} style={{flexShrink: 0}}>
         {/* Edit icon */}
         <Button
+          disabled={tag?.updating}
           fontSize={1}
           icon={EditIcon}
           mode="bleed"
@@ -102,6 +106,7 @@ const Tag: FC<Props> = (props: Props) => {
         />
         {/* Delete icon */}
         <Button
+          disabled={tag?.updating}
           fontSize={1}
           icon={TrashIcon}
           mode="bleed"

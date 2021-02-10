@@ -193,30 +193,6 @@ export const searchQuerySet = (searchQuery: string): SearchQuerySetAction => ({
  *********/
 
 /**
- * Listen for tag delete completions:
- * - clear tag search facet (if present and set to the recently deleted tag)
- */
-export const searchFacetTagRemoveEpic = (
-  action$: Observable<TagsActions>,
-  state$: StateObservable<RootReducerState>
-): Observable<SearchActions> =>
-  action$.pipe(
-    filter(isOfType(TagsActionTypes.DELETE_COMPLETE)),
-    withLatestFrom(state$),
-    mergeMap(([action, state]) => {
-      const currentSearchFacetTag = state.search.facets?.find(facet => facet.name === 'tag')
-
-      if (currentSearchFacetTag?.type === 'searchable') {
-        if (currentSearchFacetTag.value?.value === action?.payload?.tagId) {
-          return of(searchFacetsRemove('tag'))
-        }
-      }
-
-      return empty()
-    })
-  )
-
-/**
  * Listen for tag update completions:
  * - update tag search facet (if present and set to the recently deleted tag)
  */
