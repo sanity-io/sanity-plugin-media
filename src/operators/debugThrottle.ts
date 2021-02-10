@@ -9,7 +9,10 @@ const debugThrottle = (throttled?: boolean) => {
         delay(3000),
         mergeMap(source => {
           if (Math.random() > 0.5) {
-            return throwError('Test error')
+            return throwError({
+              message: 'Test error',
+              statusCode: 500
+            })
           }
           return of(source)
         })

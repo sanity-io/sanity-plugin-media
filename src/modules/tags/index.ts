@@ -5,7 +5,7 @@ import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
 import {StateObservable} from 'redux-observable'
-import {Observable, from, of, throwError} from 'rxjs'
+import {Observable, from, of} from 'rxjs'
 import {catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
 import {isOfType} from 'typesafe-actions'
 

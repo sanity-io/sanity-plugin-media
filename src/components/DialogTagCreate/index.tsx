@@ -1,5 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup'
-import {Box, Button, Dialog, Flex} from '@sanity/ui'
+import {Box, Dialog, Flex} from '@sanity/ui'
 import {DialogTagCreate} from '@types'
 import React, {FC, ReactNode, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
@@ -10,6 +10,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogClear} from '../../modules/dialog'
 import {tagsCreate} from '../../modules/tags'
 import FormFieldInputText from '../FormFieldInputText'
+import FormSubmitButton from '../FormSubmitButton'
 
 type Props = {
   children: ReactNode
@@ -37,9 +38,8 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
 
   // react-hook-form
   const {
-    errors,
     // Read the formState before render to subscribe the form state through Proxy
-    formState: {isDirty, isValid},
+    formState: {errors, isDirty, isValid},
     handleSubmit,
     register,
     setError
@@ -77,12 +77,11 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
     <Box padding={3}>
       <Flex justify="flex-end">
         {/* Submit button */}
-        <Button
+        <FormSubmitButton
           disabled={formUpdating || !isDirty || !isValid}
-          fontSize={1}
+          isDirty={isDirty}
+          isValid={isValid}
           onClick={handleSubmit(onSubmit)}
-          text="Save and close"
-          tone="primary"
         />
       </Flex>
     </Box>

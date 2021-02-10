@@ -24,6 +24,7 @@ import FormFieldInputFilename from '../FormFieldInputFilename'
 import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
+import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 
 type Props = {
@@ -96,9 +97,8 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   // react-hook-form
   const {
     control,
-    errors,
     // Read the formState before render to subscribe the form state through Proxy
-    formState: {isDirty, isValid},
+    formState: {errors, isDirty, isValid},
     getValues,
     handleSubmit,
     register,
@@ -256,12 +256,12 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
         />
 
         {/* Submit button */}
-        <Button
+        <FormSubmitButton
           disabled={formUpdating || !isDirty || !isValid}
-          fontSize={1}
+          isDirty={isDirty}
+          isValid={isValid}
+          lastUpdated={currentAsset._updatedAt}
           onClick={handleSubmit(onSubmit)}
-          text="Save and close"
-          tone="primary"
         />
       </Flex>
     </Box>

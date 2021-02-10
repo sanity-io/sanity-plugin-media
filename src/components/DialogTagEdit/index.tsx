@@ -10,6 +10,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
 import {selectTagById, tagsUpdate} from '../../modules/tags'
 import FormFieldInputText from '../FormFieldInputText'
+import FormSubmitButton from '../FormSubmitButton'
 
 type Props = {
   children: ReactNode
@@ -34,9 +35,8 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
 
   // react-hook-form
   const {
-    errors,
     // Read the formState before render to subscribe the form state through Proxy
-    formState: {isDirty, isValid},
+    formState: {errors, isDirty, isValid},
     handleSubmit,
     register,
     setError
@@ -113,12 +113,12 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
         />
 
         {/* Submit button */}
-        <Button
+        <FormSubmitButton
           disabled={formUpdating || !isDirty || !isValid}
-          fontSize={1}
+          isDirty={isDirty}
+          isValid={isValid}
+          lastUpdated={tagItem?.tag?._updatedAt}
           onClick={handleSubmit(onSubmit)}
-          text="Save and close"
-          tone="primary"
         />
       </Flex>
     </Box>
