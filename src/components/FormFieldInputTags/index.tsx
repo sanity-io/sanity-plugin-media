@@ -42,7 +42,7 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
   const creating = useTypedSelector(state => state.tags.creating)
 
   return (
-    <Box style={{zIndex: 9000}}>
+    <Box>
       {/* Label */}
       <FormFieldInputLabel description={description} error={error} label={label} name={name} />
 
@@ -55,6 +55,9 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
           return (
             <CreatableSelect
               cacheOptions={false}
+              closeMenuOnScroll={(e: Event): boolean | null =>
+                !(e?.target as HTMLElement).classList.contains('media__react-select__menu-list')
+              }
               components={reactSelectComponents}
               defaultOptions
               instanceId="tags"
@@ -62,6 +65,7 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
               isDisabled={creating || disabled}
               isLoading={creating}
               isMulti
+              menuPortalTarget={document.body}
               name={name}
               noOptionsMessage={() => 'No tags'}
               onBlur={onBlur}

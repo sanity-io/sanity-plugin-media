@@ -16,7 +16,7 @@ const TagsPanel: FC = () => {
 
   return (
     <Box
-      className="media-custom-scrollbar"
+      className="media__custom-scrollbar"
       style={{
         borderLeft: `1px solid ${hues.gray?.[900].hex}`,
         height: '100%',

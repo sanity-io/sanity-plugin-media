@@ -90,7 +90,10 @@ const Menu = (props: any) => {
 
 const MenuList = (props: any) => {
   return (
-    <components.MenuList {...props} className="media-custom-scrollbar">
+    <components.MenuList
+      {...props}
+      className="media__custom-scrollbar media__react-select__menu-list"
+    >
       {props.children}
     </components.MenuList>
   )

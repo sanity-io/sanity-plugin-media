@@ -20,7 +20,7 @@ const customScrollbar = css`
 `
 
 const GlobalStyle = createGlobalStyle`
-  .media-custom-scrollbar {
+  .media__custom-scrollbar {
     ${customScrollbar}
   }
 

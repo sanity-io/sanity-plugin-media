@@ -98,7 +98,7 @@ const Menu = (props: any) => {
 
 const MenuList = (props: any) => {
   return (
-    <components.MenuList {...props} className="media-custom-scrollbar">
+    <components.MenuList {...props} className="media__custom-scrollbar">
       {props.children}
     </components.MenuList>
   )
