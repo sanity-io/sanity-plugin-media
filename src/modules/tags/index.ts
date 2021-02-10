@@ -1,5 +1,5 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {ClientError} from '@sanity/client'
+import {ClientError, Transaction} from '@sanity/client'
 import {Asset, HttpError, ReactSelectOption, Tag, TagItem} from '@types'
 import groq from 'groq'
 import produce from 'immer'
@@ -555,12 +555,45 @@ export const tagsDeleteEpic = (
     mergeMap(([action, state]) => {
       const {tag} = action.payload
       return of(action).pipe(
+        // Optionally throttle
         debugThrottle(state.debug.badConnection),
-        // TODO: create transaction
-        // - get all assets that reference this tag
-        // - remove tag reference from asset
-        // - finally, delete tag itself
-        mergeMap(() => from(client.delete(tag._id))),
+        // Fetch assets which reference this tag
+        mergeMap(() => {
+          return from(
+            client.fetch(
+              `*[
+                _type in ["sanity.fileAsset", "sanity.imageAsset"]
+                && references(*[_type == "media.tag" && name.current == $tagName]._id)
+              ] {
+                _id,
+                _rev,
+                opt
+              }`,
+              {tagName: tag.name.current}
+            )
+          ) as Observable<Asset[]>
+        }),
+        // Create transaction which remove tag references from all matched assets and delete tag
+        mergeMap((assets: Asset[]) => {
+          const patches = assets.map(asset => ({
+            id: asset._id,
+            patch: {
+              // this will cause the transaction to fail if the document has been modified since it was fetched.
+              ifRevisionID: asset._rev,
+              unset: [`opt.media.tags[_ref == "${tag._id}"]`]
+            }
+          }))
+
+          const transaction: Transaction = patches.reduce(
+            (transaction, patch) => transaction.patch(patch.id, patch.patch),
+            client.transaction()
+          )
+
+          transaction.delete(tag._id)
+
+          return from(transaction.commit())
+        }),
+        // Dispatch complete action
         mergeMap(() => of(tagsDeleteComplete(tag._id))),
         catchError((error: ClientError) =>
           of(
@@ -595,11 +628,13 @@ export const tagsFetchEpic = (
       const query = action.payload?.query
 
       return of(action).pipe(
+        // Optionally throttle
         debugThrottle(state.debug.badConnection),
+        // Fetch tags
         mergeMap(() => from(client.fetch(query, params))),
+        // Dispatch complete action
         mergeMap((result: any) => {
           const {items} = result
-
           return of(tagsFetchComplete(items))
         }),
         catchError((error: ClientError) =>
@@ -646,8 +681,11 @@ export const tagsUpdateEpic = (
       const {closeDialogId, formData, tag} = action.payload
 
       return of(action).pipe(
+        // Optionally throttle
         debugThrottle(state.debug.badConnection),
+        // Check if tag name is available, throw early if not
         checkTagName(formData?.name?.current),
+        // Patch document (Update tag)
         mergeMap(
           () =>
             from(
@@ -657,6 +695,7 @@ export const tagsUpdateEpic = (
                 .commit()
             ) as Observable<Tag>
         ),
+        // Dispatch complete action
         mergeMap((updatedTag: Tag) => {
           return of(
             tagsUpdateComplete({
