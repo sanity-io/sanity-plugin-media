@@ -507,19 +507,16 @@ export const tagsCreateEpic = (
     mergeMap(([action, state]) => {
       const {assetId, name} = action.payload
 
-      // Strip whitespace
-      const sanitizedName = name.trim()
-
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        checkTagName(sanitizedName),
+        checkTagName(name),
         mergeMap(() =>
           from(
             client.create({
               _type: TAG_DOCUMENT_NAME,
               name: {
                 _type: 'slug',
-                current: sanitizedName
+                current: name
               }
             })
           )

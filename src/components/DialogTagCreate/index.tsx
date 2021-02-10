@@ -5,10 +5,11 @@ import React, {FC, ReactNode, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
-import useTypedSelector from '../../hooks/useTypedSelector'
 
+import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogClear} from '../../modules/dialog'
 import {tagsCreate} from '../../modules/tags'
+import sanitizeFormData from '../../utils/sanitizeFormData'
 import FormFieldInputText from '../FormFieldInputText'
 import FormSubmitButton from '../FormSubmitButton'
 
@@ -59,9 +60,10 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
   }
 
   // - submit react-hook-form
-  // TODO: sanitize form submission (trim whitespace)
   const onSubmit = async (formData: FormData) => {
-    dispatch(tagsCreate({name: formData.name}))
+    const sanitizedFormData = sanitizeFormData(formData)
+
+    dispatch(tagsCreate({name: sanitizedFormData.name}))
   }
 
   // Effects

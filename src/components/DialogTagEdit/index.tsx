@@ -9,6 +9,7 @@ import * as yup from 'yup'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
 import {selectTagById, tagsUpdate} from '../../modules/tags'
+import sanitizeFormData from '../../utils/sanitizeFormData'
 import FormFieldInputText from '../FormFieldInputText'
 import FormSubmitButton from '../FormSubmitButton'
 
@@ -56,11 +57,12 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   }
 
   // - submit react-hook-form
-  // TODO: sanitize form submission (trim whitespace)
   const onSubmit = async (formData: FormData) => {
     if (!tagItem?.tag) {
       return
     }
+
+    const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(
       tagsUpdate({
@@ -68,7 +70,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
         formData: {
           name: {
             _type: 'slug',
-            current: formData.name
+            current: sanitizedFormData.name
           }
         },
         tag: tagItem?.tag

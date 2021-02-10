@@ -16,6 +16,7 @@ import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
 import {selectTags, selectTagSelectOptions, tagsCreate} from '../../modules/tags'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import imageDprUrl from '../../utils/imageDprUrl'
+import sanitizeFormData from '../../utils/sanitizeFormData'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import AssetMetadata from '../AssetMetadata'
 import DocumentList from '../DocumentList'
@@ -37,20 +38,6 @@ type FormData = yup.InferType<typeof formSchema>
 const formSchema = yup.object().shape({
   originalFilename: yup.string().required('Filename cannot be empty')
 })
-
-// Sanitize form data: convert empty strings and undefined values to null.
-// null values will correctly unset / delete fields
-const sanitizeFormData = (formData: FormData) => {
-  return Object.keys(formData).reduce((acc: Record<string, any>, key) => {
-    if (formData[key] === '' || typeof formData[key] === 'undefined') {
-      acc[key] = null
-    } else {
-      acc[key] = formData[key]
-    }
-
-    return acc
-  }, {})
-}
 
 const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
   const extensionIndex = asset?.originalFilename?.lastIndexOf(`.${asset.extension}`)
@@ -159,7 +146,6 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
       return
     }
 
-    // Sanitize form data: convert empty strings and undefined values to null
     const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(
