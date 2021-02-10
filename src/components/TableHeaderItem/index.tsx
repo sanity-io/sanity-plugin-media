@@ -40,7 +40,8 @@ const TableHeaderItem: FC<Props> = (props: Props) => {
         onClick={field ? handleClick : undefined}
         style={{
           cursor: field ? 'pointer' : 'default',
-          display: 'inline'
+          display: 'inline',
+          whiteSpace: 'nowrap'
         }}
       >
         <span
