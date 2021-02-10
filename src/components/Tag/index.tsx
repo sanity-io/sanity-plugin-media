@@ -100,7 +100,6 @@ const Tag: FC<Props> = (props: Props) => {
             opacity: 0.75
           }}
         />
-
         {/* Delete icon */}
         <Button
           fontSize={1}

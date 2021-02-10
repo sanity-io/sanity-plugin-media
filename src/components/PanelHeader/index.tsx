@@ -17,10 +17,12 @@ const PanelHeader: FC<Props> = (props: Props) => {
       style={{
         background: black.hex,
         borderBottom: `1px solid ${hues.gray?.[900].hex}`,
-        height: '2.0em'
-        // position: 'sticky',
-        // top: 0
-        // zIndex: 1
+        height: '2.0em',
+        position: 'sticky',
+        top: 0,
+        // HACK: specify z-index to circumvent issue with @sanity/ui <Text> and <Button>
+        // components appearing above sticky elements
+        zIndex: 1
       }}
     >
       {children}
