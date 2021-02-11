@@ -23,11 +23,11 @@ import {
   DialogClearAction,
   DialogReducerState,
   DialogRemoveAction,
-  DialogShowConfirmAddTagToAssets,
+  DialogShowConfirmAssetsTagAddAction,
   DialogShowConfirmDeleteAssetAction,
   DialogShowConfirmDeleteAssetsPickedAction,
   DialogShowConfirmDeleteTagAction,
-  DialogShowConfirmRemoveTagFromAssets,
+  DialogShowConfirmAssetsTagRemoveAction,
   DialogShowDetailsAction,
   DialogShowSearchFacetsAction,
   DialogShowTagCreateAction,
@@ -44,11 +44,11 @@ export enum DialogActionTypes {
   CLEAR = 'DIALOG_CLEAR',
   CONFIRM = 'DIALOG_CONFIRM',
   REMOVE = 'DIALOG_REMOVE',
+  SHOW_CONFIRM_ASSETS_TAG_ADD = 'DIALOG_SHOW_CONFIRM_ASSETS_TAG_ADD',
+  SHOW_CONFIRM_ASSETS_TAG_REMOVE = 'DIALOG_SHOW_CONFIRM_ASSETS_TAG_REMOVE',
   SHOW_CONFIRM_DELETE_ASSET = 'DIALOG_SHOW_CONFIRM_DELETE_ASSET',
   SHOW_CONFIRM_DELETE_ASSETS_PICKED = 'DIALOG_SHOW_CONFIRM_DELETE_ASSETS_PICKED',
   SHOW_CONFIRM_DELETE_TAG = 'DIALOG_SHOW_CONFIRM_DELETE_TAG',
-  SHOW_CONFIRM_ADD_TAG_TO_ASSETS = 'DIALOG_SHOW_CONFIRM_ADD_TAG_TO_ASSETS',
-  SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS = 'DIALOG_SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS',
   SHOW_DETAILS = 'DIALOG_SHOW_DETAILS',
   SHOW_SEARCH_FACETS = 'DIALOG_SHOW_SEARCH_FACETS',
   SHOW_TAG_CREATE = 'DIALOG_SHOW_TAG_CREATE',
@@ -96,7 +96,7 @@ export default function dialogReducer(
         break
       }
 
-      case DialogActionTypes.SHOW_CONFIRM_ADD_TAG_TO_ASSETS: {
+      case DialogActionTypes.SHOW_CONFIRM_ASSETS_TAG_ADD: {
         const {assetsPicked, closeDialogId, tag} = action.payload
 
         const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
@@ -178,7 +178,7 @@ export default function dialogReducer(
         break
       }
 
-      case DialogActionTypes.SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS: {
+      case DialogActionTypes.SHOW_CONFIRM_ASSETS_TAG_REMOVE: {
         const {assetsPicked, closeDialogId, tag} = action.payload
 
         const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
@@ -265,7 +265,7 @@ export const dialogRemove = (id: string): DialogRemoveAction => ({
   type: DialogActionTypes.REMOVE
 })
 
-export const dialogShowConfirmAddTagToAssets = ({
+export const dialogShowConfirmAssetsTagAdd = ({
   assetsPicked,
   closeDialogId,
   tag
@@ -273,13 +273,30 @@ export const dialogShowConfirmAddTagToAssets = ({
   assetsPicked: AssetItem[]
   closeDialogId?: string
   tag: Tag
-}): DialogShowConfirmAddTagToAssets => ({
+}): DialogShowConfirmAssetsTagAddAction => ({
   payload: {
     assetsPicked,
     closeDialogId,
     tag
   },
-  type: DialogActionTypes.SHOW_CONFIRM_ADD_TAG_TO_ASSETS
+  type: DialogActionTypes.SHOW_CONFIRM_ASSETS_TAG_ADD
+})
+
+export const dialogShowConfirmAssetsTagRemove = ({
+  assetsPicked,
+  closeDialogId,
+  tag
+}: {
+  assetsPicked: AssetItem[]
+  closeDialogId?: string
+  tag: Tag
+}): DialogShowConfirmAssetsTagRemoveAction => ({
+  payload: {
+    assetsPicked,
+    closeDialogId,
+    tag
+  },
+  type: DialogActionTypes.SHOW_CONFIRM_ASSETS_TAG_REMOVE
 })
 
 export const dialogShowConfirmDeleteAsset = ({
@@ -322,23 +339,6 @@ export const dialogShowConfirmDeleteTag = ({
     tag
   },
   type: DialogActionTypes.SHOW_CONFIRM_DELETE_TAG
-})
-
-export const dialogShowConfirmRemoveTagFromAssets = ({
-  assetsPicked,
-  closeDialogId,
-  tag
-}: {
-  assetsPicked: AssetItem[]
-  closeDialogId?: string
-  tag: Tag
-}): DialogShowConfirmRemoveTagFromAssets => ({
-  payload: {
-    assetsPicked,
-    closeDialogId,
-    tag
-  },
-  type: DialogActionTypes.SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS
 })
 
 /**

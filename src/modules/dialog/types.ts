@@ -29,13 +29,22 @@ export type DialogRemoveAction = {
   type: DialogActionTypes.REMOVE
 }
 
-export type DialogShowConfirmAddTagToAssets = {
+export type DialogShowConfirmAssetsTagAddAction = {
   payload: {
     assetsPicked: AssetItem[]
     closeDialogId?: string
     tag: Tag
   }
-  type: DialogActionTypes.SHOW_CONFIRM_ADD_TAG_TO_ASSETS
+  type: DialogActionTypes.SHOW_CONFIRM_ASSETS_TAG_ADD
+}
+
+export type DialogShowConfirmAssetsTagRemoveAction = {
+  payload: {
+    assetsPicked: AssetItem[]
+    closeDialogId?: string
+    tag: Tag
+  }
+  type: DialogActionTypes.SHOW_CONFIRM_ASSETS_TAG_REMOVE
 }
 
 export type DialogShowConfirmDeleteAssetAction = {
@@ -60,15 +69,6 @@ export type DialogShowConfirmDeleteTagAction = {
     tag: Tag
   }
   type: DialogActionTypes.SHOW_CONFIRM_DELETE_TAG
-}
-
-export type DialogShowConfirmRemoveTagFromAssets = {
-  payload: {
-    assetsPicked: AssetItem[]
-    closeDialogId?: string
-    tag: Tag
-  }
-  type: DialogActionTypes.SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS
 }
 
 export type DialogShowDetailsAction = {
@@ -104,11 +104,11 @@ export type DialogActions =
   | DialogAddCreatedTagAction
   | DialogClearAction
   | DialogRemoveAction
-  | DialogShowConfirmAddTagToAssets
+  | DialogShowConfirmAssetsTagAddAction
+  | DialogShowConfirmAssetsTagRemoveAction
   | DialogShowConfirmDeleteAssetAction
   | DialogShowConfirmDeleteAssetsPickedAction
   | DialogShowConfirmDeleteTagAction
-  | DialogShowConfirmRemoveTagFromAssets
   | DialogShowDetailsAction
   | DialogShowSearchFacetsAction
   | DialogShowTagCreateAction

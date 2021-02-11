@@ -5,7 +5,7 @@ import {useDispatch} from 'react-redux'
 
 import {ORDER_OPTIONS, ORDER_DICTIONARY} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsSetOrder} from '../../modules/assets'
+import {assetsOrderSet} from '../../modules/assets'
 
 const OrderSelect: FC = () => {
   // Redux
@@ -35,7 +35,7 @@ const OrderSelect: FC = () => {
                   fontSize={1}
                   key={index}
                   onClick={() => {
-                    dispatch(assetsSetOrder(item.field, item.direction))
+                    dispatch(assetsOrderSet(item.field, item.direction))
                   }}
                   padding={2}
                   text={ORDER_DICTIONARY[item.field][item.direction]}

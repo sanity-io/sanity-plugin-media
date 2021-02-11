@@ -9,9 +9,9 @@ import styled from 'styled-components'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {
-  dialogShowConfirmAddTagToAssets,
+  dialogShowConfirmAssetsTagAdd,
   dialogShowConfirmDeleteTag,
-  dialogShowConfirmRemoveTagFromAssets,
+  dialogShowConfirmAssetsTagRemove,
   dialogShowTagEdit
 } from '../../modules/dialog'
 import {
@@ -53,11 +53,11 @@ const Tag: FC<Props> = (props: Props) => {
   }
 
   const handleShowAddTagToAssetsDialog = () => {
-    dispatch(dialogShowConfirmAddTagToAssets({assetsPicked, tag: tag.tag}))
+    dispatch(dialogShowConfirmAssetsTagAdd({assetsPicked, tag: tag.tag}))
   }
 
   const handleShowRemoveTagFromAssetsDialog = () => {
-    dispatch(dialogShowConfirmRemoveTagFromAssets({assetsPicked, tag: tag.tag}))
+    dispatch(dialogShowConfirmAssetsTagRemove({assetsPicked, tag: tag.tag}))
   }
 
   const handleShowTagDeleteDialog = () => {

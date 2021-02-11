@@ -89,6 +89,11 @@ export type AssetsLoadPageIndexAction = {
   type: AssetsActionTypes.LOAD_PAGE_INDEX
 }
 
+export type AssetsOrderSetAction = {
+  payload: {order: Order}
+  type: AssetsActionTypes.ORDER_SET
+}
+
 export type AssetsPickAction = {
   payload: {
     assetId: string
@@ -111,16 +116,6 @@ export type AssetsPickRangeAction = {
     startId: string
   }
   type: AssetsActionTypes.PICK_RANGE
-}
-
-export type AssetsSetOrderAction = {
-  payload: {order: Order}
-  type: AssetsActionTypes.SET_ORDER
-}
-
-export type AssetsSetViewAction = {
-  payload: {view: BrowserView}
-  type: AssetsActionTypes.SET_VIEW
 }
 
 export type AssetsSortAction = {
@@ -182,6 +177,11 @@ export type AssetsUpdateRequestAction = {
   type: AssetsActionTypes.UPDATE_REQUEST
 }
 
+export type AssetsViewSetAction = {
+  payload: {view: BrowserView}
+  type: AssetsActionTypes.VIEW_SET
+}
+
 // All actions
 
 export type AssetsActions =
@@ -197,12 +197,11 @@ export type AssetsActions =
   | AssetsListenerUpdateAction
   | AssetsLoadNextPageAction
   | AssetsLoadPageIndexAction
+  | AssetsOrderSetAction
   | AssetsPickAction
   | AssetsPickAllAction
   | AssetsPickClearAction
   | AssetsPickRangeAction
-  | AssetsSetOrderAction
-  | AssetsSetViewAction
   | AssetsSortAction
   | AssetsTagsAddAction
   | AssetsTagsAddCompleteAction
@@ -213,3 +212,4 @@ export type AssetsActions =
   | AssetsUpdateCompleteAction
   | AssetsUpdateErrorAction
   | AssetsUpdateRequestAction
+  | AssetsViewSetAction

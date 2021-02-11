@@ -54,8 +54,8 @@ import {
   AssetsPickClearAction,
   AssetsPickRangeAction,
   AssetsReducerState,
-  AssetsSetOrderAction,
-  AssetsSetViewAction,
+  AssetsOrderSetAction,
+  AssetsViewSetAction,
   AssetsSortAction,
   AssetsUpdateCompleteAction,
   AssetsUpdateErrorAction,
@@ -82,13 +82,11 @@ export enum AssetsActionTypes {
   LISTENER_UPDATE = 'ASSETS_LISTENER_UPDATE',
   LOAD_NEXT_PAGE = 'ASSETS_LOAD_NEXT_PAGE',
   LOAD_PAGE_INDEX = 'ASSETS_LOAD_PAGE_INDEX',
+  ORDER_SET = 'ASSETS_ORDER_SET',
   PICK = 'ASSETS_PICK',
   PICK_ALL = 'ASSETS_PICK_ALL',
   PICK_CLEAR = 'ASSETS_PICK_CLEAR',
   PICK_RANGE = 'ASSETS_PICK_RANGE',
-  SET_ORDER = 'ASSETS_SET_ORDER',
-  SET_SEARCH_QUERY = 'ASSETS_SET_SEARCH_QUERY',
-  SET_VIEW = 'ASSETS_SET_VIEW',
   SORT = 'ASSETS_SORT',
   TAGS_ADD_COMPLETE = 'ASSETS_TAGS_ADD_COMPLETE',
   TAGS_ADD_ERROR = 'ASSETS_TAGS_ADD_ERROR',
@@ -98,7 +96,8 @@ export enum AssetsActionTypes {
   TAGS_REMOVE_REQUEST = 'ASSETS_TAGS_REMOVE_REQUEST',
   UPDATE_COMPLETE = 'ASSETS_UPDATE_COMPLETE',
   UPDATE_ERROR = 'ASSETS_UPDATE_ERROR',
-  UPDATE_REQUEST = 'ASSETS_UPDATE_REQUEST'
+  UPDATE_REQUEST = 'ASSETS_UPDATE_REQUEST',
+  VIEW_SET = 'ASSETS_SET_VIEW'
 }
 
 /***********
@@ -283,6 +282,11 @@ export default function assetsReducerState(
         draft.pageIndex += 1
         break
 
+      case AssetsActionTypes.ORDER_SET:
+        draft.order = action.payload?.order
+        draft.pageIndex = 0
+        break
+
       /**
        * An asset as 'picked' or 'checked' for batch operations.
        * (We don't use the word 'select' as that's reserved for the action of inserting an image into an entry).
@@ -333,13 +337,9 @@ export default function assetsReducerState(
         break
       }
 
-      case AssetsActionTypes.SET_ORDER:
-        draft.order = action.payload?.order
+      // TODO: should this be moved into an epic + extra action?
+      case SearchActionTypes.SEARCH_QUERY_SET:
         draft.pageIndex = 0
-        break
-
-      case AssetsActionTypes.SET_VIEW:
-        draft.view = action.payload?.view
         break
 
       case AssetsActionTypes.SORT:
@@ -425,9 +425,8 @@ export default function assetsReducerState(
         break
       }
 
-      // TODO: should this be moved into an epic + extra action?
-      case SearchActionTypes.SEARCH_QUERY_SET:
-        draft.pageIndex = 0
+      case AssetsActionTypes.VIEW_SET:
+        draft.view = action.payload?.view
         break
     }
   })
@@ -593,6 +592,12 @@ export const assetsLoadNextPage = (): AssetsLoadNextPageAction => ({
   type: AssetsActionTypes.LOAD_NEXT_PAGE
 })
 
+// Set order
+export const assetsOrderSet = (field: string, direction: OrderDirection): AssetsOrderSetAction => ({
+  payload: {order: {direction, field, title: ORDER_DICTIONARY[field][direction]}},
+  type: AssetsActionTypes.ORDER_SET
+})
+
 // Pick asset
 export const assetsPick = (assetId: string, picked: boolean): AssetsPickAction => ({
   payload: {assetId, picked},
@@ -616,15 +621,9 @@ export const assetsPickRange = (startId: string, endId: string): AssetsPickRange
 })
 
 // Set view mode
-export const assetsSetView = (view: BrowserView): AssetsSetViewAction => ({
+export const assetsSetView = (view: BrowserView): AssetsViewSetAction => ({
   payload: {view},
-  type: AssetsActionTypes.SET_VIEW
-})
-
-// Set order
-export const assetsSetOrder = (field: string, direction: OrderDirection): AssetsSetOrderAction => ({
-  payload: {order: {direction, field, title: ORDER_DICTIONARY[field][direction]}},
-  type: AssetsActionTypes.SET_ORDER
+  type: AssetsActionTypes.VIEW_SET
 })
 
 // Sort assets by current field + direction
@@ -958,6 +957,19 @@ export const assetsRemoveTagsEpic = (
 }
 
 /**
+ * Listen for order changes
+ * - clear assets
+ * - fetch first page
+ */
+export const assetsOrderSetEpic = (action$: Observable<AssetsActions>): Observable<AssetsActions> =>
+  action$.pipe(
+    filter(isOfType(AssetsActionTypes.ORDER_SET)),
+    switchMap(() => {
+      return of(assetsClear(), assetsLoadPageIndex(0))
+    })
+  )
+
+/**
  * Listen for search query + facet changes (debounced)
  * - clear assets
  * - fetch first page
@@ -976,19 +988,6 @@ export const assetsSearchEpic = (action$: Observable<AssetsActions>): Observable
       ])
     ),
     debounceTime(400),
-    switchMap(() => {
-      return of(assetsClear(), assetsLoadPageIndex(0))
-    })
-  )
-
-/**
- * Listen for order changes
- * - clear assets
- * - fetch first page
- */
-export const assetsSetOrderEpic = (action$: Observable<AssetsActions>): Observable<AssetsActions> =>
-  action$.pipe(
-    filter(isOfType(AssetsActionTypes.SET_ORDER)),
     switchMap(() => {
       return of(assetsClear(), assetsLoadPageIndex(0))
     })
@@ -1128,14 +1127,14 @@ export const assetsUnpickEpic = (action$: Observable<AssetsActions>): Observable
   action$.pipe(
     filter(
       isOfType([
-        AssetsActionTypes.SET_ORDER,
-        AssetsActionTypes.SET_VIEW,
+        AssetsActionTypes.ORDER_SET,
         SearchActionTypes.SEARCH_FACETS_TAG_ADD_OR_UPDATE,
         SearchActionTypes.SEARCH_FACETS_ADD,
         SearchActionTypes.SEARCH_FACETS_CLEAR,
         SearchActionTypes.SEARCH_FACETS_REMOVE,
         SearchActionTypes.SEARCH_FACETS_UPDATE,
-        SearchActionTypes.SEARCH_QUERY_SET
+        SearchActionTypes.SEARCH_QUERY_SET,
+        AssetsActionTypes.VIEW_SET
       ])
     ),
     switchMap(() => {
