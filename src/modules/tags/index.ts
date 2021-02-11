@@ -7,7 +7,7 @@ import client from 'part:@sanity/base/client'
 import {Selector} from 'react-redux'
 import {StateObservable} from 'redux-observable'
 import {Observable, from, of} from 'rxjs'
-import {catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
+import {bufferTime, catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
 import {isOfType} from 'typesafe-actions'
 
 import {TAG_DOCUMENT_NAME} from '../../constants'
@@ -681,6 +681,8 @@ export const tagsSortEpic = (action$: Observable<TagsActions>): Observable<TagsA
         TagsActionTypes.LISTENER_CREATE
       ])
     ),
+    bufferTime(1000),
+    filter(actions => actions.length > 0),
     switchMap(() => {
       return of(tagsSort())
     })

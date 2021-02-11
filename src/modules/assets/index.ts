@@ -17,6 +17,7 @@ import {Selector} from 'react-redux'
 import {StateObservable} from 'redux-observable'
 import {from, empty, of, Observable} from 'rxjs'
 import {
+  bufferTime,
   catchError,
   debounceTime,
   filter,
@@ -1005,6 +1006,8 @@ export const assetsSortEpic = (action$: Observable<AssetsActions>): Observable<A
         AssetsActionTypes.UPDATE_COMPLETE
       ])
     ),
+    bufferTime(1000),
+    filter(actions => actions.length > 0),
     switchMap(() => {
       return of(assetsSort())
     })
