@@ -214,7 +214,7 @@ export const notificationsGenericErrorEpic = (
   )
 
 /**
- * Listen for tag delete completions:
+ * Listen for tag creation:
  * - Display success notification
  */
 export const notificationsTagCreateCompleteEpic = (
@@ -235,4 +235,16 @@ export const notificationsTagDeleteCompleteEpic = (
   action$.pipe(
     filter(isOfType(TagsActionTypes.DELETE_COMPLETE)),
     mergeMap(() => of(notificationsAddSuccess({title: `Tag deleted`})))
+  )
+
+/**
+ * Listen for tag update completions:
+ * - Display success notification
+ */
+export const notificationsTagUpdateCompleteEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
+  action$.pipe(
+    filter(isOfType(TagsActionTypes.UPDATE_COMPLETE)),
+    mergeMap(() => of(notificationsAddSuccess({title: `Tag updated`})))
   )
