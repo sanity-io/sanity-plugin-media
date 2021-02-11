@@ -25,7 +25,7 @@ type Props = {
 const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
   background: ${hues.gray[950].hex};
   border: 1px solid transparent;
-  border-radius: 3px;
+  /* border-radius: 3px; */
   overflow: hidden;
   pointer-events: ${props => (props.updating ? 'none' : 'auto')};
   position: relative;

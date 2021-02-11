@@ -1,4 +1,5 @@
-import {Box} from '@sanity/ui'
+import {hues} from '@sanity/color'
+import {Box, Text} from '@sanity/ui'
 import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -10,6 +11,7 @@ import TagPanel from '../TagPanel'
 const TagsPicked: FC = () => {
   const assetsPicked = useTypedSelector(selectAssetsPicked)
   const tags = useTypedSelector(selectTags)
+  const fetching = useTypedSelector(state => state.tags.fetching)
 
   // TODO: refactor, there's most certainly a more performant way to do this
 
@@ -58,6 +60,15 @@ const TagsPicked: FC = () => {
   return (
     <Box>
       <PanelHeader allowCreate title="Tags in selection" />
+
+      {/* No tags */}
+      {!fetching && tags && tags.length === 0 && (
+        <Box padding={3}>
+          <Text size={1} style={{color: hues.gray[700].hex}}>
+            <em>No tags</em>
+          </Text>
+        </Box>
+      )}
 
       {tagsAppliedToAll?.length > 0 && (
         <TagPanel
