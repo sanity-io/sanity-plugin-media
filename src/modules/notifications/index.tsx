@@ -100,7 +100,7 @@ export const notificationsAddSuccess = ({
  * - Display success notification
  * - Buffer responses over 1000ms
  */
-export const notificationsAssetDeleteCompleteEpic = (
+export const notificationsAssetsDeleteCompleteEpic = (
   action$: Observable<AssetsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(
@@ -122,7 +122,7 @@ export const notificationsAssetDeleteCompleteEpic = (
  * - Display error notification
  * - Buffer responses over 1000ms
  */
-export const notificationsAssetDeleteErrorEpic = (
+export const notificationsAssetsDeleteErrorEpic = (
   action$: Observable<AssetsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(
@@ -130,11 +130,43 @@ export const notificationsAssetDeleteErrorEpic = (
     bufferTime(1000),
     filter(actions => actions.length > 0),
     mergeMap(actions => {
-      const errorCount = actions.length
+      const count = actions.length
       return of(
         // TODO: add error message if count === 1
         notificationsAddError({
-          title: `Unable to delete ${errorCount} ${pluralize('asset', errorCount)}`
+          title: `Unable to delete ${count} ${pluralize('asset', count)}`
+        })
+      )
+    })
+  )
+
+// Tags added to assets
+export const notificationsAssetsTagsAddCompleteEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
+  action$.pipe(
+    filter(isOfType(AssetsActionTypes.TAGS_ADD_COMPLETE)),
+    mergeMap(action => {
+      const count = action?.payload?.assets?.length
+      return of(
+        notificationsAddSuccess({
+          title: `Tag added to ${count} ${pluralize('asset', count)}`
+        })
+      )
+    })
+  )
+
+// Tags removed from assets
+export const notificationsAssetsTagsRemoveCompleteEpic = (
+  action$: Observable<AssetsActions>
+): Observable<NotificationsActions> =>
+  action$.pipe(
+    filter(isOfType(AssetsActionTypes.TAGS_REMOVE_COMPLETE)),
+    mergeMap(action => {
+      const count = action?.payload?.assets?.length
+      return of(
+        notificationsAddSuccess({
+          title: `Tag removed from ${count} ${pluralize('asset', count)}`
         })
       )
     })
@@ -144,7 +176,7 @@ export const notificationsAssetDeleteErrorEpic = (
  * Listen for successful asset updates:
  * - Display success notification
  */
-export const notificationsAssetUpdateCompleteEpic = (
+export const notificationsAssetsUpdateCompleteEpic = (
   action$: Observable<AssetsActions>
 ): Observable<NotificationsActions> =>
   action$.pipe(

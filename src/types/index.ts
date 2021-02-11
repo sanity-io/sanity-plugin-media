@@ -1,4 +1,5 @@
 import {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
+import {ReactNode} from 'react'
 import {AssetsActions} from '../modules/assets/types'
 import {TagsActions} from '../modules/tags/types'
 
@@ -63,9 +64,10 @@ export type DialogConfirm = {
   closeDialogId?: string
   confirmCallbackAction: AssetsActions | TagsActions
   confirmText: string
-  description: string
+  description?: ReactNode
+  headerTitle: string
   id: string
-  title: string
+  title: ReactNode
   tone: 'critical' | 'primary'
   type: 'confirm'
 }

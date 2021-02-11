@@ -1,8 +1,10 @@
 import produce from 'immer'
 import pluralize from 'pluralize'
+import React from 'react'
 import {empty, Observable, of} from 'rxjs'
 import {filter, mergeMap} from 'rxjs/operators'
 import {isOfType} from 'typesafe-actions'
+
 import {Asset, AssetItem, Tag} from '../../types'
 
 import {
@@ -106,9 +108,13 @@ export default function dialogReducer(
             tag
           }),
           confirmText: `Yes, add tag to ${suffix}`,
-          description: `Add tag "${tag.name.current}" to ${suffix}?`,
+          title: (
+            <span>
+              Add tag <span style={{fontWeight: 600}}>{tag.name.current}</span> to {suffix}?
+            </span>
+          ),
           id: 'confirm',
-          title: 'Confirm tag addition',
+          headerTitle: 'Confirm tag addition',
           tone: 'primary',
           type: 'confirm'
         })
@@ -124,9 +130,10 @@ export default function dialogReducer(
           closeDialogId,
           confirmCallbackAction: assetsDelete({asset}),
           confirmText: `Yes, delete ${suffix}`,
-          description: `Permanently delete ${suffix}?`,
+          description: 'This operation cannot be reversed. Are you sure you want to continue?',
+          title: `Permanently delete ${suffix}?`,
           id: 'confirm',
-          title: 'Confirm deletion',
+          headerTitle: 'Confirm deletion',
           tone: 'critical',
           type: 'confirm'
         })
@@ -142,9 +149,10 @@ export default function dialogReducer(
           closeDialogId,
           confirmCallbackAction: assetsDeletePicked(),
           confirmText: `Yes, delete ${suffix}`,
-          description: `Permanently delete ${suffix}?`,
+          description: 'This operation cannot be reversed. Are you sure you want to continue?',
+          title: `Permanently delete ${suffix}?`,
           id: 'confirm',
-          title: 'Confirm deletion',
+          headerTitle: 'Confirm deletion',
           tone: 'critical',
           type: 'confirm'
         })
@@ -160,9 +168,10 @@ export default function dialogReducer(
           closeDialogId,
           confirmCallbackAction: tagsDelete(tag),
           confirmText: `Yes, delete ${suffix}`,
-          description: `Permanently delete ${suffix}?`,
+          description: 'This operation cannot be reversed. Are you sure you want to continue?',
+          title: `Permanently delete ${suffix}?`,
           id: 'confirm',
-          title: 'Confirm deletion',
+          headerTitle: 'Confirm deletion',
           tone: 'critical',
           type: 'confirm'
         })
@@ -178,9 +187,13 @@ export default function dialogReducer(
           closeDialogId,
           confirmCallbackAction: assetsTagsRemove({assets: assetsPicked, tag}),
           confirmText: `Yes, remove tag from ${suffix}`,
-          description: `Remove tag "${tag.name.current}" from ${suffix}?`,
+          headerTitle: 'Confirm tag removal',
           id: 'confirm',
-          title: 'Confirm tag removal',
+          title: (
+            <span>
+              Remove tag <span style={{fontWeight: 600}}>{tag.name.current}</span> from {suffix}?
+            </span>
+          ),
           tone: 'primary',
           type: 'confirm'
         })

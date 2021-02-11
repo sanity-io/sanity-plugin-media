@@ -55,7 +55,7 @@ const DialogConfirm: FC<Props> = (props: Props) => {
       <Box paddingX={1}>
         <WarningOutlineIcon />
       </Box>
-      <Box marginLeft={2}>{dialog?.title}</Box>
+      <Box marginLeft={2}>{dialog?.headerTitle}</Box>
     </Flex>
   )
 
@@ -70,10 +70,12 @@ const DialogConfirm: FC<Props> = (props: Props) => {
     >
       <Box paddingX={4} paddingY={4}>
         <Stack space={3}>
-          {dialog?.description && <Text size={1}>{dialog.description}</Text>}
-          <Text muted size={1}>
-            <em>This operation cannot be reversed. Are you sure you want to continue?</em>
-          </Text>
+          {dialog?.title && <Text size={1}>{dialog.title}</Text>}
+          {dialog?.description && (
+            <Text muted size={1}>
+              <em>{dialog.description}</em>
+            </Text>
+          )}
         </Stack>
       </Box>
 

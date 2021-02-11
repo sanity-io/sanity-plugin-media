@@ -20,10 +20,12 @@ import dialog, {dialogClearOnAssetUpdateEpic, dialogTagCreateEpic} from './dialo
 import document from './document'
 import selectedAssets from './selectedAssets'
 import notifications, {
-  notificationsAssetDeleteErrorEpic,
+  notificationsAssetsDeleteErrorEpic,
+  notificationsAssetsDeleteCompleteEpic,
+  notificationsAssetsTagsAddCompleteEpic,
+  notificationsAssetsTagsRemoveCompleteEpic,
+  notificationsAssetsUpdateCompleteEpic,
   notificationsGenericErrorEpic,
-  notificationsAssetDeleteCompleteEpic,
-  notificationsAssetUpdateCompleteEpic,
   notificationsTagCreateCompleteEpic,
   notificationsTagDeleteCompleteEpic
 } from './notifications'
@@ -51,10 +53,12 @@ export const rootEpic = combineEpics(
   assetsUpdateEpic,
   dialogClearOnAssetUpdateEpic,
   dialogTagCreateEpic,
-  notificationsAssetDeleteErrorEpic,
+  notificationsAssetsDeleteErrorEpic,
+  notificationsAssetsDeleteCompleteEpic,
+  notificationsAssetsTagsAddCompleteEpic,
+  notificationsAssetsTagsRemoveCompleteEpic,
+  notificationsAssetsUpdateCompleteEpic,
   notificationsGenericErrorEpic,
-  notificationsAssetDeleteCompleteEpic,
-  notificationsAssetUpdateCompleteEpic,
   notificationsTagCreateCompleteEpic,
   notificationsTagDeleteCompleteEpic,
   searchFacetTagUpdateEpic,
