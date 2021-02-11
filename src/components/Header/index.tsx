@@ -40,7 +40,7 @@ const Header: FC<Props> = (props: Props) => {
 
         <Flex marginX={2}>
           <Button
-            // disabled={true}
+            disabled={true}
             fontSize={1}
             icon={UploadIcon}
             mode="bleed"
@@ -49,8 +49,8 @@ const Header: FC<Props> = (props: Props) => {
           />
 
           {/* Close */}
-          <Box marginLeft={1} style={{flexShrink: 0}}>
-            {onClose && (
+          {onClose && (
+            <Box style={{flexShrink: 0}}>
               <Button
                 disabled={!onClose}
                 icon={CloseIcon}
@@ -58,8 +58,8 @@ const Header: FC<Props> = (props: Props) => {
                 onClick={onClose}
                 radius={2}
               />
-            )}
-          </Box>
+            </Box>
+          )}
         </Flex>
       </Flex>
     </Box>

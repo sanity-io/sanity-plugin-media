@@ -214,27 +214,27 @@ const TableRow = (props: Props) => {
               <Spinner />
             </Flex>
           )}
-        </Flex>
 
-        {/* Selected check icon */}
-        {selected && !updating && (
-          <Flex
-            align="center"
-            justify="center"
-            style={{
-              height: '100%',
-              left: 0,
-              opacity: opacityCell,
-              position: 'absolute',
-              top: 0,
-              width: '100%'
-            }}
-          >
-            <Text size={2}>
-              <CheckmarkCircleIcon />
-            </Text>
-          </Flex>
-        )}
+          {/* Selected check icon */}
+          {selected && !updating && (
+            <Flex
+              align="center"
+              justify="center"
+              style={{
+                height: '100%',
+                left: 0,
+                opacity: opacityCell,
+                position: 'absolute',
+                top: 0,
+                width: '100%'
+              }}
+            >
+              <Text size={2}>
+                <CheckmarkCircleIcon />
+              </Text>
+            </Flex>
+          )}
+        </Flex>
       </LegacyBox>
 
       {/* Filename */}

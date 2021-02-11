@@ -611,7 +611,7 @@ export const tagsDeleteEpic = (
         mergeMap(() => {
           return from(
             client.fetch(
-              `*[
+              groq`*[
                 _type in ["sanity.fileAsset", "sanity.imageAsset"]
                 && references(*[_type == "media.tag" && name.current == $tagName]._id)
               ] {

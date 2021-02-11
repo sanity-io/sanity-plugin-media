@@ -1,4 +1,5 @@
 import {HttpError} from '@types'
+import groq from 'groq'
 import client from 'part:@sanity/base/client'
 import {from, Observable, of, throwError} from 'rxjs'
 import {mergeMap} from 'rxjs/operators'
@@ -10,7 +11,7 @@ const checkTagName = (name: string) => {
     return source.pipe(
       mergeMap(() => {
         return from(
-          client.fetch(`count(*[_type == "${TAG_DOCUMENT_NAME}" && name.current == $name])`, {
+          client.fetch(groq`count(*[_type == "${TAG_DOCUMENT_NAME}" && name.current == $name])`, {
             name
           })
         ) as Observable<number>

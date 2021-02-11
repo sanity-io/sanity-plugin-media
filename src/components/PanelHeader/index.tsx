@@ -66,7 +66,6 @@ const PanelHeader: FC<Props> = (props: Props) => {
               background: 'transparent',
               boxShadow: 'none'
             }}
-            tone="primary"
           />
         )}
       </Flex>
