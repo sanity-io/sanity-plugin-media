@@ -1,11 +1,19 @@
 import produce from 'immer'
+import pluralize from 'pluralize'
 import {empty, Observable, of} from 'rxjs'
 import {filter, mergeMap} from 'rxjs/operators'
 import {isOfType} from 'typesafe-actions'
+import {Asset, AssetItem, Tag} from '../../types'
 
-import {AssetsActionTypes} from '../assets'
+import {
+  AssetsActionTypes,
+  assetsTagsAdd,
+  assetsDelete,
+  assetsDeletePicked,
+  assetsTagsRemove
+} from '../assets'
 import {AssetsActions} from '../assets/types'
-import {TagsActionTypes} from '../tags'
+import {TagsActionTypes, tagsDelete} from '../tags'
 import {TagsActions} from '../tags/types'
 import {
   DialogAddCreatedTagAction,
@@ -13,7 +21,11 @@ import {
   DialogClearAction,
   DialogReducerState,
   DialogRemoveAction,
-  DialogShowDeleteConfirmAction,
+  DialogShowConfirmAddTagToAssets,
+  DialogShowConfirmDeleteAssetAction,
+  DialogShowConfirmDeleteAssetsPickedAction,
+  DialogShowConfirmDeleteTagAction,
+  DialogShowConfirmRemoveTagFromAssets,
   DialogShowDetailsAction,
   DialogShowSearchFacetsAction,
   DialogShowTagCreateAction,
@@ -28,8 +40,13 @@ import {
 export enum DialogActionTypes {
   ADD_CREATED_TAG = 'DIALOG_ADD_CREATED_TAG',
   CLEAR = 'DIALOG_CLEAR',
+  CONFIRM = 'DIALOG_CONFIRM',
   REMOVE = 'DIALOG_REMOVE',
-  SHOW_DELETE_CONFIRM = 'DIALOG_SHOW_DELETE_CONFIRM',
+  SHOW_CONFIRM_DELETE_ASSET = 'DIALOG_SHOW_CONFIRM_DELETE_ASSET',
+  SHOW_CONFIRM_DELETE_ASSETS_PICKED = 'DIALOG_SHOW_CONFIRM_DELETE_ASSETS_PICKED',
+  SHOW_CONFIRM_DELETE_TAG = 'DIALOG_SHOW_CONFIRM_DELETE_TAG',
+  SHOW_CONFIRM_ADD_TAG_TO_ASSETS = 'DIALOG_SHOW_CONFIRM_ADD_TAG_TO_ASSETS',
+  SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS = 'DIALOG_SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS',
   SHOW_DETAILS = 'DIALOG_SHOW_DETAILS',
   SHOW_SEARCH_FACETS = 'DIALOG_SHOW_SEARCH_FACETS',
   SHOW_TAG_CREATE = 'DIALOG_SHOW_TAG_CREATE',
@@ -76,17 +93,100 @@ export default function dialogReducer(
         })
         break
       }
-      case DialogActionTypes.SHOW_DELETE_CONFIRM: {
-        const {closeDialogId, documentId, documentType} = action.payload
+
+      case DialogActionTypes.SHOW_CONFIRM_ADD_TAG_TO_ASSETS: {
+        const {assetsPicked, closeDialogId, tag} = action.payload
+
+        const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
+
         draft.items.push({
           closeDialogId,
-          documentId,
-          documentType,
-          id: 'deleteConfirm',
-          type: 'deleteConfirm'
+          confirmCallbackAction: assetsTagsAdd({
+            assets: assetsPicked,
+            tag
+          }),
+          confirmText: `Yes, add tag to ${suffix}`,
+          description: `Add tag "${tag.name.current}" to ${suffix}?`,
+          id: 'confirm',
+          title: 'Confirm tag addition',
+          tone: 'primary',
+          type: 'confirm'
         })
         break
       }
+
+      case DialogActionTypes.SHOW_CONFIRM_DELETE_ASSET: {
+        const {asset, closeDialogId} = action.payload
+
+        const suffix = 'asset'
+
+        draft.items.push({
+          closeDialogId,
+          confirmCallbackAction: assetsDelete({asset}),
+          confirmText: `Yes, delete ${suffix}`,
+          description: `Permanently delete ${suffix}?`,
+          id: 'confirm',
+          title: 'Confirm deletion',
+          tone: 'critical',
+          type: 'confirm'
+        })
+        break
+      }
+
+      case DialogActionTypes.SHOW_CONFIRM_DELETE_ASSETS_PICKED: {
+        const {assetsPicked, closeDialogId} = action.payload
+
+        const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
+
+        draft.items.push({
+          closeDialogId,
+          confirmCallbackAction: assetsDeletePicked(),
+          confirmText: `Yes, delete ${suffix}`,
+          description: `Permanently delete ${suffix}?`,
+          id: 'confirm',
+          title: 'Confirm deletion',
+          tone: 'critical',
+          type: 'confirm'
+        })
+        break
+      }
+
+      case DialogActionTypes.SHOW_CONFIRM_DELETE_TAG: {
+        const {closeDialogId, tag} = action.payload
+
+        const suffix = 'tag'
+
+        draft.items.push({
+          closeDialogId,
+          confirmCallbackAction: tagsDelete(tag),
+          confirmText: `Yes, delete ${suffix}`,
+          description: `Permanently delete ${suffix}?`,
+          id: 'confirm',
+          title: 'Confirm deletion',
+          tone: 'critical',
+          type: 'confirm'
+        })
+        break
+      }
+
+      case DialogActionTypes.SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS: {
+        const {assetsPicked, closeDialogId, tag} = action.payload
+
+        const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
+
+        draft.items.push({
+          closeDialogId,
+          confirmCallbackAction: assetsTagsRemove({assets: assetsPicked, tag}),
+          confirmText: `Yes, remove tag from ${suffix}`,
+          description: `Remove tag "${tag.name.current}" from ${suffix}?`,
+          id: 'confirm',
+          title: 'Confirm tag removal',
+          tone: 'primary',
+          type: 'confirm'
+        })
+        break
+      }
+
       case DialogActionTypes.SHOW_SEARCH_FACETS:
         draft.items.push({
           id: 'searchFacets',
@@ -152,24 +252,80 @@ export const dialogRemove = (id: string): DialogRemoveAction => ({
   type: DialogActionTypes.REMOVE
 })
 
-/**
- * Display asset delete confirmation
- */
-export const dialogShowDeleteConfirm = ({
+export const dialogShowConfirmAddTagToAssets = ({
+  assetsPicked,
   closeDialogId,
-  documentId,
-  documentType
+  tag
+}: {
+  assetsPicked: AssetItem[]
+  closeDialogId?: string
+  tag: Tag
+}): DialogShowConfirmAddTagToAssets => ({
+  payload: {
+    assetsPicked,
+    closeDialogId,
+    tag
+  },
+  type: DialogActionTypes.SHOW_CONFIRM_ADD_TAG_TO_ASSETS
+})
+
+export const dialogShowConfirmDeleteAsset = ({
+  asset,
+  closeDialogId
+}: {
+  asset: Asset
+  closeDialogId?: string
+}): DialogShowConfirmDeleteAssetAction => ({
+  payload: {
+    asset,
+    closeDialogId
+  },
+  type: DialogActionTypes.SHOW_CONFIRM_DELETE_ASSET
+})
+
+export const dialogShowConfirmDeleteAssetsPicked = ({
+  assetsPicked,
+  closeDialogId
+}: {
+  assetsPicked: AssetItem[]
+  closeDialogId?: string
+}): DialogShowConfirmDeleteAssetsPickedAction => ({
+  payload: {
+    assetsPicked,
+    closeDialogId
+  },
+  type: DialogActionTypes.SHOW_CONFIRM_DELETE_ASSETS_PICKED
+})
+
+export const dialogShowConfirmDeleteTag = ({
+  closeDialogId,
+  tag
 }: {
   closeDialogId?: string
-  documentId?: string
-  documentType: 'asset' | 'tag'
-}): DialogShowDeleteConfirmAction => ({
+  tag: Tag
+}): DialogShowConfirmDeleteTagAction => ({
   payload: {
     closeDialogId,
-    documentId,
-    documentType
+    tag
   },
-  type: DialogActionTypes.SHOW_DELETE_CONFIRM
+  type: DialogActionTypes.SHOW_CONFIRM_DELETE_TAG
+})
+
+export const dialogShowConfirmRemoveTagFromAssets = ({
+  assetsPicked,
+  closeDialogId,
+  tag
+}: {
+  assetsPicked: AssetItem[]
+  closeDialogId?: string
+  tag: Tag
+}): DialogShowConfirmRemoveTagFromAssets => ({
+  payload: {
+    assetsPicked,
+    closeDialogId,
+    tag
+  },
+  type: DialogActionTypes.SHOW_CONFIRM_REMOVE_TAG_FROM_ASSETS
 })
 
 /**

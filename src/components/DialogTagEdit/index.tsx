@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
+import {dialogRemove, dialogShowConfirmDeleteTag} from '../../modules/dialog'
 import {selectTagById, tagsUpdate} from '../../modules/tags'
 import sanitizeFormData from '../../utils/sanitizeFormData'
 import FormFieldInputText from '../FormFieldInputText'
@@ -84,10 +84,9 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     }
 
     dispatch(
-      dialogShowDeleteConfirm({
+      dialogShowConfirmDeleteTag({
         closeDialogId: tagItem?.tag?._id,
-        documentId: tagItem?.tag?._id,
-        documentType: 'tag'
+        tag: tagItem?.tag
       })
     )
   }

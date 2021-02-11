@@ -4,6 +4,7 @@ import {Asset, HttpError, ReactSelectOption, Tag, TagItem} from '@types'
 import groq from 'groq'
 import produce from 'immer'
 import client from 'part:@sanity/base/client'
+import {Selector} from 'react-redux'
 import {StateObservable} from 'redux-observable'
 import {Observable, from, of} from 'rxjs'
 import {catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
@@ -34,16 +35,18 @@ import {
 import debugThrottle from '../../operators/debugThrottle'
 import {RootReducerState} from '../types'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
-import {Selector} from 'react-redux'
 import {DialogActions} from '../dialog/types'
 import {DialogActionTypes} from '../dialog'
 import checkTagName from '../../operators/checkTagName'
+import {AssetsActionTypes} from '../assets'
+import {AssetsActions} from '../assets/types'
 
 /***********
  * ACTIONS *
  ***********/
 
 export enum TagsActionTypes {
+  // REMOVE_FROM_ASSETS = 'TAGS_REMOVE_FROM_ASSETS',
   CREATE_COMPLETE = 'TAGS_CREATE_COMPLETE',
   CREATE_ERROR = 'TAGS_CREATE_ERROR',
   CREATE_REQUEST = 'TAGS_CREATE_REQUEST',
@@ -85,11 +88,32 @@ export const initialState: TagsReducerState = {
 
 export default function tagsReducerState(
   state: TagsReducerState = initialState,
-  action: DialogActions | TagsActions
+  action: AssetsActions | DialogActions | TagsActions
 ): TagsReducerState {
   return produce(state, draft => {
     // eslint-disable-next-line default-case
     switch (action.type) {
+      case AssetsActionTypes.TAGS_ADD_COMPLETE:
+      case AssetsActionTypes.TAGS_REMOVE_COMPLETE: {
+        const {tag} = action.payload
+        draft.byIds[tag._id].updating = false
+        break
+      }
+
+      case AssetsActionTypes.TAGS_ADD_ERROR:
+      case AssetsActionTypes.TAGS_REMOVE_ERROR: {
+        const {tag} = action.payload
+        draft.byIds[tag._id].updating = false
+        break
+      }
+
+      case AssetsActionTypes.TAGS_ADD_REQUEST:
+      case AssetsActionTypes.TAGS_REMOVE_REQUEST: {
+        const {tag} = action.payload
+        draft.byIds[tag._id].updating = true
+        break
+      }
+
       // Create tag creation errors when tag create form is displayed
       case DialogActionTypes.SHOW_TAG_CREATE:
         delete draft.creatingError
@@ -722,8 +746,10 @@ export const tagsUpdateEpic = (
 
 const selectTagsByIds = (state: RootReducerState) => state.tags.byIds
 
+const selectTagsAllIds = (state: RootReducerState) => state.tags.allIds
+
 export const selectTags: Selector<RootReducerState, TagItem[]> = createSelector(
-  [selectTagsByIds, state => state.tags.allIds],
+  [selectTagsByIds, selectTagsAllIds],
   (byIds, allIds) => allIds.map(id => byIds[id])
 )
 
@@ -732,6 +758,7 @@ export const selectTagById = createSelector(
   (byIds, tagId) => byIds[tagId]
 )
 
+// TODO: use createSelector
 // Map tag references to react-select options, skipping over items with no linked tags
 export const selectTagSelectOptions = (asset?: Asset) => (
   state: RootReducerState

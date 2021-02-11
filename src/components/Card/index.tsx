@@ -90,7 +90,7 @@ const Card = (props: Props) => {
   }
 
   // Callbacks
-  const handleAssetClick = (e: MouseEvent) => {
+  const handleAssetClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
 
     if (currentDocument) {

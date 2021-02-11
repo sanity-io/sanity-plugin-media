@@ -1,4 +1,4 @@
-import {Asset, BrowserView, AssetItem, HttpError, Order} from '@types'
+import {Asset, BrowserView, AssetItem, HttpError, Order, Tag} from '@types'
 
 import {AssetsActionTypes} from './index'
 
@@ -127,6 +127,36 @@ export type AssetsSortAction = {
   type: AssetsActionTypes.SORT
 }
 
+export type AssetsTagsAddAction = {
+  payload: {assets: AssetItem[]; tag: Tag}
+  type: AssetsActionTypes.TAGS_ADD_REQUEST
+}
+
+export type AssetsTagsAddCompleteAction = {
+  payload: {assets: AssetItem[]; tag: Tag}
+  type: AssetsActionTypes.TAGS_ADD_COMPLETE
+}
+
+export type AssetsTagsAddErrorAction = {
+  payload: {assets: AssetItem[]; error: HttpError; tag: Tag}
+  type: AssetsActionTypes.TAGS_ADD_ERROR
+}
+
+export type AssetsTagsRemoveAction = {
+  payload: {assets: AssetItem[]; tag: Tag}
+  type: AssetsActionTypes.TAGS_REMOVE_REQUEST
+}
+
+export type AssetsTagsRemoveCompleteAction = {
+  payload: {assets: AssetItem[]; tag: Tag}
+  type: AssetsActionTypes.TAGS_REMOVE_COMPLETE
+}
+
+export type AssetsTagsRemoveErrorAction = {
+  payload: {assets: AssetItem[]; error: HttpError; tag: Tag}
+  type: AssetsActionTypes.TAGS_REMOVE_ERROR
+}
+
 export type AssetsUpdateCompleteAction = {
   payload: {
     assetId: string
@@ -158,6 +188,7 @@ export type AssetsActions =
   | AssetsClearAction
   | AssetsDeleteCompleteAction
   | AssetsDeleteErrorAction
+  | AssetsDeletePickedAction
   | AssetsDeleteRequestAction
   | AssetsFetchCompleteAction
   | AssetsFetchErrorAction
@@ -173,6 +204,12 @@ export type AssetsActions =
   | AssetsSetOrderAction
   | AssetsSetViewAction
   | AssetsSortAction
+  | AssetsTagsAddAction
+  | AssetsTagsAddCompleteAction
+  | AssetsTagsAddErrorAction
+  | AssetsTagsRemoveAction
+  | AssetsTagsRemoveCompleteAction
+  | AssetsTagsRemoveErrorAction
   | AssetsUpdateCompleteAction
   | AssetsUpdateErrorAction
   | AssetsUpdateRequestAction

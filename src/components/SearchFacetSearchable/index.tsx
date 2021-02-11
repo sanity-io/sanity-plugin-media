@@ -84,7 +84,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
 
       {/* Value */}
       {!SEARCH_FACET_OPERATORS[selectedOperatorType].hideInput && (
-        <Box marginX={1} style={{width: '140px'}}>
+        <Box marginX={1} style={{width: '160px'}}>
           <Select
             components={reactSelectComponents}
             instanceId="facet-searchable"

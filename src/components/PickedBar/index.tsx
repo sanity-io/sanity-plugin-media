@@ -5,7 +5,7 @@ import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {dialogShowDeleteConfirm} from '../../modules/dialog'
+import {dialogShowConfirmDeleteAssetsPicked} from '../../modules/dialog'
 import {assetsPickClear, selectAssetsPicked} from '../../modules/assets'
 
 const Container = styled(Box)(({theme}) => {
@@ -19,7 +19,7 @@ const Container = styled(Box)(({theme}) => {
 const PickedBar: FC = () => {
   // Redux
   const dispatch = useDispatch()
-  const picked = useTypedSelector(selectAssetsPicked)
+  const assetsPicked = useTypedSelector(selectAssetsPicked)
 
   // Callbacks
   const handlePickClear = () => {
@@ -27,14 +27,10 @@ const PickedBar: FC = () => {
   }
 
   const handleDeletePicked = () => {
-    dispatch(
-      dialogShowDeleteConfirm({
-        documentType: 'asset'
-      })
-    )
+    dispatch(dialogShowConfirmDeleteAssetsPicked({assetsPicked}))
   }
 
-  if (picked.length === 0) {
+  if (assetsPicked.length === 0) {
     return null
   }
 
@@ -44,25 +40,18 @@ const PickedBar: FC = () => {
         <Inline space={1}>
           <Box marginRight={2}>
             <Text size={1}>
-              {picked.length} {pluralize('asset', picked.length)} selected
+              {assetsPicked.length} {pluralize('asset', assetsPicked.length)} selected
             </Text>
           </Box>
 
           {/* Deselect button */}
-          <Button
-            fontSize={1}
-            mode="bleed"
-            onClick={handlePickClear}
-            // padding={2}
-            text="Deselect"
-          />
+          <Button fontSize={1} mode="bleed" onClick={handlePickClear} text="Deselect" />
 
           {/* Delete button */}
           <Button
             fontSize={1}
             mode="bleed"
             onClick={handleDeletePicked}
-            // padding={2}
             text="Delete"
             tone="critical"
           />

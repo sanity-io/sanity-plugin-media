@@ -85,7 +85,7 @@ const TableRow = (props: Props) => {
   }
 
   // Callbacks
-  const handleContextActionClick = (e: MouseEvent) => {
+  const handleContextActionClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
 
     if (currentDocument) {
@@ -99,7 +99,7 @@ const TableRow = (props: Props) => {
     }
   }
 
-  const handleClick = (e: MouseEvent) => {
+  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
 
     if (currentDocument) {

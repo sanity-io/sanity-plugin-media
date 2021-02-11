@@ -47,7 +47,7 @@ const TextInputSearch: FC = () => {
             right: 0,
             top: 0,
             width: '2em',
-            zIndex: 1 // TODO: try to avoid manually setting z-indices
+            zIndex: 1 // force stacking context
           }}
         >
           <CloseIcon />

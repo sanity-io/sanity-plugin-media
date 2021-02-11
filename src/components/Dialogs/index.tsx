@@ -2,7 +2,7 @@ import {Dialog} from '@types'
 import React, {FC} from 'react'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import DialogDeleteConfirm from '../DialogDeleteConfirm'
+import DialogConfirm from '../DialogConfirm'
 import DialogAssetEdit from '../DialogAssetEdit'
 import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
@@ -29,11 +29,11 @@ const Dialogs: FC = () => {
       )
     }
 
-    if (dialog.type === 'deleteConfirm') {
+    if (dialog.type === 'confirm') {
       return (
-        <DialogDeleteConfirm dialog={dialog} key={index}>
+        <DialogConfirm dialog={dialog} key={index}>
           {childDialogs}
-        </DialogDeleteConfirm>
+        </DialogConfirm>
       )
     }
 

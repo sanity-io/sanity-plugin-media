@@ -1,16 +1,19 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {ClientError} from '@sanity/client'
+import {ClientError, Patch, Transaction} from '@sanity/client'
 import {
   Asset,
   AssetItem,
   BrowserView,
   HttpError,
   OrderDirection,
-  SearchFacetInputProps
+  SearchFacetInputProps,
+  Tag
 } from '@types'
 import groq from 'groq'
 import produce from 'immer'
+import {nanoid} from 'nanoid'
 import client from 'part:@sanity/base/client'
+import {Selector} from 'react-redux'
 import {StateObservable} from 'redux-observable'
 import {from, empty, of, Observable} from 'rxjs'
 import {
@@ -28,6 +31,12 @@ import {ORDER_OPTIONS, ORDER_DICTIONARY, SEARCH_FACET_OPERATORS} from '../../con
 import debugThrottle from '../../operators/debugThrottle'
 import {
   AssetsActions,
+  AssetsTagsAddAction,
+  AssetsTagsAddCompleteAction,
+  AssetsTagsAddErrorAction,
+  AssetsTagsRemoveAction,
+  AssetsTagsRemoveCompleteAction,
+  AssetsTagsRemoveErrorAction,
   AssetsClearAction,
   AssetsDeleteCompleteAction,
   AssetsDeleteErrorAction,
@@ -81,6 +90,12 @@ export enum AssetsActionTypes {
   SET_SEARCH_QUERY = 'ASSETS_SET_SEARCH_QUERY',
   SET_VIEW = 'ASSETS_SET_VIEW',
   SORT = 'ASSETS_SORT',
+  TAGS_ADD_COMPLETE = 'ASSETS_TAGS_ADD_COMPLETE',
+  TAGS_ADD_ERROR = 'ASSETS_TAGS_ADD_ERROR',
+  TAGS_ADD_REQUEST = 'ASSETS_TAGS_ADD_REQUEST',
+  TAGS_REMOVE_COMPLETE = 'ASSETS_TAGS_REMOVE_COMPLETE',
+  TAGS_REMOVE_ERROR = 'ASSETS_TAGS_REMOVE_ERROR',
+  TAGS_REMOVE_REQUEST = 'ASSETS_TAGS_REMOVE_REQUEST',
   UPDATE_COMPLETE = 'ASSETS_UPDATE_COMPLETE',
   UPDATE_ERROR = 'ASSETS_UPDATE_ERROR',
   UPDATE_REQUEST = 'ASSETS_UPDATE_REQUEST'
@@ -174,6 +189,7 @@ export default function assetsReducerState(
         draft.byIds[assetId].updating = false
         break
       }
+
       /**
        * A request to delete an asset has been made (and not yet completed).
        * - Set updating and clear picked status on target asset.
@@ -190,6 +206,7 @@ export default function assetsReducerState(
 
         break
       }
+
       /**
        * A request to fetch assets has succeeded.
        * - Add all fetched assets as normalised objects, and store asset IDs in a separate ordered array.
@@ -215,6 +232,7 @@ export default function assetsReducerState(
         // draft.totalCount = totalCount
         break
       }
+
       /**
        * A request to fetch assets has failed.
        * - Clear fetching status
@@ -286,6 +304,7 @@ export default function assetsReducerState(
           draft.byIds[id].picked = true
         })
         break
+
       /**
        * All (visible) assets have been unpicked.
        */
@@ -295,6 +314,7 @@ export default function assetsReducerState(
           draft.byIds[asset.asset._id].picked = false
         })
         break
+
       /**
        * A range of assets have been picked.
        */
@@ -336,6 +356,39 @@ export default function assetsReducerState(
           }
         })
         break
+
+      case AssetsActionTypes.TAGS_ADD_COMPLETE:
+      case AssetsActionTypes.TAGS_REMOVE_COMPLETE: {
+        // Mark assets as no longer updating
+        const {assets} = action.payload
+
+        assets.forEach(asset => {
+          draft.byIds[asset.asset._id].updating = false
+        })
+        break
+      }
+
+      case AssetsActionTypes.TAGS_ADD_ERROR:
+      case AssetsActionTypes.TAGS_REMOVE_ERROR: {
+        // Mark assets as no longer updating
+        const {assets} = action.payload
+
+        assets.forEach(asset => {
+          draft.byIds[asset.asset._id].updating = false
+        })
+        break
+      }
+
+      case AssetsActionTypes.TAGS_ADD_REQUEST:
+      case AssetsActionTypes.TAGS_REMOVE_REQUEST: {
+        // Mark assets as updating
+        const {assets} = action.payload
+
+        assets.forEach(asset => {
+          draft.byIds[asset.asset._id].updating = true
+        })
+        break
+      }
 
       /**
        * An asset has been successfully updated via the client.
@@ -579,6 +632,76 @@ export const assetsSort = (): AssetsSortAction => ({
   type: AssetsActionTypes.SORT
 })
 
+export const assetsTagsAdd = ({
+  assets,
+  tag
+}: {
+  assets: AssetItem[]
+  tag: Tag
+}): AssetsTagsAddAction => ({
+  payload: {assets, tag},
+  type: AssetsActionTypes.TAGS_ADD_REQUEST
+})
+
+export const assetsTagsAddComplete = ({
+  assets,
+  tag
+}: {
+  assets: AssetItem[]
+  tag: Tag
+}): AssetsTagsAddCompleteAction => ({
+  payload: {assets, tag},
+  type: AssetsActionTypes.TAGS_ADD_COMPLETE
+})
+
+export const assetsTagsAddError = ({
+  assets,
+  error,
+  tag
+}: {
+  assets: AssetItem[]
+  error: HttpError
+  tag: Tag
+}): AssetsTagsAddErrorAction => ({
+  payload: {assets, error, tag},
+  type: AssetsActionTypes.TAGS_ADD_ERROR
+})
+
+export const assetsTagsRemove = ({
+  assets,
+  tag
+}: {
+  assets: AssetItem[]
+  tag: Tag
+}): AssetsTagsRemoveAction => ({
+  payload: {assets, tag},
+  type: AssetsActionTypes.TAGS_REMOVE_REQUEST
+})
+
+export const assetsTagsRemoveComplete = ({
+  assets,
+  tag
+}: {
+  assets: AssetItem[]
+  tag: Tag
+}): AssetsTagsRemoveCompleteAction => ({
+  payload: {assets, tag},
+  type: AssetsActionTypes.TAGS_REMOVE_COMPLETE
+})
+
+export const assetsTagsRemoveError = ({
+  assets,
+  error,
+  tag
+}: {
+  assets: AssetItem[]
+  error: HttpError
+  tag: Tag
+}): AssetsTagsRemoveErrorAction => ({
+  payload: {assets, error, tag},
+  type: AssetsActionTypes.TAGS_REMOVE_ERROR
+})
+
 // Update started
 export const assetsUpdate = ({
   asset,
@@ -622,7 +745,7 @@ export const assetsUpdateError = ({
  *********/
 
 /**
- * List for asset delete requests:
+ * Listen for asset delete requests:
  * - make async call to `client.delete`
  * - return a corresponding success or error action
  */
@@ -773,6 +896,67 @@ export const assetsFetchNextPageEpic = (
     })
   )
 
+// Remove tags from all picked assets
+export const assetsRemoveTagsEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> => {
+  return action$.pipe(
+    filter(isOfType(AssetsActionTypes.TAGS_ADD_REQUEST)),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {assets, tag} = action.payload
+
+      return of(action).pipe(
+        // Optionally throttle
+        debugThrottle(state.debug.badConnection),
+        // Add tag references to all picked assets
+        mergeMap(() => {
+          const pickedAssets = selectAssetsPicked(state)
+
+          // Filter out picked assets which already include tag
+          const pickedAssetsFiltered = pickedAssets?.filter(assetItem => {
+            const tagIndex =
+              assetItem?.asset?.opt?.media?.tags?.findIndex(t => t._ref === tag?._id) ?? -1
+            return tagIndex < 0
+          })
+
+          const transaction: Transaction = pickedAssetsFiltered.reduce(
+            (transaction, pickedAsset) => {
+              return transaction.patch(pickedAsset?.asset?._id, (patch: Patch) =>
+                patch
+                  .setIfMissing({opt: {}})
+                  .setIfMissing({'opt.media': {}})
+                  .setIfMissing({'opt.media.tags': []})
+                  .append('opt.media.tags', [
+                    {_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}
+                  ])
+              )
+            },
+            client.transaction()
+          )
+
+          return from(transaction.commit())
+        }),
+        // Dispatch complete action
+        mergeMap(() => of(assetsTagsAddComplete({assets, tag}))),
+        catchError((error: ClientError) =>
+          of(
+            assetsTagsAddError({
+              assets,
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              tag
+            })
+          )
+        )
+      )
+    })
+  )
+}
+
 /**
  * Listen for search query + facet changes (debounced)
  * - clear assets
@@ -826,6 +1010,115 @@ export const assetsSortEpic = (action$: Observable<AssetsActions>): Observable<A
       return of(assetsSort())
     })
   )
+
+// Add tags to all picked assets
+export const assetsTagsAddEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> => {
+  return action$.pipe(
+    filter(isOfType(AssetsActionTypes.TAGS_ADD_REQUEST)),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {assets, tag} = action.payload
+
+      return of(action).pipe(
+        // Optionally throttle
+        debugThrottle(state.debug.badConnection),
+        // Add tag references to all picked assets
+        mergeMap(() => {
+          const pickedAssets = selectAssetsPicked(state)
+
+          // Filter out picked assets which already include tag
+          const pickedAssetsFiltered = pickedAssets?.filter(assetItem => {
+            const tagIndex =
+              assetItem?.asset?.opt?.media?.tags?.findIndex(t => t._ref === tag?._id) ?? -1
+            return tagIndex < 0
+          })
+
+          const transaction: Transaction = pickedAssetsFiltered.reduce(
+            (transaction, pickedAsset) => {
+              return transaction.patch(pickedAsset?.asset?._id, (patch: Patch) =>
+                patch
+                  .ifRevisionId(pickedAsset?.asset?._rev)
+                  .setIfMissing({opt: {}})
+                  .setIfMissing({'opt.media': {}})
+                  .setIfMissing({'opt.media.tags': []})
+                  .append('opt.media.tags', [
+                    {_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}
+                  ])
+              )
+            },
+            client.transaction()
+          )
+
+          return from(transaction.commit())
+        }),
+        // Dispatch complete action
+        mergeMap(() => of(assetsTagsAddComplete({assets, tag}))),
+        catchError((error: ClientError) =>
+          of(
+            assetsTagsAddError({
+              assets,
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              tag
+            })
+          )
+        )
+      )
+    })
+  )
+}
+
+// Remove tags from all picked assets
+export const assetsTagsRemoveEpic = (
+  action$: Observable<AssetsActions>,
+  state$: StateObservable<RootReducerState>
+): Observable<AssetsActions> => {
+  return action$.pipe(
+    filter(isOfType(AssetsActionTypes.TAGS_REMOVE_REQUEST)),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {assets, tag} = action.payload
+
+      return of(action).pipe(
+        // Optionally throttle
+        debugThrottle(state.debug.badConnection),
+        // Remove tag references from all picked assets
+        mergeMap(() => {
+          const pickedAssets = selectAssetsPicked(state)
+
+          const transaction: Transaction = pickedAssets.reduce((transaction, pickedAsset) => {
+            return transaction.patch(pickedAsset?.asset?._id, (patch: Patch) =>
+              patch
+                .ifRevisionId(pickedAsset?.asset?._rev)
+                .unset([`opt.media.tags[_ref == "${tag._id}"]`])
+            )
+          }, client.transaction())
+
+          return from(transaction.commit())
+        }),
+        // Dispatch complete action
+        mergeMap(() => of(assetsTagsRemoveComplete({assets, tag}))),
+        catchError((error: ClientError) =>
+          of(
+            assetsTagsRemoveError({
+              assets,
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              tag
+            })
+          )
+        )
+      )
+    })
+  )
+}
 
 /**
  * Unpick all assets on search / view changes
@@ -999,6 +1292,10 @@ const constructFilter = ({
  * SELECTORS *
  *************/
 
+const selectAssetsByIds = (state: RootReducerState) => state.assets.byIds
+
+const selectAssetsAllIds = (state: RootReducerState) => state.assets.allIds
+
 export const selectAssetById = createSelector(
   [
     (state: RootReducerState) => state.assets.byIds,
@@ -1007,14 +1304,18 @@ export const selectAssetById = createSelector(
   (byIds, assetId) => byIds[assetId]
 )
 
-export const selectAssets = (state: RootReducerState): AssetItem[] => {
-  return state.assets.allIds.map(id => state.assets.byIds[id])
-}
+export const selectAssets: Selector<RootReducerState, AssetItem[]> = createSelector(
+  [selectAssetsByIds, selectAssetsAllIds],
+  (byIds, allIds) => allIds.map(id => byIds[id])
+)
 
-export const selectAssetsPicked = (state: RootReducerState): AssetItem[] => {
-  return Object.values(state.assets.byIds)?.filter(item => item?.picked)
-}
+export const selectAssetsLength = createSelector([selectAssets], assets => assets.length)
 
-export const selectAssetsPickedLength = (state: RootReducerState): number => {
-  return Object.values(state.assets.byIds)?.filter(item => item?.picked)?.length || 0
-}
+export const selectAssetsPicked = createSelector([selectAssets], assets =>
+  assets.filter(item => item?.picked)
+)
+
+export const selectAssetsPickedLength = createSelector(
+  [selectAssetsPicked],
+  assetsPicked => assetsPicked.length
+)

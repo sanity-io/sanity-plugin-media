@@ -1,5 +1,4 @@
 import {hues} from '@sanity/color'
-import {SplitVerticalIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
@@ -12,6 +11,7 @@ import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
 import SearchFacets from '../SearchFacets'
 import SearchFacetsControl from '../SearchFacetsControl'
+import TagIcon from '../TagIcon'
 import TextInputSearch from '../TextInputSearch'
 
 const Controls: FC = () => {
@@ -111,7 +111,11 @@ const Controls: FC = () => {
             <Box display={['none', 'none', 'block']} marginLeft={2}>
               <Button
                 fontSize={1}
-                icon={SplitVerticalIcon}
+                icon={
+                  <Box style={{transform: 'scale(0.75)'}}>
+                    <TagIcon />
+                  </Box>
+                }
                 onClick={toggleTagsPanelToggle}
                 mode={tagsPanelVisible ? 'default' : 'ghost'}
                 text={tagsPanelVisible ? 'Tags' : ''}

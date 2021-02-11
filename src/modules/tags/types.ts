@@ -18,26 +18,17 @@ export type TagsReducerState = {
 // Actions
 
 export type TagsCreateCompleteAction = {
-  payload: {
-    assetId?: string
-    tag: Tag
-  }
+  payload: {assetId?: string; tag: Tag}
   type: TagsActionTypes.CREATE_COMPLETE
 }
 
 export type TagsCreateErrorAction = {
-  payload: {
-    error: HttpError
-    name: string
-  }
+  payload: {error: HttpError; name: string}
   type: TagsActionTypes.CREATE_ERROR
 }
 
 export type TagsCreateRequestAction = {
-  payload: {
-    assetId?: string
-    name: string
-  }
+  payload: {assetId?: string; name: string}
   type: TagsActionTypes.CREATE_REQUEST
 }
 
@@ -47,10 +38,7 @@ export type TagsDeleteCompleteAction = {
 }
 
 export type TagsDeleteErrorAction = {
-  payload: {
-    error: HttpError
-    tag: Tag
-  }
+  payload: {error: HttpError; tag: Tag}
   type: TagsActionTypes.DELETE_ERROR
 }
 
@@ -68,17 +56,12 @@ export type TagsFetchCompleteAction = {
 }
 
 export type TagsFetchErrorAction = {
-  payload: {
-    error: HttpError
-  }
+  payload: {error: HttpError}
   type: TagsActionTypes.FETCH_ERROR
 }
 
 export type TagsFetchRequestAction = {
-  payload: {
-    params?: Record<string, string>
-    query: string
-  }
+  payload: {params?: Record<string, string>; query: string}
   type: TagsActionTypes.FETCH_REQUEST
 }
 
@@ -107,27 +90,17 @@ export type TagsSortAction = {
 }
 
 export type TagsUpdateCompleteAction = {
-  payload: {
-    closeDialogId?: string
-    tagId: string
-  }
+  payload: {closeDialogId?: string; tagId: string}
   type: TagsActionTypes.UPDATE_COMPLETE
 }
 
 export type TagsUpdateErrorAction = {
-  payload: {
-    error: HttpError
-    tag: Tag
-  }
+  payload: {error: HttpError; tag: Tag}
   type: TagsActionTypes.UPDATE_ERROR
 }
 
 export type TagsUpdateRequestAction = {
-  payload: {
-    closeDialogId?: string
-    formData: Record<string, any>
-    tag: Tag
-  }
+  payload: {closeDialogId?: string; formData: Record<string, any>; tag: Tag}
   type: TagsActionTypes.UPDATE_REQUEST
 }
 

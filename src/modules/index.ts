@@ -10,6 +10,8 @@ import assets, {
   assetsSearchEpic,
   assetsSetOrderEpic,
   assetsSortEpic,
+  assetsTagsAddEpic,
+  assetsTagsRemoveEpic,
   assetsUnpickEpic,
   assetsUpdateEpic
 } from './assets'
@@ -43,6 +45,8 @@ export const rootEpic = combineEpics(
   assetsSearchEpic,
   assetsSetOrderEpic,
   assetsSortEpic,
+  assetsTagsAddEpic,
+  assetsTagsRemoveEpic,
   assetsUnpickEpic,
   assetsUpdateEpic,
   dialogClearOnAssetUpdateEpic,

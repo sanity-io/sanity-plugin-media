@@ -6,7 +6,12 @@ import styled from 'styled-components'
 import {Box as LegacyBox} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsPickAll, assetsPickClear, selectAssets} from '../../modules/assets'
+import {
+  assetsPickAll,
+  assetsPickClear,
+  selectAssetsLength,
+  selectAssetsPickedLength
+} from '../../modules/assets'
 import TableHeaderItem from '../TableHeaderItem'
 
 // TODO: DRY
@@ -26,10 +31,10 @@ const TableHeader: FC = () => {
 
   const fetching = useTypedSelector(state => state.assets.fetching)
   const currentDocument = useTypedSelector(state => state.document)
-  const items = useTypedSelector(selectAssets)
+  const itemsLength = useTypedSelector(selectAssetsLength)
+  const numPickedAssets = useTypedSelector(selectAssetsPickedLength)
 
-  const numPicked = items.filter(item => item.picked).length
-  const allSelected = numPicked === items.length
+  const allSelected = numPickedAssets === itemsLength
 
   // Callbacks
   const handleContextActionClick = (e: MouseEvent) => {
@@ -57,7 +62,7 @@ const TableHeader: FC = () => {
         textTransform: 'uppercase',
         top: 0,
         width: '100%',
-        zIndex: 1 // TODO: try to avoid manually setting z-indices
+        zIndex: 1 // force stacking context
       }}
     >
       <ContextActionContainer

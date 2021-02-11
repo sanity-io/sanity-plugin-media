@@ -12,7 +12,7 @@ import * as yup from 'yup'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsUpdate, selectAssetById} from '../../modules/assets'
-import {dialogRemove, dialogShowDeleteConfirm} from '../../modules/dialog'
+import {dialogRemove, dialogShowConfirmDeleteAsset} from '../../modules/dialog'
 import {selectTags, selectTagSelectOptions, tagsCreate} from '../../modules/tags'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import imageDprUrl from '../../utils/imageDprUrl'
@@ -110,10 +110,9 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     }
 
     dispatch(
-      dialogShowDeleteConfirm({
-        closeDialogId: assetItem?.asset._id,
-        documentId: assetItem?.asset._id,
-        documentType: 'asset'
+      dialogShowConfirmDeleteAsset({
+        asset: assetItem?.asset,
+        closeDialogId: assetItem?.asset._id
       })
     )
   }

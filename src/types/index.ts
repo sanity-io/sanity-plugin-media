@@ -1,5 +1,6 @@
 import {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
-import {ReactElement} from 'react'
+import {AssetsActions} from '../modules/assets/types'
+import {TagsActions} from '../modules/tags/types'
 
 type CustomFields = {
   altText?: string
@@ -42,11 +43,13 @@ export type ButtonVariant = 'danger' | 'default' | 'secondary'
 
 export type Dialog =
   | DialogAssetEdit
-  | DialogDeleteConfirm
+  | DialogConfirm
   | DialogSearchFacets
   | DialogTagCreate
   | DialogTagEdit
   | DialogTags
+
+export type DialogAction = 'deleteAsset' | 'deleteTag'
 
 export type DialogAssetEdit = {
   assetId?: string
@@ -56,12 +59,15 @@ export type DialogAssetEdit = {
   type: 'assetEdit'
 }
 
-export type DialogDeleteConfirm = {
+export type DialogConfirm = {
   closeDialogId?: string
-  documentId?: string
-  documentType: 'asset' | 'tag'
+  confirmCallbackAction: AssetsActions | TagsActions
+  confirmText: string
+  description: string
   id: string
-  type: 'deleteConfirm'
+  title: string
+  tone: 'critical' | 'primary'
+  type: 'confirm'
 }
 
 export type DialogSearchFacets = {
@@ -87,14 +93,6 @@ export type DialogTagEdit = {
   id: string
   tagId?: string
   type: 'tagEdit'
-}
-
-export type DialogAction = {
-  callback: () => void
-  disabled?: boolean
-  icon?: ReactElement
-  title: string
-  variant?: ButtonVariant
 }
 
 export type Document = {
@@ -243,6 +241,8 @@ export type Tag = SanityDocument & {
     current: string
   }
 }
+
+export type TagActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
 
 export type TagItem = {
   tag: Tag
