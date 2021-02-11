@@ -2,6 +2,7 @@ import {hues} from '@sanity/color'
 import {Box, Button, Flex, Inline} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
+import {Flex as LegacyFlex} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogShowSearchFacets, dialogShowTags} from '../../modules/dialog'
@@ -50,12 +51,12 @@ const Controls: FC = () => {
           justify="space-between"
         >
           {/* Search + Filters */}
-          <Flex
-            flex={1}
-            style={{
+          <LegacyFlex
+            sx={{
               alignItems: 'flex-start',
+              flex: 1,
               height: '100%',
-              justifyContent: 'flex-start',
+              justifyContent: ['space-between', null, 'flex-start'],
               position: 'relative',
               width: '100%'
             }}
@@ -72,8 +73,8 @@ const Controls: FC = () => {
               <SearchFacetsControl />
             </Box>
 
-            <Box display={['block', 'block', 'none']}>
-              <Inline space={2}>
+            <Box display={['block', 'block', 'none']} marginX={2}>
+              <Inline space={2} style={{whiteSpace: 'nowrap'}}>
                 {/* Filters button (small) */}
                 <Button
                   fontSize={1}
@@ -93,7 +94,7 @@ const Controls: FC = () => {
                 />
               </Inline>
             </Box>
-          </Flex>
+          </LegacyFlex>
         </Flex>
       </Box>
 

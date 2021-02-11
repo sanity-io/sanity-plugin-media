@@ -1,3 +1,4 @@
+import {hues} from '@sanity/color'
 import {Box, Dialog} from '@sanity/ui'
 import {DialogTags} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
@@ -27,7 +28,11 @@ const DialogTags: FC<Props> = (props: Props) => {
 
   return (
     <Dialog scheme="dark" header="All Tags" id={id} onClose={handleClose} width={1}>
-      <Box>
+      <Box
+        style={{
+          borderTop: `1px solid ${hues.gray?.[900].hex}`
+        }}
+      >
         <Tags />
       </Box>
 

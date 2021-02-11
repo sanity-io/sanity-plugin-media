@@ -36,12 +36,8 @@ const PanelHeader: FC<Props> = (props: Props) => {
         justify="space-between"
         paddingLeft={3}
         style={{
-          // background: hues.gray[900].hex,
-          // background: hues.gray[950].hex,
           background: black.hex,
-          // borderTop: `1px solid ${hues.gray?.[900].hex}`,
           borderBottom: `1px solid ${hues.gray?.[900].hex}`,
-          // borderBottom: `1px solid ${black.hex}`,
           height: '2.0em',
           position: 'sticky',
           top: 0,
