@@ -1,7 +1,10 @@
 import {yupResolver} from '@hookform/resolvers/yup'
-import {Box, Button, Dialog, Flex} from '@sanity/ui'
-import {DialogTagEdit} from '@types'
-import React, {FC, ReactNode, useEffect} from 'react'
+import {MutationEvent} from '@sanity/client'
+import {Box, Card, Button, Dialog, Flex, Text} from '@sanity/ui'
+import {DialogTagEdit, Tag} from '@types'
+import groq from 'groq'
+import client from 'part:@sanity/base/client'
+import React, {FC, ReactNode, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
@@ -34,17 +37,29 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
   const tagItem = useTypedSelector(state => selectTagById(state, String(tagId))) // TODO: double check string cast
 
+  // State
+  // - Generate a snapshot of the current tag
+  const [tagSnapshot, setTagSnapshot] = useState(tagItem?.tag)
+
+  const currentTag = tagItem ? tagItem?.tag : tagSnapshot
+
+  const generateDefaultValues = (tag?: Tag) => ({
+    name: tag?.name?.current || ''
+  })
+
   // react-hook-form
   const {
     // Read the formState before render to subscribe the form state through Proxy
     formState: {errors, isDirty, isValid},
     handleSubmit,
     register,
+    reset,
     setError
   } = useForm({
-    defaultValues: {
-      name: tagItem?.tag?.name?.current
-    },
+    // defaultValues: {
+    //   name: currentTag?.tag?.name?.current
+    // },
+    defaultValues: generateDefaultValues(tagItem?.tag),
     mode: 'onChange',
     resolver: yupResolver(formSchema)
   })
@@ -91,14 +106,42 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     )
   }
 
+  const handleTagUpdate = (update: MutationEvent) => {
+    const {result, transition} = update
+
+    if (result && transition === 'update') {
+      // Regenerate snapshot
+      setTagSnapshot(result as Tag)
+
+      // Reset react-hook-form
+      reset(generateDefaultValues(result as Tag))
+    }
+  }
+
   // Effects
   useEffect(() => {
-    if (tagItem.error) {
+    if (tagItem?.error) {
       setError('name', {
         message: tagItem.error?.message
       })
     }
-  }, [tagItem.error])
+  }, [tagItem?.error])
+
+  // - Listen for asset mutations and update snapshot
+  useEffect(() => {
+    if (!tagItem?.tag) {
+      return
+    }
+
+    // Remember that Sanity listeners ignore joins, order clauses and projections
+    const subscriptionAsset = client
+      .listen(groq`*[_id == $id]`, {id: tagItem?.tag._id})
+      .subscribe(handleTagUpdate)
+
+    return () => {
+      subscriptionAsset?.unsubscribe()
+    }
+  }, [])
 
   const Footer = () => (
     <Box padding={3}>
@@ -125,6 +168,10 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     </Box>
   )
 
+  if (!currentTag) {
+    return null
+  }
+
   return (
     <Dialog
       footer={<Footer />}
@@ -136,6 +183,13 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     >
       {/* Form fields */}
       <Box as="form" padding={4} onSubmit={handleSubmit(onSubmit)}>
+        {/* Deleted notification */}
+        {!tagItem && (
+          <Card marginBottom={3} padding={3} radius={2} shadow={1} tone="critical">
+            <Text size={1}>This tag cannot be found – it may have been deleted.</Text>
+          </Card>
+        )}
+
         {/* Hidden button to enable enter key submissions */}
         <button style={{display: 'none'}} tabIndex={-1} type="submit" />
 
