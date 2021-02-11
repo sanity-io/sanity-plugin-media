@@ -46,8 +46,10 @@ import {
   AssetsFetchCompleteAction,
   AssetsFetchErrorAction,
   AssetsFetchRequestAction,
-  AssetsListenerDeleteAction,
-  AssetsListenerUpdateAction,
+  AssetsListenerDeleteCompleteAction,
+  AssetsListenerDeleteQueueAction,
+  AssetsListenerUpdateCompleteAction,
+  AssetsListenerUpdateQueueAction,
   AssetsLoadNextPageAction,
   AssetsLoadPageIndexAction,
   AssetsPickAction,
@@ -79,8 +81,10 @@ export enum AssetsActionTypes {
   FETCH_COMPLETE = 'ASSETS_FETCH_COMPLETE',
   FETCH_ERROR = 'ASSETS_FETCH_ERROR',
   FETCH_REQUEST = 'ASSETS_FETCH_REQUEST',
-  LISTENER_DELETE = 'ASSETS_LISTENER_DELETE',
-  LISTENER_UPDATE = 'ASSETS_LISTENER_UPDATE',
+  LISTENER_DELETE_COMPLETE = 'ASSETS_LISTENER_DELETE_COMPLETE',
+  LISTENER_DELETE_QUEUE = 'ASSETS_LISTENER_DELETE_QUEUE',
+  LISTENER_UPDATE_COMPLETE = 'ASSETS_LISTENER_UPDATE_COMPLETE',
+  LISTENER_UPDATE_QUEUE = 'ASSETS_LISTENER_UPDATE_QUEUE',
   LOAD_NEXT_PAGE = 'ASSETS_LOAD_NEXT_PAGE',
   LOAD_PAGE_INDEX = 'ASSETS_LOAD_PAGE_INDEX',
   ORDER_SET = 'ASSETS_ORDER_SET',
@@ -258,24 +262,29 @@ export default function assetsReducerState(
        * An asset has been successfully deleted via the client.
        * - Delete asset from the redux store (both the normalised object and ordered asset ID).
        */
-      case AssetsActionTypes.LISTENER_DELETE: {
-        const assetId = action.payload?.assetId
-        const deleteIndex = draft.allIds.indexOf(assetId)
-        if (deleteIndex >= 0) {
-          draft.allIds.splice(deleteIndex, 1)
-        }
-        delete draft.byIds[assetId]
+      case AssetsActionTypes.LISTENER_DELETE_COMPLETE: {
+        const assetIds = action.payload?.assetIds
+        assetIds?.forEach(assetId => {
+          const deleteIndex = draft.allIds.indexOf(assetId)
+          if (deleteIndex >= 0) {
+            draft.allIds.splice(deleteIndex, 1)
+          }
+          delete draft.byIds[assetId]
+        })
         break
       }
+
       /**
-       * An asset has been successfully updated via the client.
+       * Multiple assets have been successfully updated via the client.
        * - Update asset in `byIds`
        */
-      case AssetsActionTypes.LISTENER_UPDATE: {
-        const asset = action.payload?.asset
-        if (draft.byIds[asset._id]) {
-          draft.byIds[asset._id].asset = asset
-        }
+      case AssetsActionTypes.LISTENER_UPDATE_COMPLETE: {
+        const assets = action.payload?.assets
+        assets?.forEach(asset => {
+          if (draft.byIds[asset?._id]?.asset) {
+            draft.byIds[asset._id].asset = asset
+          }
+        })
         break
       }
 
@@ -571,15 +580,29 @@ export const assetsFetchError = (error: HttpError): AssetsFetchErrorAction => ({
 })
 
 // Asset deleted via listener
-export const assetsListenerDelete = (assetId: string): AssetsListenerDeleteAction => ({
+export const assetsListenerDeleteComplete = (
+  assetIds: string[]
+): AssetsListenerDeleteCompleteAction => ({
+  payload: {assetIds},
+  type: AssetsActionTypes.LISTENER_DELETE_COMPLETE
+})
+
+export const assetsListenerDeleteQueue = (assetId: string): AssetsListenerDeleteQueueAction => ({
   payload: {assetId},
-  type: AssetsActionTypes.LISTENER_DELETE
+  type: AssetsActionTypes.LISTENER_DELETE_QUEUE
 })
 
 // Asset updated via listener
-export const assetsListenerUpdate = (asset: Asset): AssetsListenerUpdateAction => ({
+export const assetsListenerUpdateComplete = (
+  assets: Asset[]
+): AssetsListenerUpdateCompleteAction => ({
+  payload: {assets},
+  type: AssetsActionTypes.LISTENER_UPDATE_COMPLETE
+})
+
+export const assetsListenerUpdateQueue = (asset: Asset): AssetsListenerUpdateQueueAction => ({
   payload: {asset},
-  type: AssetsActionTypes.LISTENER_UPDATE
+  type: AssetsActionTypes.LISTENER_UPDATE_QUEUE
 })
 
 // Load page assets at page index
@@ -975,7 +998,6 @@ export const assetsOrderSetEpic = (action$: Observable<AssetsActions>): Observab
  * - clear assets
  * - fetch first page
  */
-
 export const assetsSearchEpic = (action$: Observable<AssetsActions>): Observable<AssetsActions> =>
   action$.pipe(
     filter(
@@ -994,15 +1016,42 @@ export const assetsSearchEpic = (action$: Observable<AssetsActions>): Observable
     })
   )
 
+// TODO: merge all listener epics into one
+
+export const assetsListenerDeleteQueueEpic = (
+  action$: Observable<AssetsActions>
+): Observable<AssetsActions> =>
+  action$.pipe(
+    filter(isOfType([AssetsActionTypes.LISTENER_DELETE_QUEUE])),
+    bufferTime(2000),
+    filter(actions => actions.length > 0),
+    switchMap(actions => {
+      const assetIds = actions?.map(action => action.payload.assetId)
+      return of(assetsListenerDeleteComplete(assetIds))
+    })
+  )
+
+export const assetsListenerUpdateQueueEpic = (
+  action$: Observable<AssetsActions>
+): Observable<AssetsActions> =>
+  action$.pipe(
+    filter(isOfType([AssetsActionTypes.LISTENER_UPDATE_QUEUE])),
+    bufferTime(2000),
+    filter(actions => actions.length > 0),
+    switchMap(actions => {
+      const assets = actions?.map(action => action.payload.asset)
+      return of(assetsListenerUpdateComplete(assets))
+    })
+  )
+
 /**
  * Re-sort assets on updates
  */
-
 export const assetsSortEpic = (action$: Observable<AssetsActions>): Observable<AssetsActions> =>
   action$.pipe(
     filter(
       isOfType([
-        AssetsActionTypes.LISTENER_UPDATE, //
+        AssetsActionTypes.LISTENER_UPDATE_COMPLETE, //
         AssetsActionTypes.UPDATE_COMPLETE
       ])
     ),

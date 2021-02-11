@@ -70,14 +70,24 @@ export type AssetsFetchRequestAction = {
   type: AssetsActionTypes.FETCH_REQUEST
 }
 
-export type AssetsListenerDeleteAction = {
-  payload: {assetId: string}
-  type: AssetsActionTypes.LISTENER_DELETE
+export type AssetsListenerDeleteCompleteAction = {
+  payload: {assetIds: string[]}
+  type: AssetsActionTypes.LISTENER_DELETE_COMPLETE
 }
 
-export type AssetsListenerUpdateAction = {
+export type AssetsListenerDeleteQueueAction = {
+  payload: {assetId: string}
+  type: AssetsActionTypes.LISTENER_DELETE_QUEUE
+}
+
+export type AssetsListenerUpdateCompleteAction = {
+  payload: {assets: Asset[]}
+  type: AssetsActionTypes.LISTENER_UPDATE_COMPLETE
+}
+
+export type AssetsListenerUpdateQueueAction = {
   payload: {asset: Asset}
-  type: AssetsActionTypes.LISTENER_UPDATE
+  type: AssetsActionTypes.LISTENER_UPDATE_QUEUE
 }
 
 export type AssetsLoadNextPageAction = {
@@ -193,8 +203,10 @@ export type AssetsActions =
   | AssetsFetchCompleteAction
   | AssetsFetchErrorAction
   | AssetsFetchRequestAction
-  | AssetsListenerDeleteAction
-  | AssetsListenerUpdateAction
+  | AssetsListenerDeleteCompleteAction
+  | AssetsListenerDeleteQueueAction
+  | AssetsListenerUpdateCompleteAction
+  | AssetsListenerUpdateQueueAction
   | AssetsLoadNextPageAction
   | AssetsLoadPageIndexAction
   | AssetsOrderSetAction

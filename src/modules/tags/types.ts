@@ -65,19 +65,34 @@ export type TagsFetchRequestAction = {
   type: TagsActionTypes.FETCH_REQUEST
 }
 
-export type TagsListenerCreateAction = {
-  payload: {tag: Tag}
-  type: TagsActionTypes.LISTENER_CREATE
+export type TagsListenerCreateCompleteAction = {
+  payload: {tags: Tag[]}
+  type: TagsActionTypes.LISTENER_CREATE_COMPLETE
 }
 
-export type TagsListenerDeleteAction = {
+export type TagsListenerCreateQueueAction = {
+  payload: {tag: Tag}
+  type: TagsActionTypes.LISTENER_CREATE_QUEUE
+}
+
+export type TagsListenerDeleteCompleteAction = {
+  payload: {tagIds: string[]}
+  type: TagsActionTypes.LISTENER_DELETE_COMPLETE
+}
+
+export type TagsListenerDeleteQueueAction = {
   payload: {tagId: string}
-  type: TagsActionTypes.LISTENER_DELETE
+  type: TagsActionTypes.LISTENER_DELETE_QUEUE
 }
 
-export type TagsListenerUpdateAction = {
+export type TagsListenerUpdateCompleteAction = {
+  payload: {tags: Tag[]}
+  type: TagsActionTypes.LISTENER_UPDATE_COMPLETE
+}
+
+export type TagsListenerUpdateQueueAction = {
   payload: {tag: Tag}
-  type: TagsActionTypes.LISTENER_UPDATE
+  type: TagsActionTypes.LISTENER_UPDATE_QUEUE
 }
 
 export type TagsPanelVisibleSetAction = {
@@ -116,9 +131,12 @@ export type TagsActions =
   | TagsFetchCompleteAction
   | TagsFetchErrorAction
   | TagsFetchRequestAction
-  | TagsListenerCreateAction
-  | TagsListenerDeleteAction
-  | TagsListenerUpdateAction
+  | TagsListenerCreateCompleteAction
+  | TagsListenerCreateQueueAction
+  | TagsListenerDeleteCompleteAction
+  | TagsListenerDeleteQueueAction
+  | TagsListenerUpdateCompleteAction
+  | TagsListenerUpdateQueueAction
   | TagsPanelVisibleSetAction
   | TagsSortAction
   | TagsUpdateCompleteAction

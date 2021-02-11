@@ -7,6 +7,8 @@ import assets, {
   assetsFetchEpic,
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
+  assetsListenerDeleteQueueEpic,
+  assetsListenerUpdateQueueEpic,
   assetsOrderSetEpic,
   assetsSearchEpic,
   assetsSortEpic,
@@ -34,6 +36,9 @@ import tags, {
   tagsCreateEpic,
   tagsDeleteEpic,
   tagsFetchEpic,
+  tagsListenerCreateQueueEpic,
+  tagsListenerDeleteQueueEpic,
+  tagsListenerUpdateQueueEpic,
   tagsSortEpic,
   tagsUpdateEpic
 } from './tags'
@@ -44,6 +49,8 @@ export const rootEpic = combineEpics(
   assetsFetchEpic,
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
+  assetsListenerDeleteQueueEpic,
+  assetsListenerUpdateQueueEpic,
   assetsOrderSetEpic,
   assetsSearchEpic,
   assetsSortEpic,
@@ -65,6 +72,9 @@ export const rootEpic = combineEpics(
   tagsCreateEpic,
   tagsDeleteEpic,
   tagsFetchEpic,
+  tagsListenerCreateQueueEpic,
+  tagsListenerDeleteQueueEpic,
+  tagsListenerUpdateQueueEpic,
   tagsSortEpic,
   tagsUpdateEpic
 )

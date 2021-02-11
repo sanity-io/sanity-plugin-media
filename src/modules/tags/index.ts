@@ -22,9 +22,12 @@ import {
   TagsFetchCompleteAction,
   TagsFetchErrorAction,
   TagsFetchRequestAction,
-  TagsListenerCreateAction,
-  TagsListenerDeleteAction,
-  TagsListenerUpdateAction,
+  TagsListenerCreateCompleteAction,
+  TagsListenerCreateQueueAction,
+  TagsListenerDeleteCompleteAction,
+  TagsListenerDeleteQueueAction,
+  TagsListenerUpdateCompleteAction,
+  TagsListenerUpdateQueueAction,
   TagsPanelVisibleSetAction,
   TagsReducerState,
   TagsSortAction,
@@ -46,7 +49,6 @@ import {AssetsActions} from '../assets/types'
  ***********/
 
 export enum TagsActionTypes {
-  // REMOVE_FROM_ASSETS = 'TAGS_REMOVE_FROM_ASSETS',
   CREATE_COMPLETE = 'TAGS_CREATE_COMPLETE',
   CREATE_ERROR = 'TAGS_CREATE_ERROR',
   CREATE_REQUEST = 'TAGS_CREATE_REQUEST',
@@ -56,9 +58,12 @@ export enum TagsActionTypes {
   FETCH_COMPLETE = 'TAGS_FETCH_COMPLETE',
   FETCH_ERROR = 'TAGS_FETCH_ERROR',
   FETCH_REQUEST = 'TAGS_FETCH_REQUEST',
-  LISTENER_CREATE = 'TAGS_LISTENER_CREATE',
-  LISTENER_DELETE = 'TAGS_LISTENER_DELETE',
-  LISTENER_UPDATE = 'TAGS_LISTENER_UPDATE',
+  LISTENER_CREATE_COMPLETE = 'TAGS_LISTENER_CREATE_COMPLETE',
+  LISTENER_CREATE_QUEUE = 'TAGS_LISTENER_CREATE_QUEUE',
+  LISTENER_DELETE_COMPLETE = 'TAGS_LISTENER_DELETE_COMPLETE',
+  LISTENER_DELETE_QUEUE = 'TAGS_LISTENER_DELETE_QUEUE',
+  LISTENER_UPDATE_COMPLETE = 'TAGS_LISTENER_UPDATE_COMPLETE',
+  LISTENER_UPDATE_QUEUE = 'TAGS_LISTENER_UPDATE_QUEUE',
   PANEL_VISIBLE_SET = 'TAGS_PANEL_VISIBLE_SET',
   SORT = 'TAGS_SORT',
   UPDATE_COMPLETE = 'TAGS_UPDATE_COMPLETE',
@@ -241,18 +246,21 @@ export default function tagsReducerState(
        * A tag has been successfully created via the client.
        * - Add tag from the redux store (normalised object).
        */
-      case TagsActionTypes.LISTENER_CREATE: {
-        const tag = action.payload.tag
+      case TagsActionTypes.LISTENER_CREATE_COMPLETE: {
+        const {tags} = action.payload
 
-        // Add normalised tag item
-        draft.byIds[tag._id] = {
-          picked: false,
-          tag,
-          updating: false
-        }
+        tags?.forEach(tag => {
+          // Add normalised tag item
+          draft.byIds[tag._id] = {
+            picked: false,
+            tag,
+            updating: false
+          }
 
-        // Add tag ID
-        draft.allIds.push(tag._id)
+          // Add tag ID
+          draft.allIds.push(tag._id)
+        })
+
         break
       }
 
@@ -260,13 +268,16 @@ export default function tagsReducerState(
        * A tag has been successfully deleted via the client.
        * - Delete tag from the redux store (both the normalised object and ordered tag ID).
        */
-      case TagsActionTypes.LISTENER_DELETE: {
-        const tagId = action.payload?.tagId
-        const deleteIndex = draft.allIds.indexOf(tagId)
-        if (deleteIndex >= 0) {
-          draft.allIds.splice(deleteIndex, 1)
-        }
-        delete draft.byIds[tagId]
+      case TagsActionTypes.LISTENER_DELETE_COMPLETE: {
+        const {tagIds} = action.payload
+
+        tagIds?.forEach(tagId => {
+          const deleteIndex = draft.allIds.indexOf(tagId)
+          if (deleteIndex >= 0) {
+            draft.allIds.splice(deleteIndex, 1)
+          }
+          delete draft.byIds[tagId]
+        })
         break
       }
 
@@ -274,11 +285,14 @@ export default function tagsReducerState(
        * A tag has been successfully updated via the client.
        * - Update tag in `byIds`
        */
-      case TagsActionTypes.LISTENER_UPDATE: {
-        const tag = action.payload?.tag
-        if (draft.byIds[tag._id]) {
-          draft.byIds[tag._id].tag = tag
-        }
+      case TagsActionTypes.LISTENER_UPDATE_COMPLETE: {
+        const {tags} = action.payload
+
+        tags?.forEach(tag => {
+          if (draft.byIds[tag._id]) {
+            draft.byIds[tag._id].tag = tag
+          }
+        })
         break
       }
 
@@ -443,21 +457,36 @@ export const tagsFetchError = (error: HttpError): TagsFetchErrorAction => ({
 })
 
 // Tag created via listener
-export const tagsListenerCreate = (tag: Tag): TagsListenerCreateAction => ({
+export const tagsListenerCreateComplete = (tags: Tag[]): TagsListenerCreateCompleteAction => ({
+  payload: {tags},
+  type: TagsActionTypes.LISTENER_CREATE_COMPLETE
+})
+
+export const tagsListenerCreateQueue = (tag: Tag): TagsListenerCreateQueueAction => ({
   payload: {tag},
-  type: TagsActionTypes.LISTENER_CREATE
+  type: TagsActionTypes.LISTENER_CREATE_QUEUE
 })
 
 // Tag deleted via listener
-export const tagsListenerDelete = (tagId: string): TagsListenerDeleteAction => ({
+export const tagsListenerDeleteComplete = (tagIds: string[]): TagsListenerDeleteCompleteAction => ({
+  payload: {tagIds},
+  type: TagsActionTypes.LISTENER_DELETE_COMPLETE
+})
+
+export const tagsListenerDeleteQueue = (tagId: string): TagsListenerDeleteQueueAction => ({
   payload: {tagId},
-  type: TagsActionTypes.LISTENER_DELETE
+  type: TagsActionTypes.LISTENER_DELETE_QUEUE
 })
 
 // Tag updated via listener
-export const tagsListenerUpdate = (tag: Tag): TagsListenerUpdateAction => ({
+export const tagsListenerUpdateComplete = (tags: Tag[]): TagsListenerUpdateCompleteAction => ({
+  payload: {tags},
+  type: TagsActionTypes.LISTENER_UPDATE_COMPLETE
+})
+
+export const tagsListenerUpdateQueue = (tag: Tag): TagsListenerUpdateQueueAction => ({
   payload: {tag},
-  type: TagsActionTypes.LISTENER_UPDATE
+  type: TagsActionTypes.LISTENER_UPDATE_QUEUE
 })
 
 export const tagsPanelVisibleSet = (panelVisible: boolean): TagsPanelVisibleSetAction => ({
@@ -670,6 +699,45 @@ export const tagsFetchEpic = (
     })
   )
 
+export const tagsListenerCreateQueueEpic = (
+  action$: Observable<TagsActions>
+): Observable<TagsActions> =>
+  action$.pipe(
+    filter(isOfType([TagsActionTypes.LISTENER_CREATE_QUEUE])),
+    bufferTime(2000),
+    filter(actions => actions.length > 0),
+    switchMap(actions => {
+      const tags = actions?.map(action => action.payload.tag)
+      return of(tagsListenerCreateComplete(tags))
+    })
+  )
+
+export const tagsListenerDeleteQueueEpic = (
+  action$: Observable<TagsActions>
+): Observable<TagsActions> =>
+  action$.pipe(
+    filter(isOfType([TagsActionTypes.LISTENER_DELETE_QUEUE])),
+    bufferTime(2000),
+    filter(actions => actions.length > 0),
+    switchMap(actions => {
+      const tagIds = actions?.map(action => action.payload.tagId)
+      return of(tagsListenerDeleteComplete(tagIds))
+    })
+  )
+
+export const tagsListenerUpdateQueueEpic = (
+  action$: Observable<TagsActions>
+): Observable<TagsActions> =>
+  action$.pipe(
+    filter(isOfType([TagsActionTypes.LISTENER_UPDATE_QUEUE])),
+    bufferTime(2000),
+    filter(actions => actions.length > 0),
+    switchMap(actions => {
+      const tags = actions?.map(action => action.payload.tag)
+      return of(tagsListenerUpdateComplete(tags))
+    })
+  )
+
 /**
  * Re-sort tags on updates
  */
@@ -677,8 +745,8 @@ export const tagsSortEpic = (action$: Observable<TagsActions>): Observable<TagsA
   action$.pipe(
     filter(
       isOfType([
-        TagsActionTypes.LISTENER_UPDATE, //
-        TagsActionTypes.LISTENER_CREATE
+        TagsActionTypes.LISTENER_CREATE_COMPLETE, //
+        TagsActionTypes.LISTENER_UPDATE_COMPLETE
       ])
     ),
     bufferTime(1000),

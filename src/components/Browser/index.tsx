@@ -7,12 +7,16 @@ import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {TAG_DOCUMENT_NAME} from '../../constants'
-import {assetsListenerDelete, assetsListenerUpdate, assetsLoadPageIndex} from '../../modules/assets'
 import {
-  tagsListenerDelete,
-  tagsListenerUpdate,
+  assetsListenerDeleteQueue,
+  assetsListenerUpdateQueue,
+  assetsLoadPageIndex
+} from '../../modules/assets'
+import {
   tagsFetch,
-  tagsListenerCreate
+  tagsListenerCreateQueue,
+  tagsListenerDeleteQueue,
+  tagsListenerUpdateQueue
 } from '../../modules/tags'
 import Controls from '../Controls'
 import DebugControls from '../DebugControls'
@@ -38,11 +42,11 @@ const Browser: FC<Props> = (props: Props) => {
     const {documentId, result, transition} = update
 
     if (transition === 'disappear') {
-      dispatch(assetsListenerDelete(documentId))
+      dispatch(assetsListenerDeleteQueue(documentId))
     }
 
     if (transition === 'update') {
-      dispatch(assetsListenerUpdate(result as ImageAsset))
+      dispatch(assetsListenerUpdateQueue(result as ImageAsset))
     }
   }
 
@@ -50,15 +54,15 @@ const Browser: FC<Props> = (props: Props) => {
     const {documentId, result, transition} = update
 
     if (transition === 'appear') {
-      dispatch(tagsListenerCreate(result as Tag))
+      dispatch(tagsListenerCreateQueue(result as Tag))
     }
 
     if (transition === 'disappear') {
-      dispatch(tagsListenerDelete(documentId))
+      dispatch(tagsListenerDeleteQueue(documentId))
     }
 
     if (transition === 'update') {
-      dispatch(tagsListenerUpdate(result as Tag))
+      dispatch(tagsListenerUpdateQueue(result as Tag))
     }
   }
 
