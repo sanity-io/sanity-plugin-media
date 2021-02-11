@@ -124,8 +124,8 @@ const TableRow = (props: Props) => {
     }
   }
 
-  const opacityContainer = updating ? 0.5 : 1
-  const opacityPreview = selected || updating ? 0.25 : 1
+  const opacityCell = updating ? 0.5 : 1
+  const opacityPreview = selected || updating ? 0.1 : 1
 
   return (
     <ContainerGrid
@@ -136,8 +136,7 @@ const TableRow = (props: Props) => {
         gridColumnGap: [0, null, null, 3],
         gridRowGap: [0],
         gridTemplateColumns: ['tableSmall', null, null, 'tableLarge'],
-        gridTemplateRows: ['auto', null, null, '1fr'],
-        opacity: opacityContainer
+        gridTemplateRows: ['auto', null, null, '1fr']
       }}
       updating={item.updating}
     >
@@ -151,6 +150,7 @@ const TableRow = (props: Props) => {
           gridRowEnd: ['span 5', null, null, 'auto'],
           height: '100%',
           justifyContent: 'center',
+          opacity: opacityCell,
           position: 'relative'
         }}
       >
@@ -183,19 +183,38 @@ const TableRow = (props: Props) => {
           width: '100px'
         }}
       >
-        <div style={{height: '100%', opacity: opacityPreview, position: 'relative', width: '100%'}}>
-          {/* File icon */}
-          {isFileAsset(asset) && <FileIcon asset={asset} width="40px" />}
+        <Flex align="center" justify="center" style={{height: '100%', position: 'relative'}}>
+          <Box style={{height: '100%', opacity: opacityPreview, position: 'relative'}}>
+            {/* File icon */}
+            {isFileAsset(asset) && <FileIcon asset={asset} width="40px" />}
 
-          {/* Image */}
-          {isImageAsset(asset) && (
-            <Image
-              draggable={false}
-              showCheckerboard={!isOpaque}
-              src={imageDprUrl(asset, {height: 100, width: 100})}
-            />
+            {/* Image */}
+            {isImageAsset(asset) && (
+              <Image
+                draggable={false}
+                showCheckerboard={!isOpaque}
+                src={imageDprUrl(asset, {height: 100, width: 100})}
+              />
+            )}
+          </Box>
+
+          {/* Spinner */}
+          {updating && (
+            <Flex
+              align="center"
+              justify="center"
+              style={{
+                height: '100%',
+                left: 0,
+                position: 'absolute',
+                top: 0,
+                width: '100%'
+              }}
+            >
+              <Spinner />
+            </Flex>
           )}
-        </div>
+        </Flex>
 
         {/* Selected check icon */}
         {selected && !updating && (
@@ -205,6 +224,7 @@ const TableRow = (props: Props) => {
             style={{
               height: '100%',
               left: 0,
+              opacity: opacityCell,
               position: 'absolute',
               top: 0,
               width: '100%'
@@ -215,23 +235,6 @@ const TableRow = (props: Props) => {
             </Text>
           </Flex>
         )}
-
-        {/* Spinner */}
-        {updating && (
-          <Flex
-            align="center"
-            justify="center"
-            style={{
-              height: '100%',
-              left: 0,
-              position: 'absolute',
-              top: 0,
-              width: '100%'
-            }}
-          >
-            <Spinner />
-          </Flex>
-        )}
       </LegacyBox>
 
       {/* Filename */}
@@ -239,7 +242,8 @@ const TableRow = (props: Props) => {
         sx={{
           gridColumn: [3],
           gridRow: [2, null, null, 'auto'],
-          marginLeft: [3, null, null, 0]
+          marginLeft: [3, null, null, 0],
+          opacity: opacityCell
         }}
       >
         <Text size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
@@ -252,7 +256,8 @@ const TableRow = (props: Props) => {
         sx={{
           gridColumn: [3, null, null, 4],
           gridRow: [3, null, null, 'auto'],
-          marginLeft: [3, null, null, 0]
+          marginLeft: [3, null, null, 0],
+          opacity: opacityCell
         }}
       >
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
@@ -265,7 +270,8 @@ const TableRow = (props: Props) => {
         sx={{
           display: ['none', null, null, 'block'],
           gridColumn: 5,
-          gridRow: 'auto'
+          gridRow: 'auto',
+          opacity: opacityCell
         }}
       >
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
@@ -278,7 +284,8 @@ const TableRow = (props: Props) => {
         sx={{
           display: ['none', null, null, 'block'],
           gridColumn: 6,
-          gridRow: 'auto'
+          gridRow: 'auto',
+          opacity: opacityCell
         }}
       >
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
@@ -291,7 +298,8 @@ const TableRow = (props: Props) => {
         sx={{
           gridColumn: [3, null, null, 7],
           gridRow: [4, null, null, 'auto'],
-          marginLeft: [3, null, null, 0]
+          marginLeft: [3, null, null, 0],
+          opacity: opacityCell
         }}
       >
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
@@ -305,7 +313,8 @@ const TableRow = (props: Props) => {
           gridColumn: [4, null, null, 8],
           gridRowStart: '1',
           gridRowEnd: ['span 5', null, null, 'auto'],
-          mx: 'auto'
+          mx: 'auto',
+          opacity: opacityCell
         }}
       >
         {/* TODO: DRY */}

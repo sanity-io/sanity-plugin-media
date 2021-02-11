@@ -1,6 +1,6 @@
 import {hues} from '@sanity/color'
 import {CheckmarkCircleIcon, EditIcon, WarningOutlineIcon} from '@sanity/icons'
-import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
+import {Box, Checkbox, Container, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
 import React, {CSSProperties, MouseEvent, RefObject, memo} from 'react'
 import {useDispatch} from 'react-redux'
@@ -22,7 +22,7 @@ type Props = {
   style?: CSSProperties
 }
 
-const Container = styled(Flex)<{picked?: boolean; updating?: boolean}>`
+const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
   background: ${hues.gray[950].hex};
   border: 1px solid transparent;
   border-radius: 3px;
@@ -134,23 +134,16 @@ const Card = (props: Props) => {
 
   return (
     <>
-      <Container direction="column" picked={picked} style={{...style}} updating={item.updating}>
+      <CardContainer direction="column" picked={picked} style={{...style}} updating={item.updating}>
         {/* Image */}
         <Box
           flex={1}
           style={{
             cursor: selected ? 'default' : 'pointer',
-            opacity: opacityContainer,
             position: 'relative'
           }}
         >
-          <div
-            onClick={handleAssetClick}
-            style={{
-              height: '100%',
-              opacity: opacityPreview
-            }}
-          >
+          <div onClick={handleAssetClick} style={{height: '100%', opacity: opacityPreview}}>
             {/* File icon */}
             {isFileAsset(asset) && <FileIcon asset={asset} width="80px" />}
 
@@ -175,6 +168,7 @@ const Card = (props: Props) => {
               style={{
                 height: '100%',
                 left: 0,
+                opacity: opacityContainer,
                 position: 'absolute',
                 top: 0,
                 width: '100%'
@@ -205,7 +199,14 @@ const Card = (props: Props) => {
         </Box>
 
         {/* Footer */}
-        <ContextActionContainer onClick={handleContextActionClick} paddingX={1} paddingY={2}>
+        <ContextActionContainer
+          onClick={handleContextActionClick}
+          paddingX={1}
+          paddingY={2}
+          style={{
+            opacity: opacityContainer
+          }}
+        >
           <Flex align="center">
             {currentDocument ? (
               <EditIcon
@@ -247,20 +248,12 @@ const Card = (props: Props) => {
           >
             <Tooltip
               content={
-                <Box
-                  padding={2}
-                  style={
-                    {
-                      // minWidth: '110px', // TODO: is this necessary?
-                      // textAlign: 'center'
-                    }
-                  }
-                >
-                  {/* <Text size={1}>has references</Text> */}
+                <Container padding={2} width={0}>
                   <Text size={1}>{error.message}</Text>
-                </Box>
+                </Container>
               }
               placement="left"
+              portal
             >
               <Text size={1}>
                 <StyledWarningOutlineIcon color="critical" />
@@ -268,7 +261,7 @@ const Card = (props: Props) => {
             </Tooltip>
           </Box>
         )}
-      </Container>
+      </CardContainer>
     </>
   )
 }
