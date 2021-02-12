@@ -132,6 +132,14 @@ export type Order = {
 
 export type OrderDirection = 'asc' | 'desc'
 
+export type SanityCustomAssetSourceProps = {
+  document?: SanityDocument
+  onClose?: () => void
+  onSelect?: () => void
+  selectedAssets?: (SanityAssetDocument | SanityImageAssetDocument)[]
+  tool?: string
+}
+
 export type SanityReference = {
   _ref: string
   _type: 'reference'

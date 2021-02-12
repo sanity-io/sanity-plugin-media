@@ -57,7 +57,6 @@
     "react-window": "1.8.6",
     "react-window-infinite-loader": "1.0.5",
     "redux": "4.0.5",
-    "redux-devtools-extension": "2.13.8",
     "redux-observable": "1.2.0",
     "rxjs": "6.6.3",
     "styled-components": "5.2.1",

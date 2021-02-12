@@ -1,21 +1,18 @@
 import {Box, Portal, ThemeProvider, ToastProvider, studioTheme} from '@sanity/ui'
-import React, {MouseEvent, useLayoutEffect, useEffect} from 'react'
+import {SanityCustomAssetSourceProps} from '@types'
+import React, {FC, MouseEvent, useLayoutEffect, useEffect} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 
 import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContext'
-import withRedux from './helpers/withRedux'
 import Browser from './components/Browser'
+import ReduxProvider from './components/ReduxProvider'
 import useKeyPress from './hooks/useKeyPress'
 import GlobalStyle from './styled/GlobalStyles'
 import theme from './styled/theme'
 
-type Props = {
-  onClose?: () => void
-  onSelect?: () => void
-  tool?: string
-}
+type Props = SanityCustomAssetSourceProps
 
-const AssetBrowser = (props: Props) => {
+const AssetBrowser: FC<Props> = (props: Props) => {
   const {onClose, onSelect, tool} = props
 
   // Close on escape key press
@@ -43,7 +40,7 @@ const AssetBrowser = (props: Props) => {
   }, [])
 
   useEffect(() => {
-    const sanityContainerEl: HTMLDivElement | null = document.querySelector('#sanity')
+    const sanityContainerEl: HTMLDivElement | null = window.document.querySelector('#sanity')
 
     // Scroll to top if browser is being used as a tool.
     // We do this as we lock body scroll when the plugin is active, and due to overscroll
@@ -82,43 +79,40 @@ const AssetBrowser = (props: Props) => {
   }
 
   return (
-    <ThemeProvider theme={studioTheme}>
-      <LegacyThemeProvider theme={theme}>
-        <ToastProvider>
-          <AssetBrowserDispatchProvider onSelect={onSelect}>
-            <GlobalStyle />
+    <ReduxProvider>
+      <ThemeProvider theme={studioTheme}>
+        <LegacyThemeProvider theme={theme}>
+          <ToastProvider>
+            <AssetBrowserDispatchProvider onSelect={onSelect}>
+              <GlobalStyle />
 
-            {tool ? (
-              <Box
-                style={{
-                  height: '100%',
-                  position: 'relative'
-                }}
-              >
-                <Browser onClose={onClose} />
-              </Box>
-            ) : (
-              <Portal>
-                <Box
-                  onMouseUp={handleStopPropagation}
-                  style={{
-                    bottom: 0,
-                    height: 'auto',
-                    left: 0,
-                    position: 'fixed',
-                    top: 0,
-                    width: '100%'
-                  }}
-                >
+              {tool ? (
+                <Box style={{height: '100%', position: 'relative'}}>
                   <Browser onClose={onClose} />
                 </Box>
-              </Portal>
-            )}
-          </AssetBrowserDispatchProvider>
-        </ToastProvider>
-      </LegacyThemeProvider>
-    </ThemeProvider>
+              ) : (
+                <Portal>
+                  <Box
+                    onMouseUp={handleStopPropagation}
+                    style={{
+                      bottom: 0,
+                      height: 'auto',
+                      left: 0,
+                      position: 'fixed',
+                      top: 0,
+                      width: '100%'
+                    }}
+                  >
+                    <Browser onClose={onClose} />
+                  </Box>
+                </Portal>
+              )}
+            </AssetBrowserDispatchProvider>
+          </ToastProvider>
+        </LegacyThemeProvider>
+      </ThemeProvider>
+    </ReduxProvider>
   )
 }
 
-export default withRedux(AssetBrowser)
+export default AssetBrowser

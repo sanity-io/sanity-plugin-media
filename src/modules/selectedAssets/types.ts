@@ -1,5 +1,5 @@
-import {ImageAsset} from '@types'
+import {SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
 
 // Reducer
 
-export type SelectedAssetsReducerState = ImageAsset[]
+export type SelectedAssetsReducerState = (SanityAssetDocument | SanityImageAssetDocument)[]
