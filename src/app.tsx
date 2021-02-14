@@ -80,7 +80,7 @@ const AssetBrowser: FC<Props> = (props: Props) => {
 
   return (
     <ReduxProvider {...props}>
-      <ThemeProvider theme={studioTheme}>
+      <ThemeProvider scheme="dark" theme={studioTheme}>
         <LegacyThemeProvider theme={theme}>
           <ToastProvider>
             <AssetBrowserDispatchProvider onSelect={onSelect}>

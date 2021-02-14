@@ -74,7 +74,7 @@ const TagsPicked: FC = () => {
         <TagPanel
           actions={['delete', 'edit', 'removeAll', 'search']}
           tags={tagsAppliedToAll}
-          title="Used by all"
+          title={assetsPicked.length === 1 ? 'Used' : 'Used by all'}
         />
       )}
       {tagsAppliedToSome?.length > 0 && (

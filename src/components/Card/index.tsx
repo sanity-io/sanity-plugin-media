@@ -227,7 +227,7 @@ const Card = (props: Props) => {
             )}
 
             <Box marginLeft={2}>
-              <Text size={0} textOverflow="ellipsis">
+              <Text muted size={0} textOverflow="ellipsis">
                 {asset.originalFilename}
               </Text>
             </Box>

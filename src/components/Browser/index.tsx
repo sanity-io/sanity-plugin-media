@@ -1,5 +1,5 @@
 import {MutationEvent} from '@sanity/client'
-import {Box, Card, Flex} from '@sanity/ui'
+import {Card, Flex} from '@sanity/ui'
 import {ImageAsset, Tag} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
@@ -85,8 +85,8 @@ const Browser: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <Notifications />
       <Dialogs />
+      <Notifications />
 
       <Card
         scheme="dark"
