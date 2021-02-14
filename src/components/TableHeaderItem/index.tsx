@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsOrderSet} from '../../modules/assets'
+import {orderSet} from '../../modules/assets'
 
 type Props = {
   field?: string
@@ -28,9 +28,9 @@ const TableHeaderItem: FC<Props> = (props: Props) => {
 
     if (isActive) {
       const direction = order.direction === 'asc' ? 'desc' : 'asc'
-      dispatch(assetsOrderSet(field, direction))
+      dispatch(orderSet({order: {field, direction}}))
     } else {
-      dispatch(assetsOrderSet(field, 'asc'))
+      dispatch(orderSet({order: {field, direction: 'asc'}}))
     }
   }
 

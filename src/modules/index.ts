@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux'
 import {combineEpics} from 'redux-observable'
 
-import assets, {
+import assetsReducer, {
   assetsDeleteEpic,
   assetsDeletePickedEpic,
   assetsFetchEpic,
@@ -17,11 +17,11 @@ import assets, {
   assetsUnpickEpic,
   assetsUpdateEpic
 } from './assets'
-import debug from './debug'
-import dialog, {dialogClearOnAssetUpdateEpic, dialogTagCreateEpic} from './dialog'
-import document from './document'
-import selectedAssets from './selectedAssets'
-import notifications, {
+import debugReducer from './debug'
+import dialogReducer, {dialogClearOnAssetUpdateEpic, dialogTagCreateEpic} from './dialog'
+import documentReducer from './document'
+import selectedAssetsReducer from './selectedAssets'
+import notificationsReducer, {
   notificationsAssetsDeleteErrorEpic,
   notificationsAssetsDeleteCompleteEpic,
   notificationsAssetsTagsAddCompleteEpic,
@@ -32,8 +32,8 @@ import notifications, {
   notificationsTagDeleteCompleteEpic,
   notificationsTagUpdateCompleteEpic
 } from './notifications'
-import search, {searchFacetTagUpdateEpic} from './search'
-import tags, {
+import searchReducer, {searchFacetTagUpdateEpic} from './search'
+import tagsReducer, {
   tagsCreateEpic,
   tagsDeleteEpic,
   tagsFetchEpic,
@@ -82,12 +82,12 @@ export const rootEpic = combineEpics(
 )
 
 export const rootReducer = combineReducers({
-  assets,
-  debug,
-  dialog,
-  document,
-  notifications,
-  search,
-  selectedAssets,
-  tags
+  assets: assetsReducer,
+  debug: debugReducer,
+  dialog: dialogReducer,
+  document: documentReducer,
+  notifications: notificationsReducer,
+  search: searchReducer,
+  selectedAssets: selectedAssetsReducer,
+  tags: tagsReducer
 })

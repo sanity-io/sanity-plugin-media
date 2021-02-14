@@ -5,7 +5,7 @@ import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
-import {searchFacetsRemove} from '../../modules/search'
+import {facetsRemove} from '../../modules/search'
 
 type Props = {
   children: ReactNode
@@ -24,7 +24,7 @@ const SearchFacet: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   const handleClose = () => {
-    dispatch(searchFacetsRemove(facet.name))
+    dispatch(facetsRemove({facetName: facet.name}))
   }
 
   return (

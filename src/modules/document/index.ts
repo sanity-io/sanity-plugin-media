@@ -1,37 +1,10 @@
-import produce from 'immer'
+import {createSlice} from '@reduxjs/toolkit'
+import {SanityDocument} from '@sanity/client'
 
-import {DocumentReducerState} from './types'
+const documentSlice = createSlice({
+  name: 'document',
+  initialState: null as SanityDocument | null,
+  reducers: {}
+})
 
-/***********
- * ACTIONS *
- ***********/
-
-export enum DocumentActionTypes {}
-
-/***********
- * REDUCER *
- ***********/
-
-const initialState: DocumentReducerState = null
-
-export default function documentReducer(
-  state: DocumentReducerState = initialState
-): DocumentReducerState {
-  return produce(state, draft => {
-    /*
-    switch (action.type) {
-      default:
-        break
-    }
-    */
-    return draft
-  })
-}
-
-/*******************
- * ACTION CREATORS *
- *******************/
-
-/*********
- * EPICS *
- *********/
+export default documentSlice.reducer

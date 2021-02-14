@@ -3,9 +3,10 @@ import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {ORDER_OPTIONS, ORDER_DICTIONARY} from '../../constants'
+import {getOrderTitle} from '../../config/orders'
+import {ORDER_OPTIONS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsOrderSet} from '../../modules/assets'
+import {orderSet} from '../../modules/assets'
 
 const OrderSelect: FC = () => {
   // Redux
@@ -21,7 +22,7 @@ const OrderSelect: FC = () => {
           iconRight={SelectIcon}
           mode="ghost"
           padding={3}
-          text={order?.title}
+          text={getOrderTitle(order.field, order.direction)}
         />
       }
       id="order"
@@ -34,11 +35,11 @@ const OrderSelect: FC = () => {
                   disabled={order.field === item.field && order.direction === item.direction}
                   fontSize={1}
                   key={index}
-                  onClick={() => {
-                    dispatch(assetsOrderSet(item.field, item.direction))
-                  }}
+                  onClick={() =>
+                    dispatch(orderSet({order: {direction: item.direction, field: item.field}}))
+                  }
                   padding={2}
-                  text={ORDER_DICTIONARY[item.field][item.direction]}
+                  text={getOrderTitle(item.field, item.direction)}
                 />
               )
             }

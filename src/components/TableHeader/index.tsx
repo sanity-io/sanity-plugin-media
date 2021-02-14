@@ -7,8 +7,8 @@ import {Box as LegacyBox} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {
-  assetsPickAll,
-  assetsPickClear,
+  pickAll,
+  pickClear,
   selectAssetsLength,
   selectAssetsPickedLength
 } from '../../modules/assets'
@@ -41,9 +41,9 @@ const TableHeader: FC = () => {
     e.stopPropagation()
 
     if (allSelected) {
-      dispatch(assetsPickClear())
+      dispatch(pickClear())
     } else {
-      dispatch(assetsPickAll())
+      dispatch(pickAll())
     }
   }
 

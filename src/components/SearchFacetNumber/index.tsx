@@ -8,8 +8,8 @@ import {
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {SEARCH_FACET_OPERATORS} from '../../constants'
-import {searchFacetsUpdate} from '../../modules/search'
+import {operators} from '../../config/searchFacets'
+import {facetsUpdate} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 import TextInputNumber from '../TextInputNumber'
 
@@ -29,30 +29,15 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
     : modifiers?.[0]
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
-    dispatch(
-      searchFacetsUpdate({
-        name: facet.name,
-        operatorType
-      })
-    )
+    dispatch(facetsUpdate({name: facet.name, operatorType}))
   }
 
   const handleModifierClick = (modifier: SearchFacetInputNumberModifier) => {
-    dispatch(
-      searchFacetsUpdate({
-        name: facet.name,
-        modifier: modifier.name
-      })
-    )
+    dispatch(facetsUpdate({name: facet.name, modifier: modifier.name}))
   }
 
   const handleValueChange = (value: number) => {
-    dispatch(
-      searchFacetsUpdate({
-        name: facet.name,
-        value
-      })
-    )
+    dispatch(facetsUpdate({name: facet.name, value}))
   }
 
   const selectedOperatorType: SearchFacetOperatorType = facet.operatorType ?? 'greaterThan'
@@ -67,7 +52,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
               fontSize={1}
               iconRight={SelectIcon}
               padding={2} //
-              text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
+              text={operators[selectedOperatorType].label}
             />
           }
           id="operators"
@@ -82,7 +67,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
                       padding={2}
-                      text={SEARCH_FACET_OPERATORS[operatorType].label}
+                      text={operators[operatorType].label}
                     />
                   )
                 }

@@ -8,8 +8,8 @@ import {
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {SEARCH_FACET_OPERATORS} from '../../constants'
-import {searchFacetsUpdate} from '../../modules/search'
+import {operators} from '../../config/searchFacets'
+import {facetsUpdate} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
@@ -27,21 +27,11 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
   const selectedItem = options?.find(v => v.name === facet?.value)
 
   const handleListItemClick = (option: SearchFacetInputSelectListItemProps) => {
-    dispatch(
-      searchFacetsUpdate({
-        name: facet.name,
-        value: option.name
-      })
-    )
+    dispatch(facetsUpdate({name: facet.name, value: option.name}))
   }
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
-    dispatch(
-      searchFacetsUpdate({
-        name: facet.name,
-        operatorType
-      })
-    )
+    dispatch(facetsUpdate({name: facet.name, operatorType}))
   }
 
   const selectedOperatorType: SearchFacetOperatorType = facet?.operatorType ?? 'is'
@@ -59,7 +49,7 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
               style={{
                 marginRight: '4px'
               }}
-              text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
+              text={operators[selectedOperatorType].label}
             />
           }
           id="operators"
@@ -74,7 +64,7 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
                       padding={2}
-                      text={SEARCH_FACET_OPERATORS[operatorType].label}
+                      text={operators[operatorType].label}
                     />
                   )
                 }

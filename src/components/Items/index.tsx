@@ -8,8 +8,8 @@ import InfiniteLoader from 'react-window-infinite-loader'
 import {TAGS_PANEL_WIDTH} from '../../constants'
 import useBreakpointIndex from '../../hooks/useBreakpointIndex'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsLoadNextPage, selectAssets} from '../../modules/assets'
-import {tagsPanelVisibleSet} from '../../modules/tags'
+import {loadNextPage, selectAssets} from '../../modules/assets'
+import {panelVisibleSet} from '../../modules/tags'
 import Cards from '../Cards'
 import Table from '../Table'
 
@@ -43,7 +43,7 @@ const Items: FC = () => {
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const handleLoadMoreItems = () => {
     if (!fetching) {
-      dispatch(assetsLoadNextPage())
+      dispatch(loadNextPage())
     }
     return new Promise(() => {})
   }
@@ -53,7 +53,7 @@ const Items: FC = () => {
   // - Hide tag panel on smaller breakpoints
   useEffect(() => {
     if (breakpointIndex <= 1 && tagsPanelVisible) {
-      dispatch(tagsPanelVisibleSet(false))
+      dispatch(panelVisibleSet({panelVisible: false}))
     }
   }, [breakpointIndex])
 

@@ -5,9 +5,9 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import Select from 'react-select'
 
-import {SEARCH_FACET_OPERATORS} from '../../constants'
+import {operators} from '../../config/searchFacets'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {searchFacetsUpdate} from '../../modules/search'
+import {facetsUpdate} from '../../modules/search'
 import {selectTags} from '../../modules/tags'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/single'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
@@ -27,7 +27,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
 
   const handleChange = (option: ReactSelectOption) => {
     dispatch(
-      searchFacetsUpdate({
+      facetsUpdate({
         name: facet.name,
         value: option
       })
@@ -36,7 +36,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
-      searchFacetsUpdate({
+      facetsUpdate({
         name: facet.name,
         operatorType
       })
@@ -55,7 +55,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
               fontSize={1}
               iconRight={SelectIcon}
               padding={2} //
-              text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
+              text={operators[selectedOperatorType].label}
             />
           }
           id="operators"
@@ -70,7 +70,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
                       padding={2}
-                      text={SEARCH_FACET_OPERATORS[operatorType].label}
+                      text={operators[operatorType].label}
                     />
                   )
                 }
@@ -83,7 +83,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
       )}
 
       {/* Value */}
-      {!SEARCH_FACET_OPERATORS[selectedOperatorType].hideInput && (
+      {!operators[selectedOperatorType].hideInput && (
         <Box marginX={1} style={{width: '160px'}}>
           <Select
             components={reactSelectComponents}

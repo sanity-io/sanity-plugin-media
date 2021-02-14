@@ -4,8 +4,8 @@ import {SearchFacetInputStringProps, SearchFacetOperatorType} from '@types'
 import React, {ChangeEvent, FC} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {SEARCH_FACET_OPERATORS} from '../../constants'
-import {searchFacetsUpdate} from '../../modules/search'
+import {operators} from '../../config/searchFacets'
+import {facetsUpdate} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
@@ -19,21 +19,11 @@ const SearchFacetString: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
-    dispatch(
-      searchFacetsUpdate({
-        name: facet.name,
-        operatorType
-      })
-    )
+    dispatch(facetsUpdate({name: facet.name, operatorType}))
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      searchFacetsUpdate({
-        name: facet.name,
-        value: e.target.value
-      })
-    )
+    dispatch(facetsUpdate({name: facet.name, value: e.target.value}))
   }
 
   const selectedOperatorType: SearchFacetOperatorType = facet.operatorType
@@ -48,7 +38,7 @@ const SearchFacetString: FC<Props> = (props: Props) => {
               fontSize={1}
               iconRight={SelectIcon}
               padding={2} //
-              text={SEARCH_FACET_OPERATORS[selectedOperatorType].label}
+              text={operators[selectedOperatorType].label}
             />
           }
           id="operators"
@@ -63,7 +53,7 @@ const SearchFacetString: FC<Props> = (props: Props) => {
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
                       padding={2}
-                      text={SEARCH_FACET_OPERATORS[operatorType].label}
+                      text={operators[operatorType].label}
                     />
                   )
                 }
@@ -76,7 +66,7 @@ const SearchFacetString: FC<Props> = (props: Props) => {
       )}
 
       {/* Value */}
-      {!SEARCH_FACET_OPERATORS[selectedOperatorType].hideInput && (
+      {!operators[selectedOperatorType].hideInput && (
         <Box marginLeft={1} style={{maxWidth: '125px'}}>
           <TextInput
             fontSize={1}

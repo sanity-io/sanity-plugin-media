@@ -1,22 +1,25 @@
 import {hues} from '@sanity/color'
 import {ArrowDownIcon, ArrowUpIcon, CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text} from '@sanity/ui'
-import {Tag, TagActions, TagItem} from '@types'
+import {SearchFacetInputSearchableProps, Tag, TagActions, TagItem} from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
+import {inputs} from '../../config/searchFacets'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {
-  dialogShowConfirmAssetsTagAdd,
-  dialogShowConfirmDeleteTag,
-  dialogShowConfirmAssetsTagRemove,
-  dialogShowTagEdit
+  showConfirmAssetsTagAdd,
+  showConfirmDeleteTag,
+  showConfirmAssetsTagRemove,
+  showTagEdit
 } from '../../modules/dialog'
 import {
-  searchFacetsRemove,
-  searchFacetTagAddOrUpdate,
+  facetsAdd,
+  facetsRemove,
+  facetsUpdate,
+  selectHasSearchFacetTag,
   selectIsSearchFacetTag
 } from '../../modules/search'
 
@@ -45,31 +48,50 @@ const Tag: FC<Props> = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
   const assetsPicked = useTypedSelector(selectAssetsPicked)
+  const hasSearchFacetTag = useTypedSelector(selectHasSearchFacetTag)
   const isSearchFacetTag = useTypedSelector(state => selectIsSearchFacetTag(state, tag?.tag?._id))
 
   // Callbacks
   const handleSearchFacetTagRemove = () => {
-    dispatch(searchFacetsRemove('tag'))
+    dispatch(facetsRemove({facetName: 'tag'}))
   }
 
   const handleShowAddTagToAssetsDialog = () => {
-    dispatch(dialogShowConfirmAssetsTagAdd({assetsPicked, tag: tag.tag}))
+    dispatch(showConfirmAssetsTagAdd({assetsPicked, tag: tag.tag}))
   }
 
   const handleShowRemoveTagFromAssetsDialog = () => {
-    dispatch(dialogShowConfirmAssetsTagRemove({assetsPicked, tag: tag.tag}))
+    dispatch(showConfirmAssetsTagRemove({assetsPicked, tag: tag.tag}))
   }
 
   const handleShowTagDeleteDialog = () => {
-    dispatch(dialogShowConfirmDeleteTag({tag: tag.tag}))
+    dispatch(showConfirmDeleteTag({tag: tag.tag}))
   }
 
   const handleShowTagEditDialog = () => {
-    dispatch(dialogShowTagEdit(tag?.tag?._id))
+    dispatch(showTagEdit({tagId: tag?.tag?._id}))
   }
 
   const handleSearchFacetTagAddOrUpdate = () => {
-    dispatch(searchFacetTagAddOrUpdate(tag?.tag))
+    const searchFacet = {
+      ...inputs.tag,
+      value: {
+        label: tag?.tag?.name?.current,
+        value: tag?.tag?._id
+      }
+    } as SearchFacetInputSearchableProps
+
+    if (hasSearchFacetTag) {
+      dispatch(
+        facetsUpdate({
+          name: 'tag',
+          operatorType: 'includes',
+          value: searchFacet.value
+        })
+      )
+    } else {
+      dispatch(facetsAdd({facet: searchFacet}))
+    }
   }
 
   return (

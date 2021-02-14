@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux'
 
 import {FACETS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {searchFacetsAdd, searchFacetsClear} from '../../modules/search'
+import {facetsAdd, facetsClear} from '../../modules/search'
 
 const SearchFacetsControl: FC = () => {
   // Redux
@@ -64,7 +64,7 @@ const SearchFacetsControl: FC = () => {
                 disabled={isPresent}
                 fontSize={1}
                 key={facet.name}
-                onClick={() => dispatch(searchFacetsAdd(facet))}
+                onClick={() => dispatch(facetsAdd({facet}))}
                 padding={2}
                 text={facet.title}
               />
@@ -96,12 +96,7 @@ const SearchFacetsControl: FC = () => {
 
       {/* Clear facets button */}
       {searchFacets.length > 0 && (
-        <Button
-          fontSize={1}
-          mode="bleed"
-          onClick={() => dispatch(searchFacetsClear())}
-          text="Clear"
-        />
+        <Button fontSize={1} mode="bleed" onClick={() => dispatch(facetsClear())} text="Clear" />
       )}
     </Flex>
   )

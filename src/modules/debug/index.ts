@@ -1,64 +1,27 @@
-import produce from 'immer'
+import {PayloadAction, createSlice} from '@reduxjs/toolkit'
 
-import {
-  DebugActions,
-  DebugReducerState,
-  DebugSetBadConnectionAction,
-  DebugToggleEnabledAction
-} from './types'
-
-/***********
- * ACTIONS *
- ***********/
-
-export enum DebugActionTypes {
-  SET_BAD_CONNECTION = 'DEBUG_SET_BAD_CONNECTION',
-  TOGGLE_ENABLED = 'DEBUG_TOGGLE_ENABLED'
+type DebugReducerState = {
+  badConnection: boolean
+  enabled: boolean
 }
 
-/***********
- * REDUCER *
- ***********/
-
-const initialState: DebugReducerState = {
+const initialState = {
   badConnection: false,
   enabled: false
-}
+} as DebugReducerState
 
-export default function debugReducer(
-  state: DebugReducerState = initialState,
-  action: DebugActions
-): DebugReducerState {
-  return produce(state, draft => {
-    switch (action.type) {
-      case DebugActionTypes.SET_BAD_CONNECTION:
-        draft.badConnection = action.payload?.badConnection
-        break
-      case DebugActionTypes.TOGGLE_ENABLED:
-        draft.enabled = !draft.enabled
-        break
-      default:
-        break
+const debugSlice = createSlice({
+  name: 'debug',
+  initialState,
+  reducers: {
+    setBadConnection(state, action: PayloadAction<boolean>) {
+      state.badConnection = action.payload
+    },
+    toggleEnabled(state) {
+      state.enabled = !state.enabled
     }
-    return draft
-  })
-}
-
-/*******************
- * ACTION CREATORS *
- *******************/
-
-export const debugSetBadConnection = (badConnection: boolean): DebugSetBadConnectionAction => ({
-  payload: {
-    badConnection
-  },
-  type: DebugActionTypes.SET_BAD_CONNECTION
+  }
 })
 
-export const debugToggleEnabled = (): DebugToggleEnabledAction => ({
-  type: DebugActionTypes.TOGGLE_ENABLED
-})
-
-/*********
- * EPICS *
- *********/
+export const {setBadConnection, toggleEnabled} = debugSlice.actions
+export default debugSlice.reducer

@@ -11,9 +11,9 @@ import {AspectRatio} from 'theme-ui'
 import * as yup from 'yup'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsUpdate, selectAssetById} from '../../modules/assets'
-import {dialogRemove, dialogShowConfirmDeleteAsset} from '../../modules/dialog'
-import {selectTags, selectTagSelectOptions, tagsCreate} from '../../modules/tags'
+import {selectAssetById, updateRequest} from '../../modules/assets'
+import {remove, showConfirmDeleteAsset} from '../../modules/dialog'
+import {createRequest, selectTags, selectTagSelectOptions} from '../../modules/tags'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import imageDprUrl from '../../utils/imageDprUrl'
 import sanitizeFormData from '../../utils/sanitizeFormData'
@@ -101,7 +101,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleClose = () => {
-    dispatch(dialogRemove(id))
+    dispatch(remove({id}))
   }
 
   const handleDelete = () => {
@@ -110,7 +110,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     }
 
     dispatch(
-      dialogShowConfirmDeleteAsset({
+      showConfirmDeleteAsset({
         asset: assetItem?.asset,
         closeDialogId: assetItem?.asset._id
       })
@@ -132,7 +132,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   const handleCreateTag = (tagName: string) => {
     // Dispatch action to create new tag
     dispatch(
-      tagsCreate({
+      createRequest({
         assetId: currentAsset?._id,
         name: tagName
       })
@@ -148,7 +148,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(
-      assetsUpdate({
+      updateRequest({
         asset: assetItem?.asset,
         closeDialogId: assetItem?.asset._id,
         formData: {

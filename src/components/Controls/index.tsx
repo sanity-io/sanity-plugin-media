@@ -5,8 +5,8 @@ import {useDispatch} from 'react-redux'
 import {Flex as LegacyFlex} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {dialogShowSearchFacets, dialogShowTags} from '../../modules/dialog'
-import {tagsPanelVisibleSet} from '../../modules/tags'
+import {showSearchFacets, showTags} from '../../modules/dialog'
+import {panelVisibleSet} from '../../modules/tags'
 import ButtonViewGroup from '../ButtonViewGroup'
 import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
@@ -25,15 +25,15 @@ const Controls: FC = () => {
 
   // Callbacks
   const handleShowSearchFacetDialog = () => {
-    dispatch(dialogShowSearchFacets())
+    dispatch(showSearchFacets())
   }
 
   const handleShowTagsDialog = () => {
-    dispatch(dialogShowTags())
+    dispatch(showTags())
   }
 
   const toggleTagsPanelToggle = () => {
-    dispatch(tagsPanelVisibleSet(!tagsPanelVisible))
+    dispatch(panelVisibleSet({panelVisible: !tagsPanelVisible}))
   }
 
   return (

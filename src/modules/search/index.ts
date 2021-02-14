@@ -1,207 +1,80 @@
-import {createSelector} from '@reduxjs/toolkit'
-import {
-  SearchFacetInputProps,
-  SearchFacetInputSearchableProps,
-  SearchFacetOperatorType,
-  Tag
-} from '@types'
-import produce from 'immer'
+import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
+import {SearchFacetInputProps, SearchFacetOperatorType} from '@types'
+import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
-import {StateObservable} from 'redux-observable'
-import {empty, of, Observable} from 'rxjs'
+import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
-import {isOfType} from 'typesafe-actions'
 
-import {TagsActions} from '../tags/types'
-import {TagsActionTypes} from '../tags'
 import {RootReducerState} from '../types'
-import {
-  SearchActions,
-  SearchReducerState,
-  SearchFacetsTagAddOrUpdate,
-  SearchFacetsAddAction,
-  SearchFacetsClearAction,
-  SearchFacetsRemoveAction,
-  SearchFacetsUpdateAction,
-  SearchQuerySetAction
-} from './types'
+import {updateComplete} from '../tags'
 
-/***********
- * ACTIONS *
- ***********/
-
-export enum SearchActionTypes {
-  SEARCH_FACETS_ADD = 'SEARCH_FACETS_ADD',
-  SEARCH_FACETS_CLEAR = 'SEARCH_FACETS_CLEAR',
-  SEARCH_FACETS_REMOVE = 'SEARCH_FACETS_REMOVE',
-  SEARCH_FACETS_TAG_ADD_OR_UPDATE = 'SEARCH_FACET_TAG_ADD_OR_UPDATE',
-  SEARCH_FACETS_UPDATE = 'SEARCH_FACETS_UPDATE',
-  SEARCH_QUERY_SET = 'SEARCH_QUERY_SET'
+type SearchState = {
+  facets: SearchFacetInputProps[]
+  query: string
 }
 
-/***********
- * REDUCER *
- ***********/
-
-const initialState: SearchReducerState = {
+const initialState = {
   facets: [],
   query: ''
-}
+} as SearchState
 
-export default function searchReducer(
-  state: SearchReducerState = initialState,
-  action: SearchActions
-): SearchReducerState {
-  return produce(state, draft => {
-    switch (action.type) {
-      /**
-       * A search facet has been added
-       */
-      case SearchActionTypes.SEARCH_FACETS_ADD:
-        draft.facets.push(action.payload.facet)
-        break
-      /**
-       * All search facet have been clear
-       */
-      case SearchActionTypes.SEARCH_FACETS_CLEAR:
-        draft.facets = []
-        break
-      /**
-       * A single search facet has been removed
-       */
-      case SearchActionTypes.SEARCH_FACETS_REMOVE:
-        draft.facets = draft.facets.filter(facet => facet.name !== action.payload.facetName)
-        break
+const searchSlice = createSlice({
+  name: 'search',
+  initialState,
+  reducers: {
+    // Add search facet
+    facetsAdd(state, action: PayloadAction<{facet: SearchFacetInputProps}>) {
+      state.facets.push(action.payload.facet)
+    },
+    // Clear all search facets
+    facetsClear(state) {
+      state.facets = []
+    },
+    // Remove search facet by name
+    facetsRemove(state, action: PayloadAction<{facetName: string}>) {
+      state.facets = state.facets.filter(facet => facet.name !== action.payload.facetName)
+    },
+    // Update an existing search facet
+    facetsUpdate(
+      state,
+      action: PayloadAction<{
+        modifier?: string
+        name: string
+        operatorType?: SearchFacetOperatorType
+        value?: any // TODO: type correctly
+      }>
+    ) {
+      const {modifier, name, operatorType, value} = action.payload
 
-      case SearchActionTypes.SEARCH_FACETS_TAG_ADD_OR_UPDATE: {
-        const tag = action?.payload?.tag
-        const searchFacetTagIndex = draft.facets.findIndex(facet => facet.name === 'tag')
-
-        // TODO: DRY
-        const searchFacet = {
-          contexts: 'all',
-          field: 'opt.media.tags',
-          name: 'tag',
-          operatorType: 'references',
-          operatorTypes: ['references', 'doesNotReference', null, 'empty', 'notEmpty'],
-          title: 'Tags',
-          type: 'searchable',
-          value: {
-            label: tag?.name?.current,
-            value: tag?._id
+      state.facets.forEach((facet, index) => {
+        if (facet.name === name) {
+          if (facet.type === 'number' && modifier) {
+            facet.modifier = modifier
           }
-        } as SearchFacetInputSearchableProps
-
-        if (searchFacetTagIndex >= 0) {
-          draft.facets[searchFacetTagIndex] = searchFacet
-        } else {
-          draft.facets.push(searchFacet as SearchFacetInputSearchableProps)
+          if (operatorType) {
+            facet.operatorType = operatorType
+          }
+          if (typeof value !== 'undefined') {
+            state.facets[index].value = value
+          }
         }
-
-        break
-      }
-
-      /**
-       * A single search facet has been updated
-       */
-      case SearchActionTypes.SEARCH_FACETS_UPDATE: {
-        const {modifier, name, operatorType, value} = action.payload
-
-        draft.facets.forEach((facet, index) => {
-          if (facet.name === name) {
-            if (facet.type === 'number' && modifier) {
-              facet.modifier = modifier
-            }
-            if (operatorType) {
-              facet.operatorType = operatorType
-            }
-            if (typeof value !== 'undefined') {
-              draft.facets[index].value = value
-            }
-          }
-        })
-        break
-      }
-
-      case SearchActionTypes.SEARCH_QUERY_SET:
-        draft.query = action.payload?.searchQuery
-        break
-
-      default:
-        break
+      })
+    },
+    // Update existing search query
+    querySet(state, action: PayloadAction<{searchQuery: string}>) {
+      state.query = action.payload?.searchQuery
     }
-    return draft
-  })
-}
-
-/*******************
- * ACTION CREATORS *
- *******************/
-
-// Add search facet
-export const searchFacetsAdd = (facet: SearchFacetInputProps): SearchFacetsAddAction => ({
-  payload: {facet},
-  type: SearchActionTypes.SEARCH_FACETS_ADD
+  }
 })
 
-// Clear search facets
-export const searchFacetsClear = (): SearchFacetsClearAction => ({
-  type: SearchActionTypes.SEARCH_FACETS_CLEAR
-})
+// Epics
 
-// Remove search facet
-export const searchFacetsRemove = (facetName: string): SearchFacetsRemoveAction => ({
-  payload: {facetName},
-  type: SearchActionTypes.SEARCH_FACETS_REMOVE
-})
+type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 
-// Update search facet
-export const searchFacetsUpdate = ({
-  modifier,
-  name,
-  operatorType,
-  value
-}: {
-  modifier?: string
-  name: string
-  operatorType?: SearchFacetOperatorType
-  value?: any // TODO: type correctly
-}): SearchFacetsUpdateAction => ({
-  payload: {
-    modifier,
-    name,
-    operatorType,
-    value
-  },
-  type: SearchActionTypes.SEARCH_FACETS_UPDATE
-})
-
-// Add or update existing tag search facet
-export const searchFacetTagAddOrUpdate = (tag: Tag): SearchFacetsTagAddOrUpdate => ({
-  payload: {tag},
-  type: SearchActionTypes.SEARCH_FACETS_TAG_ADD_OR_UPDATE
-})
-
-// Set search query
-export const searchQuerySet = (searchQuery: string): SearchQuerySetAction => ({
-  payload: {searchQuery},
-  type: SearchActionTypes.SEARCH_QUERY_SET
-})
-
-/*********
- * EPICS *
- *********/
-
-/**
- * Listen for tag update completions:
- * - update tag search facet (if present and set to the recently deleted tag)
- */
-export const searchFacetTagUpdateEpic = (
-  action$: Observable<TagsActions>,
-  state$: StateObservable<RootReducerState>
-): Observable<SearchActions> =>
+// On tag update success -> update existing tag search facet (if present)
+export const searchFacetTagUpdateEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(isOfType(TagsActionTypes.UPDATE_COMPLETE)),
+    filter(updateComplete.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {tagId} = action.payload
@@ -212,7 +85,7 @@ export const searchFacetTagUpdateEpic = (
       if (currentSearchFacetTag?.type === 'searchable') {
         if (currentSearchFacetTag.value?.value === tagId) {
           return of(
-            searchFacetsUpdate({
+            searchSlice.actions.facetsUpdate({
               name: 'tag',
               value: {
                 label: tagItem?.tag?.name?.current,
@@ -227,13 +100,11 @@ export const searchFacetTagUpdateEpic = (
     })
   )
 
-/*************
- * SELECTORS *
- *************/
+// Selectors
 
 export const selectHasSearchFacetTag: Selector<RootReducerState, boolean> = createSelector(
   state => state.search.facets,
-  searchFacets => !!searchFacets?.find(facet => facet.name === 'tag')?.value
+  searchFacets => !!searchFacets?.find(facet => facet.name === 'tag')
 )
 
 export const selectIsSearchFacetTag = createSelector(
@@ -258,3 +129,7 @@ export const selectIsSearchFacetTag = createSelector(
     return false
   }
 )
+
+export const {facetsAdd, facetsClear, facetsRemove, facetsUpdate, querySet} = searchSlice.actions
+
+export default searchSlice.reducer

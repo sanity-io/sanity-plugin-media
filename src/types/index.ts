@@ -1,7 +1,5 @@
 import {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
-import {ReactNode} from 'react'
-import {AssetsActions} from '../modules/assets/types'
-import {TagsActions} from '../modules/tags/types'
+import {AnyAction} from 'redux'
 
 type CustomFields = {
   altText?: string
@@ -62,12 +60,12 @@ export type DialogAssetEdit = {
 
 export type DialogConfirm = {
   closeDialogId?: string
-  confirmCallbackAction: AssetsActions | TagsActions
+  confirmCallbackAction: AnyAction // TODO: reconsider
   confirmText: string
-  description?: ReactNode
+  description?: string
   headerTitle: string
   id: string
-  title: ReactNode
+  title: string
   tone: 'critical' | 'primary'
   type: 'confirm'
 }
@@ -127,7 +125,6 @@ export type MarkDef = {_key: string; _type: string}
 export type Order = {
   direction: OrderDirection
   field: string
-  title: string
 }
 
 export type OrderDirection = 'asc' | 'desc'
@@ -203,6 +200,19 @@ export type SearchFacetInputStringProps = SearchFacetInputCommon & {
   type: 'string'
   value?: string
 }
+
+export type SearchFacetName =
+  | 'altText'
+  | 'description'
+  | 'height'
+  | 'inUse'
+  | 'isOpaque'
+  | 'orientation'
+  | 'size'
+  | 'tag'
+  | 'title'
+  | 'type'
+  | 'width'
 
 export type SearchFacetOperatorType =
   | 'doesNotInclude'

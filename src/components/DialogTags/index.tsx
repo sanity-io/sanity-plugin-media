@@ -4,7 +4,7 @@ import {DialogTags} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {dialogClear} from '../../modules/dialog'
+import {clear} from '../../modules/dialog'
 import Tags from '../Tags'
 
 type Props = {
@@ -23,7 +23,7 @@ const DialogTags: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleClose = useCallback(() => {
-    dispatch(dialogClear())
+    dispatch(clear())
   }, [])
 
   return (

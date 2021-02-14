@@ -8,15 +8,15 @@ import {useDispatch} from 'react-redux'
 
 import {TAG_DOCUMENT_NAME} from '../../constants'
 import {
-  assetsListenerDeleteQueue,
-  assetsListenerUpdateQueue,
-  assetsLoadPageIndex
+  listenerDeleteQueue as assetsListenerDeleteQueue,
+  listenerUpdateQueue as assetsListenerUpdateQueue,
+  loadPageIndex
 } from '../../modules/assets'
 import {
-  tagsFetch,
-  tagsListenerCreateQueue,
-  tagsListenerDeleteQueue,
-  tagsListenerUpdateQueue
+  fetchRequest,
+  listenerCreateQueue,
+  listenerDeleteQueue,
+  listenerUpdateQueue
 } from '../../modules/tags'
 import Controls from '../Controls'
 import DebugControls from '../DebugControls'
@@ -42,11 +42,11 @@ const Browser: FC<Props> = (props: Props) => {
     const {documentId, result, transition} = update
 
     if (transition === 'disappear') {
-      dispatch(assetsListenerDeleteQueue(documentId))
+      dispatch(assetsListenerDeleteQueue({assetId: documentId}))
     }
 
     if (transition === 'update') {
-      dispatch(assetsListenerUpdateQueue(result as ImageAsset))
+      dispatch(assetsListenerUpdateQueue({asset: result as ImageAsset}))
     }
   }
 
@@ -54,25 +54,25 @@ const Browser: FC<Props> = (props: Props) => {
     const {documentId, result, transition} = update
 
     if (transition === 'appear') {
-      dispatch(tagsListenerCreateQueue(result as Tag))
+      dispatch(listenerCreateQueue({tag: result as Tag}))
     }
 
     if (transition === 'disappear') {
-      dispatch(tagsListenerDeleteQueue(documentId))
+      dispatch(listenerDeleteQueue({tagId: documentId}))
     }
 
     if (transition === 'update') {
-      dispatch(tagsListenerUpdateQueue(result as Tag))
+      dispatch(listenerUpdateQueue({tag: result as Tag}))
     }
   }
 
   // Effects
   useEffect(() => {
     // Fetch assets: first page
-    dispatch(assetsLoadPageIndex(0))
+    dispatch(loadPageIndex({pageIndex: 0}))
 
     // Fetch all tags
-    dispatch(tagsFetch())
+    dispatch(fetchRequest())
 
     // Listen for asset + tag changes
     // (Remember that Sanity listeners ignore joins, order clauses and projections!)
