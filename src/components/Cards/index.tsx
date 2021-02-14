@@ -38,8 +38,8 @@ const VirtualCell = memo((props: GridChildComponentProps) => {
   const assetId = item?.asset?._id
 
   // Add padding to virtual cells
-  const MARGIN_X = 2
-  const MARGIN_Y = 2
+  const MARGIN_X = 3
+  const MARGIN_Y = 3
 
   const cellStyle = {
     ...style,

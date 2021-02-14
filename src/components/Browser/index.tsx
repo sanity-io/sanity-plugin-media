@@ -108,13 +108,14 @@ const Browser: FC<Props> = (props: Props) => {
           {/* Browser Controls */}
           <Controls />
 
-          <Box flex={1} style={{position: 'relative'}}>
-            <Items />
-            <TagsPanel />
-          </Box>
+          <Flex flex={1} style={{position: 'relative'}}>
+            <Flex direction="column" flex={1}>
+              <PickedBar />
+              <Items />
+            </Flex>
 
-          {/* Items */}
-          <PickedBar />
+            <TagsPanel />
+          </Flex>
 
           {/* Debug */}
           <DebugControls />

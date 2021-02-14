@@ -5,7 +5,6 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 
-import {TAGS_PANEL_WIDTH} from '../../constants'
 import useBreakpointIndex from '../../hooks/useBreakpointIndex'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssets} from '../../modules/assets'
@@ -72,7 +71,7 @@ const Items: FC = () => {
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
 
   return (
-    <Box style={{height: '100%'}}>
+    <Box flex={1}>
       {isEmpty && (
         <Box padding={4}>
           <Text size={1} weight="semibold">
@@ -83,8 +82,6 @@ const Items: FC = () => {
       {!isEmpty && (view === 'grid' || 'table') && (
         <AutoSizer>
           {({height, width}) => {
-            const itemsWidth = tagsPanelVisible ? width - TAGS_PANEL_WIDTH : width
-
             return (
               <InfiniteLoader
                 isItemLoaded={isItemLoaded}
@@ -101,7 +98,7 @@ const Items: FC = () => {
                         itemCount={itemCount}
                         onItemsRendered={onItemsRendered}
                         ref={ref}
-                        width={itemsWidth}
+                        width={width}
                       />
                     )
                   }
@@ -139,7 +136,7 @@ const Items: FC = () => {
                         itemCount={itemCount}
                         onItemsRendered={newItemsRendered}
                         ref={ref}
-                        width={itemsWidth}
+                        width={width}
                       />
                     )
                   }

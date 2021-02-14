@@ -1,20 +1,12 @@
-import {Box, Button, Flex, Inline, Text} from '@sanity/ui'
+import {black, hues} from '@sanity/color'
+import {Button, Flex, Label} from '@sanity/ui'
 import pluralize from 'pluralize'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
-import styled from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
-
-const Container = styled(Box)(({theme}) => {
-  return {
-    borderTop: `1px solid ${theme.sanity.color.muted.default.disabled.border}`,
-    position: 'relative',
-    width: '100vw'
-  }
-})
 
 const PickedBar: FC = () => {
   // Redux
@@ -35,29 +27,54 @@ const PickedBar: FC = () => {
   }
 
   return (
-    <Container>
-      <Flex align="center" justify="flex-start" paddingX={3} paddingY={2}>
-        <Inline space={1}>
-          <Box marginRight={2}>
-            <Text size={1}>
-              {assetsPicked.length} {pluralize('asset', assetsPicked.length)} selected
-            </Text>
-          </Box>
+    <Flex
+      align="center"
+      justify="flex-start"
+      paddingX={3}
+      style={{
+        background: hues.gray?.[900].hex,
+        borderBottom: `1px solid ${hues.gray?.[900].hex}`,
+        height: '2.0em',
+        position: 'relative'
+      }}
+    >
+      <Flex align="center">
+        <Label
+          size={0}
+          style={{
+            color: 'inherit'
+          }}
+        >
+          {assetsPicked.length} {pluralize('asset', assetsPicked.length)} selected
+        </Label>
 
-          {/* Deselect button */}
-          <Button fontSize={1} mode="bleed" onClick={handlePickClear} text="Deselect" />
-
-          {/* Delete button */}
+        {/* Deselect button */}
+        <Flex marginLeft={4} marginRight={3}>
           <Button
-            fontSize={1}
             mode="bleed"
-            onClick={handleDeletePicked}
-            text="Delete"
-            tone="critical"
-          />
-        </Inline>
+            onClick={handlePickClear}
+            style={{
+              background: 'none'
+            }}
+          >
+            <Label size={0}>Deselect</Label>
+          </Button>
+        </Flex>
+
+        {/* Delete button */}
+        <Button
+          fontSize={1}
+          mode="bleed"
+          onClick={handleDeletePicked}
+          style={{
+            background: 'none'
+          }}
+          tone="critical"
+        >
+          <Label size={0}>Delete</Label>
+        </Button>
       </Flex>
-    </Container>
+    </Flex>
   )
 }
 

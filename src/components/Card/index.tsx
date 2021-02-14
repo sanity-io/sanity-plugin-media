@@ -23,9 +23,8 @@ type Props = {
 }
 
 const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
-  background: ${hues.gray[950].hex};
+  /* background: ${hues.gray[950].hex}; */
   border: 1px solid transparent;
-  /* border-radius: 3px; */
   overflow: hidden;
   pointer-events: ${props => (props.updating ? 'none' : 'auto')};
   position: relative;
@@ -42,7 +41,7 @@ const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
     css`
       @media (hover: hover) and (pointer: fine) {
         &:hover {
-          border: 1px solid ${props => props.theme.sanity.color.spot.gray};
+          border: 1px solid ${hues.gray[700].hex};
         }
       }
     `}
@@ -54,7 +53,7 @@ const ContextActionContainer = styled(Box)`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: ${hues.gray[900].hex};
+      background: ${hues.gray[950].hex};
     }
   }
 `

@@ -16,18 +16,25 @@ const TagsPanel: FC = () => {
 
   return (
     <Box
-      className="media__custom-scrollbar"
       style={{
-        borderLeft: `1px solid ${hues.gray?.[900].hex}`,
-        height: '100%',
-        overflowY: 'auto',
-        position: 'absolute',
-        right: 0,
-        top: 0,
+        position: 'relative',
         width: TAGS_PANEL_WIDTH
       }}
     >
-      <Tags />
+      <Box
+        className="media__custom-scrollbar"
+        style={{
+          borderLeft: `1px solid ${hues.gray?.[900].hex}`,
+          height: '100%',
+          overflowY: 'auto',
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          width: '100%'
+        }}
+      >
+        <Tags />
+      </Box>
     </Box>
   )
 }

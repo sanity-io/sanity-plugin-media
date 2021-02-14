@@ -1,5 +1,5 @@
 import {black, hues} from '@sanity/color'
-import {ComposeIcon} from '@sanity/icons'
+import {ComposeIcon, EyeOpenIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Label} from '@sanity/ui'
 import {TagActions, TagItem} from '@types'
 import React, {FC} from 'react'
@@ -12,12 +12,13 @@ import Tag from '../Tag'
 type Props = {
   actions?: TagActions[]
   allowCreate?: boolean
+  light?: boolean
   tags?: TagItem[]
   title: string
 }
 
 const PanelHeader: FC<Props> = (props: Props) => {
-  const {actions, allowCreate, tags, title} = props
+  const {actions, allowCreate, light, tags, title} = props
 
   // Redux
   const dispatch = useDispatch()
@@ -36,7 +37,7 @@ const PanelHeader: FC<Props> = (props: Props) => {
         justify="space-between"
         paddingLeft={3}
         style={{
-          background: black.hex,
+          background: light ? hues.gray?.[900].hex : black.hex,
           borderBottom: `1px solid ${hues.gray?.[900].hex}`,
           height: '2.0em',
           position: 'sticky',

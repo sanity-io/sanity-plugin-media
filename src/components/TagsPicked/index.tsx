@@ -59,7 +59,7 @@ const TagsPicked: FC = () => {
 
   return (
     <Box>
-      <PanelHeader allowCreate title="Tags in selection" />
+      <PanelHeader allowCreate light title="Tags (in selection)" />
 
       {/* No tags */}
       {!fetching && tags && tags.length === 0 && (

@@ -13,7 +13,7 @@ const TagsAll: FC = () => {
 
   return (
     <Box>
-      <PanelHeader allowCreate title="All tags" />
+      <PanelHeader allowCreate title="Tags" />
 
       {/* No tags */}
       {!fetching && tags && tags.length === 0 && (
