@@ -53,9 +53,7 @@ const PickedBar: FC = () => {
           <Button
             mode="bleed"
             onClick={handlePickClear}
-            style={{
-              background: 'none'
-            }}
+            style={{background: 'none', boxShadow: 'none'}}
           >
             <Label size={0}>Deselect</Label>
           </Button>
@@ -66,9 +64,7 @@ const PickedBar: FC = () => {
           fontSize={1}
           mode="bleed"
           onClick={handleDeletePicked}
-          style={{
-            background: 'none'
-          }}
+          style={{background: 'none', boxShadow: 'none'}}
           tone="critical"
         >
           <Label size={0}>Delete</Label>

@@ -109,7 +109,7 @@ const Tag: FC<Props> = (props: Props) => {
       dispatch(
         searchActions.facetsUpdate({
           name: 'tag',
-          operatorType: 'includes',
+          operatorType: 'references',
           value: searchFacet.value
         })
       )

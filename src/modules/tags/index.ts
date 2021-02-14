@@ -67,9 +67,10 @@ const tagsSlice = createSlice({
       )
       .addMatcher(
         action =>
-          [assetsActions.tagsAddRequest.type, assetsActions.tagsRemoveRequest.type].includes(
-            action.type
-          ),
+          [
+            assetsActions.tagsAddRequest.type, //
+            assetsActions.tagsRemoveRequest.type
+          ].includes(action.type),
         (state, action) => {
           const {tag} = action.payload
           state.byIds[tag._id].updating = true

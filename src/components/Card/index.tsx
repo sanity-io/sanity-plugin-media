@@ -41,7 +41,7 @@ const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
     css`
       @media (hover: hover) and (pointer: fine) {
         &:hover {
-          border: 1px solid ${hues.gray[700].hex};
+          border: 1px solid ${hues.gray[500].hex};
         }
       }
     `}

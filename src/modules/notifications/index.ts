@@ -67,7 +67,6 @@ export const notificationsAssetsDeleteErrorEpic: MyEpic = action$ =>
     mergeMap(actions => {
       const count = actions.length
       return of(
-        // TODO: add error message if count === 1
         notificationsSlice.actions.add({
           status: 'error',
           title: `Unable to delete ${count} ${pluralize('asset', count)}`
@@ -107,14 +106,17 @@ export const notificationsAssetsTagsRemoveCompleteEpic: MyEpic = action$ =>
 export const notificationsAssetsUpdateCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(assetsActions.updateComplete.match),
-    mergeMap(() =>
-      of(
+    bufferTime(1000),
+    filter(actions => actions.length > 0),
+    mergeMap(actions => {
+      const updatedCount = actions.length
+      return of(
         notificationsSlice.actions.add({
           status: 'info',
-          title: `Asset updated`
+          title: `${updatedCount} ${pluralize('asset', updatedCount)} updated`
         })
       )
-    )
+    })
   )
 
 export const notificationsGenericErrorEpic: MyEpic = action$ =>
@@ -140,40 +142,19 @@ export const notificationsGenericErrorEpic: MyEpic = action$ =>
 export const notificationsTagCreateCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(tagsActions.createComplete.match),
-    mergeMap(() =>
-      of(
-        notificationsSlice.actions.add({
-          status: 'info',
-          title: `Tag created`
-        })
-      )
-    )
+    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Tag created`})))
   )
 
 export const notificationsTagDeleteCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(tagsActions.deleteComplete.match),
-    mergeMap(() =>
-      of(
-        notificationsSlice.actions.add({
-          status: 'info',
-          title: `Tag deleted`
-        })
-      )
-    )
+    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Tag deleted`})))
   )
 
 export const notificationsTagUpdateCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(tagsActions.updateComplete.match),
-    mergeMap(() =>
-      of(
-        notificationsSlice.actions.add({
-          status: 'info',
-          title: `Tag updated`
-        })
-      )
-    )
+    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Tag updated`})))
   )
 
 export default notificationsSlice.reducer
