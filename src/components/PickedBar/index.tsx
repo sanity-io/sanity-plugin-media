@@ -1,4 +1,4 @@
-import {black, hues} from '@sanity/color'
+import {hues} from '@sanity/color'
 import {Button, Flex, Label} from '@sanity/ui'
 import pluralize from 'pluralize'
 import React, {FC} from 'react'

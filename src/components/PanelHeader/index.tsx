@@ -1,5 +1,5 @@
 import {black, hues} from '@sanity/color'
-import {ComposeIcon, EyeOpenIcon} from '@sanity/icons'
+import {ComposeIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Label} from '@sanity/ui'
 import {TagActions, TagItem} from '@types'
 import React, {FC} from 'react'
@@ -57,17 +57,19 @@ const PanelHeader: FC<Props> = (props: Props) => {
 
         {/* Create new tag button */}
         {allowCreate && (
-          <Button
-            disabled={tagsCreating}
-            fontSize={1} //
-            icon={ComposeIcon}
-            mode="bleed"
-            onClick={handleTagCreate}
-            style={{
-              background: 'transparent',
-              boxShadow: 'none'
-            }}
-          />
+          <Box marginRight={1}>
+            <Button
+              disabled={tagsCreating}
+              fontSize={1} //
+              icon={ComposeIcon}
+              mode="bleed"
+              onClick={handleTagCreate}
+              style={{
+                background: 'transparent',
+                boxShadow: 'none'
+              }}
+            />
+          </Box>
         )}
       </Flex>
       {tags && (

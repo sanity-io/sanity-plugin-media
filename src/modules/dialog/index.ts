@@ -86,7 +86,7 @@ const dialogSlice = createSlice({
         headerTitle: 'Confirm tag removal',
         id: 'confirm',
         title: `Remove tag ${tag.name.current} from ${suffix}?`,
-        tone: 'primary',
+        tone: 'critical',
         type: 'confirm'
       })
     },

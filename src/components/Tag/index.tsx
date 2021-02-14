@@ -1,8 +1,8 @@
 import {hues} from '@sanity/color'
 import {ArrowDownIcon, ArrowUpIcon, CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
-import {Box, Button, Flex, Text} from '@sanity/ui'
+import {Box, Button, Container, Flex, Text, Tooltip} from '@sanity/ui'
 import {SearchFacetInputSearchableProps, Tag, TagActions, TagItem} from '@types'
-import React, {FC} from 'react'
+import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {inputs} from '../../config/searchFacets'
@@ -17,7 +17,7 @@ type Props = {
   tag: TagItem
 }
 
-const Container = styled(Flex)``
+const TagContainer = styled(Flex)``
 
 const ButtonContainer = styled(Flex)`
   @media (pointer: fine) {
@@ -25,11 +25,46 @@ const ButtonContainer = styled(Flex)`
   }
 
   @media (hover: hover) and (pointer: fine) {
-    ${Container}:hover & {
+    ${TagContainer}:hover & {
       visibility: visible;
     }
   }
 `
+
+type TagButtonProps = {
+  disabled?: boolean
+  icon: ReactNode
+  onClick: () => void
+  tone?: 'critical' | 'primary'
+  tooltip: string
+}
+
+const TagButton: FC<TagButtonProps> = (props: TagButtonProps) => {
+  const {disabled, icon, onClick, tone, tooltip} = props
+  return (
+    <Tooltip
+      content={
+        <Container padding={2} width={0}>
+          <Text muted size={1}>
+            {tooltip}
+          </Text>
+        </Container>
+      }
+      placement="top"
+      portal
+    >
+      <Button
+        disabled={disabled}
+        fontSize={1}
+        icon={icon}
+        mode="bleed"
+        onClick={onClick}
+        padding={2}
+        tone={tone}
+      />
+    </Tooltip>
+  )
+}
 
 const Tag: FC<Props> = (props: Props) => {
   const {actions, tag} = props
@@ -84,7 +119,7 @@ const Tag: FC<Props> = (props: Props) => {
   }
 
   return (
-    <Container align="center" justify="space-between">
+    <TagContainer align="center" justify="space-between">
       <Box flex={1} paddingY={3}>
         <Text
           size={1}
@@ -99,93 +134,60 @@ const Tag: FC<Props> = (props: Props) => {
       </Box>
 
       <ButtonContainer align="center" style={{flexShrink: 0}}>
-        {/* Apply to all */}
-        {actions?.includes('applyAll') && (
-          <Button
-            disabled={tag?.updating}
-            fontSize={1}
-            icon={ArrowUpIcon}
-            mode="bleed"
-            onClick={handleShowAddTagToAssetsDialog}
-            padding={2}
-            style={{
-              background: 'none',
-              boxShadow: 'none'
-            }}
-            tone="primary"
-          />
-        )}
-
-        {/* Remove from all */}
-        {actions?.includes('removeAll') && (
-          <Button
-            disabled={tag?.updating}
-            fontSize={1}
-            icon={ArrowDownIcon}
-            mode="bleed"
-            onClick={handleShowRemoveTagFromAssetsDialog}
-            padding={2}
-            style={{
-              background: 'none',
-              boxShadow: 'none'
-            }}
-            tone="primary"
-          />
-        )}
-
         {/* Search facet toggle */}
         {actions?.includes('search') && (
-          <Button
+          <TagButton
             disabled={tag?.updating}
-            fontSize={1}
             icon={isSearchFacetTag ? CloseIcon : SearchIcon}
-            mode="bleed"
             onClick={
               isSearchFacetTag ? handleSearchFacetTagRemove : handleSearchFacetTagAddOrUpdate
             }
-            padding={2}
-            style={{
-              background: 'none',
-              boxShadow: 'none',
-              opacity: 0.5
-            }}
+            tooltip={isSearchFacetTag ? 'Remove filter' : 'Filter by tag'}
           />
         )}
         {/* Edit icon */}
         {actions?.includes('edit') && (
-          <Button
+          <TagButton
             disabled={tag?.updating}
-            fontSize={1}
             icon={EditIcon}
-            mode="bleed"
-            muted
             onClick={handleShowTagEditDialog}
-            padding={2}
-            style={{
-              background: 'none',
-              boxShadow: 'none',
-              opacity: 0.5
-            }}
+            tone="primary"
+            tooltip="Edit tag"
           />
         )}
+        {/* Apply to all */}
+        {actions?.includes('applyAll') && (
+          <TagButton
+            disabled={tag?.updating}
+            icon={ArrowUpIcon}
+            onClick={handleShowAddTagToAssetsDialog}
+            tone="primary"
+            tooltip="Add tag to selected assets"
+          />
+        )}
+        {/* Remove from all */}
+        {actions?.includes('removeAll') && (
+          <TagButton
+            disabled={tag?.updating}
+            icon={ArrowDownIcon}
+            onClick={handleShowRemoveTagFromAssetsDialog}
+            tone="critical"
+            tooltip="Remove tag from selected assets"
+          />
+        )}
+
         {/* Delete icon */}
         {actions?.includes('delete') && (
-          <Button
+          <TagButton
             disabled={tag?.updating}
-            fontSize={1}
             icon={TrashIcon}
-            mode="bleed"
             onClick={handleShowTagDeleteDialog}
-            padding={2}
-            style={{
-              background: 'none',
-              boxShadow: 'none'
-            }}
             tone="critical"
+            tooltip="Delete tag"
           />
         )}
       </ButtonContainer>
-    </Container>
+    </TagContainer>
   )
 }
 
