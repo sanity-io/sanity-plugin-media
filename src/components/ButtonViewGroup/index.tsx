@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {viewSet} from '../../modules/assets'
+import {assetsActions} from '../../modules/assets'
 
 const ButtonViewGroup: FC = () => {
   // Redux
@@ -17,7 +17,7 @@ const ButtonViewGroup: FC = () => {
         fontSize={1}
         icon={ThLargeIcon}
         mode={view === 'grid' ? 'default' : 'ghost'}
-        onClick={() => dispatch(viewSet({view: 'grid'}))}
+        onClick={() => dispatch(assetsActions.viewSet({view: 'grid'}))}
         style={{
           borderBottomRightRadius: 0,
           borderTopRightRadius: 0
@@ -27,7 +27,7 @@ const ButtonViewGroup: FC = () => {
         fontSize={1}
         icon={ThListIcon}
         mode={view === 'table' ? 'default' : 'ghost'}
-        onClick={() => dispatch(viewSet({view: 'table'}))}
+        onClick={() => dispatch(assetsActions.viewSet({view: 'table'}))}
         style={{
           borderBottomLeftRadius: 0,
           borderTopLeftRadius: 0

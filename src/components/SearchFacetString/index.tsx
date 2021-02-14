@@ -5,7 +5,7 @@ import React, {ChangeEvent, FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {operators} from '../../config/searchFacets'
-import {facetsUpdate} from '../../modules/search'
+import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
@@ -19,11 +19,11 @@ const SearchFacetString: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
-    dispatch(facetsUpdate({name: facet.name, operatorType}))
+    dispatch(searchActions.facetsUpdate({name: facet.name, operatorType}))
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(facetsUpdate({name: facet.name, value: e.target.value}))
+    dispatch(searchActions.facetsUpdate({name: facet.name, value: e.target.value}))
   }
 
   const selectedOperatorType: SearchFacetOperatorType = facet.operatorType

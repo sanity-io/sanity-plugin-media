@@ -23,7 +23,7 @@ import {ORDER_OPTIONS} from '../../constants'
 import constructFilter from '../../utils/constructFilter'
 import debugThrottle from '../../operators/debugThrottle'
 import {RootReducerState} from '../types'
-import {facetsAdd, facetsClear, facetsRemove, facetsUpdate, querySet} from '../search'
+import {searchActions} from '../search'
 
 export type AssetsReducerState = {
   allIds: string[]
@@ -328,17 +328,17 @@ type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 
 export const assetsDeleteEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(assetsSlice.actions.deleteRequest.match),
+    filter(assetsActions.deleteRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {asset} = action.payload
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() => from(client.delete(asset._id))),
-        mergeMap(() => of(assetsSlice.actions.deleteComplete({assetId: asset._id}))),
+        mergeMap(() => of(assetsActions.deleteComplete({assetId: asset._id}))),
         catchError((error: ClientError) =>
           of(
-            assetsSlice.actions.deleteError({
+            assetsActions.deleteError({
               asset,
               error: {
                 message: error?.message || 'Internal error',
@@ -353,7 +353,7 @@ export const assetsDeleteEpic: MyEpic = (action$, state$) =>
 
 export const assetsDeletePickedEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(assetsSlice.actions.deletePicked.match),
+    filter(assetsActions.deletePicked.match),
     withLatestFrom(state$),
     mergeMap(([_, state]) => {
       const availableItems = Object.entries(state.assets.byIds).filter(([, value]) => {
@@ -368,12 +368,12 @@ export const assetsDeletePickedEpic: MyEpic = (action$, state$) =>
       return of(assets)
     }),
     mergeAll(),
-    mergeMap(asset => of(assetsSlice.actions.deleteRequest({asset})))
+    mergeMap(asset => of(assetsActions.deleteRequest({asset})))
   )
 
 export const assetsFetchEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(assetsSlice.actions.fetchRequest.match),
+    filter(assetsActions.fetchRequest.match),
     withLatestFrom(state$),
     switchMap(([action, state]) => {
       const params = action.payload?.params
@@ -387,11 +387,11 @@ export const assetsFetchEpic: MyEpic = (action$, state$) =>
             items
             // totalCount
           } = result
-          return of(assetsSlice.actions.fetchComplete({assets: items}))
+          return of(assetsActions.fetchComplete({assets: items}))
         }),
         catchError((error: ClientError) =>
           of(
-            assetsSlice.actions.fetchError({
+            assetsActions.fetchError({
               message: error?.message || 'Internal error',
               statusCode: error?.statusCode || 500
             })
@@ -403,7 +403,7 @@ export const assetsFetchEpic: MyEpic = (action$, state$) =>
 
 export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(assetsSlice.actions.loadPageIndex.match),
+    filter(assetsActions.loadPageIndex.match),
     withLatestFrom(state$),
     switchMap(([action, state]) => {
       const pageSize = state.assets.pageSize
@@ -413,7 +413,7 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
       const documentId = state?.document?._id
 
       return of(
-        assetsSlice.actions.fetchRequest({
+        assetsActions.fetchRequest({
           filter: constructFilter({
             hasDocument: !!state.document,
             searchFacets: state.search.facets,
@@ -430,16 +430,16 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
 
 export const assetsFetchNextPageEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(assetsSlice.actions.loadNextPage.match),
+    filter(assetsActions.loadNextPage.match),
     withLatestFrom(state$),
     switchMap(([_, state]) => {
-      return of(assetsSlice.actions.loadPageIndex({pageIndex: state.assets.pageIndex + 1}))
+      return of(assetsActions.loadPageIndex({pageIndex: state.assets.pageIndex + 1}))
     })
   )
 
 export const assetsRemoveTagsEpic: MyEpic = (action$, state$) => {
   return action$.pipe(
-    filter(assetsSlice.actions.tagsAddRequest.match),
+    filter(assetsActions.tagsAddRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {assets, tag} = action.payload
@@ -476,10 +476,10 @@ export const assetsRemoveTagsEpic: MyEpic = (action$, state$) => {
           return from(transaction.commit())
         }),
         // Dispatch complete action
-        mergeMap(() => of(assetsSlice.actions.tagsAddComplete({assets, tag}))),
+        mergeMap(() => of(assetsActions.tagsAddComplete({assets, tag}))),
         catchError((error: ClientError) =>
           of(
-            assetsSlice.actions.tagsAddError({
+            assetsActions.tagsAddError({
               assets,
               error: {
                 message: error?.message || 'Internal error',
@@ -496,65 +496,71 @@ export const assetsRemoveTagsEpic: MyEpic = (action$, state$) => {
 
 export const assetsOrderSetEpic: MyEpic = action$ =>
   action$.pipe(
-    filter(assetsSlice.actions.orderSet.match),
+    filter(assetsActions.orderSet.match),
     switchMap(() => {
       return of(
-        assetsSlice.actions.clear(), //
-        assetsSlice.actions.loadPageIndex({pageIndex: 0})
+        assetsActions.clear(), //
+        assetsActions.loadPageIndex({pageIndex: 0})
       )
     })
   )
 
 export const assetsSearchEpic: MyEpic = action$ =>
   action$.pipe(
-    ofType(facetsAdd.type, facetsClear.type, facetsRemove.type, facetsUpdate.type, querySet.type),
+    ofType(
+      searchActions.facetsAdd.type,
+      searchActions.facetsClear.type,
+      searchActions.facetsRemove.type,
+      searchActions.facetsUpdate.type,
+      searchActions.querySet.type
+    ),
     debounceTime(400),
     switchMap(() => {
       return of(
-        assetsSlice.actions.clear(), //
-        assetsSlice.actions.loadPageIndex({pageIndex: 0})
+        assetsActions.clear(), //
+        assetsActions.loadPageIndex({pageIndex: 0})
       )
     })
   )
 
 export const assetsListenerDeleteQueueEpic: MyEpic = action$ =>
   action$.pipe(
-    filter(assetsSlice.actions.listenerDeleteQueue.match),
+    filter(assetsActions.listenerDeleteQueue.match),
     bufferTime(2000),
     filter(actions => actions.length > 0),
     switchMap(actions => {
       const assetIds = actions?.map(action => action.payload.assetId)
-      return of(assetsSlice.actions.listenerDeleteComplete({assetIds}))
+      return of(assetsActions.listenerDeleteComplete({assetIds}))
     })
   )
 
 export const assetsListenerUpdateQueueEpic: MyEpic = action$ =>
   action$.pipe(
-    filter(assetsSlice.actions.listenerUpdateQueue.match),
+    filter(assetsActions.listenerUpdateQueue.match),
     bufferTime(2000),
     filter(actions => actions.length > 0),
     switchMap(actions => {
       const assets = actions?.map(action => action.payload.asset)
-      return of(assetsSlice.actions.listenerUpdateComplete({assets}))
+      return of(assetsActions.listenerUpdateComplete({assets}))
     })
   )
 
 export const assetsSortEpic: MyEpic = action$ =>
   action$.pipe(
     ofType(
-      assetsSlice.actions.listenerUpdateComplete.type, //
-      assetsSlice.actions.updateComplete.type
+      assetsActions.listenerUpdateComplete.type, //
+      assetsActions.updateComplete.type
     ),
     bufferTime(1000),
     filter(actions => actions.length > 0),
     switchMap(() => {
-      return of(assetsSlice.actions.sort())
+      return of(assetsActions.sort())
     })
   )
 
 export const assetsTagsAddEpic: MyEpic = (action$, state$) => {
   return action$.pipe(
-    filter(assetsSlice.actions.tagsAddRequest.match),
+    filter(assetsActions.tagsAddRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {assets, tag} = action.payload
@@ -592,10 +598,10 @@ export const assetsTagsAddEpic: MyEpic = (action$, state$) => {
           return from(transaction.commit())
         }),
         // Dispatch complete action
-        mergeMap(() => of(assetsSlice.actions.tagsAddComplete({assets, tag}))),
+        mergeMap(() => of(assetsActions.tagsAddComplete({assets, tag}))),
         catchError((error: ClientError) =>
           of(
-            assetsSlice.actions.tagsAddError({
+            assetsActions.tagsAddError({
               assets,
               error: {
                 message: error?.message || 'Internal error',
@@ -612,7 +618,7 @@ export const assetsTagsAddEpic: MyEpic = (action$, state$) => {
 
 export const assetsTagsRemoveEpic: MyEpic = (action$, state$) => {
   return action$.pipe(
-    filter(assetsSlice.actions.tagsRemoveRequest.match),
+    filter(assetsActions.tagsRemoveRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {assets, tag} = action.payload
@@ -635,10 +641,10 @@ export const assetsTagsRemoveEpic: MyEpic = (action$, state$) => {
           return from(transaction.commit())
         }),
         // Dispatch complete action
-        mergeMap(() => of(assetsSlice.actions.tagsRemoveComplete({assets, tag}))),
+        mergeMap(() => of(assetsActions.tagsRemoveComplete({assets, tag}))),
         catchError((error: ClientError) =>
           of(
-            assetsSlice.actions.tagsRemoveError({
+            assetsActions.tagsRemoveError({
               assets,
               error: {
                 message: error?.message || 'Internal error',
@@ -656,22 +662,22 @@ export const assetsTagsRemoveEpic: MyEpic = (action$, state$) => {
 export const assetsUnpickEpic: MyEpic = action$ =>
   action$.pipe(
     ofType(
-      assetsSlice.actions.orderSet.type,
-      assetsSlice.actions.viewSet.type,
-      facetsAdd.type,
-      facetsClear.type,
-      facetsRemove.type,
-      facetsUpdate.type,
-      querySet.type
+      assetsActions.orderSet.type,
+      assetsActions.viewSet.type,
+      searchActions.facetsAdd.type,
+      searchActions.facetsClear.type,
+      searchActions.facetsRemove.type,
+      searchActions.facetsUpdate.type,
+      searchActions.querySet.type
     ),
     switchMap(() => {
-      return of(assetsSlice.actions.pickClear())
+      return of(assetsActions.pickClear())
     })
   )
 
 export const assetsUpdateEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(assetsSlice.actions.updateRequest.match),
+    filter(assetsActions.updateRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {asset, closeDialogId, formData} = action.payload
@@ -690,7 +696,7 @@ export const assetsUpdateEpic: MyEpic = (action$, state$) =>
         ),
         mergeMap((updatedAsset: any) =>
           of(
-            assetsSlice.actions.updateComplete({
+            assetsActions.updateComplete({
               assetId: updatedAsset._id,
               closeDialogId
             })
@@ -698,7 +704,7 @@ export const assetsUpdateEpic: MyEpic = (action$, state$) =>
         ),
         catchError((error: ClientError) =>
           of(
-            assetsSlice.actions.updateError({
+            assetsActions.updateError({
               asset,
               error: {
                 message: error?.message || 'Internal error',
@@ -741,37 +747,6 @@ export const selectAssetsPickedLength = createSelector(
   assetsPicked => assetsPicked.length
 )
 
-export const {
-  clear,
-  deleteComplete,
-  deleteError,
-  deletePicked,
-  deleteRequest,
-  fetchComplete,
-  fetchError,
-  fetchRequest,
-  listenerDeleteComplete,
-  listenerDeleteQueue,
-  listenerUpdateComplete,
-  listenerUpdateQueue,
-  loadNextPage,
-  loadPageIndex,
-  orderSet,
-  pick,
-  pickAll,
-  pickClear,
-  pickRange,
-  sort,
-  tagsAddComplete,
-  tagsAddError,
-  tagsAddRequest,
-  tagsRemoveComplete,
-  tagsRemoveError,
-  tagsRemoveRequest,
-  updateComplete,
-  updateError,
-  updateRequest,
-  viewSet
-} = assetsSlice.actions
+export const assetsActions = assetsSlice.actions
 
 export default assetsSlice.reducer

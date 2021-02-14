@@ -10,15 +10,8 @@ import {Observable, from, of} from 'rxjs'
 import {bufferTime, catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
 
 import {TAG_DOCUMENT_NAME} from '../../constants'
-import {
-  tagsAddComplete,
-  tagsAddError,
-  tagsAddRequest,
-  tagsRemoveComplete,
-  tagsRemoveError,
-  tagsRemoveRequest
-} from '../assets'
-import {showTagCreate, showTagEdit} from '../dialog'
+import {assetsActions} from '../assets'
+import {dialogActions} from '../dialog'
 import checkTagName from '../../operators/checkTagName'
 import debugThrottle from '../../operators/debugThrottle'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
@@ -52,20 +45,20 @@ const tagsSlice = createSlice({
   initialState,
   extraReducers: builder => {
     builder
-      .addCase(showTagCreate, state => {
+      .addCase(dialogActions.showTagCreate, state => {
         delete state.creatingError
       })
-      .addCase(showTagEdit, (state, action) => {
+      .addCase(dialogActions.showTagEdit, (state, action) => {
         const {tagId} = action.payload
         delete state.byIds[tagId].error
       })
       .addMatcher(
         action =>
           [
-            tagsAddComplete.type,
-            tagsAddError.type,
-            tagsRemoveComplete.type,
-            tagsRemoveError.type
+            assetsActions.tagsAddComplete.type,
+            assetsActions.tagsAddError.type,
+            assetsActions.tagsRemoveComplete.type,
+            assetsActions.tagsRemoveError.type
           ].includes(action.type),
         (state, action) => {
           const {tag} = action.payload
@@ -73,7 +66,10 @@ const tagsSlice = createSlice({
         }
       )
       .addMatcher(
-        action => [tagsAddRequest.type, tagsRemoveRequest.type].includes(action.type),
+        action =>
+          [assetsActions.tagsAddRequest.type, assetsActions.tagsRemoveRequest.type].includes(
+            action.type
+          ),
         (state, action) => {
           const {tag} = action.payload
           state.byIds[tag._id].updating = true
@@ -541,6 +537,7 @@ export const selectTagSelectOptions = (asset?: Asset) => (
   return null
 }
 
+/*
 export const {
   createComplete,
   createError,
@@ -563,5 +560,8 @@ export const {
   updateError,
   updateRequest
 } = tagsSlice.actions
+*/
+
+export const tagsActions = tagsSlice.actions
 
 export default tagsSlice.reducer

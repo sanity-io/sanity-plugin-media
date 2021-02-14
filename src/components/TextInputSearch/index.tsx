@@ -4,7 +4,7 @@ import React, {ChangeEvent, FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {querySet} from '../../modules/search'
+import {searchActions} from '../../modules/search'
 
 const TextInputSearch: FC = () => {
   // Redux
@@ -15,11 +15,11 @@ const TextInputSearch: FC = () => {
 
   // Callbacks
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(querySet({searchQuery: e.currentTarget.value}))
+    dispatch(searchActions.querySet({searchQuery: e.currentTarget.value}))
   }
 
   const handleClear = () => {
-    dispatch(querySet({searchQuery: ''}))
+    dispatch(searchActions.querySet({searchQuery: ''}))
   }
 
   return (

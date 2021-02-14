@@ -6,12 +6,7 @@ import styled from 'styled-components'
 import {Box as LegacyBox} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {
-  pickAll,
-  pickClear,
-  selectAssetsLength,
-  selectAssetsPickedLength
-} from '../../modules/assets'
+import {assetsActions, selectAssetsLength, selectAssetsPickedLength} from '../../modules/assets'
 import TableHeaderItem from '../TableHeaderItem'
 
 // TODO: DRY
@@ -41,9 +36,9 @@ const TableHeader: FC = () => {
     e.stopPropagation()
 
     if (allSelected) {
-      dispatch(pickClear())
+      dispatch(assetsActions.pickClear())
     } else {
-      dispatch(pickAll())
+      dispatch(assetsActions.pickAll())
     }
   }
 

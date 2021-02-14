@@ -7,8 +7,8 @@ import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {clear} from '../../modules/dialog'
-import {createRequest} from '../../modules/tags'
+import {dialogActions} from '../../modules/dialog'
+import {tagsActions} from '../../modules/tags'
 import sanitizeFormData from '../../utils/sanitizeFormData'
 import FormFieldInputText from '../FormFieldInputText'
 import FormSubmitButton from '../FormSubmitButton'
@@ -56,14 +56,14 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleClose = () => {
-    dispatch(clear())
+    dispatch(dialogActions.clear())
   }
 
   // - submit react-hook-form
   const onSubmit = async (formData: FormData) => {
     const sanitizedFormData = sanitizeFormData(formData)
 
-    dispatch(createRequest({name: sanitizedFormData.name}))
+    dispatch(tagsActions.createRequest({name: sanitizedFormData.name}))
   }
 
   // Effects

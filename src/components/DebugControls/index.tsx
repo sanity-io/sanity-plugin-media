@@ -5,7 +5,7 @@ import {useDispatch} from 'react-redux'
 
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {setBadConnection, toggleEnabled} from '../../modules/debug'
+import {debugActions} from '../../modules/debug'
 
 const DebugControls: FC = () => {
   // Redux
@@ -17,11 +17,11 @@ const DebugControls: FC = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked
 
-    dispatch(setBadConnection(checked))
+    dispatch(debugActions.setBadConnection(checked))
   }
 
   const handleToggleControls = () => {
-    dispatch(toggleEnabled())
+    dispatch(debugActions.toggleEnabled())
   }
 
   // Close on escape key press

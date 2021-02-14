@@ -10,8 +10,8 @@ import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {remove, showConfirmDeleteTag} from '../../modules/dialog'
-import {selectTagById, updateRequest} from '../../modules/tags'
+import {dialogActions} from '../../modules/dialog'
+import {selectTagById, tagsActions} from '../../modules/tags'
 import sanitizeFormData from '../../utils/sanitizeFormData'
 import FormFieldInputText from '../FormFieldInputText'
 import FormSubmitButton from '../FormSubmitButton'
@@ -68,7 +68,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleClose = () => {
-    dispatch(remove({id}))
+    dispatch(dialogActions.remove({id}))
   }
 
   // - submit react-hook-form
@@ -80,7 +80,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(
-      updateRequest({
+      tagsActions.updateRequest({
         closeDialogId: tagItem?.tag?._id,
         formData: {
           name: {
@@ -99,7 +99,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     }
 
     dispatch(
-      showConfirmDeleteTag({
+      dialogActions.showConfirmDeleteTag({
         closeDialogId: tagItem?.tag?._id,
         tag: tagItem?.tag
       })

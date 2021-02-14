@@ -10,8 +10,8 @@ import styled, {css} from 'styled-components'
 import {Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
-import {pick, pickRange} from '../../modules/assets'
-import {showAssetEdit} from '../../modules/dialog'
+import {assetsActions} from '../../modules/assets'
+import {dialogActions} from '../../modules/dialog'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import getAssetResolution from '../../utils/getAssetResolution'
@@ -89,12 +89,12 @@ const TableRow = (props: Props) => {
     e.stopPropagation()
 
     if (currentDocument) {
-      dispatch(showAssetEdit({assetId: asset._id}))
+      dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
     } else {
       if (shiftPressed.current && !picked) {
-        dispatch(pickRange({startId: lastPicked || asset._id, endId: asset._id}))
+        dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
       } else {
-        dispatch(pick({assetId: asset._id, picked: !picked}))
+        dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
       }
     }
   }
@@ -114,12 +114,12 @@ const TableRow = (props: Props) => {
     } else {
       if (shiftPressed.current) {
         if (picked) {
-          dispatch(pick({assetId: asset._id, picked: !picked}))
+          dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
         } else {
-          dispatch(pickRange({startId: lastPicked || asset._id, endId: asset._id}))
+          dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
         }
       } else {
-        dispatch(showAssetEdit({assetId: asset._id}))
+        dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
       }
     }
   }

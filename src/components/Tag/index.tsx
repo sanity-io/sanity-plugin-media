@@ -9,19 +9,8 @@ import {inputs} from '../../config/searchFacets'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
-import {
-  showConfirmAssetsTagAdd,
-  showConfirmDeleteTag,
-  showConfirmAssetsTagRemove,
-  showTagEdit
-} from '../../modules/dialog'
-import {
-  facetsAdd,
-  facetsRemove,
-  facetsUpdate,
-  selectHasSearchFacetTag,
-  selectIsSearchFacetTag
-} from '../../modules/search'
+import {dialogActions} from '../../modules/dialog'
+import {searchActions, selectHasSearchFacetTag, selectIsSearchFacetTag} from '../../modules/search'
 
 type Props = {
   actions?: TagActions[]
@@ -53,23 +42,23 @@ const Tag: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleSearchFacetTagRemove = () => {
-    dispatch(facetsRemove({facetName: 'tag'}))
+    dispatch(searchActions.facetsRemove({facetName: 'tag'}))
   }
 
   const handleShowAddTagToAssetsDialog = () => {
-    dispatch(showConfirmAssetsTagAdd({assetsPicked, tag: tag.tag}))
+    dispatch(dialogActions.showConfirmAssetsTagAdd({assetsPicked, tag: tag.tag}))
   }
 
   const handleShowRemoveTagFromAssetsDialog = () => {
-    dispatch(showConfirmAssetsTagRemove({assetsPicked, tag: tag.tag}))
+    dispatch(dialogActions.showConfirmAssetsTagRemove({assetsPicked, tag: tag.tag}))
   }
 
   const handleShowTagDeleteDialog = () => {
-    dispatch(showConfirmDeleteTag({tag: tag.tag}))
+    dispatch(dialogActions.showConfirmDeleteTag({tag: tag.tag}))
   }
 
   const handleShowTagEditDialog = () => {
-    dispatch(showTagEdit({tagId: tag?.tag?._id}))
+    dispatch(dialogActions.showTagEdit({tagId: tag?.tag?._id}))
   }
 
   const handleSearchFacetTagAddOrUpdate = () => {
@@ -83,14 +72,14 @@ const Tag: FC<Props> = (props: Props) => {
 
     if (hasSearchFacetTag) {
       dispatch(
-        facetsUpdate({
+        searchActions.facetsUpdate({
           name: 'tag',
           operatorType: 'includes',
           value: searchFacet.value
         })
       )
     } else {
-      dispatch(facetsAdd({facet: searchFacet}))
+      dispatch(searchActions.facetsAdd({facet: searchFacet}))
     }
   }
 

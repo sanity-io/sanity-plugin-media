@@ -10,8 +10,8 @@ import FileIcon from '../../components/FileIcon'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {pick, pickRange} from '../../modules/assets'
-import {showAssetEdit} from '../../modules/dialog'
+import {assetsActions} from '../../modules/assets'
+import {dialogActions} from '../../modules/dialog'
 import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import Image from '../Image'
@@ -105,12 +105,12 @@ const Card = (props: Props) => {
     } else {
       if (shiftPressed.current) {
         if (picked) {
-          dispatch(pick({assetId: asset._id, picked: !picked}))
+          dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
         } else {
-          dispatch(pickRange({startId: lastPicked || asset._id, endId: asset._id}))
+          dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
         }
       } else {
-        dispatch(showAssetEdit({assetId: asset._id}))
+        dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
       }
     }
   }
@@ -119,12 +119,12 @@ const Card = (props: Props) => {
     e.stopPropagation()
 
     if (currentDocument) {
-      dispatch(showAssetEdit({assetId: asset._id}))
+      dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
     } else {
       if (shiftPressed.current && !picked) {
-        dispatch(pickRange({startId: lastPicked || asset._id, endId: asset._id}))
+        dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
       } else {
-        dispatch(pick({assetId: asset._id, picked: !picked}))
+        dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
       }
     }
   }

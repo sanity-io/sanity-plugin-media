@@ -9,7 +9,7 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {operators} from '../../config/searchFacets'
-import {facetsUpdate} from '../../modules/search'
+import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
@@ -27,11 +27,11 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
   const selectedItem = options?.find(v => v.name === facet?.value)
 
   const handleListItemClick = (option: SearchFacetInputSelectListItemProps) => {
-    dispatch(facetsUpdate({name: facet.name, value: option.name}))
+    dispatch(searchActions.facetsUpdate({name: facet.name, value: option.name}))
   }
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
-    dispatch(facetsUpdate({name: facet.name, operatorType}))
+    dispatch(searchActions.facetsUpdate({name: facet.name, operatorType}))
   }
 
   const selectedOperatorType: SearchFacetOperatorType = facet?.operatorType ?? 'is'

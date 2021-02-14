@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux'
 import {getOrderTitle} from '../../config/orders'
 import {ORDER_OPTIONS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {orderSet} from '../../modules/assets'
+import {assetsActions} from '../../modules/assets'
 
 const OrderSelect: FC = () => {
   // Redux
@@ -36,7 +36,11 @@ const OrderSelect: FC = () => {
                   fontSize={1}
                   key={index}
                   onClick={() =>
-                    dispatch(orderSet({order: {direction: item.direction, field: item.field}}))
+                    dispatch(
+                      assetsActions.orderSet({
+                        order: {direction: item.direction, field: item.field}
+                      })
+                    )
                   }
                   padding={2}
                   text={getOrderTitle(item.field, item.direction)}

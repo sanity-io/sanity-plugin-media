@@ -5,8 +5,8 @@ import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {showConfirmDeleteAssetsPicked} from '../../modules/dialog'
-import {pickClear, selectAssetsPicked} from '../../modules/assets'
+import {dialogActions} from '../../modules/dialog'
+import {assetsActions, selectAssetsPicked} from '../../modules/assets'
 
 const Container = styled(Box)(({theme}) => {
   return {
@@ -23,11 +23,11 @@ const PickedBar: FC = () => {
 
   // Callbacks
   const handlePickClear = () => {
-    dispatch(pickClear())
+    dispatch(assetsActions.pickClear())
   }
 
   const handleDeletePicked = () => {
-    dispatch(showConfirmDeleteAssetsPicked({assetsPicked}))
+    dispatch(dialogActions.showConfirmDeleteAssetsPicked({assetsPicked}))
   }
 
   if (assetsPicked.length === 0) {

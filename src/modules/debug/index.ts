@@ -23,5 +23,6 @@ const debugSlice = createSlice({
   }
 })
 
-export const {setBadConnection, toggleEnabled} = debugSlice.actions
+export const debugActions = debugSlice.actions
+
 export default debugSlice.reducer

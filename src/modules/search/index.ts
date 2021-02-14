@@ -6,7 +6,7 @@ import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
 
 import {RootReducerState} from '../types'
-import {updateComplete} from '../tags'
+import {tagsActions} from '../tags'
 
 type SearchState = {
   facets: SearchFacetInputProps[]
@@ -74,7 +74,7 @@ type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 // On tag update success -> update existing tag search facet (if present)
 export const searchFacetTagUpdateEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(updateComplete.match),
+    filter(tagsActions.updateComplete.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {tagId} = action.payload
@@ -130,6 +130,6 @@ export const selectIsSearchFacetTag = createSelector(
   }
 )
 
-export const {facetsAdd, facetsClear, facetsRemove, facetsUpdate, querySet} = searchSlice.actions
+export const searchActions = searchSlice.actions
 
 export default searchSlice.reducer

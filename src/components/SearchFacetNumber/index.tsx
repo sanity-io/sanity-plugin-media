@@ -9,7 +9,7 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {operators} from '../../config/searchFacets'
-import {facetsUpdate} from '../../modules/search'
+import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 import TextInputNumber from '../TextInputNumber'
 
@@ -29,15 +29,15 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
     : modifiers?.[0]
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
-    dispatch(facetsUpdate({name: facet.name, operatorType}))
+    dispatch(searchActions.facetsUpdate({name: facet.name, operatorType}))
   }
 
   const handleModifierClick = (modifier: SearchFacetInputNumberModifier) => {
-    dispatch(facetsUpdate({name: facet.name, modifier: modifier.name}))
+    dispatch(searchActions.facetsUpdate({name: facet.name, modifier: modifier.name}))
   }
 
   const handleValueChange = (value: number) => {
-    dispatch(facetsUpdate({name: facet.name, value}))
+    dispatch(searchActions.facetsUpdate({name: facet.name, value}))
   }
 
   const selectedOperatorType: SearchFacetOperatorType = facet.operatorType ?? 'greaterThan'

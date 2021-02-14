@@ -3,7 +3,7 @@ import {DialogSearchFacets} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {clear} from '../../modules/dialog'
+import {dialogActions} from '../../modules/dialog'
 import SearchFacets from '../SearchFacets'
 import SearchFacetsControl from '../SearchFacetsControl'
 
@@ -23,7 +23,7 @@ const DialogSearchFacets: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleClose = useCallback(() => {
-    dispatch(clear())
+    dispatch(dialogActions.clear())
   }, [])
 
   return (

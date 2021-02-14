@@ -6,7 +6,7 @@ import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {showTagCreate} from '../../modules/dialog'
+import {dialogActions} from '../../modules/dialog'
 import Tag from '../Tag'
 
 type Props = {
@@ -26,7 +26,7 @@ const PanelHeader: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleTagCreate = () => {
-    dispatch(showTagCreate())
+    dispatch(dialogActions.showTagCreate())
   }
 
   return (

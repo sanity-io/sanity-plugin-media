@@ -6,15 +6,8 @@ import {Epic, ofType} from 'redux-observable'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap} from 'rxjs/operators'
 
-import {
-  deleteComplete as assetsDeleteComplete,
-  deleteRequest as assetsDeleteRequest,
-  deletePicked as assetsDeletePicked,
-  tagsAddRequest as assetsTagsAddRequest,
-  tagsRemoveRequest as assetsTagsRemoveRequest,
-  updateComplete as assetsUpdateComplete
-} from '../assets'
-import {createComplete, deleteComplete, deleteRequest, updateComplete} from '../tags'
+import {assetsActions} from '../assets'
+import {tagsActions} from '../tags'
 
 import {RootReducerState} from '../types'
 
@@ -62,7 +55,7 @@ const dialogSlice = createSlice({
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: assetsTagsAddRequest({
+        confirmCallbackAction: assetsActions.tagsAddRequest({
           assets: assetsPicked,
           tag
         }),
@@ -88,7 +81,7 @@ const dialogSlice = createSlice({
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: assetsTagsRemoveRequest({assets: assetsPicked, tag}),
+        confirmCallbackAction: assetsActions.tagsRemoveRequest({assets: assetsPicked, tag}),
         confirmText: `Yes, remove tag from ${suffix}`,
         headerTitle: 'Confirm tag removal',
         id: 'confirm',
@@ -104,7 +97,7 @@ const dialogSlice = createSlice({
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: assetsDeleteRequest({asset}),
+        confirmCallbackAction: assetsActions.deleteRequest({asset}),
         confirmText: `Yes, delete ${suffix}`,
         description: 'This operation cannot be reversed. Are you sure you want to continue?',
         title: `Permanently delete ${suffix}?`,
@@ -124,7 +117,7 @@ const dialogSlice = createSlice({
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: assetsDeletePicked(),
+        confirmCallbackAction: assetsActions.deletePicked(),
         confirmText: `Yes, delete ${suffix}`,
         description: 'This operation cannot be reversed. Are you sure you want to continue?',
         title: `Permanently delete ${suffix}?`,
@@ -141,7 +134,7 @@ const dialogSlice = createSlice({
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: deleteRequest({tag}),
+        confirmCallbackAction: tagsActions.deleteRequest({tag}),
         confirmText: `Yes, delete ${suffix}`,
         description: 'This operation cannot be reversed. Are you sure you want to continue?',
         title: `Permanently delete ${suffix}?`,
@@ -195,10 +188,10 @@ type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 export const dialogClearOnAssetUpdateEpic: MyEpic = action$ =>
   action$.pipe(
     ofType(
-      assetsDeleteComplete.type,
-      assetsUpdateComplete.type,
-      deleteComplete.type,
-      updateComplete.type
+      assetsActions.deleteComplete.type,
+      assetsActions.updateComplete.type,
+      tagsActions.deleteComplete.type,
+      tagsActions.updateComplete.type
     ),
     filter(action => !!action?.payload?.closeDialogId),
     mergeMap(action => {
@@ -213,7 +206,7 @@ export const dialogClearOnAssetUpdateEpic: MyEpic = action$ =>
 
 export const dialogTagCreateEpic: MyEpic = action$ =>
   action$.pipe(
-    filter(createComplete.match),
+    filter(tagsActions.createComplete.match),
     mergeMap(action => {
       const {assetId, tag} = action?.payload
 
@@ -229,20 +222,6 @@ export const dialogTagCreateEpic: MyEpic = action$ =>
     })
   )
 
-export const {
-  addCreatedTag,
-  clear,
-  remove,
-  showAssetEdit,
-  showConfirmAssetsTagAdd,
-  showConfirmAssetsTagRemove,
-  showConfirmDeleteAsset,
-  showConfirmDeleteAssetsPicked,
-  showConfirmDeleteTag,
-  showSearchFacets,
-  showTagCreate,
-  showTagEdit,
-  showTags
-} = dialogSlice.actions
+export const dialogActions = dialogSlice.actions
 
 export default dialogSlice.reducer

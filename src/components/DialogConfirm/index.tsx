@@ -4,7 +4,7 @@ import {DialogConfirm} from '@types'
 import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 
-import {remove} from '../../modules/dialog'
+import {dialogActions} from '../../modules/dialog'
 
 type Props = {
   children?: ReactNode
@@ -19,13 +19,13 @@ const DialogConfirm: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleClose = () => {
-    dispatch(remove({id: dialog?.id}))
+    dispatch(dialogActions.remove({id: dialog?.id}))
   }
 
   const handleConfirm = () => {
     // Close target dialog, if provided
     if (dialog?.closeDialogId) {
-      dispatch(remove({id: dialog?.closeDialogId}))
+      dispatch(dialogActions.remove({id: dialog?.closeDialogId}))
     }
 
     if (dialog?.confirmCallbackAction) {

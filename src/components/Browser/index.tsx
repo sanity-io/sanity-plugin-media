@@ -7,17 +7,8 @@ import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {TAG_DOCUMENT_NAME} from '../../constants'
-import {
-  listenerDeleteQueue as assetsListenerDeleteQueue,
-  listenerUpdateQueue as assetsListenerUpdateQueue,
-  loadPageIndex
-} from '../../modules/assets'
-import {
-  fetchRequest,
-  listenerCreateQueue,
-  listenerDeleteQueue,
-  listenerUpdateQueue
-} from '../../modules/tags'
+import {assetsActions} from '../../modules/assets'
+import {tagsActions} from '../../modules/tags'
 import Controls from '../Controls'
 import DebugControls from '../DebugControls'
 import Dialogs from '../Dialogs'
@@ -42,11 +33,11 @@ const Browser: FC<Props> = (props: Props) => {
     const {documentId, result, transition} = update
 
     if (transition === 'disappear') {
-      dispatch(assetsListenerDeleteQueue({assetId: documentId}))
+      dispatch(assetsActions.listenerDeleteQueue({assetId: documentId}))
     }
 
     if (transition === 'update') {
-      dispatch(assetsListenerUpdateQueue({asset: result as ImageAsset}))
+      dispatch(assetsActions.listenerUpdateQueue({asset: result as ImageAsset}))
     }
   }
 
@@ -54,25 +45,25 @@ const Browser: FC<Props> = (props: Props) => {
     const {documentId, result, transition} = update
 
     if (transition === 'appear') {
-      dispatch(listenerCreateQueue({tag: result as Tag}))
+      dispatch(tagsActions.listenerCreateQueue({tag: result as Tag}))
     }
 
     if (transition === 'disappear') {
-      dispatch(listenerDeleteQueue({tagId: documentId}))
+      dispatch(tagsActions.listenerDeleteQueue({tagId: documentId}))
     }
 
     if (transition === 'update') {
-      dispatch(listenerUpdateQueue({tag: result as Tag}))
+      dispatch(tagsActions.listenerUpdateQueue({tag: result as Tag}))
     }
   }
 
   // Effects
   useEffect(() => {
     // Fetch assets: first page
-    dispatch(loadPageIndex({pageIndex: 0}))
+    dispatch(assetsActions.loadPageIndex({pageIndex: 0}))
 
     // Fetch all tags
-    dispatch(fetchRequest())
+    dispatch(tagsActions.fetchRequest())
 
     // Listen for asset + tag changes
     // (Remember that Sanity listeners ignore joins, order clauses and projections!)
