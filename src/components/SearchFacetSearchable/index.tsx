@@ -91,7 +91,7 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
             isClearable
             isSearchable
             menuPortalTarget={document.body}
-            name="tags-x"
+            name="tags"
             noOptionsMessage={() => 'No tags'}
             onChange={value => handleChange(value as ReactSelectOption)}
             options={allTagOptions}

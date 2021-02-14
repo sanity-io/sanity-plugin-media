@@ -1,8 +1,8 @@
-import {black, hues} from '@sanity/color'
-import {AddIcon, CloseIcon} from '@sanity/icons'
-import {Box, Card, Flex, Text, studioTheme} from '@sanity/ui'
+import {black, hues, white} from '@sanity/color'
+import {CloseIcon} from '@sanity/icons'
+import {Box, Card, Text, studioTheme} from '@sanity/ui'
 import {components} from 'react-select'
-import React from 'react'
+import React, {CSSProperties} from 'react'
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
 const themeDarkDefaultBaseBg = studioTheme?.color?.dark?.default?.base?.bg
@@ -11,34 +11,48 @@ const themeSpace = studioTheme?.space
 const themeTextSizes = studioTheme?.fonts?.text?.sizes
 
 export const reactSelectStyles = {
-  control: (styles: any, {isDisabled}: {isDisabled: boolean}) => ({
+  control: (
+    styles: CSSProperties,
+    {isDisabled, isFocused}: {isDisabled: boolean; isFocused: boolean}
+  ) => {
+    let boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}`
+    if (isFocused) {
+      boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}, 0 0 0 1px var(--card-bg-color), 0 0 0 3px var(--card-focus-ring-color) !important`
+    }
+
+    return {
+      ...styles,
+      backgroundColor: themeDarkDefaultBaseBg,
+      color: white.hex,
+      border: 'none',
+      borderRadius: themeRadius[2],
+      boxShadow,
+      fontSize: themeTextSizes[1].fontSize,
+      minHeight: '25px',
+      opacity: isDisabled ? 0.5 : 'inherit',
+      outline: 'none',
+      transition: 'none',
+      '&:hover': {
+        boxShadow: `inset 0 0 0 1px ${studioTheme.color.dark.default.input.default.hovered.border}`
+      }
+    }
+  },
+  input: (styles: CSSProperties) => ({
     ...styles,
-    backgroundColor: themeDarkDefaultBaseBg,
-    color: 'white',
-    border: 'none',
-    borderRadius: themeRadius[2],
-    boxShadow: `inset 0 0 0 1px ${hues.gray[900].hex}`,
-    fontSize: themeTextSizes[1].fontSize,
-    minHeight: '25px',
-    opacity: isDisabled ? 0.5 : 'inherit',
-    outline: 'none'
-  }),
-  input: (styles: any) => ({
-    ...styles,
-    color: 'white',
+    color: white.hex,
     marginLeft: themeSpace[2]
   }),
-  menuList: (styles: any) => ({
+  menuList: (styles: CSSProperties) => ({
     ...styles,
     maxHeight: '146px',
     padding: 0
   }),
-  noOptionsMessage: (styles: any) => ({
+  noOptionsMessage: (styles: CSSProperties) => ({
     ...styles,
     fontSize: themeTextSizes[1].fontSize,
     lineHeight: '1em'
   }),
-  option: (styles: any, {isFocused}: {isFocused: boolean}) => ({
+  option: (styles: CSSProperties, {isFocused}: {isFocused: boolean}) => ({
     ...styles,
     backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
     borderRadius: themeRadius[2],
@@ -51,18 +65,18 @@ export const reactSelectStyles = {
       color: black.hex
     }
   }),
-  placeholder: (styles: any) => ({
+  placeholder: (styles: CSSProperties) => ({
     ...styles,
     marginLeft: themeSpace[2],
     paddingBottom: '2px'
   }),
-  singleValue: (styles: any) => ({
+  singleValue: (styles: CSSProperties) => ({
     ...styles,
-    color: '#fff',
+    color: white.hex,
     lineHeight: '1em',
     paddingBottom: '1px'
   }),
-  valueContainer: (styles: any) => ({
+  valueContainer: (styles: CSSProperties) => ({
     ...styles,
     margin: 0,
     padding: 0
@@ -73,7 +87,7 @@ const ClearIndicator = (props: any) => {
   return (
     <components.ClearIndicator {...props}>
       <Box
-        paddingX={1}
+        paddingRight={1}
         style={{
           transform: 'scale(0.85)'
         }}
@@ -112,10 +126,11 @@ const Option = (props: any) => {
   return (
     <Box padding={1}>
       <components.Option {...props}>
-        <Flex align="center">
-          {props.data.__isNew__ && <AddIcon />}
-          {props.children}
-        </Flex>
+        <Box paddingY={1}>
+          <Text size={1} style={{color: 'inherit'}} textOverflow="ellipsis">
+            {props.children}
+          </Text>
+        </Box>
       </components.Option>
     </Box>
   )
@@ -124,7 +139,11 @@ const Option = (props: any) => {
 const SingleValue = (props: any) => {
   return (
     <components.SingleValue {...props}>
-      <Box paddingX={2}>{props.children}</Box>
+      <Box paddingLeft={2}>
+        <Text size={1} style={{color: 'inherit'}} textOverflow="ellipsis">
+          {props.children}
+        </Text>
+      </Box>
     </components.SingleValue>
   )
 }
