@@ -214,8 +214,10 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   useEffect(() => {
     if (lastCreatedTagId) {
       const tag = tags?.find(tag => tag?.tag?._id === lastCreatedTagId)?.tag
-      if (tag) {
-        const existingTags = (getValues('opt.media.tags') as ReactSelectOption[]) || []
+      const existingTags = (getValues('opt.media.tags') as ReactSelectOption[]) || []
+      const tagAdded = existingTags.findIndex(tag => tag.value === lastCreatedTagId) > 0
+
+      if (tag && !tagAdded) {
         const updatedTags = existingTags.concat([
           {
             label: tag.name.current,
@@ -225,7 +227,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
         setValue('opt.media.tags', updatedTags, {shouldDirty: true})
       }
     }
-  }, [lastCreatedTagId])
+  }, [lastCreatedTagId, tags])
 
   const Footer = () => (
     <Box padding={3}>

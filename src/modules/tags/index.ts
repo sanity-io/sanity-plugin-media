@@ -78,8 +78,14 @@ const tagsSlice = createSlice({
       )
   },
   reducers: {
-    createComplete(state, _action: PayloadAction<{assetId?: string; tag: Tag}>) {
+    createComplete(state, action: PayloadAction<{assetId?: string; tag: Tag}>) {
+      const {tag} = action.payload
       state.creating = false
+      state.byIds[tag._id] = {
+        picked: false,
+        tag,
+        updating: false
+      }
     },
     createError(state, action: PayloadAction<{error: HttpError; name: string}>) {
       state.creating = false
@@ -166,14 +172,11 @@ const tagsSlice = createSlice({
       const {tags} = action.payload
 
       tags?.forEach(tag => {
-        // Add normalised tag item
         state.byIds[tag._id] = {
           picked: false,
           tag,
           updating: false
         }
-
-        // Add tag ID
         state.allIds.push(tag._id)
       })
     },
