@@ -541,31 +541,6 @@ export const selectTagSelectOptions = (asset?: Asset) => (
   return null
 }
 
-/*
-export const {
-  createComplete,
-  createError,
-  createRequest,
-  deleteComplete,
-  deleteError,
-  deleteRequest,
-  fetchComplete,
-  fetchError,
-  fetchRequest,
-  listenerCreateComplete,
-  listenerCreateQueue,
-  listenerDeleteComplete,
-  listenerDeleteQueue,
-  listenerUpdateComplete,
-  listenerUpdateQueue,
-  panelVisibleSet,
-  sort,
-  updateComplete,
-  updateError,
-  updateRequest
-} = tagsSlice.actions
-*/
-
 export const tagsActions = tagsSlice.actions
 
 export default tagsSlice.reducer

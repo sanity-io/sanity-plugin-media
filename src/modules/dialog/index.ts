@@ -23,18 +23,32 @@ const dialogSlice = createSlice({
   name: 'dialog',
   initialState,
   reducers: {
-    // TODO: refactor out
-    // Add created tag to assetEdit dialog
-    addCreatedTag(state, action: PayloadAction<{assetId: string; tagId: string}>) {
-      state.items.forEach(item => {
-        if (item.type === 'assetEdit' && item.assetId === action.payload.assetId) {
-          item.lastCreatedTagId = action.payload.tagId
-        }
-      })
-    },
     // Clear all dialogs
     clear(state) {
       state.items = []
+    },
+    // Add newly created inline tag to assetEdit dialog
+    inlineTagCreate(state, action: PayloadAction<{assetId: string; tag: Tag}>) {
+      const {assetId, tag} = action.payload
+
+      state.items.forEach(item => {
+        if (item.type === 'assetEdit' && item.assetId === assetId) {
+          item.lastCreatedTag = {
+            label: tag.name.current,
+            value: tag._id
+          }
+        }
+      })
+    },
+    // Remove inline tags from assetEdit dialog
+    inlineTagRemove(state, action: PayloadAction<{tagIds: string[]}>) {
+      const {tagIds} = action.payload
+
+      state.items.forEach(item => {
+        if (item.type === 'assetEdit') {
+          item.lastRemovedTagIds = tagIds
+        }
+      })
     },
     // Remove dialog by id
     remove(state, action: PayloadAction<{id: string}>) {
@@ -211,7 +225,7 @@ export const dialogTagCreateEpic: MyEpic = action$ =>
       const {assetId, tag} = action?.payload
 
       if (assetId) {
-        return of(dialogSlice.actions.addCreatedTag({tagId: tag._id, assetId}))
+        return of(dialogSlice.actions.inlineTagCreate({tag, assetId}))
       }
 
       if (tag._id) {
@@ -219,6 +233,16 @@ export const dialogTagCreateEpic: MyEpic = action$ =>
       }
 
       return empty()
+    })
+  )
+
+export const dialogTagDeleteEpic: MyEpic = action$ =>
+  action$.pipe(
+    filter(tagsActions.listenerDeleteComplete.match),
+    mergeMap(action => {
+      const {tagIds} = action?.payload
+
+      return of(dialogSlice.actions.inlineTagRemove({tagIds}))
     })
   )
 

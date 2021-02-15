@@ -47,7 +47,7 @@ const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
 const DialogAssetEdit: FC<Props> = (props: Props) => {
   const {
     children,
-    dialog: {assetId, id, lastCreatedTagId}
+    dialog: {assetId, id, lastCreatedTag, lastRemovedTagIds}
   } = props
 
   // Redux
@@ -210,24 +210,26 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     isMounted.current = true
   }, [currentTagLabels])
 
-  // - Update tags field with new tag if one has been created
+  // - Update tags form field (react-select) when a new _inline_ tag has been created
   useEffect(() => {
-    if (lastCreatedTagId) {
-      const tag = tags?.find(tag => tag?.tag?._id === lastCreatedTagId)?.tag
+    if (lastCreatedTag) {
       const existingTags = (getValues('opt.media.tags') as ReactSelectOption[]) || []
-      const tagAdded = existingTags.findIndex(tag => tag.value === lastCreatedTagId) > 0
-
-      if (tag && !tagAdded) {
-        const updatedTags = existingTags.concat([
-          {
-            label: tag.name.current,
-            value: tag._id
-          }
-        ])
-        setValue('opt.media.tags', updatedTags, {shouldDirty: true})
-      }
+      const updatedTags = existingTags.concat([lastCreatedTag])
+      setValue('opt.media.tags', updatedTags, {shouldDirty: true})
     }
-  }, [lastCreatedTagId, tags])
+  }, [lastCreatedTag])
+
+  // - Update tags form field (react-select) when an _inline_ tag has been removed elsewhere
+  useEffect(() => {
+    if (lastRemovedTagIds) {
+      const existingTags = (getValues('opt.media.tags') as ReactSelectOption[]) || []
+      const updatedTags = existingTags.filter(tag => {
+        return !lastRemovedTagIds.includes(tag.value)
+      })
+
+      setValue('opt.media.tags', updatedTags, {shouldDirty: true})
+    }
+  }, [lastRemovedTagIds])
 
   const Footer = () => (
     <Box padding={3}>

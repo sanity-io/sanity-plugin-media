@@ -18,7 +18,11 @@ import assetsReducer, {
   assetsUpdateEpic
 } from './assets'
 import debugReducer from './debug'
-import dialogReducer, {dialogClearOnAssetUpdateEpic, dialogTagCreateEpic} from './dialog'
+import dialogReducer, {
+  dialogClearOnAssetUpdateEpic,
+  dialogTagCreateEpic,
+  dialogTagDeleteEpic
+} from './dialog'
 import documentReducer from './document'
 import selectedAssetsReducer from './selectedAssets'
 import notificationsReducer, {
@@ -61,6 +65,7 @@ export const rootEpic = combineEpics(
   assetsUpdateEpic,
   dialogClearOnAssetUpdateEpic,
   dialogTagCreateEpic,
+  dialogTagDeleteEpic,
   notificationsAssetsDeleteErrorEpic,
   notificationsAssetsDeleteCompleteEpic,
   notificationsAssetsTagsAddCompleteEpic,

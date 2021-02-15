@@ -52,6 +52,17 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
         defaultValue={value}
         name={name}
         render={({onBlur, onChange, value: controllerValue}) => {
+          // TODO: investigate overriding `onChange` and updating form state manually.
+          // `opt.media.tags` is initialised with `null` as a defaultValue in react-hook-form
+          // Ideally, we'd be able to set `opt.media.tags` as null when all items are cleared, rather than
+          // setting it to an empty array (which is currently causing false positives in denoting whether the form is dirty)
+          //
+          // To illustrate this issue:
+          // - Edit an asset with no tags
+          // - Add a new tag (either an existing one, or create one inline)
+          // - Remove the tag you've just created
+          //
+          // At this point, the form will still be marked as dirty when it shouldnt be
           return (
             <CreatableSelect
               cacheOptions={false}

@@ -1,14 +1,18 @@
-// Sanitize form data:
-// - convert empty strings and undefined values to null (to correctly unset / delete fields)
+// Recursively sanitize form data:
+// - convert empty strings, undefined values and empty arrays to null (to correctly unset / delete fields)
 // - trim whitespace on string fleids
 
 type FormData = Record<string, any>
 
 const sanitizeFormData = (formData: FormData): FormData => {
   return Object.keys(formData).reduce((acc: FormData, key) => {
-    if (formData[key] === '' || typeof formData[key] === 'undefined') {
+    const val = formData[key]
+
+    if (typeof val === 'object' && val.constructor !== Array) {
+      acc[key] = sanitizeFormData(val)
+    } else if (val === '' || typeof val === 'undefined' || val?.length === 0) {
       acc[key] = null
-    } else if (typeof formData[key] === 'string' && formData[key]) {
+    } else if (typeof val === 'string' && val) {
       acc[key] = formData[key].trim()
     } else {
       acc[key] = formData[key]

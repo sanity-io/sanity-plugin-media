@@ -54,7 +54,11 @@ export type DialogAssetEdit = {
   assetId?: string
   closeDialogId?: string
   id: string
-  lastCreatedTagId?: string
+  lastCreatedTag?: {
+    label: string
+    value: string
+  }
+  lastRemovedTagIds?: string[]
   type: 'assetEdit'
 }
 
