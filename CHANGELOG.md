@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.1...v1.1.0-beta.2) (2021-02-15)
+
+
+### Bug Fixes
+
+* fix issue where inline created tags weren't always appearing as expected ([a5e81d2](https://github.com/robinpyon/sanity-plugin-media/commit/a5e81d2114bc1bfda3b1d317e2869b324635cfc9))
+
 ## [1.1.0-beta.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.0...v1.1.0-beta.1) (2021-02-15)
 
 
