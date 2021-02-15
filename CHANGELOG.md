@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.0...v1.1.0-beta.1) (2021-02-15)
+
+
+### Bug Fixes
+
+* include _createdAt in projection to try resolve ordering issues ([4f7295a](https://github.com/robinpyon/sanity-plugin-media/commit/4f7295a7a7f076a94151946518f56ee317aad2c0))
+
 ## [1.1.0-beta.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.0.1...v1.1.0-beta.0) (2021-02-15)
 
 
