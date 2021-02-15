@@ -157,6 +157,7 @@ const assetsSlice = createSlice({
             "items": *[${filter}] {
               _id,
               _type,
+              _createdAt,
               _updatedAt,
               altText,
               description,
