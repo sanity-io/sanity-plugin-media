@@ -1,5 +1,5 @@
 import {hues} from '@sanity/color'
-import {Button, Flex, Label} from '@sanity/ui'
+import {Box, Button, Flex, Label} from '@sanity/ui'
 import pluralize from 'pluralize'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
@@ -39,35 +39,33 @@ const PickedBar: FC = () => {
       }}
     >
       <Flex align="center">
-        <Label
-          size={0}
-          style={{
-            color: 'inherit'
-          }}
-        >
+        <Label size={0} style={{color: 'inherit'}}>
           {assetsPicked.length} {pluralize('asset', assetsPicked.length)} selected
         </Label>
 
         {/* Deselect button */}
-        <Flex marginLeft={4} marginRight={3}>
+        <Flex marginLeft={4} marginRight={0}>
           <Button
             mode="bleed"
             onClick={handlePickClear}
             style={{background: 'none', boxShadow: 'none'}}
           >
-            <Label size={0}>Deselect</Label>
+            <Box padding={2}>
+              <Label size={0}>Deselect</Label>
+            </Box>
           </Button>
         </Flex>
 
         {/* Delete button */}
         <Button
-          fontSize={1}
           mode="bleed"
           onClick={handleDeletePicked}
           style={{background: 'none', boxShadow: 'none'}}
           tone="critical"
         >
-          <Label size={0}>Delete</Label>
+          <Box padding={2}>
+            <Label size={0}>Delete</Label>
+          </Box>
         </Button>
       </Flex>
     </Flex>

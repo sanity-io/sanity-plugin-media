@@ -140,7 +140,14 @@ const SingleValue = (props: any) => {
   return (
     <components.SingleValue {...props}>
       <Box paddingLeft={2}>
-        <Text size={1} style={{color: 'inherit'}} textOverflow="ellipsis">
+        <Text
+          size={1}
+          style={{
+            color: 'inherit',
+            lineHeight: '2em' // HACK: prevent text descenders from cropping
+          }}
+          textOverflow="ellipsis"
+        >
           {props.children}
         </Text>
       </Box>

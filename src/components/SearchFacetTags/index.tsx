@@ -17,7 +17,7 @@ type Props = {
   facet: SearchFacetInputSearchableProps
 }
 
-const SearchFacetSearchable: FC<Props> = (props: Props) => {
+const SearchFacetTags: FC<Props> = (props: Props) => {
   const {facet} = props
 
   // Redux
@@ -105,4 +105,4 @@ const SearchFacetSearchable: FC<Props> = (props: Props) => {
   )
 }
 
-export default SearchFacetSearchable
+export default SearchFacetTags
