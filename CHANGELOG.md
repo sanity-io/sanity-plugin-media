@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.6](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.5...v1.1.0-beta.6) (2021-02-16)
+
+
+### Bug Fixes
+
+* upon creation, don't add ids to store if already present ([b8645cc](https://github.com/robinpyon/sanity-plugin-media/commit/b8645cc12e33d7faee6c9e2cc2b769d0ed8da970))
+
 ## [1.1.0-beta.5](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.4...v1.1.0-beta.5) (2021-02-16)
 
 
