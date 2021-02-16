@@ -4,6 +4,7 @@ import {DialogTags} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 
+import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
 import Tags from '../Tags'
 
@@ -27,7 +28,7 @@ const DialogTags: FC<Props> = (props: Props) => {
   }, [])
 
   return (
-    <Dialog scheme="dark" header="All Tags" id={id} onClose={handleClose} width={1}>
+    <Dialog header="All Tags" id={id} onClose={handleClose} width={1} zOffset={Z_INDEX_DIALOG}>
       <Box
         style={{
           borderTop: `1px solid ${hues.gray?.[900].hex}`

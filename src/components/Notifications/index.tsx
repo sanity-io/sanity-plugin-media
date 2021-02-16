@@ -11,6 +11,7 @@ const Notifications: FC = () => {
     if (items.length > 0) {
       const lastItem = items[items.length - 1]
       toast.push({
+        closable: true,
         status: lastItem.status,
         title: lastItem.title
       })

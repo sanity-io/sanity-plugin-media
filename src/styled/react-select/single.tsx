@@ -103,7 +103,7 @@ const ClearIndicator = (props: any) => {
 const Menu = (props: any) => {
   return (
     <components.Menu {...props}>
-      <Card radius={1} scheme="dark" shadow={2}>
+      <Card radius={1} shadow={2}>
         {props.children}
       </Card>
     </components.Menu>

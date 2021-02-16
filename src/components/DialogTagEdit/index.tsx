@@ -9,6 +9,7 @@ import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
 
+import {Z_INDEX_DIALOG} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {selectTagById, tagsActions} from '../../modules/tags'
@@ -178,8 +179,8 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
       header="Edit Tag"
       id={id}
       onClose={handleClose}
-      scheme="dark"
       width={1}
+      zOffset={Z_INDEX_DIALOG}
     >
       {/* Form fields */}
       <Box as="form" padding={4} onSubmit={handleSubmit(onSubmit)}>

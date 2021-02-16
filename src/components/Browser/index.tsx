@@ -89,7 +89,6 @@ const Browser: FC<Props> = (props: Props) => {
       <Notifications />
 
       <Card
-        scheme="dark"
         style={{
           height: '100%',
           minHeight: '100%'

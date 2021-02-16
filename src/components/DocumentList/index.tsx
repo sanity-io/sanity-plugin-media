@@ -69,11 +69,8 @@ const DocumentList = (props: Props) => {
                 marginBottom={2}
                 padding={2}
                 radius={2}
-                scheme="dark"
                 shadow={1}
-                style={{
-                  overflow: 'hidden'
-                }}
+                style={{overflow: 'hidden'}}
               >
                 <Box>
                   {schemaType ? (

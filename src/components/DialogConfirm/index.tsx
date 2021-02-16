@@ -4,6 +4,7 @@ import {DialogConfirm} from '@types'
 import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 
+import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
 
 type Props = {
@@ -65,8 +66,8 @@ const DialogConfirm: FC<Props> = (props: Props) => {
       header={<Header />}
       id="confirm"
       onClose={handleClose}
-      scheme="dark"
       width={1}
+      zOffset={Z_INDEX_DIALOG}
     >
       <Box paddingX={4} paddingY={4}>
         <Stack space={3}>

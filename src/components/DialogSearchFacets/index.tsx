@@ -3,6 +3,7 @@ import {DialogSearchFacets} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 
+import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
 import SearchFacets from '../SearchFacets'
 import SearchFacetsControl from '../SearchFacetsControl'
@@ -27,7 +28,7 @@ const DialogSearchFacets: FC<Props> = (props: Props) => {
   }, [])
 
   return (
-    <Dialog scheme="dark" header="Filters" id={id} onClose={handleClose} width={1}>
+    <Dialog header="Filters" id={id} onClose={handleClose} width={1} zOffset={Z_INDEX_DIALOG}>
       <Box padding={3}>
         <SearchFacets layout="stack" />
         <SearchFacetsControl />

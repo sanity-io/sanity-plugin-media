@@ -1,8 +1,9 @@
-import {Box, Portal, ThemeProvider, ToastProvider, studioTheme} from '@sanity/ui'
+import {Box, ThemeProvider, ToastProvider, studioTheme} from '@sanity/ui'
 import {SanityCustomAssetSourceProps} from '@types'
-import React, {FC, MouseEvent, useLayoutEffect, useEffect} from 'react'
+import React, {FC, MouseEvent} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 
+import {Z_INDEX_APP, Z_INDEX_TOAST_PROVIDER} from './constants'
 import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContext'
 import Browser from './components/Browser'
 import ReduxProvider from './components/ReduxProvider'
@@ -18,59 +19,6 @@ const AssetBrowser: FC<Props> = (props: Props) => {
   // Close on escape key press
   useKeyPress('escape', onClose)
 
-  useLayoutEffect(() => {
-    /**
-     * HACK: Hide overflow on parent dialog content container.
-     * This is done because:
-     * 1. On iOS, visible `overflow` and `-webkit-overflow-scrolling: touch` causes nested elements with
-     * fixed positiong (the media browser) to crop oddly, as if it's being masked.
-     * 2. We don't require visible overflow in the media browser anyway, as that's all delegated to `react-window`
-     */
-    const dialogContentEl = window.document.querySelector('[class^=DefaultDialog_content]')
-    if (dialogContentEl instanceof HTMLElement) {
-      dialogContentEl.style.overflow = 'hidden'
-    }
-
-    // HACK: Revert overflow on parent dialog content container.
-    return () => {
-      if (dialogContentEl instanceof HTMLElement) {
-        dialogContentEl.style.overflow = 'auto'
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    const sanityContainerEl: HTMLDivElement | null = window.document.querySelector('#sanity')
-
-    // Scroll to top if browser is being used as a tool.
-    // We do this as we lock body scroll when the plugin is active, and due to overscroll
-    // on mobile devices, the menu may not always be positioned at the top of the page.
-    if (tool) {
-      window.scrollTo(0, 0)
-    } else {
-      if (sanityContainerEl) {
-        sanityContainerEl.style.position = 'relative'
-        sanityContainerEl.style.zIndex = '-1'
-      }
-    }
-
-    /*
-    // Diable scrolling on the body element whilst the plugin is active, re-enable on close
-    // Note that this has no effect on iOS < 13
-    window.document.body.style.overflow = 'hidden'
-    return () => {
-      window.document.body.style.overflow = 'auto'
-    }
-    */
-
-    return () => {
-      if (sanityContainerEl) {
-        sanityContainerEl.style.position = 'inherit'
-        sanityContainerEl.style.zIndex = 'inherit'
-      }
-    }
-  }, [])
-
   // Stop propagation and prevent document mouse events from firing.
   // This is a bit of a hack to make this work with `editModal = 'popover'` and prevent Sanity's <Popover /> component from
   // prematurely closing, as it attaches events on `document` to detect outside clicks.
@@ -82,7 +30,7 @@ const AssetBrowser: FC<Props> = (props: Props) => {
     <ReduxProvider {...props}>
       <ThemeProvider scheme="dark" theme={studioTheme}>
         <LegacyThemeProvider theme={theme}>
-          <ToastProvider>
+          <ToastProvider zOffset={Z_INDEX_TOAST_PROVIDER}>
             <AssetBrowserDispatchProvider onSelect={onSelect}>
               <GlobalStyle />
 
@@ -91,21 +39,20 @@ const AssetBrowser: FC<Props> = (props: Props) => {
                   <Browser onClose={onClose} />
                 </Box>
               ) : (
-                <Portal>
-                  <Box
-                    onMouseUp={handleStopPropagation}
-                    style={{
-                      bottom: 0,
-                      height: 'auto',
-                      left: 0,
-                      position: 'fixed',
-                      top: 0,
-                      width: '100%'
-                    }}
-                  >
-                    <Browser onClose={onClose} />
-                  </Box>
-                </Portal>
+                <Box
+                  onMouseUp={handleStopPropagation}
+                  style={{
+                    bottom: 0,
+                    height: 'auto',
+                    left: 0,
+                    position: 'fixed',
+                    top: 0,
+                    width: '100%',
+                    zIndex: Z_INDEX_APP
+                  }}
+                >
+                  <Browser onClose={onClose} />
+                </Box>
               )}
             </AssetBrowserDispatchProvider>
           </ToastProvider>

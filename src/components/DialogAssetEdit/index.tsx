@@ -10,6 +10,7 @@ import {useDispatch} from 'react-redux'
 import {AspectRatio} from 'theme-ui'
 import * as yup from 'yup'
 
+import {Z_INDEX_DIALOG} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
@@ -266,8 +267,8 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
       header="Asset details"
       id={id}
       onClose={handleClose}
-      scheme="dark"
       width={3}
+      zOffset={Z_INDEX_DIALOG}
     >
       {/*
         We reverse direction to ensure the download button doesn't appear (in the DOM) before other tabbable items.
