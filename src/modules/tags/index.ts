@@ -81,7 +81,9 @@ const tagsSlice = createSlice({
     createComplete(state, action: PayloadAction<{assetId?: string; tag: Tag}>) {
       const {tag} = action.payload
       state.creating = false
-      state.allIds.push(tag._id)
+      if (!state.allIds.includes(tag._id)) {
+        state.allIds.push(tag._id)
+      }
       state.byIds[tag._id] = {
         picked: false,
         tag,
