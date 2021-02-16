@@ -180,7 +180,9 @@ const tagsSlice = createSlice({
           tag,
           updating: false
         }
-        state.allIds.push(tag._id)
+        if (!state.allIds.includes(tag._id)) {
+          state.allIds.push(tag._id)
+        }
       })
     },
     // Queue batch tag deletion
