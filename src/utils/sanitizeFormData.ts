@@ -8,7 +8,8 @@ const sanitizeFormData = (formData: FormData): FormData => {
   return Object.keys(formData).reduce((acc: FormData, key) => {
     const val = formData[key]
 
-    if (typeof val === 'object' && val.constructor !== Array) {
+    // TODO: refactor
+    if (typeof val === 'object' && val !== null && val.constructor !== Array) {
       acc[key] = sanitizeFormData(val)
     } else if (val === '' || typeof val === 'undefined' || val?.length === 0) {
       acc[key] = null

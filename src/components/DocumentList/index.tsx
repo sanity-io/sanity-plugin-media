@@ -62,13 +62,6 @@ const DocumentList = (props: Props) => {
 
           return filteredDocuments?.map(doc => {
             const schemaType = schema.get(doc._type)
-            if (!schemaType) {
-              return (
-                <div>
-                  A document of the unknown type <em>{doc._type}</em>
-                </div>
-              )
-            }
 
             return (
               <Card
@@ -83,9 +76,17 @@ const DocumentList = (props: Props) => {
                 }}
               >
                 <Box>
-                  <IntentLink intent="edit" params={{id: doc._id}} key={doc._id}>
-                    <Preview layout="default" value={doc} type={schemaType} />
-                  </IntentLink>
+                  {schemaType ? (
+                    <IntentLink intent="edit" params={{id: doc._id}} key={doc._id}>
+                      <Preview layout="default" value={doc} type={schemaType} />
+                    </IntentLink>
+                  ) : (
+                    <Box padding={2}>
+                      <Text size={1}>
+                        A document of the unknown type <em>{doc._type}</em>
+                      </Text>
+                    </Box>
+                  )}
                 </Box>
               </Card>
             )
