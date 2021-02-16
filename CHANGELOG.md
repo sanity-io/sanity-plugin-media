@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.8](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.7...v1.1.0-beta.8) (2021-02-16)
+
+
+### Bug Fixes
+
+* various layout fixes to ensure compatibility with upcoming studio changes ([da027f6](https://github.com/robinpyon/sanity-plugin-media/commit/da027f6d2ea009bb59cf503a2580378f35474656))
+
 ## [1.1.0-beta.7](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.6...v1.1.0-beta.7) (2021-02-16)
 
 
