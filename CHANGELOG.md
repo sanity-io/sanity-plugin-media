@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.5](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.4...v1.1.0-beta.5) (2021-02-16)
+
+
+### Bug Fixes
+
+* ensure that newly created tag ids are added to `allIds` array ([36a7e4c](https://github.com/robinpyon/sanity-plugin-media/commit/36a7e4c1fa206207c9d6b7101614c586f2c66a60))
+
 ## [1.1.0-beta.4](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.3...v1.1.0-beta.4) (2021-02-16)
 
 
