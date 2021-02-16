@@ -82,7 +82,6 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
         {/* Submit button */}
         <FormSubmitButton
           disabled={formUpdating || !isDirty || !isValid}
-          isDirty={isDirty}
           isValid={isValid}
           onClick={handleSubmit(onSubmit)}
         />

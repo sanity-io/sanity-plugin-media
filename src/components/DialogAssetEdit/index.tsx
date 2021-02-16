@@ -248,7 +248,6 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
         {/* Submit button */}
         <FormSubmitButton
           disabled={formUpdating || !isDirty || !isValid}
-          isDirty={isDirty}
           isValid={isValid}
           lastUpdated={currentAsset._updatedAt}
           onClick={handleSubmit(onSubmit)}

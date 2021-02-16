@@ -4,14 +4,13 @@ import React, {FC} from 'react'
 
 type Props = {
   disabled: boolean
-  isDirty: boolean
   isValid: boolean
   lastUpdated?: string
   onClick: () => void
 }
 
 const FormSubmitButton: FC<Props> = (props: Props) => {
-  const {disabled, isDirty, isValid, lastUpdated, onClick} = props
+  const {disabled, isValid, lastUpdated, onClick} = props
 
   return (
     <Tooltip
@@ -33,7 +32,7 @@ const FormSubmitButton: FC<Props> = (props: Props) => {
           </Text>
         </Box>
       }
-      disabled={isValid && isDirty}
+      disabled={'ontouchstart' in window}
       placement="top"
     >
       <Box>

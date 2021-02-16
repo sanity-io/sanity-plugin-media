@@ -50,6 +50,7 @@ const TagButton: FC<TagButtonProps> = (props: TagButtonProps) => {
           </Text>
         </Container>
       }
+      disabled={'ontouchstart' in window}
       placement="top"
       portal
     >
