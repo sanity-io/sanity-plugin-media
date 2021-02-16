@@ -8,7 +8,7 @@ import PanelHeader from '../PanelHeader'
 import TagPanel from '../TagPanel'
 
 const TagsAll: FC = () => {
-  const tags = useTypedSelector(state => selectTags(state))
+  const tags = useTypedSelector(selectTags)
   const fetching = useTypedSelector(state => state.tags.fetching)
 
   return (
