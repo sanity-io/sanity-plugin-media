@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.2...v1.1.0-beta.3) (2021-02-16)
+
+
+### Bug Fixes
+
+* add null check to sanitize form ([413448b](https://github.com/robinpyon/sanity-plugin-media/commit/413448b7b68258aad84c62ae621d3342584ed374))
+
 ## [1.1.0-beta.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.1...v1.1.0-beta.2) (2021-02-15)
 
 
