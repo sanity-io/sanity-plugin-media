@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.4](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.3...v1.1.0-beta.4) (2021-02-16)
+
+
+### Bug Fixes
+
+* absolutely position react-window and prevent layout shift when picking assets ([0058dd5](https://github.com/robinpyon/sanity-plugin-media/commit/0058dd5e6744408c5102d44cecc9a764b0a429e7))
+* force local tag + asset updates (in addition to those received by listeners) ([4dde089](https://github.com/robinpyon/sanity-plugin-media/commit/4dde08999cc97bab4e9c8c26115310b4919a567a))
+
 ## [1.1.0-beta.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.2...v1.1.0-beta.3) (2021-02-16)
 
 
