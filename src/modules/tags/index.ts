@@ -96,7 +96,7 @@ const tagsSlice = createSlice({
       delete state.creatingError
     },
     deleteComplete(state, action: PayloadAction<{tagId: string}>) {
-      const tagId = action.payload?.tagId
+      const {tagId} = action.payload
       const deleteIndex = state.allIds.indexOf(tagId)
       if (deleteIndex >= 0) {
         state.allIds.splice(deleteIndex, 1)
@@ -120,26 +120,25 @@ const tagsSlice = createSlice({
       })
     },
     fetchComplete(state, action: PayloadAction<{tags: Tag[]}>) {
-      const tags = action.payload?.tags || []
+      const {tags} = action.payload
 
-      if (tags) {
-        tags.forEach(tag => {
-          state.allIds.push(tag._id)
-          state.byIds[tag._id] = {
-            picked: false,
-            tag,
-            updating: false
-          }
-        })
-      }
+      tags?.forEach(tag => {
+        state.allIds.push(tag._id)
+        state.byIds[tag._id] = {
+          picked: false,
+          tag,
+          updating: false
+        }
+      })
 
       state.fetching = false
       state.fetchCount = tags.length || 0
       delete state.fetchingError
     },
     fetchError(state, action: PayloadAction<{error: HttpError}>) {
+      const {error} = action.payload
       state.fetching = false
-      state.fetchingError = action.payload.error
+      state.fetchingError = error
     },
     fetchRequest: {
       reducer: (state, _action: PayloadAction<{query: string}>) => {
@@ -166,9 +165,12 @@ const tagsSlice = createSlice({
         return {payload: {query}}
       }
     },
+    // Queue batch tag creation
+    listenerCreateQueue(_state, _action: PayloadAction<{tag: Tag}>) {
+      //
+    },
     // Apply created tags (via sanity real-time events)
-    // TODO: rename to something that includes 'batched' or similar
-    listenerCreateComplete(state, action: PayloadAction<{tags: Tag[]}>) {
+    listenerCreateQueueComplete(state, action: PayloadAction<{tags: Tag[]}>) {
       const {tags} = action.payload
 
       tags?.forEach(tag => {
@@ -180,13 +182,12 @@ const tagsSlice = createSlice({
         state.allIds.push(tag._id)
       })
     },
-    // Queue batch tag creation
-    listenerCreateQueue(_state, _action: PayloadAction<{tag: Tag}>) {
+    // Queue batch tag deletion
+    listenerDeleteQueue(_state, _action: PayloadAction<{tagId: string}>) {
       //
     },
     // Apply deleted tags (via sanity real-time events)
-    // TODO: rename to something that includes 'batched' or similar
-    listenerDeleteComplete(state, action: PayloadAction<{tagIds: string[]}>) {
+    listenerDeleteQueueComplete(state, action: PayloadAction<{tagIds: string[]}>) {
       const {tagIds} = action.payload
 
       tagIds?.forEach(tagId => {
@@ -197,13 +198,12 @@ const tagsSlice = createSlice({
         delete state.byIds[tagId]
       })
     },
-    // Queue batch tag deletion
-    listenerDeleteQueue(_state, _action: PayloadAction<{tagId: string}>) {
+    // Queue batch tag updates
+    listenerUpdateQueue(_state, _action: PayloadAction<{tag: Tag}>) {
       //
     },
     // Apply updated tags (via sanity real-time events)
-    // TODO: rename to something that includes 'batched' or similar
-    listenerUpdateComplete(state, action: PayloadAction<{tags: Tag[]}>) {
+    listenerUpdateQueueComplete(state, action: PayloadAction<{tags: Tag[]}>) {
       const {tags} = action.payload
 
       tags?.forEach(tag => {
@@ -212,13 +212,10 @@ const tagsSlice = createSlice({
         }
       })
     },
-    // Queue batch tag updates
-    listenerUpdateQueue(_state, _action: PayloadAction<{tag: Tag}>) {
-      //
-    },
     // Set tag panel visibility
     panelVisibleSet(state, action: PayloadAction<{panelVisible: boolean}>) {
-      state.panelVisible = action.payload?.panelVisible
+      const {panelVisible} = action.payload
+      state.panelVisible = panelVisible
     },
     // Sort all tags by name
     sort(state) {
@@ -235,9 +232,10 @@ const tagsSlice = createSlice({
         }
       })
     },
-    updateComplete(state, action: PayloadAction<{closeDialogId?: string; tagId: string}>) {
-      const tagId = action.payload?.tagId
-      state.byIds[tagId].updating = false
+    updateComplete(state, action: PayloadAction<{closeDialogId?: string; tag: Tag}>) {
+      const {tag} = action.payload
+      state.byIds[tag._id].tag = tag
+      state.byIds[tag._id].updating = false
     },
     updateError(state, action: PayloadAction<{tag: Tag; error: HttpError}>) {
       const {error, tag} = action.payload
@@ -253,8 +251,8 @@ const tagsSlice = createSlice({
         tag: Tag
       }>
     ) {
-      const tagId = action.payload?.tag?._id
-      state.byIds[tagId].updating = true
+      const {tag} = action.payload
+      state.byIds[tag?._id].updating = true
     }
   }
 })
@@ -375,7 +373,7 @@ export const tagsFetchEpic: MyEpic = (action$, state$) =>
     filter(tagsSlice.actions.fetchRequest.match),
     withLatestFrom(state$),
     switchMap(([action, state]) => {
-      const query = action.payload?.query
+      const {query} = action.payload
 
       return of(action).pipe(
         // Optionally throttle
@@ -410,7 +408,7 @@ export const tagsListenerCreateQueueEpic: MyEpic = action$ =>
     filter(actions => actions.length > 0),
     switchMap(actions => {
       const tags = actions?.map(action => action.payload.tag)
-      return of(tagsSlice.actions.listenerCreateComplete({tags}))
+      return of(tagsSlice.actions.listenerCreateQueueComplete({tags}))
     })
   )
 
@@ -423,7 +421,7 @@ export const tagsListenerDeleteQueueEpic: MyEpic = action$ =>
     filter(actions => actions.length > 0),
     switchMap(actions => {
       const tagIds = actions?.map(action => action.payload.tagId)
-      return of(tagsSlice.actions.listenerDeleteComplete({tagIds}))
+      return of(tagsSlice.actions.listenerDeleteQueueComplete({tagIds}))
     })
   )
 
@@ -436,7 +434,7 @@ export const tagsListenerUpdateQueueEpic: MyEpic = action$ =>
     filter(actions => actions.length > 0),
     switchMap(actions => {
       const tags = actions?.map(action => action.payload.tag)
-      return of(tagsSlice.actions.listenerUpdateComplete({tags}))
+      return of(tagsSlice.actions.listenerUpdateQueueComplete({tags}))
     })
   )
 
@@ -445,8 +443,8 @@ export const tagsListenerUpdateQueueEpic: MyEpic = action$ =>
 export const tagsSortEpic: MyEpic = action$ =>
   action$.pipe(
     ofType(
-      tagsSlice.actions.listenerCreateComplete.type,
-      tagsSlice.actions.listenerUpdateComplete.type
+      tagsSlice.actions.listenerCreateQueueComplete.type,
+      tagsSlice.actions.listenerUpdateQueueComplete.type
     ),
     bufferTime(1000),
     filter(actions => actions.length > 0),
@@ -486,7 +484,7 @@ export const tagsUpdateEpic: MyEpic = (action$, state$) =>
           return of(
             tagsSlice.actions.updateComplete({
               closeDialogId,
-              tagId: updatedTag._id
+              tag: updatedTag
             })
           )
         }),

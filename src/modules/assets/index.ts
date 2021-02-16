@@ -299,9 +299,10 @@ const assetsSlice = createSlice({
         state.byIds[asset.asset._id].updating = true
       })
     },
-    updateComplete(state, action: PayloadAction<{assetId: string; closeDialogId?: string}>) {
-      const assetId = action.payload?.assetId
-      state.byIds[assetId].updating = false
+    updateComplete(state, action: PayloadAction<{asset: Asset; closeDialogId?: string}>) {
+      const {asset} = action.payload
+      state.byIds[asset._id].updating = false
+      state.byIds[asset._id].asset = asset
     },
     updateError(state, action: PayloadAction<{asset: Asset; error: HttpError}>) {
       const {asset, error} = action.payload
@@ -698,7 +699,7 @@ export const assetsUpdateEpic: MyEpic = (action$, state$) =>
         mergeMap((updatedAsset: any) =>
           of(
             assetsActions.updateComplete({
-              assetId: updatedAsset._id,
+              asset: updatedAsset,
               closeDialogId
             })
           )

@@ -77,13 +77,13 @@ export const searchFacetTagUpdateEpic: MyEpic = (action$, state$) =>
     filter(tagsActions.updateComplete.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const {tagId} = action.payload
+      const {tag} = action.payload
 
       const currentSearchFacetTag = state.search.facets?.find(facet => facet.name === 'tag')
-      const tagItem = state.tags.byIds[tagId]
+      const tagItem = state.tags.byIds[tag._id]
 
       if (currentSearchFacetTag?.type === 'searchable') {
-        if (currentSearchFacetTag.value?.value === tagId) {
+        if (currentSearchFacetTag.value?.value === tag._id) {
           return of(
             searchSlice.actions.facetsUpdate({
               name: 'tag',

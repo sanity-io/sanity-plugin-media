@@ -238,7 +238,7 @@ export const dialogTagCreateEpic: MyEpic = action$ =>
 
 export const dialogTagDeleteEpic: MyEpic = action$ =>
   action$.pipe(
-    filter(tagsActions.listenerDeleteComplete.match),
+    filter(tagsActions.listenerDeleteQueueComplete.match),
     mergeMap(action => {
       const {tagIds} = action?.payload
 
