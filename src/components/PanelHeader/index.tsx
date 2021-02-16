@@ -4,6 +4,7 @@ import {Box, Button, Flex, Inline, Label} from '@sanity/ui'
 import {TagActions, TagItem} from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
+import {PANEL_HEIGHT} from '../../constants'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
@@ -39,7 +40,7 @@ const PanelHeader: FC<Props> = (props: Props) => {
         style={{
           background: light ? hues.gray?.[900].hex : black.hex,
           borderBottom: `1px solid ${hues.gray?.[900].hex}`,
-          height: '2.0em',
+          height: `${PANEL_HEIGHT}px`,
           position: 'sticky',
           top: 0,
           zIndex: 1 // force stacking context

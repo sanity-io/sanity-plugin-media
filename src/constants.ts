@@ -62,5 +62,6 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   inputs.height
 ]
 
+export const PANEL_HEIGHT = 32 // px
 export const TAG_DOCUMENT_NAME = 'media.tag'
 export const TAGS_PANEL_WIDTH = 250 // px

@@ -4,6 +4,7 @@ import React, {FC, MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {Box as LegacyBox} from 'theme-ui'
+import {PANEL_HEIGHT} from '../../constants'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsLength, selectAssetsPickedLength} from '../../modules/assets'
@@ -51,7 +52,7 @@ const TableHeader: FC = () => {
         display: ['none', null, null, 'grid'],
         gridColumnGap: [0, null, null, 3],
         gridTemplateColumns: 'tableLarge',
-        height: '2.0em',
+        height: `${PANEL_HEIGHT}px`,
         letterSpacing: '0.025em',
         position: 'sticky',
         textTransform: 'uppercase',

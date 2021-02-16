@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
+import {PANEL_HEIGHT} from '../../constants'
 
 const PickedBar: FC = () => {
   // Redux
@@ -34,8 +35,9 @@ const PickedBar: FC = () => {
       style={{
         background: hues.gray?.[900].hex,
         borderBottom: `1px solid ${hues.gray?.[900].hex}`,
-        height: '2.0em',
-        position: 'relative'
+        height: `${PANEL_HEIGHT}px`,
+        position: 'relative',
+        width: '100%'
       }}
     >
       <Flex align="center">

@@ -4,10 +4,11 @@ import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
+import {PANEL_HEIGHT} from '../../constants'
 
 import useBreakpointIndex from '../../hooks/useBreakpointIndex'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsActions, selectAssets} from '../../modules/assets'
+import {assetsActions, selectAssets, selectAssetsPickedLength} from '../../modules/assets'
 import {tagsActions} from '../../modules/tags'
 import Cards from '../Cards'
 import Table from '../Table'
@@ -26,6 +27,7 @@ const Items: FC = () => {
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
   const view = useTypedSelector(state => state.assets.view)
   const items = useTypedSelector(selectAssets)
+  const pickedCount = useTypedSelector(selectAssetsPickedLength)
 
   const breakpointIndex = useBreakpointIndex()
 
@@ -71,7 +73,17 @@ const Items: FC = () => {
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
 
   return (
-    <Box flex={1}>
+    <Box
+      flex={1}
+      style={{
+        height: '100%',
+        left: 0,
+        paddingTop: pickedCount > 0 ? PANEL_HEIGHT : 0,
+        position: 'absolute',
+        top: 0,
+        width: '100%'
+      }}
+    >
       {isEmpty && (
         <Box padding={4}>
           <Text size={1} weight="semibold">
@@ -82,6 +94,8 @@ const Items: FC = () => {
       {!isEmpty && (view === 'grid' || 'table') && (
         <AutoSizer>
           {({height, width}) => {
+            const containerHeight = pickedCount > 0 ? height - PANEL_HEIGHT : height
+
             return (
               <InfiniteLoader
                 isItemLoaded={isItemLoaded}
@@ -93,7 +107,7 @@ const Items: FC = () => {
                   if (view === 'table') {
                     return (
                       <Table
-                        height={height}
+                        height={containerHeight}
                         items={items}
                         itemCount={itemCount}
                         onItemsRendered={onItemsRendered}
@@ -131,7 +145,7 @@ const Items: FC = () => {
 
                     return (
                       <Cards
-                        height={height}
+                        height={containerHeight}
                         items={items}
                         itemCount={itemCount}
                         onItemsRendered={newItemsRendered}
