@@ -60,7 +60,7 @@ const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
   }
 })
 
-const TableRow = (props: Props) => {
+const TableRowAsset = (props: Props) => {
   const {item, selected, style} = props
 
   // Refs
@@ -183,7 +183,7 @@ const TableRow = (props: Props) => {
         <Flex align="center" justify="center" style={{height: '100%', position: 'relative'}}>
           <Box style={{height: '100%', opacity: opacityPreview, position: 'relative'}}>
             {/* File icon */}
-            {isFileAsset(asset) && <FileIcon asset={asset} width="40px" />}
+            {isFileAsset(asset) && <FileIcon extension={asset.extension} width="40px" />}
 
             {/* Image */}
             {isImageAsset(asset) && (
@@ -337,4 +337,4 @@ const TableRow = (props: Props) => {
   )
 }
 
-export default memo(TableRow)
+export default memo(TableRowAsset)

@@ -143,7 +143,7 @@ const CardAsset = (props: Props) => {
         >
           <div onClick={handleAssetClick} style={{height: '100%', opacity: opacityPreview}}>
             {/* File icon */}
-            {isFileAsset(asset) && <FileIcon asset={asset} width="80px" />}
+            {isFileAsset(asset) && <FileIcon extension={asset.extension} width="80px" />}
 
             {/* Image */}
             {isImageAsset(asset) && (

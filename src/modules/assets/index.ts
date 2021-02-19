@@ -77,8 +77,7 @@ const initialState = {
   },
   pageIndex: 0,
   pageSize: 50,
-  // view: 'grid'
-  view: 'table'
+  view: 'grid'
   // totalCount: -1
 } as AssetsReducerState
 

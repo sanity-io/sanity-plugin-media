@@ -10,7 +10,7 @@ import {
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import TableHeader from '../TableHeader'
-import TableRow from '../TableRow'
+import TableRowAsset from '../TableRowAsset'
 import TableRowUpload from '../TableRowUpload'
 
 type Props = {
@@ -54,7 +54,11 @@ const VirtualRow = memo((props: ListChildComponentProps) => {
 
   if (item?._type === 'asset') {
     return (
-      <TableRow item={item} selected={selectedIds.includes(item?.asset?._id)} style={rowStyle} />
+      <TableRowAsset
+        item={item}
+        selected={selectedIds.includes(item?.asset?._id)}
+        style={rowStyle}
+      />
     )
   }
 

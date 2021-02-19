@@ -40,17 +40,6 @@ const DragActiveContainer = styled.div`
   z-index: 2;
 `
 
-/*
-const uploadFile = (file: File) => {
-
-}
-*/
-
-/*
-  - Create observable which listens to all uploads
-  - On new upload, push to this observable
-*/
-
 const UploadDropzone: FC<Props> = (props: Props) => {
   const {children} = props
 

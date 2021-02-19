@@ -144,7 +144,6 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
     filter(uploadsActions.uploadStart.match),
     mergeMap(action => {
       const {file, uploadItem} = action.payload
-      const assetType = uploadItem.mimeType.indexOf('image') >= 0 ? 'image' : 'file'
 
       return merge(
         // Generate low res preview
@@ -162,7 +161,7 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
         // Upload asset and receive progress / complete events
         of(null).pipe(
           // delay(500000), // debug uploads
-          mergeMap(() => uploadAsset$(assetType, file, uploadItem.hash)),
+          mergeMap(() => uploadAsset$(uploadItem.assetType, file, uploadItem.hash)),
           mergeMap(event => {
             if (event?.type === 'complete') {
               return of(
@@ -213,9 +212,8 @@ export const uploadsAssetUploadEpic: MyEpic = action$ =>
         mergeMap(hash => {
           const uploadItem = {
             _type: 'upload',
+            assetType: file.type.indexOf('image') >= 0 ? 'image' : 'file',
             hash,
-            lastModified: file.lastModified,
-            mimeType: file.type,
             name: file.name,
             size: file.size,
             status: 'queued'

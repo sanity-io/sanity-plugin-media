@@ -304,9 +304,8 @@ export type TagItem = {
 
 export type UploadItem = {
   _type: 'upload'
+  assetType: 'image' | 'file'
   hash: string
-  lastModified: number
-  mimeType: string
   name: string
   objectUrl?: string
   percent?: number

@@ -1,10 +1,11 @@
 import {hues} from '@sanity/color'
-import {Box, Flex, Inline, Text} from '@sanity/ui'
+import {Box, Flex, Text} from '@sanity/ui'
 import filesize from 'filesize'
 import React, {CSSProperties, FC} from 'react'
 import {Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
 
 import {UploadItem} from '../../types'
+import FileIcon from '../FileIcon'
 import Image from '../Image'
 
 type Props = {
@@ -62,8 +63,14 @@ const TableRowUpload: FC<Props> = (props: Props) => {
         }}
       >
         <Box style={{height: '100%', position: 'relative'}}>
-          {item?.objectUrl && (
+          {item.assetType === 'image' && item?.objectUrl && (
             <Image draggable={false} src={item.objectUrl} style={{opacity: 0.25}} />
+          )}
+
+          {item.assetType === 'file' && (
+            <div style={{height: '100%', opacity: 0.1}}>
+              <FileIcon width="40px" />
+            </div>
           )}
 
           <Flex
@@ -77,7 +84,7 @@ const TableRowUpload: FC<Props> = (props: Props) => {
               width: '100%'
             }}
           >
-            <Text size={1} style={{opacity: item.status === 'queued' ? 0.4 : 1}}>
+            <Text size={1} style={{opacity: item.status === 'queued' ? 0.4 : 1}} weight="semibold">
               {status}
             </Text>
           </Flex>
@@ -92,11 +99,9 @@ const TableRowUpload: FC<Props> = (props: Props) => {
           marginLeft: [3, null, null, 0]
         }}
       >
-        <Inline space={2}>
-          <Text size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
-            Uploading {item.name}
-          </Text>
-        </Inline>
+        <Text size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+          Uploading {item.name}
+        </Text>
       </LegacyBox>
 
       {/* Size */}

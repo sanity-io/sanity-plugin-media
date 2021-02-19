@@ -32,7 +32,7 @@ const FileAssetPreview: FC<Props> = (props: Props) => {
     )
   }
 
-  return <FileIcon asset={asset} width="50%" />
+  return <FileIcon extension={asset.extension} width="50%" />
 }
 
 export default FileAssetPreview

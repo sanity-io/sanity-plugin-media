@@ -5,6 +5,7 @@ import React, {CSSProperties, FC} from 'react'
 import {PANEL_HEIGHT} from '../../constants'
 
 import {UploadItem} from '../../types'
+import FileIcon from '../FileIcon'
 import Image from '../Image'
 
 type Props = {
@@ -36,7 +37,7 @@ const CardUpload: FC<Props> = (props: Props) => {
       style={{...style, background: hues.gray[950].hex, border: '1px solid transparent'}}
     >
       <Box flex={1} style={{position: 'relative'}}>
-        {item?.objectUrl && (
+        {item.assetType === 'image' && item?.objectUrl && (
           <Image
             draggable={false}
             src={item.objectUrl}
@@ -44,6 +45,12 @@ const CardUpload: FC<Props> = (props: Props) => {
               opacity: 0.4
             }}
           />
+        )}
+
+        {item.assetType === 'file' && (
+          <div style={{height: '100%', opacity: 0.1}}>
+            <FileIcon width="80px" />
+          </div>
         )}
 
         <Flex
@@ -57,17 +64,19 @@ const CardUpload: FC<Props> = (props: Props) => {
             width: '100%'
           }}
         >
-          <Text size={1} style={{opacity: item.status === 'queued' ? 0.5 : 1}}>
+          <Text size={1} style={{opacity: item.status === 'queued' ? 0.5 : 1}} weight="semibold">
             {status}
           </Text>
         </Flex>
       </Box>
 
       {/* Footer */}
-      <Flex align="center" paddingX={2} style={{height: `${PANEL_HEIGHT}px`}}>
-        <Text size={0} textOverflow="ellipsis">
-          Uploading {item.name} ({fileSize}){' '}
-        </Text>
+      <Flex align="center" style={{height: `${PANEL_HEIGHT}px`}}>
+        <Box paddingX={2}>
+          <Text size={0} textOverflow="ellipsis">
+            Uploading {item.name} ({fileSize})
+          </Text>
+        </Box>
       </Flex>
     </Flex>
   )
