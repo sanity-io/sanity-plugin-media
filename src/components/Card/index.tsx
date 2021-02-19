@@ -72,7 +72,6 @@ const Card = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const currentDocument = useTypedSelector(state => state.document)
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
 
   const asset = item?.asset
@@ -92,15 +91,13 @@ const Card = (props: Props) => {
   const handleAssetClick = (e: MouseEvent) => {
     e.stopPropagation()
 
-    if (currentDocument) {
-      if (onSelect) {
-        onSelect([
-          {
-            kind: 'assetDocumentId',
-            value: asset._id
-          }
-        ])
-      }
+    if (onSelect) {
+      onSelect([
+        {
+          kind: 'assetDocumentId',
+          value: asset._id
+        }
+      ])
     } else {
       if (shiftPressed.current) {
         if (picked) {
@@ -117,7 +114,7 @@ const Card = (props: Props) => {
   const handleContextActionClick = (e: MouseEvent) => {
     e.stopPropagation()
 
-    if (currentDocument) {
+    if (onSelect) {
       dispatch(dialogShowDetails(asset._id))
     } else {
       if (shiftPressed.current && !picked) {
@@ -206,7 +203,7 @@ const Card = (props: Props) => {
         {/* Footer */}
         <ContextActionContainer onClick={handleContextActionClick} padding={2}>
           <Flex align="center">
-            {currentDocument ? (
+            {onSelect ? (
               <EditIcon
                 style={{
                   flexShrink: 0,

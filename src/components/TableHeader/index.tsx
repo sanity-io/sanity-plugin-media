@@ -4,6 +4,7 @@ import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {Box as LegacyBox} from 'theme-ui'
 
+import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsPickAll, assetsPickClear} from '../../modules/assets'
 import TableHeaderItem from '../TableHeaderItem'
@@ -23,10 +24,10 @@ const ContextActionContainer = styled(Flex)`
 const TableHeader: FC = () => {
   // Redux
   const dispatch = useDispatch()
-
   const fetching = useTypedSelector(state => state.assets.fetching)
-  const currentDocument = useTypedSelector(state => state.document)
   const byIds = useTypedSelector(state => state.assets.byIds)
+
+  const {onSelect} = useAssetSourceActions()
 
   const items = byIds ? Object.values(byIds) : []
 
@@ -61,16 +62,18 @@ const TableHeader: FC = () => {
         zIndex: 1 // TODO: try to avoid manually setting z-indices
       }}
     >
-      <ContextActionContainer
-        align="center"
-        justify="center"
-        onClick={handleContextActionClick}
-        style={{
-          height: '100%',
-          position: 'relative'
-        }}
-      >
-        {!currentDocument && (
+      {onSelect ? (
+        <TableHeaderItem />
+      ) : (
+        <ContextActionContainer
+          align="center"
+          justify="center"
+          onClick={handleContextActionClick}
+          style={{
+            height: '100%',
+            position: 'relative'
+          }}
+        >
           <Checkbox
             checked={!fetching && allSelected}
             readOnly
@@ -79,8 +82,8 @@ const TableHeader: FC = () => {
               transform: 'scale(0.8)'
             }}
           />
-        )}
-      </ContextActionContainer>
+        </ContextActionContainer>
+      )}
 
       <TableHeaderItem />
       <TableHeaderItem field="originalFilename" title="Filename" />
