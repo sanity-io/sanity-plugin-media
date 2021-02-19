@@ -3,7 +3,7 @@ import {HttpError, SanityUploadProgressEvent, UploadItem} from '@types'
 import client from 'part:@sanity/base/client'
 import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
-import {empty, from, merge, of} from 'rxjs'
+import {empty, merge, of} from 'rxjs'
 import {
   // bufferTime,
   catchError,
@@ -15,6 +15,7 @@ import {
 
 import {RootReducerState} from '../types'
 import constructFilter from '../../utils/constructFilter'
+import {generatePreviewBlobUrl$} from '../../utils/generatePreviewBlobUrl'
 import {hashFile$, uploadAsset$} from '../../utils/uploadSanityAsset'
 import {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
 import groq from 'groq'
@@ -28,40 +29,6 @@ const initialState = {
   allIds: [],
   byIds: {}
 } as UploadsReducerState
-
-const generateLowResPreview = async (file: File): Promise<string> => {
-  const lowRes = (img: HTMLImageElement) => {
-    return new Promise(resolve => {
-      const imageAspect = img.width / img.height
-
-      const canvas: HTMLCanvasElement = document.createElement('canvas')
-      canvas.width = 200
-      canvas.height = 200 / imageAspect
-
-      const ctx = canvas.getContext('2d')
-      ctx?.drawImage(img, 0, 0, 200, 200 / imageAspect)
-
-      canvas.toBlob(resolve, 'image/jpeg')
-    })
-  }
-
-  const createImage = (file: File): Promise<HTMLImageElement> => {
-    return new Promise(resolve => {
-      const blobUrlLarge = window.URL.createObjectURL(file)
-      const img = new Image()
-      img.onload = () => {
-        window.URL.revokeObjectURL(blobUrlLarge)
-        resolve(img)
-      }
-      img.src = blobUrlLarge
-    })
-  }
-
-  const imageEl = await createImage(file)
-  const blob = await lowRes(imageEl)
-
-  return window.URL.createObjectURL(blob)
-}
 
 const uploadsSlice = createSlice({
   name: 'uploads',
@@ -148,7 +115,7 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
       return merge(
         // Generate low res preview
         of(null).pipe(
-          mergeMap(() => from(generateLowResPreview(file))),
+          mergeMap(() => generatePreviewBlobUrl$(file)),
           mergeMap(url => {
             return of(
               uploadsActions.previewReady({
