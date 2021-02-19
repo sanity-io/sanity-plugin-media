@@ -1,16 +1,22 @@
-import {AssetItem} from '@types'
+import {AssetItem, UploadItem} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
-import {GridOnItemsRenderedProps, GridChildComponentProps, VariableSizeGrid} from 'react-window'
+import {
+  GridOnItemsRenderedProps,
+  GridChildComponentProps,
+  FixedSizeGrid,
+  areEqual
+} from 'react-window'
 import {Box} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import Card from '../Card'
+import CardAsset from '../CardAsset'
+import CardUpload from '../CardUpload'
 
 type Props = {
   height: number
   items: AssetItem[]
-  itemCount: number
   onItemsRendered: (props: GridOnItemsRenderedProps) => any
+  uploads: UploadItem[]
   width: number
 }
 
@@ -31,11 +37,10 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
 
 const VirtualCell = memo((props: GridChildComponentProps) => {
   const {columnIndex, data, rowIndex, style} = props
+  const {columnCount, combinedItems, selectedIds} = data
 
-  const {columnCount, items, selectedIds} = data
   const index = columnCount * rowIndex + columnIndex
-  const item = items[index]
-  const assetId = item?.asset?._id
+  const item = combinedItems[index]
 
   // Add padding to virtual cells
   const MARGIN_X = 3
@@ -51,46 +56,64 @@ const VirtualCell = memo((props: GridChildComponentProps) => {
     height: Number(style.height) - MARGIN_Y * 2
   } as CSSProperties
 
-  return (
-    <Card
-      item={item}
-      key={`grid-${assetId}`}
-      selected={selectedIds.includes(assetId)}
-      style={cellStyle}
-    />
-  )
-})
+  if (item?._type === 'asset') {
+    return (
+      <CardAsset item={item} selected={selectedIds.includes(item?.asset?._id)} style={cellStyle} />
+    )
+  }
+
+  if (item?._type === 'upload') {
+    return <CardUpload item={item} style={cellStyle} />
+  }
+
+  return null
+}, areEqual)
 
 const Cards = forwardRef((props: Props, ref: Ref<any>) => {
-  const {height, items, itemCount, onItemsRendered, width} = props
+  const {height, items, onItemsRendered, width, uploads} = props
 
   // Redux
   const selectedAssets = useTypedSelector(state => state.selectedAssets)
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
+  const combinedItems: (AssetItem | UploadItem)[] = [...uploads, ...items]
+  const totalCount = combinedItems?.length
 
-  const cardWidth = 260
+  const cardWidth = 240
   const cardHeight = 220
 
   const columnCount = Math.max(1, Math.floor(width / cardWidth))
-  const rowCount = Math.ceil(itemCount / columnCount)
+  const rowCount = Math.ceil(totalCount / columnCount)
+
+  const itemKey = ({columnIndex, rowIndex}: {columnIndex: number; rowIndex: number}) => {
+    const index = columnCount * rowIndex + columnIndex
+    const item = combinedItems[index]
+    if (item?._type === 'asset') {
+      return item.asset._id
+    }
+    if (item?._type === 'upload') {
+      return item.hash
+    }
+    return index
+  }
 
   return (
-    <VariableSizeGrid
+    <FixedSizeGrid
       className="media__custom-scrollbar"
       columnCount={columnCount}
-      columnWidth={() => cardWidth}
+      columnWidth={cardWidth}
       height={height}
       innerElementType={innerElementType}
       itemData={{
+        combinedItems,
         columnCount,
-        items,
         selectedIds
       }}
+      itemKey={itemKey}
       onItemsRendered={onItemsRendered}
       ref={ref}
       rowCount={rowCount}
-      rowHeight={() => cardHeight}
+      rowHeight={cardHeight}
       style={{
         overflowX: 'hidden',
         overflowY: 'scroll'
@@ -98,7 +121,7 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
       width={width}
     >
       {VirtualCell}
-    </VariableSizeGrid>
+    </FixedSizeGrid>
   )
 })
 

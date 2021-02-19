@@ -48,6 +48,7 @@
     "is-hotkey": "0.2.0",
     "nanoid": "3.1.20",
     "pluralize": "8.0.0",
+    "react-dropzone": "11.3.1",
     "react-file-icon": "1.0.0",
     "react-hook-form": "6.15.1",
     "react-redux": "7.2.2",
@@ -60,7 +61,6 @@
     "rxjs": "6.6.3",
     "styled-components": "5.2.1",
     "theme-ui": "0.3.5",
-    "typesafe-actions": "5.1.0",
     "yup": "0.32.8"
   },
   "devDependencies": {

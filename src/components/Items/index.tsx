@@ -10,6 +10,7 @@ import useBreakpointIndex from '../../hooks/useBreakpointIndex'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssets, selectAssetsPickedLength} from '../../modules/assets'
 import {tagsActions} from '../../modules/tags'
+import {selectUploads} from '../../modules/uploads'
 import Cards from '../Cards'
 import Table from '../Table'
 
@@ -28,12 +29,13 @@ const Items: FC = () => {
   const view = useTypedSelector(state => state.assets.view)
   const items = useTypedSelector(selectAssets)
   const pickedCount = useTypedSelector(selectAssetsPickedLength)
+  const uploads = useTypedSelector(selectUploads)
 
   const breakpointIndex = useBreakpointIndex()
 
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
-  const hasItems = items.length > 0
+  const hasItems = items.length + uploads.length > 0
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = (index: number) => {
@@ -96,6 +98,7 @@ const Items: FC = () => {
           {({height, width}) => {
             const containerHeight = pickedCount > 0 ? height - PANEL_HEIGHT : height
 
+            // TODO: double check itemCount usage with InfiniteLoader + uploads
             return (
               <InfiniteLoader
                 isItemLoaded={isItemLoaded}
@@ -109,9 +112,9 @@ const Items: FC = () => {
                       <Table
                         height={containerHeight}
                         items={items}
-                        itemCount={itemCount}
                         onItemsRendered={onItemsRendered}
                         ref={ref}
+                        uploads={uploads}
                         width={width}
                       />
                     )
@@ -147,9 +150,9 @@ const Items: FC = () => {
                       <Cards
                         height={containerHeight}
                         items={items}
-                        itemCount={itemCount}
                         onItemsRendered={newItemsRendered}
                         ref={ref}
+                        uploads={uploads}
                         width={width}
                       />
                     )

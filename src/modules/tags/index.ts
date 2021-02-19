@@ -85,6 +85,7 @@ const tagsSlice = createSlice({
         state.allIds.push(tag._id)
       }
       state.byIds[tag._id] = {
+        _type: 'tag',
         picked: false,
         tag,
         updating: false
@@ -128,6 +129,7 @@ const tagsSlice = createSlice({
       tags?.forEach(tag => {
         state.allIds.push(tag._id)
         state.byIds[tag._id] = {
+          _type: 'tag',
           picked: false,
           tag,
           updating: false
@@ -178,6 +180,7 @@ const tagsSlice = createSlice({
 
       tags?.forEach(tag => {
         state.byIds[tag._id] = {
+          _type: 'tag',
           picked: false,
           tag,
           updating: false
@@ -384,7 +387,7 @@ export const tagsFetchEpic: MyEpic = (action$, state$) =>
         // Optionally throttle
         debugThrottle(state.debug.badConnection),
         // Fetch tags
-        mergeMap(() => from(client.fetch(query))),
+        mergeMap(() => client.observable.fetch(query)),
         // Dispatch complete action
         mergeMap((result: any) => {
           const {items} = result
@@ -411,7 +414,7 @@ export const tagsListenerCreateQueueEpic: MyEpic = action$ =>
     filter(tagsSlice.actions.listenerCreateQueue.match),
     bufferTime(2000),
     filter(actions => actions.length > 0),
-    switchMap(actions => {
+    mergeMap(actions => {
       const tags = actions?.map(action => action.payload.tag)
       return of(tagsSlice.actions.listenerCreateQueueComplete({tags}))
     })
@@ -424,7 +427,7 @@ export const tagsListenerDeleteQueueEpic: MyEpic = action$ =>
     filter(tagsSlice.actions.listenerDeleteQueue.match),
     bufferTime(2000),
     filter(actions => actions.length > 0),
-    switchMap(actions => {
+    mergeMap(actions => {
       const tagIds = actions?.map(action => action.payload.tagId)
       return of(tagsSlice.actions.listenerDeleteQueueComplete({tagIds}))
     })
@@ -437,7 +440,7 @@ export const tagsListenerUpdateQueueEpic: MyEpic = action$ =>
     filter(tagsSlice.actions.listenerUpdateQueue.match),
     bufferTime(2000),
     filter(actions => actions.length > 0),
-    switchMap(actions => {
+    mergeMap(actions => {
       const tags = actions?.map(action => action.payload.tag)
       return of(tagsSlice.actions.listenerUpdateQueueComplete({tags}))
     })
@@ -453,9 +456,7 @@ export const tagsSortEpic: MyEpic = action$ =>
     ),
     bufferTime(1000),
     filter(actions => actions.length > 0),
-    switchMap(() => {
-      return of(tagsSlice.actions.sort())
-    })
+    mergeMap(() => of(tagsSlice.actions.sort()))
   )
 
 // On tag update request

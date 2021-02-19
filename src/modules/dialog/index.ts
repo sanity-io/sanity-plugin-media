@@ -1,5 +1,5 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit'
-import {Asset, AssetItem, Dialog, Tag} from '@types'
+import {AssetItem, Dialog, Tag} from '@types'
 import pluralize from 'pluralize'
 import {AnyAction} from 'redux'
 import {Epic, ofType} from 'redux-observable'
@@ -104,34 +104,19 @@ const dialogSlice = createSlice({
         type: 'confirm'
       })
     },
-    showConfirmDeleteAsset(state, action: PayloadAction<{asset: Asset; closeDialogId?: string}>) {
-      const {asset, closeDialogId} = action.payload
-
-      const suffix = 'asset'
-
-      state.items.push({
-        closeDialogId,
-        confirmCallbackAction: assetsActions.deleteRequest({asset}),
-        confirmText: `Yes, delete ${suffix}`,
-        description: 'This operation cannot be reversed. Are you sure you want to continue?',
-        title: `Permanently delete ${suffix}?`,
-        id: 'confirm',
-        headerTitle: 'Confirm deletion',
-        tone: 'critical',
-        type: 'confirm'
-      })
-    },
-    showConfirmDeleteAssetsPicked(
+    showConfirmDeleteAssets(
       state,
-      action: PayloadAction<{assetsPicked: AssetItem[]; closeDialogId?: string}>
+      action: PayloadAction<{assets: AssetItem[]; closeDialogId?: string}>
     ) {
-      const {assetsPicked, closeDialogId} = action.payload
+      const {assets, closeDialogId} = action.payload
 
-      const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
+      const suffix = `${assets.length} ${pluralize('asset', assets.length)}`
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: assetsActions.deletePicked(),
+        confirmCallbackAction: assetsActions.deleteRequest({
+          assets: assets.map(assetItem => assetItem.asset)
+        }),
         confirmText: `Yes, delete ${suffix}`,
         description: 'This operation cannot be reversed. Are you sure you want to continue?',
         title: `Permanently delete ${suffix}?`,

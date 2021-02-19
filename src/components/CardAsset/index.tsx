@@ -1,12 +1,13 @@
 import {hues} from '@sanity/color'
-import {CheckmarkCircleIcon, EditIcon, WarningOutlineIcon} from '@sanity/icons'
+import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
 import {Box, Checkbox, Container, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
 import React, {CSSProperties, MouseEvent, RefObject, memo} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
 
-import FileIcon from '../../components/FileIcon'
+import FileIcon from '../FileIcon'
+import {PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -47,8 +48,9 @@ const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
     `}
 `
 
-const ContextActionContainer = styled(Box)`
+const ContextActionContainer = styled(Flex)`
   cursor: ${props => (props.selected ? 'default' : 'pointer')};
+  height: ${PANEL_HEIGHT}px;
   transition: all 300ms;
 
   @media (hover: hover) and (pointer: fine) {
@@ -58,13 +60,13 @@ const ContextActionContainer = styled(Box)`
   }
 `
 
-const StyledWarningOutlineIcon = styled(WarningOutlineIcon)(({theme}) => {
+const StyledWarningOutlineIcon = styled(WarningFilledIcon)(({theme}) => {
   return {
     color: theme.sanity.color.spot.red
   }
 })
 
-const Card = (props: Props) => {
+const CardAsset = (props: Props) => {
   const {item, selected, style} = props
 
   // Refs
@@ -130,7 +132,7 @@ const Card = (props: Props) => {
 
   return (
     <>
-      <CardContainer direction="column" picked={picked} style={{...style}} updating={item.updating}>
+      <CardContainer direction="column" picked={picked} style={style} updating={item.updating}>
         {/* Image */}
         <Box
           flex={1}
@@ -146,6 +148,7 @@ const Card = (props: Props) => {
             {/* Image */}
             {isImageAsset(asset) && (
               <Image
+                draggable={false}
                 showCheckerboard={!isOpaque}
                 src={imageDprUrl(asset, {height: 250, width: 250})}
                 style={{
@@ -196,39 +199,35 @@ const Card = (props: Props) => {
 
         {/* Footer */}
         <ContextActionContainer
+          align="center"
           onClick={handleContextActionClick}
           paddingX={1}
-          paddingY={2}
-          style={{
-            opacity: opacityContainer
-          }}
+          style={{opacity: opacityContainer}}
         >
-          <Flex align="center">
-            {onSelect ? (
-              <EditIcon
-                style={{
-                  flexShrink: 0,
-                  opacity: 0.5
-                }}
-              />
-            ) : (
-              <Checkbox
-                checked={picked}
-                readOnly
-                style={{
-                  flexShrink: 0,
-                  pointerEvents: 'none',
-                  transform: 'scale(0.8)'
-                }}
-              />
-            )}
+          {onSelect ? (
+            <EditIcon
+              style={{
+                flexShrink: 0,
+                opacity: 0.5
+              }}
+            />
+          ) : (
+            <Checkbox
+              checked={picked}
+              readOnly
+              style={{
+                flexShrink: 0,
+                pointerEvents: 'none',
+                transform: 'scale(0.8)'
+              }}
+            />
+          )}
 
-            <Box marginLeft={2}>
-              <Text muted size={0} textOverflow="ellipsis">
-                {asset.originalFilename}
-              </Text>
-            </Box>
-          </Flex>
+          <Box marginLeft={2}>
+            <Text muted size={0} textOverflow="ellipsis">
+              {asset.originalFilename}
+            </Text>
+          </Box>
         </ContextActionContainer>
 
         {/* TODO: DRY */}
@@ -245,7 +244,7 @@ const Card = (props: Props) => {
             <Tooltip
               content={
                 <Container padding={2} width={0}>
-                  <Text size={1}>{error.message}</Text>
+                  <Text size={1}>{error}</Text>
                 </Container>
               }
               placement="left"
@@ -262,4 +261,4 @@ const Card = (props: Props) => {
   )
 }
 
-export default memo(Card)
+export default memo(CardAsset)

@@ -3,6 +3,7 @@ import {Box, Button, Flex, Inline, Text} from '@sanity/ui'
 import React, {FC} from 'react'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
+import {useDropzoneActions} from '../../contexts/DropzoneDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 
 type Props = {
@@ -11,6 +12,8 @@ type Props = {
 
 const Header: FC<Props> = (props: Props) => {
   const {onClose} = props
+
+  const {open} = useDropzoneActions()
 
   // Redux
   const currentDocument = useTypedSelector(state => state.document)
@@ -42,11 +45,12 @@ const Header: FC<Props> = (props: Props) => {
         </Box>
 
         <Flex marginX={2}>
+          {/* Upload */}
           <Button
-            disabled={true}
             fontSize={1}
             icon={UploadIcon}
             mode="bleed"
+            onClick={open}
             text="Upload assets"
             tone="primary"
           />

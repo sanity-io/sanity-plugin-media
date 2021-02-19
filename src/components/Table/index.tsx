@@ -1,5 +1,5 @@
 import {Box} from '@sanity/ui'
-import {AssetItem} from '@types'
+import {AssetItem, UploadItem} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {
   areEqual,
@@ -11,12 +11,13 @@ import {
 import useTypedSelector from '../../hooks/useTypedSelector'
 import TableHeader from '../TableHeader'
 import TableRow from '../TableRow'
+import TableRowUpload from '../TableRowUpload'
 
 type Props = {
   height: number
-  itemCount: number
   items: AssetItem[]
   onItemsRendered: (props: ListOnItemsRenderedProps) => any
+  uploads: UploadItem[]
   width: number
 }
 
@@ -40,13 +41,9 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
 
 const VirtualRow = memo((props: ListChildComponentProps) => {
   const {data, index, style} = props
+  const {combinedItems, selectedIds} = data
 
-  if (!data) {
-    return null
-  }
-  const {items, selectedIds} = data
-  const item = items[index]
-  const assetId = item?.asset?._id
+  const item = combinedItems[index]
 
   // Add padding to virtual rows
   const rowStyle = {
@@ -55,16 +52,39 @@ const VirtualRow = memo((props: ListChildComponentProps) => {
     height: Number(style.height)
   } as CSSProperties
 
-  return <TableRow item={item} selected={selectedIds.includes(assetId)} style={rowStyle} />
+  if (item?._type === 'asset') {
+    return (
+      <TableRow item={item} selected={selectedIds.includes(item?.asset?._id)} style={rowStyle} />
+    )
+  }
+
+  if (item?._type === 'upload') {
+    return <TableRowUpload item={item} style={rowStyle} />
+  }
+
+  return null
 }, areEqual)
 
 const Table = forwardRef((props: Props, ref: Ref<any>) => {
-  const {height, items, itemCount, onItemsRendered, width} = props
+  const {height, items, onItemsRendered, uploads, width} = props
 
   // Redux
   const selectedAssets = useTypedSelector(state => state.selectedAssets)
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
+  const combinedItems: (AssetItem | UploadItem)[] = [...uploads, ...items]
+  const totalCount = items?.length + (uploads?.length || 0)
+
+  const itemKey = (index: number) => {
+    const item = combinedItems[index]
+    if (item?._type === 'asset') {
+      return item.asset._id
+    }
+    if (item?._type === 'upload') {
+      return item.hash
+    }
+    return index
+  }
 
   return (
     <FixedSizeList
@@ -72,10 +92,11 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
       height={height}
       innerElementType={innerElementType}
       itemData={{
-        items,
+        combinedItems,
         selectedIds
       }}
-      itemCount={itemCount}
+      itemCount={totalCount}
+      itemKey={itemKey}
       itemSize={100} // px
       onItemsRendered={onItemsRendered}
       ref={ref}

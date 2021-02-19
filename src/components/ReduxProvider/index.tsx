@@ -4,6 +4,8 @@ import {Provider} from 'react-redux'
 import {createEpicMiddleware} from 'redux-observable'
 
 import {rootEpic, rootReducer} from '../../modules'
+import {assetsActions} from '../../modules/assets'
+import {uploadsActions} from '../../modules/uploads'
 import {RootReducerState} from '../../modules/types'
 import {SanityCustomAssetSourceProps} from '../../types'
 
@@ -19,8 +21,17 @@ class ReduxProvider extends Component<Props> {
     this.store = configureStore({
       reducer: rootReducer,
       middleware: [
-        ...getDefaultMiddleware({thunk: false}), //
-        epicMiddleware
+        epicMiddleware,
+        ...getDefaultMiddleware({
+          serializableCheck: {
+            ignoredActions: [
+              assetsActions.deleteError.type,
+              uploadsActions.uploadRequest.type,
+              uploadsActions.uploadStart.type
+            ]
+          },
+          thunk: false
+        })
       ],
       devTools: true,
       preloadedState: {

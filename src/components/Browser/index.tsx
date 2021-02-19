@@ -1,6 +1,6 @@
 import {MutationEvent} from '@sanity/client'
 import {Card, Flex} from '@sanity/ui'
-import {ImageAsset, Tag} from '@types'
+import {Asset, Tag} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'
 import React, {FC, useEffect} from 'react'
@@ -17,6 +17,7 @@ import Items from '../Items'
 import Notifications from '../Notifications'
 import PickedBar from '../PickedBar'
 import TagsPanel from '../TagsPanel'
+import UploadDropzone from '../UploadDropzone'
 
 type Props = {
   onClose?: () => void
@@ -32,12 +33,16 @@ const Browser: FC<Props> = (props: Props) => {
   const handleAssetUpdate = (update: MutationEvent) => {
     const {documentId, result, transition} = update
 
+    if (transition === 'appear') {
+      dispatch(assetsActions.listenerCreateQueue({asset: result as Asset}))
+    }
+
     if (transition === 'disappear') {
       dispatch(assetsActions.listenerDeleteQueue({assetId: documentId}))
     }
 
     if (transition === 'update') {
-      dispatch(assetsActions.listenerUpdateQueue({asset: result as ImageAsset}))
+      dispatch(assetsActions.listenerUpdateQueue({asset: result as Asset}))
     }
   }
 
@@ -84,7 +89,7 @@ const Browser: FC<Props> = (props: Props) => {
   }, [])
 
   return (
-    <>
+    <UploadDropzone>
       <Dialogs />
       <Notifications />
 
@@ -120,7 +125,7 @@ const Browser: FC<Props> = (props: Props) => {
           <DebugControls />
         </Flex>
       </Card>
-    </>
+    </UploadDropzone>
   )
 }
 

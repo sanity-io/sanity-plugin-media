@@ -20,7 +20,7 @@ const PickedBar: FC = () => {
   }
 
   const handleDeletePicked = () => {
-    dispatch(dialogActions.showConfirmDeleteAssetsPicked({assetsPicked}))
+    dispatch(dialogActions.showConfirmDeleteAssets({assets: assetsPicked}))
   }
 
   if (assetsPicked.length === 0) {

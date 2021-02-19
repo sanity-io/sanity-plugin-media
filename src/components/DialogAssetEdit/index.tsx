@@ -111,8 +111,8 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     }
 
     dispatch(
-      dialogActions.showConfirmDeleteAsset({
-        asset: assetItem?.asset,
+      dialogActions.showConfirmDeleteAssets({
+        assets: [assetItem],
         closeDialogId: assetItem?.asset._id
       })
     )

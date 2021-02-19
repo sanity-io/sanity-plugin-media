@@ -1,4 +1,4 @@
-import {black} from '@sanity/color'
+import {hues} from '@sanity/color'
 import {MouseEvent} from 'react'
 import styled, {css} from 'styled-components'
 
@@ -10,7 +10,7 @@ type Props = {
 }
 
 const Image = styled.img<Props>`
-  --checkerboard-color: ${black.hex};
+  --checkerboard-color: ${hues.gray[900].hex};
 
   display: block;
   width: 100%;

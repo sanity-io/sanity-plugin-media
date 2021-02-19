@@ -1,6 +1,6 @@
 import {hues} from '@sanity/color'
-import {CheckmarkCircleIcon, EditIcon, WarningOutlineIcon} from '@sanity/icons'
-import {Box, Checkbox, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
+import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
+import {Box, Checkbox, Container, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import {AssetItem} from '@types'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
@@ -54,7 +54,7 @@ const ContextActionContainer = styled(LegacyFlex)`
   }
 `
 
-const StyledWarningOutlineIcon = styled(WarningOutlineIcon)(({theme}) => {
+const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
   return {
     color: theme.sanity.color.spot.red
   }
@@ -242,7 +242,7 @@ const TableRow = (props: Props) => {
           opacity: opacityCell
         }}
       >
-        <Text size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {asset.originalFilename}
         </Text>
       </LegacyBox>
@@ -319,20 +319,15 @@ const TableRow = (props: Props) => {
           <Box padding={3}>
             <Tooltip
               content={
-                <Box
-                  padding={2}
-                  style={{
-                    minWidth: '110px', // TODO: is this necessary?
-                    textAlign: 'center'
-                  }}
-                >
-                  <Text size={1}>has references</Text>
-                </Box>
+                <Container padding={2} width={0}>
+                  <Text size={1}>{error}</Text>
+                </Container>
               }
               placement="left"
+              portal
             >
               <Text size={1}>
-                <StyledWarningOutlineIcon color="critical" />
+                <StyledWarningIcon color="critical" />
               </Text>
             </Tooltip>
           </Box>

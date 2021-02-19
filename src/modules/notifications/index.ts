@@ -7,6 +7,7 @@ import {bufferTime, filter, mergeMap} from 'rxjs/operators'
 import {assetsActions} from '../assets'
 import {tagsActions} from '../tags'
 import {RootReducerState} from '../types'
+import {uploadsActions} from '../uploads'
 
 type Notification = {
   asset?: ImageAsset
@@ -46,10 +47,9 @@ type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 export const notificationsAssetsDeleteCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(assetsActions.deleteComplete.match),
-    bufferTime(1000),
-    filter(actions => actions.length > 0),
-    mergeMap(actions => {
-      const deletedCount = actions.length
+    mergeMap(action => {
+      const {assetIds} = action.payload
+      const deletedCount = assetIds.length
       return of(
         notificationsSlice.actions.add({
           status: 'info',
@@ -62,14 +62,32 @@ export const notificationsAssetsDeleteCompleteEpic: MyEpic = action$ =>
 export const notificationsAssetsDeleteErrorEpic: MyEpic = action$ =>
   action$.pipe(
     filter(assetsActions.deleteError.match),
-    bufferTime(1000),
-    filter(actions => actions.length > 0),
-    mergeMap(actions => {
-      const count = actions.length
+    mergeMap(action => {
+      const {assetIds} = action.payload
+      const count = assetIds.length
       return of(
         notificationsSlice.actions.add({
           status: 'error',
-          title: `Unable to delete ${count} ${pluralize('asset', count)}`
+          title: `Unable to delete ${count} ${pluralize(
+            'asset',
+            count
+          )}. Please review any asset errors and try again.`
+        })
+      )
+    })
+  )
+
+export const notificationsAssetsUploadCompleteEpic: MyEpic = action$ =>
+  action$.pipe(
+    filter(uploadsActions.checkComplete.match),
+    mergeMap(action => {
+      const {results} = action.payload
+
+      const count = Object.keys(results).length
+      return of(
+        notificationsSlice.actions.add({
+          status: 'info',
+          title: `Uploaded ${count} ${pluralize('asset', count)}`
         })
       )
     })
@@ -106,7 +124,7 @@ export const notificationsAssetsTagsRemoveCompleteEpic: MyEpic = action$ =>
 export const notificationsAssetsUpdateCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(assetsActions.updateComplete.match),
-    bufferTime(1000),
+    bufferTime(2000),
     filter(actions => actions.length > 0),
     mergeMap(actions => {
       const updatedCount = actions.length
@@ -126,7 +144,8 @@ export const notificationsGenericErrorEpic: MyEpic = action$ =>
       assetsActions.updateError.type,
       tagsActions.createError.type,
       tagsActions.fetchError.type,
-      tagsActions.updateError.type
+      tagsActions.updateError.type,
+      uploadsActions.uploadError.type
     ),
     mergeMap(action => {
       const error = action.payload?.error

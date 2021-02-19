@@ -3,10 +3,11 @@ import {combineEpics} from 'redux-observable'
 
 import assetsReducer, {
   assetsDeleteEpic,
-  assetsDeletePickedEpic,
   assetsFetchEpic,
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
+  // assetsInsertUploadsEpic,
+  assetsListenerCreateQueueEpic,
   assetsListenerDeleteQueueEpic,
   assetsListenerUpdateQueueEpic,
   assetsOrderSetEpic,
@@ -31,6 +32,7 @@ import notificationsReducer, {
   notificationsAssetsTagsAddCompleteEpic,
   notificationsAssetsTagsRemoveCompleteEpic,
   notificationsAssetsUpdateCompleteEpic,
+  // notificationsAssetsUploadCompleteEpic,
   notificationsGenericErrorEpic,
   notificationsTagCreateCompleteEpic,
   notificationsTagDeleteCompleteEpic,
@@ -47,13 +49,20 @@ import tagsReducer, {
   tagsSortEpic,
   tagsUpdateEpic
 } from './tags'
+import uploadsReducer, {
+  uploadsAssetStartEpic,
+  uploadsAssetUploadEpic,
+  uploadsCheckRequestEpic,
+  uploadsCompleteQueueEpic
+} from './uploads'
 
 export const rootEpic = combineEpics(
   assetsDeleteEpic,
-  assetsDeletePickedEpic,
   assetsFetchEpic,
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
+  // assetsInsertUploadsEpic,
+  assetsListenerCreateQueueEpic,
   assetsListenerDeleteQueueEpic,
   assetsListenerUpdateQueueEpic,
   assetsOrderSetEpic,
@@ -71,6 +80,7 @@ export const rootEpic = combineEpics(
   notificationsAssetsTagsAddCompleteEpic,
   notificationsAssetsTagsRemoveCompleteEpic,
   notificationsAssetsUpdateCompleteEpic,
+  // notificationsAssetsUploadCompleteEpic,
   notificationsGenericErrorEpic,
   notificationsTagCreateCompleteEpic,
   notificationsTagDeleteCompleteEpic,
@@ -83,7 +93,11 @@ export const rootEpic = combineEpics(
   tagsListenerDeleteQueueEpic,
   tagsListenerUpdateQueueEpic,
   tagsSortEpic,
-  tagsUpdateEpic
+  tagsUpdateEpic,
+  uploadsAssetStartEpic,
+  uploadsAssetUploadEpic,
+  uploadsCheckRequestEpic,
+  uploadsCompleteQueueEpic
 )
 
 export const rootReducer = combineReducers({
@@ -94,5 +108,6 @@ export const rootReducer = combineReducers({
   notifications: notificationsReducer,
   search: searchReducer,
   selectedAssets: selectedAssetsReducer,
-  tags: tagsReducer
+  tags: tagsReducer,
+  uploads: uploadsReducer
 })

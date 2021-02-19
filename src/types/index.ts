@@ -23,8 +23,9 @@ type SearchFacetInputCommon = {
 export type Asset = FileAsset | ImageAsset
 
 export type AssetItem = {
+  _type: 'asset'
   asset: Asset
-  error?: HttpError
+  error?: string
   picked: boolean
   updating: boolean
 }
@@ -253,6 +254,31 @@ export type ReactSelectOption = {
   value: string
 }
 
+export type SanityUploadCompleteEvent = {
+  asset: SanityAssetDocument | SanityImageAssetDocument
+  id: string
+  type: 'complete'
+}
+
+export type SanityUploadProgressEvent = {
+  lengthComputable: boolean
+  loaded: number
+  percent: number
+  stage: 'download' | 'upload'
+  total: number
+  type: 'progress'
+}
+
+export type SanityUploadResponseEvent = {
+  body: {document: Partial<SanityAssetDocument | SanityImageAssetDocument>}
+  headers: Record<string, string>
+  method: string
+  statusCode: number
+  statusMessage: string
+  type: 'response'
+  url: string // preview image?
+}
+
 export type Span = {
   _key: string
   text: string
@@ -269,8 +295,21 @@ export type Tag = SanityDocument & {
 export type TagActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
 
 export type TagItem = {
+  _type: 'tag'
   tag: Tag
   error?: HttpError
   picked: boolean
   updating: boolean
+}
+
+export type UploadItem = {
+  _type: 'upload'
+  hash: string
+  lastModified: number
+  mimeType: string
+  name: string
+  objectUrl?: string
+  percent?: number
+  size: number
+  status: 'complete' | 'queued' | 'uploading'
 }
