@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import {Box as LegacyBox} from 'theme-ui'
 import {PANEL_HEIGHT} from '../../constants'
 
+import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsLength, selectAssetsPickedLength} from '../../modules/assets'
 import TableHeaderItem from '../TableHeaderItem'
@@ -24,11 +25,11 @@ const ContextActionContainer = styled(Flex)`
 const TableHeader: FC = () => {
   // Redux
   const dispatch = useDispatch()
-
   const fetching = useTypedSelector(state => state.assets.fetching)
-  const currentDocument = useTypedSelector(state => state.document)
   const itemsLength = useTypedSelector(selectAssetsLength)
   const numPickedAssets = useTypedSelector(selectAssetsPickedLength)
+
+  const {onSelect} = useAssetSourceActions()
 
   const allSelected = numPickedAssets === itemsLength
 
@@ -61,16 +62,18 @@ const TableHeader: FC = () => {
         zIndex: 1 // force stacking context
       }}
     >
-      <ContextActionContainer
-        align="center"
-        justify="center"
-        onClick={handleContextActionClick}
-        style={{
-          height: '100%',
-          position: 'relative'
-        }}
-      >
-        {!currentDocument && (
+      {onSelect ? (
+        <TableHeaderItem />
+      ) : (
+        <ContextActionContainer
+          align="center"
+          justify="center"
+          onClick={handleContextActionClick}
+          style={{
+            height: '100%',
+            position: 'relative'
+          }}
+        >
           <Checkbox
             checked={!fetching && allSelected}
             readOnly
@@ -79,8 +82,8 @@ const TableHeader: FC = () => {
               transform: 'scale(0.8)'
             }}
           />
-        )}
-      </ContextActionContainer>
+        </ContextActionContainer>
+      )}
 
       <TableHeaderItem />
       <TableHeaderItem field="originalFilename" title="Filename" />

@@ -1,94 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-
-## [1.1.0-beta.8](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.7...v1.1.0-beta.8) (2021-02-16)
-
+### [1.0.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.0.1...v1.0.2) (2021-02-19)
 
 ### Bug Fixes
 
-* various layout fixes to ensure compatibility with upcoming studio changes ([da027f6](https://github.com/robinpyon/sanity-plugin-media/commit/da027f6d2ea009bb59cf503a2580378f35474656))
-
-## [1.1.0-beta.7](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.6...v1.1.0-beta.7) (2021-02-16)
-
-
-### Bug Fixes
-
-* upon tag creation, don't add ids to store if already present ([7866076](https://github.com/robinpyon/sanity-plugin-media/commit/78660762d619ccc62c8c6e7e8e438ec7fa4f1dfa))
-
-## [1.1.0-beta.6](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.5...v1.1.0-beta.6) (2021-02-16)
-
-
-### Bug Fixes
-
-* upon creation, don't add ids to store if already present ([b8645cc](https://github.com/robinpyon/sanity-plugin-media/commit/b8645cc12e33d7faee6c9e2cc2b769d0ed8da970))
-
-## [1.1.0-beta.5](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.4...v1.1.0-beta.5) (2021-02-16)
-
-
-### Bug Fixes
-
-* ensure that newly created tag ids are added to `allIds` array ([36a7e4c](https://github.com/robinpyon/sanity-plugin-media/commit/36a7e4c1fa206207c9d6b7101614c586f2c66a60))
-
-## [1.1.0-beta.4](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.3...v1.1.0-beta.4) (2021-02-16)
-
-
-### Bug Fixes
-
-* absolutely position react-window and prevent layout shift when picking assets ([0058dd5](https://github.com/robinpyon/sanity-plugin-media/commit/0058dd5e6744408c5102d44cecc9a764b0a429e7))
-* force local tag + asset updates (in addition to those received by listeners) ([4dde089](https://github.com/robinpyon/sanity-plugin-media/commit/4dde08999cc97bab4e9c8c26115310b4919a567a))
-
-## [1.1.0-beta.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.2...v1.1.0-beta.3) (2021-02-16)
-
-
-### Bug Fixes
-
-* add null check to sanitize form ([413448b](https://github.com/robinpyon/sanity-plugin-media/commit/413448b7b68258aad84c62ae621d3342584ed374))
-
-## [1.1.0-beta.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.1...v1.1.0-beta.2) (2021-02-15)
-
-
-### Bug Fixes
-
-* fix issue where inline created tags weren't always appearing as expected ([a5e81d2](https://github.com/robinpyon/sanity-plugin-media/commit/a5e81d2114bc1bfda3b1d317e2869b324635cfc9))
-
-## [1.1.0-beta.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0-beta.0...v1.1.0-beta.1) (2021-02-15)
-
-
-### Bug Fixes
-
-* include _createdAt in projection to try resolve ordering issues ([4f7295a](https://github.com/robinpyon/sanity-plugin-media/commit/4f7295a7a7f076a94151946518f56ee317aad2c0))
-
-## [1.1.0-beta.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.0.1...v1.1.0-beta.0) (2021-02-15)
-
-
-### Features
-
-* add batch tag add / remove actions, minor dialog cleanup ([5e4170d](https://github.com/robinpyon/sanity-plugin-media/commit/5e4170df5546a68863066afec0d09a586dadc72f))
-* create separate form submit button component with conditional toolip ([19db57d](https://github.com/robinpyon/sanity-plugin-media/commit/19db57df8713d2826c2b9db5f04669d64302b4f5))
-* first pass of tag create/edit/delete actions, add redux-toolkit, simplify redux actions ([eb5d89e](https://github.com/robinpyon/sanity-plugin-media/commit/eb5d89ed025e040ef8b6ca3cb214889248f28e94))
-
-
-### Bug Fixes
-
-* add focus / select styles to react-select components ([5378162](https://github.com/robinpyon/sanity-plugin-media/commit/5378162bfc8706836720d800bb0df77395895b18))
-* add notifications for tag updates ([028122d](https://github.com/robinpyon/sanity-plugin-media/commit/028122dc65a12d5cbb735d26cb6859ed4a5d5f87))
-* add tag listener to edit form ([5038ae0](https://github.com/robinpyon/sanity-plugin-media/commit/5038ae03c129719b340db7d82fa71247926e18c1))
-* add timed buffer to tag and asset listener epics to prevent action spam on batch operations ([d982b0b](https://github.com/robinpyon/sanity-plugin-media/commit/d982b0b429fec2afb12d9e030b22f9b2248299f4))
-* buffer all listener changes to prevent unnecessary renders in batch operations ([a7fa67e](https://github.com/robinpyon/sanity-plugin-media/commit/a7fa67ec85c0282a53ef2289d429655cc900a72a))
-* bump rhf + react-select, correctly store tag in store after creation ([b457fd6](https://github.com/robinpyon/sanity-plugin-media/commit/b457fd601f29f62d76eac5066520e300738c5cc8))
-* correctly search by reference when updating search tag facets ([abbf252](https://github.com/robinpyon/sanity-plugin-media/commit/abbf252e7217ee283678fd97fcc2eccacfb0fcbc))
-* correctly use @sanity/ui media queries, tweak control bar styles on small breakpoint ([bdc8064](https://github.com/robinpyon/sanity-plugin-media/commit/bdc8064866fe93bb9050fec154b53d1a2729f739))
-* disable tag buttons during updates, don't clear tag search facet when removing active tags ([139ba16](https://github.com/robinpyon/sanity-plugin-media/commit/139ba1670a8498e5d76c50d2348467ebf0c4ecea))
-* disable word wrapping on table header cells ([c4de069](https://github.com/robinpyon/sanity-plugin-media/commit/c4de0699e103bfcaf79f500c80ce7411b6cf1d62))
-* display message in tag panel if there are no tags ([12689cd](https://github.com/robinpyon/sanity-plugin-media/commit/12689cd9736c8a518975de916af81d85fc05ba38))
-* fix issue where asset pick status wasn't being properly cleared on view / order change ([a74c7c0](https://github.com/robinpyon/sanity-plugin-media/commit/a74c7c03b09dda4b03fbf5772dcfebe267e26f90))
-* fix issue where MIME type order wasnt being displayed in order select dropdown ([f1c73df](https://github.com/robinpyon/sanity-plugin-media/commit/f1c73dffd50c81884c13c1e43e503cf85f7f33d4))
-* fix minor visual issue with tag search facet text cropping descenders ([0bd0249](https://github.com/robinpyon/sanity-plugin-media/commit/0bd0249269103bd1384b938fad3a85d1e523f89a))
-* fix spinner positioning and table row / card opacity during updates ([71f9bd9](https://github.com/robinpyon/sanity-plugin-media/commit/71f9bd92cb7cd9c963308bc94858a58f0ee5609d))
-* on tag delete: create sanity transaction and delete referenced tags from linked assets ([625104a](https://github.com/robinpyon/sanity-plugin-media/commit/625104a2be6aab88b94d3ab5f60cf2a100e61bcb))
-* render react-select menu list in a portal, avoid hardcoding z-index, use BEM class syntax ([0e52a4c](https://github.com/robinpyon/sanity-plugin-media/commit/0e52a4cbbb4ee9abd6e4c4be33d524f346f9fa2d))
-* trim all formdata strings across both asset + tag dialog forms ([59ac8a1](https://github.com/robinpyon/sanity-plugin-media/commit/59ac8a18bf40e6cbd8fe2614dfd2128e5be21776))
+* determine asset select context based on the presence of `onSelect` rather than `document` ([4185c19](https://github.com/robinpyon/sanity-plugin-media/commit/4185c19ea50fc99ddb23faeaf1013b8c7294431a))
 
 ### [1.0.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.0.0...v1.0.1) (2021-01-23)
 

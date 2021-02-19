@@ -68,7 +68,6 @@ const TableRow = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const currentDocument = useTypedSelector(state => state.document)
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
 
   const asset = item?.asset
@@ -88,7 +87,7 @@ const TableRow = (props: Props) => {
   const handleContextActionClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
 
-    if (currentDocument) {
+    if (onSelect) {
       dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
     } else {
       if (shiftPressed.current && !picked) {
@@ -102,15 +101,13 @@ const TableRow = (props: Props) => {
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
 
-    if (currentDocument) {
-      if (onSelect) {
-        onSelect([
-          {
-            kind: 'assetDocumentId',
-            value: asset._id
-          }
-        ])
-      }
+    if (onSelect) {
+      onSelect([
+        {
+          kind: 'assetDocumentId',
+          value: asset._id
+        }
+      ])
     } else {
       if (shiftPressed.current) {
         if (picked) {
@@ -154,7 +151,7 @@ const TableRow = (props: Props) => {
           position: 'relative'
         }}
       >
-        {currentDocument ? (
+        {onSelect ? (
           <EditIcon
             style={{
               flexShrink: 0,
@@ -223,7 +220,6 @@ const TableRow = (props: Props) => {
               style={{
                 height: '100%',
                 left: 0,
-                opacity: opacityCell,
                 position: 'absolute',
                 top: 0,
                 width: '100%'
