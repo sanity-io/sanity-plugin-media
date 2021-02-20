@@ -1,7 +1,6 @@
 import {hues} from '@sanity/color'
 import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
 import {Box, Checkbox, Container, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
-import {AssetItem} from '@types'
 import React, {CSSProperties, MouseEvent, RefObject, memo} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
@@ -11,14 +10,15 @@ import {PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsActions} from '../../modules/assets'
+import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import Image from '../Image'
 
 type Props = {
-  item: AssetItem
+  id: string
+  // item: AssetItem
   selected: boolean
   style?: CSSProperties
 }
@@ -67,7 +67,7 @@ const StyledWarningOutlineIcon = styled(WarningFilledIcon)(({theme}) => {
 })
 
 const CardAsset = (props: Props) => {
-  const {item, selected, style} = props
+  const {id, selected, style} = props
 
   // Refs
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
@@ -75,6 +75,7 @@ const CardAsset = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
+  const item = useTypedSelector(state => selectAssetById(state, id))
 
   const asset = item?.asset
   const error = item?.error

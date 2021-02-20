@@ -41,6 +41,17 @@ export type BrowserView = 'grid' | 'table'
 
 export type ButtonVariant = 'danger' | 'default' | 'secondary'
 
+// TODO: rename
+export type CardAssetData = {
+  id: string
+  type: 'asset'
+}
+
+export type CardUploadData = {
+  id: string
+  type: 'upload'
+}
+
 export type Dialog =
   | DialogAssetEdit
   | DialogConfirm

@@ -4,17 +4,21 @@ import filesize from 'filesize'
 import React, {CSSProperties, FC} from 'react'
 import {Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
 
-import {UploadItem} from '../../types'
+import useTypedSelector from '../../hooks/useTypedSelector'
+import {selectUploadById} from '../../modules/uploads'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
 
 type Props = {
-  item: UploadItem
+  id: string
   style?: CSSProperties
 }
 
 const TableRowUpload: FC<Props> = (props: Props) => {
-  const {item, style} = props
+  const {id, style} = props
+
+  // Redux
+  const item = useTypedSelector(state => selectUploadById(state, id))
 
   const fileSize = filesize(item.size, {base: 10, round: 0})
 

@@ -1,4 +1,4 @@
-import {AssetItem, UploadItem} from '@types'
+import {CardAssetData, CardUploadData} from '@types'
 import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
 import {
   GridOnItemsRenderedProps,
@@ -14,9 +14,8 @@ import CardUpload from '../CardUpload'
 
 type Props = {
   height: number
-  items: AssetItem[]
+  items: (CardAssetData | CardUploadData)[]
   onItemsRendered: (props: GridOnItemsRenderedProps) => any
-  uploads: UploadItem[]
   width: number
 }
 
@@ -37,10 +36,10 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
 
 const VirtualCell = memo((props: GridChildComponentProps) => {
   const {columnIndex, data, rowIndex, style} = props
-  const {columnCount, combinedItems, selectedIds} = data
+  const {columnCount, items, selectedIds} = data
 
   const index = columnCount * rowIndex + columnIndex
-  const item = combinedItems[index]
+  const item = items[index]
 
   // Add padding to virtual cells
   const MARGIN_X = 3
@@ -53,31 +52,31 @@ const VirtualCell = memo((props: GridChildComponentProps) => {
     top: Number(style.top) + MARGIN_Y,
     bottom: Number(style.top) + MARGIN_Y,
     width: Number(style.width) - MARGIN_X * 2,
-    height: Number(style.height) - MARGIN_Y * 2
+    height: Number(style.height) - MARGIN_Y * 2,
+    transition: 'none'
   } as CSSProperties
 
-  if (item?._type === 'asset') {
+  if (item?.type === 'asset') {
     return (
-      <CardAsset item={item} selected={selectedIds.includes(item?.asset?._id)} style={cellStyle} />
+      <CardAsset id={item.id} selected={selectedIds.includes(item?.asset?._id)} style={cellStyle} />
     )
   }
 
-  if (item?._type === 'upload') {
-    return <CardUpload item={item} style={cellStyle} />
+  if (item?.type === 'upload') {
+    return <CardUpload id={item.id} style={cellStyle} />
   }
 
   return null
 }, areEqual)
 
 const Cards = forwardRef((props: Props, ref: Ref<any>) => {
-  const {height, items, onItemsRendered, width, uploads} = props
+  const {height, items, onItemsRendered, width} = props
 
   // Redux
   const selectedAssets = useTypedSelector(state => state.selectedAssets)
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
-  const combinedItems: (AssetItem | UploadItem)[] = [...uploads, ...items]
-  const totalCount = combinedItems?.length
+  const totalCount = items?.length
 
   const cardWidth = 240
   const cardHeight = 220
@@ -87,14 +86,8 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
 
   const itemKey = ({columnIndex, rowIndex}: {columnIndex: number; rowIndex: number}) => {
     const index = columnCount * rowIndex + columnIndex
-    const item = combinedItems[index]
-    if (item?._type === 'asset') {
-      return item.asset._id
-    }
-    if (item?._type === 'upload') {
-      return item.hash
-    }
-    return index
+    const item = items[index]
+    return item?.id || index
   }
 
   return (
@@ -105,8 +98,8 @@ const Cards = forwardRef((props: Props, ref: Ref<any>) => {
       height={height}
       innerElementType={innerElementType}
       itemData={{
-        combinedItems,
         columnCount,
+        items,
         selectedIds
       }}
       itemKey={itemKey}

@@ -2,19 +2,23 @@ import {hues} from '@sanity/color'
 import {Box, Flex, Text} from '@sanity/ui'
 import filesize from 'filesize'
 import React, {CSSProperties, FC} from 'react'
-import {PANEL_HEIGHT} from '../../constants'
 
-import {UploadItem} from '../../types'
+import {PANEL_HEIGHT} from '../../constants'
+import useTypedSelector from '../../hooks/useTypedSelector'
+import {selectUploadById} from '../../modules/uploads'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
 
 type Props = {
-  item: UploadItem
+  id: string
   style?: CSSProperties
 }
 
 const CardUpload: FC<Props> = (props: Props) => {
-  const {item, style} = props
+  const {id, style} = props
+
+  // Redux
+  const item = useTypedSelector(state => selectUploadById(state, id))
 
   const fileSize = filesize(item.size, {base: 10, round: 0})
 

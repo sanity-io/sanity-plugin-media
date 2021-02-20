@@ -1,7 +1,6 @@
 import {hues} from '@sanity/color'
 import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
 import {Box, Checkbox, Container, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
-import {AssetItem} from '@types'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {CSSProperties, MouseEvent, memo, RefObject} from 'react'
@@ -10,7 +9,7 @@ import styled, {css} from 'styled-components'
 import {Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
 
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
-import {assetsActions} from '../../modules/assets'
+import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -21,7 +20,7 @@ import FileIcon from '../FileIcon'
 import Image from '../Image'
 
 type Props = {
-  item: AssetItem
+  id: string
   selected: boolean
   style?: CSSProperties
 }
@@ -61,7 +60,7 @@ const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
 })
 
 const TableRowAsset = (props: Props) => {
-  const {item, selected, style} = props
+  const {id, selected, style} = props
 
   // Refs
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
@@ -69,6 +68,7 @@ const TableRowAsset = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
+  const item = useTypedSelector(state => selectAssetById(state, id))
 
   const asset = item?.asset
   const error = item?.error

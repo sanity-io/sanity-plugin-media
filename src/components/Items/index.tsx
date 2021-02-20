@@ -4,13 +4,12 @@ import {useDispatch} from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import {ListOnItemsRenderedProps, GridOnItemsRenderedProps} from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
-import {PANEL_HEIGHT} from '../../constants'
 
+import {PANEL_HEIGHT} from '../../constants'
 import useBreakpointIndex from '../../hooks/useBreakpointIndex'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {assetsActions, selectAssets, selectAssetsPickedLength} from '../../modules/assets'
+import {assetsActions, selectAssetsPickedLength, selectCombinedItems} from '../../modules/assets'
 import {tagsActions} from '../../modules/tags'
-import {selectUploads} from '../../modules/uploads'
 import Cards from '../Cards'
 import Table from '../Table'
 
@@ -27,19 +26,20 @@ const Items: FC = () => {
   const pageSize = useTypedSelector(state => state.assets.pageSize)
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
   const view = useTypedSelector(state => state.assets.view)
-  const items = useTypedSelector(selectAssets)
+  const itemIds = useTypedSelector(state => state.assets.allIds)
   const pickedCount = useTypedSelector(selectAssetsPickedLength)
-  const uploads = useTypedSelector(selectUploads)
+
+  const combinedItems = useTypedSelector(selectCombinedItems)
 
   const breakpointIndex = useBreakpointIndex()
 
   // const hasFetchedOnce = totalCount >= 0
   const hasFetchedOnce = fetchCount >= 0
-  const hasItems = items.length + uploads.length > 0
+  const hasItems = combinedItems.length > 0
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = (index: number) => {
-    return index < items.length
+    return index < itemIds.length
   }
 
   // Only load 1 page of items at a time.
@@ -70,7 +70,7 @@ const Items: FC = () => {
   // const hasMore = (pageIndex + 1) * pageSize < totalCount
 
   // If there are more items to be loaded then add an extra placeholder row to trigger additional page loads.
-  const itemCount = hasMore ? items.length + 1 : items.length
+  const itemCount = hasMore ? itemIds.length + 1 : itemIds.length
 
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
 
@@ -111,10 +111,9 @@ const Items: FC = () => {
                     return (
                       <Table
                         height={containerHeight}
-                        items={items}
+                        items={combinedItems}
                         onItemsRendered={onItemsRendered}
                         ref={ref}
-                        uploads={uploads}
                         width={width}
                       />
                     )
@@ -149,10 +148,9 @@ const Items: FC = () => {
                     return (
                       <Cards
                         height={containerHeight}
-                        items={items}
+                        items={combinedItems}
                         onItemsRendered={newItemsRendered}
                         ref={ref}
-                        uploads={uploads}
                         width={width}
                       />
                     )
