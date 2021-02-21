@@ -1,8 +1,9 @@
 import {hues} from '@sanity/color'
-import {Box, Flex, Text} from '@sanity/ui'
+import {Box, Text} from '@sanity/ui'
 import filesize from 'filesize'
+import {motion} from 'framer-motion'
 import React, {CSSProperties, FC} from 'react'
-import {Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
+import {Box as LegacyBox, Grid as LegacyGrid} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectUploadById} from '../../modules/uploads'
@@ -21,19 +22,10 @@ const TableRowUpload: FC<Props> = (props: Props) => {
   const item = useTypedSelector(state => selectUploadById(state, id))
 
   const fileSize = filesize(item.size, {base: 10, round: 0})
+  const percentLoaded = Math.round(item?.percent || 0) // (0 - 100)
 
-  let status
-  /*
-  if (item.status === 'complete') {
-    status = 'Complete'
-  }
-  */
-  if (['complete', 'uploading'].includes(item.status)) {
-    status = `${Math.round(item?.percent || 0)}%`
-  }
-  if (item.status === 'queued') {
-    status = 'Queued'
-  }
+  const isUploadingOrComplete = ['complete', 'uploading'].includes(item.status)
+  const isQueued = item.status === 'queued'
 
   return (
     <LegacyGrid
@@ -47,14 +39,43 @@ const TableRowUpload: FC<Props> = (props: Props) => {
       }}
       style={style}
     >
-      <LegacyFlex
+      {/* Progress bar */}
+      <motion.div
+        animate={{
+          scaleX: percentLoaded * 0.01,
+          transformOrigin: 'left'
+        }}
+        initial={{
+          scaleX: 0
+        }}
+        style={{
+          background: hues.gray[800].hex,
+          bottom: 0,
+          height: '1px',
+          left: 0,
+          position: 'absolute',
+          width: '100%'
+        }}
+        transition={{
+          type: 'spring',
+          damping: 15,
+          stiffness: 100
+        }}
+      />
+
+      {/* Percentage */}
+      <LegacyBox
         sx={{
           gridColumn: 1,
           gridRowStart: ['1', null, null, 'auto'],
           gridRowEnd: ['span 5', null, null, 'auto'],
-          height: '100%'
+          textAlign: 'center'
         }}
-      />
+      >
+        <Text size={1} weight="semibold">
+          {isUploadingOrComplete && `${percentLoaded}%`}
+        </Text>
+      </LegacyBox>
 
       {/* Image */}
       <LegacyBox
@@ -76,22 +97,6 @@ const TableRowUpload: FC<Props> = (props: Props) => {
               <FileIcon width="40px" />
             </div>
           )}
-
-          <Flex
-            align="center"
-            justify="center"
-            style={{
-              height: '100%',
-              left: 0,
-              position: 'absolute',
-              top: 0,
-              width: '100%'
-            }}
-          >
-            <Text size={1} style={{opacity: item.status === 'queued' ? 0.4 : 1}} weight="semibold">
-              {status}
-            </Text>
-          </Flex>
         </Box>
       </LegacyBox>
 
@@ -103,8 +108,8 @@ const TableRowUpload: FC<Props> = (props: Props) => {
           marginLeft: [3, null, null, 0]
         }}
       >
-        <Text size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
-          Uploading {item.name}
+        <Text muted={isQueued} size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+          Uploading {item.name} {isQueued && ' (Queued)'}
         </Text>
       </LegacyBox>
 

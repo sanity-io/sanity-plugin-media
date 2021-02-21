@@ -1,6 +1,7 @@
 import {hues} from '@sanity/color'
 import {Box, Flex, Text} from '@sanity/ui'
 import filesize from 'filesize'
+import {motion} from 'framer-motion'
 import React, {CSSProperties, FC} from 'react'
 
 import {PANEL_HEIGHT} from '../../constants'
@@ -21,17 +22,16 @@ const CardUpload: FC<Props> = (props: Props) => {
   const item = useTypedSelector(state => selectUploadById(state, id))
 
   const fileSize = filesize(item.size, {base: 10, round: 0})
+  const percentLoaded = Math.round(item?.percent || 0) // (0 - 100)
+
+  const isUploadingOrComplete = ['complete', 'uploading'].includes(item.status)
+  const isQueued = item.status === 'queued'
 
   let status
-  /*
-  if (item.status === 'complete') {
-    status = 'Complete'
+  if (isUploadingOrComplete) {
+    status = `${percentLoaded}%`
   }
-  */
-  if (['complete', 'uploading'].includes(item.status)) {
-    status = `${Math.round(item?.percent || 0)}%`
-  }
-  if (item.status === 'queued') {
+  if (isQueued) {
     status = 'Queued'
   }
 
@@ -40,6 +40,30 @@ const CardUpload: FC<Props> = (props: Props) => {
       direction="column"
       style={{...style, background: hues.gray[950].hex, border: '1px solid transparent'}}
     >
+      {/* Progress bar */}
+      <motion.div
+        animate={{
+          scaleX: percentLoaded * 0.01,
+          transformOrigin: 'left'
+        }}
+        initial={{
+          scaleX: 0
+        }}
+        style={{
+          background: hues.gray[600].hex,
+          bottom: 0,
+          height: '1px',
+          left: 0,
+          position: 'absolute',
+          width: '100%'
+        }}
+        transition={{
+          type: 'spring',
+          damping: 15,
+          stiffness: 100
+        }}
+      />
+
       <Box flex={1} style={{position: 'relative'}}>
         {item.assetType === 'image' && item?.objectUrl && (
           <Image
@@ -68,7 +92,7 @@ const CardUpload: FC<Props> = (props: Props) => {
             width: '100%'
           }}
         >
-          <Text size={1} style={{opacity: item.status === 'queued' ? 0.5 : 1}} weight="semibold">
+          <Text size={1} style={{opacity: isQueued ? 0.5 : 1}} weight="semibold">
             {status}
           </Text>
         </Flex>
