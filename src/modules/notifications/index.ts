@@ -12,7 +12,6 @@ import {uploadsActions} from '../uploads'
 type Notification = {
   asset?: ImageAsset
   status?: 'error' | 'warning' | 'success' | 'info'
-  subtitle?: string
   title?: string
 }
 
@@ -29,11 +28,10 @@ const notificationsSlice = createSlice({
   initialState,
   reducers: {
     add(state, action: PayloadAction<Notification>) {
-      const {asset, status, subtitle, title} = action.payload
+      const {asset, status, title} = action.payload
       state.items.push({
         asset,
         status,
-        subtitle,
         title
       })
     }
@@ -175,5 +173,7 @@ export const notificationsTagUpdateCompleteEpic: MyEpic = action$ =>
     filter(tagsActions.updateComplete.match),
     mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Tag updated`})))
   )
+
+export const notificationsActions = notificationsSlice.actions
 
 export default notificationsSlice.reducer

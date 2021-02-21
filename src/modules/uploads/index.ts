@@ -51,12 +51,14 @@ const uploadsSlice = createSlice({
           state.allIds.splice(deleteIndex, 1)
         }
 
-        const blobUrl = state.byIds[hash].objectUrl
-        if (blobUrl) {
-          window.URL.revokeObjectURL(blobUrl)
-        }
+        if (state.byIds[hash]) {
+          const blobUrl = state.byIds[hash].objectUrl
+          if (blobUrl) {
+            window.URL.revokeObjectURL(blobUrl)
+          }
 
-        delete state.byIds[hash]
+          delete state.byIds[hash]
+        }
       })
     },
     previewReady(state, action: PayloadAction<{hash: string; blobUrl: string}>) {
@@ -71,7 +73,9 @@ const uploadsSlice = createSlice({
     ) {
       const {asset} = action.payload
 
-      state.byIds[asset.sha1hash].status = 'complete'
+      if (state.byIds[asset.sha1hash]) {
+        state.byIds[asset.sha1hash].status = 'complete'
+      }
     },
     uploadError(state, action: PayloadAction<{error: HttpError; hash: string}>) {
       const {hash} = action.payload

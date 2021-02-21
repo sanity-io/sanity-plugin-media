@@ -6,6 +6,7 @@ import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
 import {DropzoneDispatchProvider} from '../../contexts/DropzoneDispatchContext'
+import {notificationsActions} from '../../modules/notifications'
 import {uploadsActions} from '../../modules/uploads'
 
 type Props = {
@@ -40,6 +41,25 @@ const DragActiveContainer = styled.div`
   z-index: 2;
 `
 
+// Iterate through all files and only return non-folders / packages.
+// We check for files by reading the first byte of the file
+async function filterFiles(fileList: FileList) {
+  const files = Array.from(fileList)
+
+  const filteredFiles: File[] = []
+
+  for (const file of files) {
+    try {
+      await file.slice(0, 1).arrayBuffer()
+      filteredFiles.push(file)
+    } catch (err) {
+      // do nothing: file is a package or folder
+    }
+  }
+
+  return filteredFiles
+}
+
 const UploadDropzone: FC<Props> = (props: Props) => {
   const {children} = props
 
@@ -51,7 +71,43 @@ const UploadDropzone: FC<Props> = (props: Props) => {
     acceptedFiles.forEach(file => dispatch(uploadsActions.uploadRequest({file})))
   }
 
+  // Use custom file selector to filter out folders + packages
+  // TODO: use correct type
+  const handleFileGetter = async (event: any) => {
+    let fileList: FileList | undefined = undefined
+
+    switch (event.type) {
+      case 'change':
+        fileList = event.target.files
+        break
+      case 'drop':
+        fileList = event.dataTransfer.files
+        break
+      default:
+        return []
+    }
+
+    let files: File[] = []
+
+    if (fileList) {
+      files = await filterFiles(fileList)
+    }
+
+    // Dispatch error if some files have been filtered out
+    if (fileList?.length !== files.length) {
+      dispatch(
+        notificationsActions.add({
+          status: 'error',
+          title: `Unable to upload some items (folders and packages aren't supported)`
+        })
+      )
+    }
+
+    return files
+  }
+
   const {getRootProps, getInputProps, isDragActive, open} = useDropzone({
+    getFilesFromEvent: handleFileGetter,
     noClick: true,
     onDrop: handleDrop
   })

@@ -42,10 +42,7 @@ const CardUpload: FC<Props> = (props: Props) => {
     >
       {/* Progress bar */}
       <motion.div
-        animate={{
-          scaleX: percentLoaded * 0.01,
-          transformOrigin: 'left'
-        }}
+        animate={{scaleX: percentLoaded * 0.01}}
         initial={{
           scaleX: 0
         }}
@@ -54,6 +51,8 @@ const CardUpload: FC<Props> = (props: Props) => {
           bottom: 0,
           height: '1px',
           left: 0,
+          originX: 0,
+          originY: '50%',
           position: 'absolute',
           width: '100%'
         }}
