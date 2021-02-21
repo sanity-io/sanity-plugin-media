@@ -16,7 +16,7 @@ import {nanoid} from 'nanoid'
 import client from 'part:@sanity/base/client'
 import {Epic, ofType} from 'redux-observable'
 import {Selector} from 'react-redux'
-import {empty, from, of} from 'rxjs'
+import {from, of} from 'rxjs'
 import {
   bufferTime,
   catchError,
@@ -397,20 +397,11 @@ const assetsSlice = createSlice({
 
 type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 
-export const assetsDeleteEpic: MyEpic = (action$, state$) =>
+export const assetsDeleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(assetsActions.deleteRequest.match),
-    withLatestFrom(state$),
-    mergeMap(([_, state]) => {
-      const availableItems = Object.entries(state.assets.byIds).filter(([, value]) => {
-        return value.picked
-      })
-
-      if (availableItems.length === 0) {
-        return empty()
-      }
-
-      const assets = availableItems.map(item => item[1].asset)
+    mergeMap(action => {
+      const {assets} = action.payload
       const assetIds = assets.map(asset => asset._id)
       return of(assets).pipe(
         mergeMap(() =>
