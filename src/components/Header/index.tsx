@@ -51,7 +51,7 @@ const Header: FC<Props> = (props: Props) => {
             icon={UploadIcon}
             mode="bleed"
             onClick={open}
-            text="Upload assets"
+            text={`Upload ${currentDocument ? 'images' : 'assets'}`}
             tone="primary"
           />
 

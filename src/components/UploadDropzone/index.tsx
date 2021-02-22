@@ -109,6 +109,7 @@ const UploadDropzone: FC<Props> = (props: Props) => {
   }
 
   const {getRootProps, getInputProps, isDragActive, open} = useDropzone({
+    accept: onSelect ? 'image/*' : '',
     getFilesFromEvent: handleFileGetter,
     noClick: true,
     // Disable drag and drop functionality when in a selecting context
