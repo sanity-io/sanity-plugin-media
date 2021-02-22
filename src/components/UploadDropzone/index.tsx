@@ -5,6 +5,7 @@ import {useDropzone} from 'react-dropzone'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
+import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import {DropzoneDispatchProvider} from '../../contexts/DropzoneDispatchContext'
 import {notificationsActions} from '../../modules/notifications'
 import {uploadsActions} from '../../modules/uploads'
@@ -14,7 +15,6 @@ type Props = {
 }
 
 const UploadContainer = styled.div`
-  background: red;
   color: white;
   height: 100%;
   min-height: 100%;
@@ -38,7 +38,7 @@ const DragActiveContainer = styled.div`
   right: 0;
   top: 0;
   width: 100%;
-  z-index: 2;
+  z-index: 3;
 `
 
 // Iterate through all files and only return non-folders / packages.
@@ -65,6 +65,8 @@ const UploadDropzone: FC<Props> = (props: Props) => {
 
   // Redux
   const dispatch = useDispatch()
+
+  const {onSelect} = useAssetSourceActions()
 
   // Callbacks
   const handleDrop = async (acceptedFiles: File[]) => {
@@ -109,6 +111,9 @@ const UploadDropzone: FC<Props> = (props: Props) => {
   const {getRootProps, getInputProps, isDragActive, open} = useDropzone({
     getFilesFromEvent: handleFileGetter,
     noClick: true,
+    // Disable drag and drop functionality when in a selecting context
+    // (This is currently due to Sanity's native image input taking precedence with drag and drop)
+    noDrag: !!onSelect,
     onDrop: handleDrop
   })
 

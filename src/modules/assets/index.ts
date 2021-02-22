@@ -1,16 +1,6 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
 import {ClientError, Patch, Transaction} from '@sanity/client'
-import {
-  Asset,
-  AssetItem,
-  BrowserView,
-  CardAssetData,
-  CardUploadData,
-  HttpError,
-  Order,
-  OrderDirection,
-  Tag
-} from '@types'
+import {Asset, AssetItem, BrowserView, HttpError, Order, OrderDirection, Tag} from '@types'
 import groq from 'groq'
 import {nanoid} from 'nanoid'
 import client from 'part:@sanity/base/client'
@@ -835,21 +825,6 @@ export const selectAssetsPicked = createSelector([selectAssets], assets =>
 export const selectAssetsPickedLength = createSelector(
   [selectAssetsPicked],
   assetsPicked => assetsPicked.length
-)
-
-// TODO: move elsewhere
-
-export const selectCombinedItems = createSelector(
-  [
-    (state: RootReducerState) => state.assets.allIds,
-    (state: RootReducerState) => state.uploads.allIds
-  ],
-  (assetIds, uploadIds) => {
-    const assetItems = assetIds.map(id => ({id, type: 'asset'} as CardAssetData))
-    const uploadItems = uploadIds.map(id => ({id, type: 'upload'} as CardUploadData))
-    const combinedItems: (CardAssetData | CardUploadData)[] = [...uploadItems, ...assetItems]
-    return combinedItems
-  }
 )
 
 export const assetsActions = assetsSlice.actions

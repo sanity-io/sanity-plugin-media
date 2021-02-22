@@ -52,7 +52,6 @@ const OrderSelect: FC = () => {
           })}
         </Menu>
       }
-      portal={true}
     />
   )
 }

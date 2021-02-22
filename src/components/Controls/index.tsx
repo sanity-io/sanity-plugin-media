@@ -40,7 +40,8 @@ const Controls: FC = () => {
     <Box
       paddingY={2}
       style={{
-        borderBottom: `1px solid ${hues.gray?.[900].hex}`
+        borderBottom: `1px solid ${hues.gray?.[900].hex}`,
+        zIndex: 2
       }}
     >
       {/* Rows: search / filters / orders  */}
