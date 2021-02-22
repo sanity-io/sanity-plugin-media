@@ -16,7 +16,7 @@ import {nanoid} from 'nanoid'
 import client from 'part:@sanity/base/client'
 import {Epic, ofType} from 'redux-observable'
 import {Selector} from 'react-redux'
-import {from, of} from 'rxjs'
+import {empty, from, of} from 'rxjs'
 import {
   bufferTime,
   catchError,
@@ -87,8 +87,8 @@ const initialState = {
   },
   pageIndex: 0,
   pageSize: 50,
+  // totalCount: -1,
   view: 'grid'
-  // totalCount: -1
 } as AssetsReducerState
 
 const assetsSlice = createSlice({
@@ -121,6 +121,7 @@ const assetsSlice = createSlice({
     clear(state) {
       state.allIds = []
     },
+    // Remove assets and update page index
     deleteComplete(state, action: PayloadAction<{assetIds: string[]}>) {
       const {assetIds} = action.payload
 
@@ -131,6 +132,8 @@ const assetsSlice = createSlice({
         }
         delete state.byIds[id]
       })
+
+      state.pageIndex = Math.floor(state.allIds.length / state.pageSize) - 1
     },
     deleteError(state, action: PayloadAction<{assetIds: string[]; error: ClientError}>) {
       const {assetIds, error} = action.payload
@@ -160,7 +163,9 @@ const assetsSlice = createSlice({
 
       if (assets) {
         assets.forEach(asset => {
-          state.allIds.push(asset._id)
+          if (!state.allIds.includes(asset._id)) {
+            state.allIds.push(asset._id)
+          }
           state.byIds[asset._id] = {
             _type: 'asset',
             asset: asset,
@@ -481,6 +486,20 @@ export const assetsFetchNextPageEpic: MyEpic = (action$, state$) =>
     switchMap(([_, state]) =>
       of(assetsActions.loadPageIndex({pageIndex: state.assets.pageIndex + 1}))
     )
+  )
+
+export const assetsFetchAfterDeleteAllEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(assetsActions.deleteComplete.match),
+    withLatestFrom(state$),
+    switchMap(([_, state]) => {
+      if (state.assets.allIds.length === 0) {
+        const nextPageIndex = Math.floor(state.assets.allIds.length / state.assets.pageSize)
+        return of(assetsActions.loadPageIndex({pageIndex: nextPageIndex}))
+      }
+
+      return empty()
+    })
   )
 
 export const assetsRemoveTagsEpic: MyEpic = (action$, state$) => {

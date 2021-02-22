@@ -3,6 +3,7 @@ import {combineEpics} from 'redux-observable'
 
 import assetsReducer, {
   assetsDeleteEpic,
+  assetsFetchAfterDeleteAllEpic,
   assetsFetchEpic,
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
@@ -59,6 +60,7 @@ import uploadsReducer, {
 export const rootEpic = combineEpics(
   assetsDeleteEpic,
   assetsFetchEpic,
+  assetsFetchAfterDeleteAllEpic,
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
   // assetsInsertUploadsEpic,
