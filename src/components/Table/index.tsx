@@ -52,13 +52,7 @@ const VirtualRow = memo((props: ListChildComponentProps) => {
   } as CSSProperties
 
   if (item?.type === 'asset') {
-    return (
-      <TableRowAsset
-        id={item.id}
-        selected={selectedIds.includes(item?.asset?._id)}
-        style={rowStyle}
-      />
-    )
+    return <TableRowAsset id={item.id} selected={selectedIds.includes(item?.id)} style={rowStyle} />
   }
 
   if (item?.type === 'upload') {

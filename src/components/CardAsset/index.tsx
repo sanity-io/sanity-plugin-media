@@ -18,7 +18,6 @@ import Image from '../Image'
 
 type Props = {
   id: string
-  // item: AssetItem
   selected: boolean
   style?: CSSProperties
 }

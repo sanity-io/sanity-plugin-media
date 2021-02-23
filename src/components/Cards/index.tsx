@@ -35,6 +35,7 @@ const innerElementType = (props: {children: ReactNode; style: CSSProperties}) =>
 }
 
 const VirtualCell = memo((props: GridChildComponentProps) => {
+  // TODO: type correctly
   const {columnIndex, data, rowIndex, style} = props
   const {columnCount, items, selectedIds} = data
 
@@ -57,9 +58,7 @@ const VirtualCell = memo((props: GridChildComponentProps) => {
   } as CSSProperties
 
   if (item?.type === 'asset') {
-    return (
-      <CardAsset id={item.id} selected={selectedIds.includes(item?.asset?._id)} style={cellStyle} />
-    )
+    return <CardAsset id={item.id} selected={selectedIds.includes(item?.id)} style={cellStyle} />
   }
 
   if (item?.type === 'upload') {

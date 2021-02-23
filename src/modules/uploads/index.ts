@@ -1,7 +1,7 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
 import {HttpError, SanityUploadProgressEvent, UploadItem} from '@types'
 import client from 'part:@sanity/base/client'
-import {Epic, ofType} from 'redux-observable'
+import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
 import {empty, merge, of} from 'rxjs'
 import {
