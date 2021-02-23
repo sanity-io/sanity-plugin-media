@@ -1,5 +1,7 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
+import {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
 import {HttpError, SanityUploadProgressEvent, UploadItem} from '@types'
+import groq from 'groq'
 import client from 'part:@sanity/base/client'
 import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
@@ -18,8 +20,7 @@ import {RootReducerState} from '../types'
 import constructFilter from '../../utils/constructFilter'
 import {generatePreviewBlobUrl$} from '../../utils/generatePreviewBlobUrl'
 import {hashFile$, uploadAsset$} from '../../utils/uploadSanityAsset'
-import {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
-import groq from 'groq'
+import {assetsActions} from '../assets'
 
 export type UploadsReducerState = {
   allIds: string[]
@@ -213,22 +214,6 @@ export const uploadsAssetUploadEpic: MyEpic = action$ =>
     })
   )
 
-/*
-export const uploadsCompleteQueueEpic: MyEpic = action$ =>
-  action$.pipe(
-    filter(uploadsActions.uploadComplete.match),
-    bufferTime(2000),
-    filter(actions => actions.length > 0),
-    mergeMap(actions => {
-      return of(
-        uploadsActions.checkRequest({
-          assets: actions.map(action => action.payload.asset)
-        })
-      )
-    })
-  )
-*/
-
 export const uploadsCompleteQueueEpic: MyEpic = action$ =>
   action$.pipe(
     filter(uploadsActions.uploadComplete.match),
@@ -269,7 +254,10 @@ export const uploadsCheckRequestEpic: MyEpic = (action$, state$) =>
             return acc
           }, {})
 
-          return of(uploadsActions.checkComplete({results: checkedResults}))
+          return of(
+            uploadsActions.checkComplete({results: checkedResults}), //
+            assetsActions.insertUploads({results: checkedResults})
+          )
         })
       )
     })

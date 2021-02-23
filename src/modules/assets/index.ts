@@ -86,15 +86,6 @@ const assetsSlice = createSlice({
   initialState,
   extraReducers: builder => {
     builder //
-      .addCase(uploadsActions.checkComplete, (state, action) => {
-        const {results} = action.payload
-
-        Object.entries(results).forEach(([hash, assetId]) => {
-          if (assetId && !state.allIds.includes(hash)) {
-            state.allIds.push(assetId)
-          }
-        })
-      })
       .addCase(uploadsActions.uploadComplete, (state, action) => {
         const {asset} = action.payload
 
@@ -224,7 +215,6 @@ const assetsSlice = createSlice({
         return {payload: {params, query}}
       }
     },
-    /*
     insertUploads(state, action: PayloadAction<{results: Record<string, string | null>}>) {
       const {results} = action.payload
 
@@ -234,7 +224,6 @@ const assetsSlice = createSlice({
         }
       })
     },
-    */
     listenerCreateQueue(_state, _action: PayloadAction<{asset: Asset}>) {
       //
     },
@@ -615,28 +604,12 @@ export const assetsListenerUpdateQueueEpic: MyEpic = action$ =>
 export const assetsSortEpic: MyEpic = action$ =>
   action$.pipe(
     ofType(
-      assetsActions.listenerUpdateQueueComplete.type, //
-      assetsActions.updateComplete.type,
-      uploadsActions.checkComplete.type
+      assetsActions.insertUploads.type,
+      assetsActions.listenerUpdateQueueComplete.type,
+      assetsActions.updateComplete.type
     ),
     mergeMap(() => of(assetsActions.sort()))
   )
-
-// Insert uploads into current order and re-sort
-/*
-export const assetsInsertUploadsEpic: MyEpic = action$ =>
-  action$.pipe(
-    filter(uploadsActions.checkComplete.match),
-    mergeMap(action => {
-      const {results} = action.payload
-
-      return of(
-        assetsActions.insertUploads({results}), //
-        assetsActions.sort()
-      )
-    })
-  )
-*/
 
 export const assetsTagsAddEpic: MyEpic = (action$, state$) => {
   return action$.pipe(
