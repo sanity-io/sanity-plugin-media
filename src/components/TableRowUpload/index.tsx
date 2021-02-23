@@ -1,12 +1,14 @@
 import {hues} from '@sanity/color'
-import {Box, Text} from '@sanity/ui'
+import {CloseIcon} from '@sanity/icons'
+import {Box, Button, Flex, Stack, Text, Tooltip} from '@sanity/ui'
 import filesize from 'filesize'
 import {motion} from 'framer-motion'
 import React, {CSSProperties, FC} from 'react'
+import {useDispatch} from 'react-redux'
 import {Box as LegacyBox, Grid as LegacyGrid} from 'theme-ui'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {selectUploadById} from '../../modules/uploads'
+import {selectUploadById, uploadsActions} from '../../modules/uploads'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
 
@@ -19,13 +21,31 @@ const TableRowUpload: FC<Props> = (props: Props) => {
   const {id, style} = props
 
   // Redux
+  const dispatch = useDispatch()
   const item = useTypedSelector(state => selectUploadById(state, id))
 
   const fileSize = filesize(item.size, {base: 10, round: 0})
   const percentLoaded = Math.round(item?.percent || 0) // (0 - 100)
 
-  const isUploadingOrComplete = ['complete', 'uploading'].includes(item.status)
+  const isComplete = item.status === 'complete'
+  const isUploading = item.status === 'uploading'
   const isQueued = item.status === 'queued'
+
+  let status
+  if (isComplete) {
+    status = 'Verifying'
+  }
+  if (isUploading) {
+    status = `${percentLoaded}%`
+  }
+  if (isQueued) {
+    status = 'Queued'
+  }
+
+  // Callbacks
+  const handleCancelUpload = () => {
+    dispatch(uploadsActions.uploadCancel({hash: item.hash}))
+  }
 
   return (
     <LegacyGrid
@@ -64,26 +84,12 @@ const TableRowUpload: FC<Props> = (props: Props) => {
         }}
       />
 
-      {/* Percentage */}
-      <LegacyBox
-        sx={{
-          gridColumn: 1,
-          gridRowStart: ['1', null, null, 'auto'],
-          gridRowEnd: ['span 5', null, null, 'auto'],
-          textAlign: 'center'
-        }}
-      >
-        <Text size={1} weight="semibold">
-          {isUploadingOrComplete && `${percentLoaded}%`}
-        </Text>
-      </LegacyBox>
-
       {/* Image */}
       <LegacyBox
         sx={{
           gridColumn: [2],
           gridRowStart: ['1', null, null, 'auto'],
-          gridRowEnd: ['span 5', null, null, 'auto'],
+          gridRowEnd: ['span 4', null, null, 'auto'],
           height: '90px',
           width: '100px'
         }}
@@ -98,33 +104,62 @@ const TableRowUpload: FC<Props> = (props: Props) => {
               <FileIcon width="40px" />
             </div>
           )}
+
+          {/* Cancel upload button */}
+          {!isComplete && (
+            <Flex
+              align="center"
+              justify="center"
+              style={{
+                position: 'absolute',
+                height: '100%',
+                left: 0,
+                top: 0,
+                width: '100%'
+              }}
+            >
+              <Tooltip
+                content={
+                  <Box padding={2}>
+                    <Text muted size={1}>
+                      Cancel
+                    </Text>
+                  </Box>
+                }
+                disabled={'ontouchstart' in window}
+                placement="top"
+              >
+                <Button
+                  fontSize={3}
+                  icon={CloseIcon}
+                  mode="bleed"
+                  onClick={handleCancelUpload}
+                  padding={2}
+                  style={{background: 'none', boxShadow: 'none'}}
+                  tone="critical"
+                />
+              </Tooltip>
+            </Flex>
+          )}
         </Box>
       </LegacyBox>
 
       {/* Filename */}
       <LegacyBox
         sx={{
-          gridColumn: [3],
-          gridRow: [2, null, null, 'auto'],
+          gridColumn: [3, null, null, '3/8'],
+          gridRow: ['2/4', null, null, 'auto'],
           marginLeft: [3, null, null, 0]
         }}
       >
-        <Text muted={isQueued} size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
-          Uploading {item.name} {isQueued && ' (Queued)'}
-        </Text>
-      </LegacyBox>
-
-      {/* Size */}
-      <LegacyBox
-        sx={{
-          gridColumn: [3, null, null, 6],
-          gridRow: [3, null, null, 'auto'],
-          marginLeft: [3, null, null, 0]
-        }}
-      >
-        <Text size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
-          {fileSize}
-        </Text>
+        <Stack space={3}>
+          <Text muted size={1} textOverflow="ellipsis">
+            {item.name} ({fileSize})
+          </Text>
+          <Text size={1} textOverflow="ellipsis" weight="semibold">
+            {status}
+          </Text>
+        </Stack>
       </LegacyBox>
     </LegacyGrid>
   )

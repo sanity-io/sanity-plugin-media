@@ -1,7 +1,7 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
 import {HttpError, SanityUploadProgressEvent, UploadItem} from '@types'
 import client from 'part:@sanity/base/client'
-import {Epic} from 'redux-observable'
+import {Epic, ofType} from 'redux-observable'
 import {Selector} from 'react-redux'
 import {empty, merge, of} from 'rxjs'
 import {
@@ -10,6 +10,7 @@ import {
   delay,
   filter,
   mergeMap,
+  takeUntil,
   withLatestFrom
 } from 'rxjs/operators'
 
@@ -65,6 +66,16 @@ const uploadsSlice = createSlice({
       const {blobUrl, hash} = action.payload
       if (state.byIds[hash]) {
         state.byIds[hash].objectUrl = blobUrl
+      }
+    },
+    uploadCancel(state, action: PayloadAction<{hash: string}>) {
+      const {hash} = action.payload
+      const deleteIndex = state.allIds.indexOf(hash)
+      if (deleteIndex >= 0) {
+        state.allIds.splice(deleteIndex, 1)
+      }
+      if (state.byIds[hash]) {
+        delete state.byIds[hash]
       }
     },
     uploadComplete(
@@ -133,6 +144,12 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
         of(null).pipe(
           // delay(500000), // debug uploads
           mergeMap(() => uploadAsset$(uploadItem.assetType, file, uploadItem.hash)),
+          takeUntil(
+            action$.pipe(
+              filter(uploadsActions.uploadCancel.match),
+              filter(action => action.payload.hash === uploadItem.hash)
+            )
+          ),
           mergeMap(event => {
             if (event?.type === 'complete') {
               return of(
