@@ -8,6 +8,9 @@ import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
 import {RootReducerState} from '../types'
 import {tagsActions} from '../tags'
 
+// TODO: don't store non-serializable data in the search store
+// (The main offender is `fieldModifier` which is currently a function)
+
 type SearchState = {
   facets: SearchFacetInputProps[]
   query: string
