@@ -81,7 +81,6 @@ const Items: FC = () => {
       style={{
         height: '100%',
         left: 0,
-        paddingTop: pickedCount > 0 ? PANEL_HEIGHT : 0,
         position: 'absolute',
         top: 0,
         width: '100%'
@@ -95,7 +94,7 @@ const Items: FC = () => {
         </Box>
       )}
       {!isEmpty && (view === 'grid' || 'table') && (
-        <AutoSizer>
+        <AutoSizer style={{marginTop: pickedCount > 0 ? PANEL_HEIGHT : 0}}>
           {({height, width}) => {
             const containerHeight = pickedCount > 0 ? height - PANEL_HEIGHT : height
 
