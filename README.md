@@ -208,7 +208,7 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 ## Roadmap
 
 - Jump to selected asset
-- Asset replacemeent
+- Asset replacement
 - Total count displays
 - Further keyboard shortcuts
 - Shareable saved search facets
