@@ -1,12 +1,13 @@
 # Sanity Media
 
-![npm](https://img.shields.io/npm/dw/sanity-plugin-media)
+![npm-v](https://img.shields.io/npm/v/sanity-plugin-media?style=flat-square)
+![npm-dw](https://img.shields.io/npm/dw/sanity-plugin-media?style=flat-square)
 
 A convenient way to browse, manage and refine your [Sanity](https://www.sanity.io/) assets.
 
 Use it standalone as a browser, or optionally hook it up as a [custom asset source](https://www.sanity.io/docs/custom-asset-sources) and use it to power asset selection too.
 
-![Grid view](https://user-images.githubusercontent.com/209129/105532350-9d847500-5ce2-11eb-8ba8-19655c416829.png)
+![Grid view](https://user-images.githubusercontent.com/209129/108927411-21aa7f00-7638-11eb-9cf7-334598ac4103.png)
 ![Asset view](https://user-images.githubusercontent.com/209129/105532355-9fe6cf00-5ce2-11eb-9982-b2bfd22f3409.png)
 
 ## Features
@@ -77,9 +78,9 @@ That's it! The browser will now pop up every time you try select an image.
 <summary>There isn't a way to edit asset fields directly from the desk (without opening the plugin)</summary>
 
 - This is a bit of a sticking point, especially when working with large datasets
-- For example, you want to edit fields for a selected image. You then open the plugin, but have to manually hunt / search for that image (which can be a laborious in a dataset of thousands of assets)
-- A future change will provide the ability the 'jump' straight to a selected asset, if present
-- However, exposing plugin fields on the desk (e.g. via a custom input component) is currently outside the scope of this project
+- For example, you want to edit fields for an already selected image. You open the plugin, but then have to manually hunt / search for that image (which can be laborious when sifting through thousands of assets)
+- A future update will provide the ability the 'jump' straight to a selected asset
+- However, exposing plugin fields directly on the desk (e.g. via a custom input component) is currently outside the scope of this project
 
 </details>
 
@@ -92,9 +93,10 @@ That's it! The browser will now pop up every time you try select an image.
 </details>
 
 <details>
-<summary>Downloaded images (downloaded with the <em>download</em> button) aren't the original files that were uploaded</summary>
+<summary>Downloaded images (downloaded with the <em>download</em> button) aren't the originally uploaded files</summary>
 
-- Any images downloaded in the plugin are those already _processed_ by Sanity without any [image transformations](https://www.sanity.io/docs/image-urls) applied. Please note these are not the _original_ uploaded images, and will be stripped of any EXIF data.
+- Any images downloaded in the plugin are those already _processed_ by Sanity without any [image transformations](https://www.sanity.io/docs/image-urls) applied.
+- Please note these are not the _original_ uploaded images: they will likely have a smaller file size and will be stripped of any EXIF data.
 - Currently, it's not possible in Sanity to grab these original image assets within the studio - but this may change in future!
 
 </details>
@@ -113,20 +115,20 @@ That's it! The browser will now pop up every time you try select an image.
 <details>
 <summary>Where are asset fields stored?</summary>
 
-- This plugin will read and write _directly_ on the asset document iteself. This will either a document of type `sanity.imageAsset` or `sanity.fileAsset`.
+- This plugin will read and write _directly_ on the asset document itself. This will either a document of type `sanity.imageAsset` or `sanity.fileAsset`.
 - This is analagous to setting values _globally_ across all instances of these assets.
-- This is in contrast to using the `fields` property (on both [image](https://www.sanity.io/docs/image-type#fields-ab54e73207e5) and [file](https://www.sanity.io/docs/file-type#fields-93a1b58234d2) objects). Values that you define in the `fields` property can be considered 'local', or bound to instance of the document in which that asset is linked.
-- In other words, if you want to set a caption for an image and have that change between different documents – use the `fields` property in your file/image field.
+- This is in contrast to using the `fields` property when defining your document schema (on both [image](https://www.sanity.io/docs/image-type#fields-ab54e73207e5) and [file](https://www.sanity.io/docs/file-type#fields-93a1b58234d2) objects). Values that you define in the `fields` property can be considered 'local', or bound to the the document where that asset is linked.
+- In other words, if you want to set a caption for an image and have that change between different documents – customise the `fields` property in your document schema's file/image field.
 - If you want to set values you can query in all instances of that asset (alternate text being a good example), consider setting those in the plugin.
 
 </details>
 
 <details>
-<summary>How can I query values I've defined in ths plugin?</summary>
+<summary>How can I query asset fields I've set in this plugin?</summary>
 
-The following GROQ query would return an image with additional asset text fields as well as an array of tag names.
+The following GROQ query will return an image with additional asset text fields as well as an array of tag names.
 
-Note that tags are namespaced within `opt.media` and tag names are accessed via the `current` property, as they're defined as slugs on the `tag.media` document schema (to ensure string uniqueness).
+Note that tags are namespaced within `opt.media` and tag names are accessed via the `current` property (as they're defined as slugs on the `tag.media` document schema).
 
 ```
 *[_id == 'my-document-id'] {
@@ -177,9 +179,9 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 <details>
 <summary>How can I edit and / or delete tags I've already created?</summary>
 
-- You can now create, rename and delete tags from directly within the plugin itself
-- It's _strongly recommended_ that you manually delete tags directly from within the plugin as doing so will make sure that (weak) references are removed from any linked assets
-- Alternatively, you can delete tags either from the desk (if you're not using a custom desk) or via Sanity's API – just be mindful that any linked assets will have 'hanging' weak references which may cause some false positives when searching. (E.g. a search for 'all assets where tags is not empty' will yield assets that have references to tags that no longer exist)
+- You can create, rename and delete tags from directly within the plugin itself
+- It is _strongly recommended_ that you manually delete tags directly from within the plugin – doing so will ensure that (weak) references are removed from any linked assets
+- Alternatively, you can delete tags either from the desk (if you're not using a custom desk) or via Sanity's API – just be mindful that any assets preivously assigned to deleted tags will have 'hanging' weak references. This won't cause serious issues, but it may cause some false positives when searching. (E.g. a search for 'all assets where tags is not empty' will yield assets that have references to tags that no longer exist)
 
 </details>
 
@@ -198,8 +200,8 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 <details>
 <summary>How does the plugin determine what should uploaded as a <code>sanity.imageAsset</code> or <code>sanity.fileAsset</code>?</summary>
 
-- The plugin will look at files' MIME type. All files of MIME type `image/*` will be uploaded as `sanity.imageAsset`, everything else as `sanity.fileAsset`.
-- This means that it's not possible to upload images as `sanity.fileAsset` via the plugin. In the rare case that you do need images to be treated as files, consider uploading them outside of the plugin.
+- The plugin will look at files' MIME type. All files of MIME type `image/*` will be uploaded as `sanity.imageAsset`, everything else as `sanity.fileAsset`
+- This means that it's not possible to upload images as `sanity.fileAsset` via the plugin. In the rare case that you do need images to be treated as files, consider uploading them outside of the plugin
 
 </details>
 
@@ -209,7 +211,6 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 - Asset replacemeent
 - Total count displays
 - Further keyboard shortcuts
-- Multiple insertion into documents
 - Shareable saved search facets
 - Routing
 - Storing browser options with local storage
