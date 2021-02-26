@@ -6,6 +6,7 @@ import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 import {Z_INDEX_APP, Z_INDEX_TOAST_PROVIDER} from './constants'
 import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContext'
 import Browser from './components/Browser'
+import Portal from './components/Portal'
 import ReduxProvider from './components/ReduxProvider'
 import useKeyPress from './hooks/useKeyPress'
 import GlobalStyle from './styled/GlobalStyles'
@@ -39,20 +40,22 @@ const AssetBrowser: FC<Props> = (props: Props) => {
                   <Browser onClose={onClose} />
                 </Box>
               ) : (
-                <Box
-                  onMouseUp={handleStopPropagation}
-                  style={{
-                    bottom: 0,
-                    height: 'auto',
-                    left: 0,
-                    position: 'fixed',
-                    top: 0,
-                    width: '100%',
-                    zIndex: Z_INDEX_APP
-                  }}
-                >
-                  <Browser onClose={onClose} />
-                </Box>
+                <Portal>
+                  <Box
+                    onMouseUp={handleStopPropagation}
+                    style={{
+                      bottom: 0,
+                      height: 'auto',
+                      left: 0,
+                      position: 'fixed',
+                      top: 0,
+                      width: '100%',
+                      zIndex: Z_INDEX_APP
+                    }}
+                  >
+                    <Browser onClose={onClose} />
+                  </Box>
+                </Portal>
               )}
             </AssetBrowserDispatchProvider>
           </ToastProvider>
