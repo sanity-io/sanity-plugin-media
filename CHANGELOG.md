@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0...v1.1.1) (2021-02-26)
+
+
+### Bug Fixes
+
+* prevent dnd propagation in select context to prevent accidental uploads with native inputs ([6fe2297](https://github.com/robinpyon/sanity-plugin-media/commit/6fe22972f2d63bdfcf8b0d13918e903cfceb87b4))
+* revert to wrapping select browser inside a custom portal to prevent z-index clashing ([14462ab](https://github.com/robinpyon/sanity-plugin-media/commit/14462abad1170a11e3fe26364b22ed94173809ad))
+
 ## [1.1.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.0.2...v1.1.0) (2021-02-24)
 
 ## Features
