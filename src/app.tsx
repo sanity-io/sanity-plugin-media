@@ -25,6 +25,7 @@ const AssetBrowser: FC<Props> = (props: Props) => {
   // prematurely closing, as it attaches events on `document` to detect outside clicks.
   const handleStopPropagation = (e: MouseEvent) => {
     e.nativeEvent.stopImmediatePropagation()
+    e.stopPropagation()
   }
 
   return (
@@ -42,6 +43,10 @@ const AssetBrowser: FC<Props> = (props: Props) => {
               ) : (
                 <Portal>
                   <Box
+                    onDragEnter={handleStopPropagation}
+                    onDragLeave={handleStopPropagation}
+                    onDragOver={handleStopPropagation}
+                    onDrop={handleStopPropagation}
                     onMouseUp={handleStopPropagation}
                     style={{
                       bottom: 0,
