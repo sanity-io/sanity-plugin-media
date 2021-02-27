@@ -46,7 +46,9 @@ export const ORDER_OPTIONS: ({direction: OrderDirection; field: string} | null)[
 
 export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[] = [
   inputs.tag,
+  divider,
   inputs.inUse,
+  inputs.inCurrentDocument,
   divider,
   inputs.title,
   inputs.altText,

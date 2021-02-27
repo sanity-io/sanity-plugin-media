@@ -66,7 +66,7 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
   const {height, items, onItemsRendered, width} = props
 
   // Redux
-  const selectedAssets = useTypedSelector(state => state.selectedAssets)
+  const selectedAssets = useTypedSelector(state => state.selected.assets)
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
   const totalCount = items.length

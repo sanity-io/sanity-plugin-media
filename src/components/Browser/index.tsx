@@ -70,8 +70,10 @@ const Browser: FC<Props> = (props: Props) => {
     // Fetch all tags
     dispatch(tagsActions.fetchRequest())
 
-    // Listen for asset + tag changes
-    // (Remember that Sanity listeners ignore joins, order clauses and projections!)
+    // Listen for asset and tag changes in published documents.
+    // Remember that Sanity listeners ignore joins, order clauses and projections!
+    // Also note that changes to the selected document (if present) will automatically re-load the media plugin
+    // due to the desk pane re-rendering.
     const subscriptionAsset = client
       .listen(
         groq`*[_type in ["sanity.fileAsset", "sanity.imageAsset"] && !(_id in path("drafts.**"))]`

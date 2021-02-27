@@ -10,7 +10,7 @@ export const divider: SearchFacetDivider = {type: 'divider'}
 
 export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
   altText: {
-    contexts: 'all',
+    assetTypes: ['file', 'image'],
     field: 'altText',
     name: 'altText',
     operatorType: 'empty',
@@ -20,7 +20,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     value: ''
   },
   description: {
-    contexts: 'all',
+    assetTypes: ['file', 'image'],
     field: 'description',
     name: 'description',
     operatorType: 'empty',
@@ -30,7 +30,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     value: ''
   },
   height: {
-    contexts: ['image', 'tool'],
+    assetTypes: ['image'],
     field: 'metadata.dimensions.height',
     name: 'height',
     operatorType: 'greaterThan',
@@ -46,8 +46,29 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     type: 'number',
     value: 400
   },
+  inCurrentDocument: {
+    assetTypes: ['file', 'image'],
+    name: 'inCurrentDocument',
+    operatorType: 'is',
+    options: [
+      {
+        name: 'true',
+        title: 'True',
+        value: groq`_id in $documentAssetIds`
+      },
+      {
+        name: 'false',
+        title: 'False',
+        value: groq`!(_id in $documentAssetIds)`
+      }
+    ],
+    selectOnly: true,
+    title: 'In use in current document',
+    type: 'select',
+    value: 'true'
+  },
   inUse: {
-    contexts: 'all',
+    assetTypes: ['file', 'image'],
     name: 'inUse',
     operatorType: 'is',
     options: [
@@ -62,12 +83,12 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
         value: groq`count(*[references(^._id)]) == 0`
       }
     ],
-    title: 'In Use',
+    title: 'In use',
     type: 'select',
     value: 'true'
   },
   isOpaque: {
-    contexts: ['image', 'tool'],
+    assetTypes: ['image'],
     field: 'metadata.isOpaque',
     name: 'isOpaque',
     operatorType: 'equalTo',
@@ -83,12 +104,12 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
         value: `true`
       }
     ],
-    title: 'Has Transparency',
+    title: 'Has transparency',
     type: 'select',
     value: 'true'
   },
   orientation: {
-    contexts: ['image', 'tool'],
+    assetTypes: ['image'],
     name: 'orientation',
     operatorType: 'is',
     operatorTypes: ['is', 'isNot'],
@@ -114,7 +135,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     value: 'portrait'
   },
   size: {
-    contexts: 'all',
+    assetTypes: ['file', 'image'],
     field: 'size',
     modifier: 'kb',
     modifiers: [
@@ -144,7 +165,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     value: 0
   },
   tag: {
-    contexts: 'all',
+    assetTypes: ['file', 'image'],
     field: 'opt.media.tags',
     name: 'tag',
     operatorType: 'references',
@@ -153,7 +174,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     type: 'searchable'
   },
   title: {
-    contexts: 'all',
+    assetTypes: ['file', 'image'],
     field: 'title',
     name: 'title',
     operatorType: 'empty',
@@ -163,7 +184,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     value: ''
   },
   type: {
-    contexts: ['file', 'tool'],
+    assetTypes: ['file', 'image'],
     name: 'type',
     operatorType: 'is',
     operatorTypes: ['is', 'isNot'],
@@ -194,7 +215,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     value: 'image'
   },
   width: {
-    contexts: ['image', 'tool'],
+    assetTypes: ['image'],
     field: 'metadata.dimensions.width',
     name: 'width',
     operatorType: 'greaterThan',

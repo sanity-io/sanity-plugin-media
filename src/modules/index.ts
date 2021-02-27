@@ -24,8 +24,7 @@ import dialogReducer, {
   dialogTagCreateEpic,
   dialogTagDeleteEpic
 } from './dialog'
-import documentReducer from './document'
-import selectedAssetsReducer from './selectedAssets'
+import selectedReducer from './selected'
 import notificationsReducer, {
   notificationsAssetsDeleteErrorEpic,
   notificationsAssetsDeleteCompleteEpic,
@@ -102,10 +101,9 @@ export const rootReducer = combineReducers({
   assets: assetsReducer,
   debug: debugReducer,
   dialog: dialogReducer,
-  document: documentReducer,
   notifications: notificationsReducer,
   search: searchReducer,
-  selectedAssets: selectedAssetsReducer,
+  selected: selectedReducer,
   tags: tagsReducer,
   uploads: uploadsReducer
 })

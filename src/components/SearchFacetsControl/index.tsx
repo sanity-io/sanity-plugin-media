@@ -12,9 +12,9 @@ const SearchFacetsControl: FC = () => {
   // Redux
   const dispatch = useDispatch()
   const searchFacets = useTypedSelector(state => state.search.facets)
-  const document = useTypedSelector(state => state.document)
+  const selectedDocument = useTypedSelector(state => state.selected.document)
 
-  const isTool = !document
+  const isTool = !selectedDocument
 
   // Manually filter facets based on current context, whether it's invoked as a tool, or via selection through
   // via custom asset source.
@@ -23,16 +23,12 @@ const SearchFacetsControl: FC = () => {
       return true
     }
 
-    if (facet.contexts === 'all') {
-      return true
-    }
-
     if (isTool) {
-      return facet.contexts.includes('tool')
+      return !facet?.selectOnly
     } else {
       // TODO: in future, determine whether we're inserting into a file or image field.
       // For now, it's only possible to insert into image fields.
-      return facet.contexts.includes('image')
+      return facet.assetTypes.includes('image')
     }
   })
 

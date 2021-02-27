@@ -16,7 +16,7 @@ const Header: FC<Props> = (props: Props) => {
   const {open} = useDropzoneActions()
 
   // Redux
-  const currentDocument = useTypedSelector(state => state.document)
+  const selectedDocument = useTypedSelector(state => state.selected.document)
 
   const {onSelect} = useAssetSourceActions()
 
@@ -31,13 +31,13 @@ const Header: FC<Props> = (props: Props) => {
               <span>{onSelect ? 'Insert Image' : 'Browse Assets'}</span>
             </Text>
 
-            {currentDocument && (
+            {selectedDocument && (
               <Box display={['none', 'none', 'block']}>
                 <Text>
                   <span style={{margin: '0 0.5em'}}>
                     <Icon symbol="arrow-right" />
                   </span>
-                  <span style={{textTransform: 'capitalize'}}>{currentDocument._type}</span>
+                  <span style={{textTransform: 'capitalize'}}>{selectedDocument._type}</span>
                 </Text>
               </Box>
             )}
@@ -51,7 +51,7 @@ const Header: FC<Props> = (props: Props) => {
             icon={UploadIcon}
             mode="bleed"
             onClick={open}
-            text={`Upload ${currentDocument ? 'images' : 'assets'}`}
+            text={`Upload ${selectedDocument ? 'images' : 'assets'}`}
             tone="primary"
           />
 

@@ -13,10 +13,11 @@ type CustomFields = {
 }
 
 type SearchFacetInputCommon = {
-  contexts: 'all' | ('file' | 'image' | 'tool')[]
+  assetTypes: ('file' | 'image')[]
   name: string
   operatorType: SearchFacetOperatorType
   operatorTypes?: (SearchFacetOperatorType | null)[]
+  selectOnly?: boolean
   title: string
 }
 
@@ -221,6 +222,7 @@ export type SearchFacetName =
   | 'altText'
   | 'description'
   | 'height'
+  | 'inCurrentDocument'
   | 'inUse'
   | 'isOpaque'
   | 'orientation'

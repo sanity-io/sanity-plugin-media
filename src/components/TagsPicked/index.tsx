@@ -15,16 +15,13 @@ const TagsPicked: FC = () => {
 
   // TODO: refactor, there's most certainly a more performant way to do this
 
+  // Filter out all tag IDS used (across all) and dedupe
   const pickedTagIds = assetsPicked?.reduce((acc: string[], val) => {
     const assetTagIds = val?.asset?.opt?.media?.tags?.map(tag => tag._ref) || []
     acc = acc.concat(assetTagIds)
     return acc
   }, [])
-
-  // Filter out all tag IDS used (across all)
-  const pickedTagIdsUnique = pickedTagIds?.filter(
-    (tag, index) => pickedTagIds.indexOf(tag) === index
-  )
+  const pickedTagIdsUnique = [...new Set(pickedTagIds)]
 
   // Segment tags into two buckets:
   // 1. those which exist in all picked assets ('applied to all')

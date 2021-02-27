@@ -9,6 +9,7 @@ import {rootEpic, rootReducer} from '../../modules'
 // import {uploadsActions} from '../../modules/uploads'
 import {RootReducerState} from '../../modules/types'
 import {SanityCustomAssetSourceProps} from '../../types'
+import getDocumentAssetIds from '../../utils/getDocumentAssetIds'
 
 type Props = SanityCustomAssetSourceProps
 class ReduxProvider extends Component<Props> {
@@ -40,8 +41,11 @@ class ReduxProvider extends Component<Props> {
       ],
       devTools: true,
       preloadedState: {
-        document: props.document,
-        selectedAssets: props.selectedAssets
+        selected: {
+          assets: props.selectedAssets,
+          document: props.document,
+          documentAssetIds: props.document ? getDocumentAssetIds(props.document) : []
+        }
       }
     })
     epicMiddleware.run(rootEpic)

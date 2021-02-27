@@ -166,7 +166,7 @@ const assetsSlice = createSlice({
       state.fetchingError = error
     },
     fetchRequest: {
-      reducer: (state, _action: PayloadAction<{params: Record<string, string>; query: string}>) => {
+      reducer: (state, _action: PayloadAction<{params: Record<string, any>; query: string}>) => {
         state.fetching = true
         delete state.fetchingError
       },
@@ -177,7 +177,7 @@ const assetsSlice = createSlice({
         sort = groq`order(_updatedAt desc)`
       }: {
         filter: string
-        params?: Record<string, string>
+        params?: Record<string, any>
         replace?: boolean
         selector?: string
         sort?: string
@@ -440,17 +440,25 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
       const start = action.payload.pageIndex * pageSize
       const end = start + pageSize
 
-      const documentId = state?.document?._id
+      // Document ID can be null when operating on pristine / unsaved drafts
+      const documentId = state?.selected.document?._id
+      const documentAssetIds = state?.selected?.documentAssetIds
+
+      const filter = constructFilter({
+        hasDocument: !!state.selected.document,
+        searchFacets: state.search.facets,
+        searchQuery: state.search.query
+      })
+
+      const params = {
+        ...(documentId ? {documentId} : {}),
+        documentAssetIds
+      }
 
       return of(
         assetsActions.fetchRequest({
-          filter: constructFilter({
-            hasDocument: !!state.document,
-            searchFacets: state.search.facets,
-            searchQuery: state.search.query
-          }),
-          // Document ID can be null when operating on pristine / unsaved drafts
-          ...(documentId ? {params: {documentId}} : {}),
+          filter,
+          params,
           selector: groq`[${start}...${end}]`,
           sort: groq`order(${state.assets?.order?.field} ${state.assets?.order?.direction})`
         })

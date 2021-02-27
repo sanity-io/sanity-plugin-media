@@ -236,7 +236,7 @@ export const uploadsCheckRequestEpic: MyEpic = (action$, state$) =>
       const documentIds = assets.map(asset => asset._id)
 
       const filter = constructFilter({
-        hasDocument: !!state.document,
+        hasDocument: !!state.selected.document,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
       })
