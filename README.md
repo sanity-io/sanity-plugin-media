@@ -78,8 +78,8 @@ That's it! The browser will now pop up every time you try select an image.
 <summary>There isn't a way to edit asset fields directly from the desk (without opening the plugin)</summary>
 
 - This is a bit of a sticking point, especially when working with large datasets
-- For example, if you want to edit fields for an already selected image – you'll need to the plugin and then have to manually fine that image (which can be laborious when sifting through thousands of assets)
-- A future update will provide the ability the 'jump' straight to a selected asset
+- For example, if you want to edit fields for an already selected image – you'll need to go into the plugin and then have to manually find that image (which can be laborious when sifting through thousands of assets)
+- A future update will provide the ability to 'jump' straight to a selected asset
 - However, exposing plugin fields directly on the desk (e.g. via a custom input component) is currently outside the scope of this project
 
 </details>
