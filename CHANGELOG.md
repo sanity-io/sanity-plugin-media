@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.1...v1.1.2) (2021-02-27)
+
+
+### Bug Fixes
+
+* re-add ability to display all assets in current document, create dedicated selected reducer ([e89702d](https://github.com/robinpyon/sanity-plugin-media/commit/e89702d1cfc73d772856b3c8dacc4bc345aa7f16))
+
 ### [1.1.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0...v1.1.1) (2021-02-26)
 
 
