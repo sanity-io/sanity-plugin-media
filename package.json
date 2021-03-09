@@ -80,8 +80,6 @@
     "@types/react-window": "1.8.2",
     "@types/react-window-infinite-loader": "1.0.3",
     "@types/styled-components": "5.1.7",
-    "@types/styled-system": "5.1.10",
-    "@types/styled-system__css": "5.0.14",
     "@types/theme-ui": "0.3.7",
     "@types/yup": "0.29.11",
     "@typescript-eslint/eslint-plugin": "4.11.1",
