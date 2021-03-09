@@ -40,7 +40,7 @@
     "@reduxjs/toolkit": "1.5.0",
     "@sanity/color": "2.0.12",
     "@sanity/icons": "1.0.2",
-    "@sanity/ui": "0.33.4",
+    "@sanity/ui": ">=0.33.6",
     "@tanem/react-nprogress": "3.0.52",
     "date-fns": "2.16.1",
     "filesize": "6.1.0",
@@ -60,7 +60,7 @@
     "redux": "4.0.5",
     "redux-observable": "1.2.0",
     "rxjs": "6.6.3",
-    "styled-components": "5.2.1",
+    "styled-components": "^5.2.1",
     "theme-ui": "0.3.5",
     "yup": "0.32.8"
   },
