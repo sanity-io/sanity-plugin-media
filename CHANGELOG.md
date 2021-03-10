@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.2...v1.1.3) (2021-03-10)
+
+
+### Bug Fixes
+
+* move sanity-ui and styled-components into peer deps ([6c51ba3](https://github.com/robinpyon/sanity-plugin-media/commit/6c51ba3ba8b6f5241c45934838820b7d78376519))
+
 ### [1.1.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.1...v1.1.2) (2021-02-27)
 
 
