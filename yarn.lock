@@ -428,11 +428,6 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.2.0.tgz#5e0b448d27fe3091bae6216456512c5904d05661"
   integrity sha512-fsLxt0CHx2HCV9EL8lDoVkwHffsA0snUpddYjdLyXcG5E41xaamn9ZyQqOE9TUJdrRlH8/hjIf+UdOdDeKCUgg==
 
-"@juggle/resize-observer@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.0.tgz#2e7a2935adbfae46f9efbd1e1455254ee7ea2219"
-  integrity sha512-P1v2nvK7z2gOLVM/bveIRLG9L99uEahTGgTltyF03zixZAjI9YmKLj5Z9MpS9wBIUt5WDoQORT2lXvLOIF89iA==
-
 "@mdx-js/react@^1.0.0":
   version "1.6.22"
   resolved "https://registry.yarnpkg.com/@mdx-js/react/-/react-1.6.22.tgz#ae09b4744fddc74714ee9f9d6f17a66e77c43573"
@@ -464,7 +459,7 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.7.0.tgz#5f7760965170f7f1e2910d2498c5be88b47a2a8c"
   integrity sha512-V3WyEc8ZyAuOQ2fpFuTuYYOd2tV4NePeSdxaHYgYAOs7ERLxlcFi2XsmgI5LJFdAUmJKXsg8jaIiVTkTHQygQw==
 
-"@popperjs/core@^2.9.0":
+"@popperjs/core@^2.8.3":
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.9.1.tgz#7f554e7368c9ab679a11f4a042ca17149d70cf12"
   integrity sha512-DvJbbn3dUgMxDnJLH+RZQPnXak1h4ZVYQ7CWiFWjQwBFkVajT4rfw2PdpHLTSTwxrYfnoEXkuBiwkDm6tPMQeA==
@@ -485,7 +480,7 @@
     "@reach/utils" "0.12.1"
     tslib "^2.0.0"
 
-"@reach/auto-id@^0.13.2":
+"@reach/auto-id@^0.13.0":
   version "0.13.2"
   resolved "https://registry.yarnpkg.com/@reach/auto-id/-/auto-id-0.13.2.tgz#6c7fe7142285707b0f38b2f556f32accb467df32"
   integrity sha512-dWeXt6xxjN+NPRoZFXgmNkF89t8MEPsWLYjIIDf3gNXA/Dxaoytc9YBOIfVGpDSpdOwxPpxOu8rH+4Y3Jk2gHA==
@@ -654,7 +649,7 @@
   resolved "https://registry.yarnpkg.com/@sanity/icons/-/icons-1.0.3.tgz#5720417e04cfffbaf14f8d7bb4d71fed3b2606f0"
   integrity sha512-Q5dB73IqUnaJ4am1fD4fkMwsaq1wOTbrpqmDhwfucwiSzGIn8oP8FV9Vfb+HbpSwcnRYdpOR/w+QeUReXToyuQ==
 
-"@sanity/icons@^1.0.5":
+"@sanity/icons@^1.0.3":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@sanity/icons/-/icons-1.0.5.tgz#e00fb474f48e57b90bd169e668c37422d6dae3b0"
   integrity sha512-Z6Q1H3TP0p7Bg/eVdTqx8Zz8SwUjwVS14kQPq/4yhXXWJZY0FHAmMuP2X54GqkzL6lEDjenwlV//vJ6b4RZtpQ==
@@ -762,17 +757,17 @@
   dependencies:
     "@types/react" "^17.0.0"
 
-"@sanity/ui@>=0.33.6":
-  version "0.33.9"
-  resolved "https://registry.yarnpkg.com/@sanity/ui/-/ui-0.33.9.tgz#1653c71809e218f5c6a9939acf5f53a5b9e59d23"
-  integrity sha512-mlKraRaG1Uy/zvAISsCjtTiJplULXBQVOkVb9q1ta6/EsQX5/LX9By+WxAVtHOogLWjpJbES/MFTsD5ce2aA2g==
+"@sanity/ui@0.33.6":
+  version "0.33.6"
+  resolved "https://registry.yarnpkg.com/@sanity/ui/-/ui-0.33.6.tgz#7f917cba21cf987805c739113cee54444665511d"
+  integrity sha512-fVQ1MqjfPxGCl03sVFEjW9uqvjRy8W6jhr5FxbwdveF57txa68QMu6u9tj9zqtfITUG9xPeu9ANOqwxoufoV0w==
   dependencies:
-    "@juggle/resize-observer" "^3.3.0"
-    "@popperjs/core" "^2.9.0"
-    "@reach/auto-id" "^0.13.2"
+    "@juggle/resize-observer" "^3.2.0"
+    "@popperjs/core" "^2.8.3"
+    "@reach/auto-id" "^0.13.0"
     "@sanity/color" "^2.0.14"
-    "@sanity/icons" "^1.0.5"
-    framer-motion "^3.10.0"
+    "@sanity/icons" "^1.0.3"
+    framer-motion "^3.5.2"
     popper-max-size-modifier "^0.2.0"
     react-is "^17.0.1"
     react-popper "^2.2.4"
@@ -2992,7 +2987,7 @@ framer-motion@^2.9.5:
   optionalDependencies:
     "@emotion/is-prop-valid" "^0.8.2"
 
-framer-motion@^3.10.0:
+framer-motion@^3.5.2:
   version "3.10.2"
   resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-3.10.2.tgz#757bfc2633aa2c1453a8bb857d4753cd0d7cb737"
   integrity sha512-qJX8y8OfsU9ZMZJyRLGOfo3IT4fiR7JNcshMyIno6A2z5NYP/ELPVPvD7D70neJJEYFzsjNXp1/nHjvOaM95ww==
