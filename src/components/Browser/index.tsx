@@ -1,11 +1,11 @@
-import {MutationEvent} from '@sanity/client'
+import type {MutationEvent} from '@sanity/client'
 import {Card, Flex} from '@sanity/ui'
 import {Asset, Tag} from '@types'
 import groq from 'groq'
-import client from 'part:@sanity/base/client'
 import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 
+import {client} from '../../client'
 import {TAG_DOCUMENT_NAME} from '../../constants'
 import {assetsActions} from '../../modules/assets'
 import {tagsActions} from '../../modules/tags'

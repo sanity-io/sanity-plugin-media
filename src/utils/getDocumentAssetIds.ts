@@ -1,4 +1,4 @@
-import {SanityDocument} from '@sanity/client'
+import type {SanityDocument} from '@sanity/client'
 
 const isPlainObject = (value: any) =>
   value !== null && typeof value === 'object' && !Array.isArray(value)

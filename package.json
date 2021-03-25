@@ -68,7 +68,7 @@
     "@commitlint/cli": "11.0.0",
     "@commitlint/config-conventional": "11.0.0",
     "@sanity/base": "2.1.3",
-    "@sanity/client": "2.1.0",
+    "@sanity/client": "2.7.0",
     "@types/is-hotkey": "0.1.2",
     "@types/pluralize": "0.0.29",
     "@types/react": "17.0.0",
@@ -101,7 +101,6 @@
   },
   "peerDependencies": {
     "@sanity/base": ">= 2.0.2",
-    "@sanity/client": ">= 2.0.1",
     "react": ">= 16.9",
     "react-dom": ">=16.9"
   },

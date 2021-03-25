@@ -1,4 +1,4 @@
-import {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
+import type {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
 import {AnyAction} from 'redux'
 
 type CustomFields = {

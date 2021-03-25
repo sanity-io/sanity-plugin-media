@@ -1,8 +1,7 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
-import {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
+import type {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
 import {HttpError, SanityUploadProgressEvent, UploadItem} from '@types'
 import groq from 'groq'
-import client from 'part:@sanity/base/client'
 import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
 import {empty, merge, of} from 'rxjs'
@@ -17,6 +16,7 @@ import {
 } from 'rxjs/operators'
 
 import {RootReducerState} from '../types'
+import {client} from '../../client'
 import constructFilter from '../../utils/constructFilter'
 import {generatePreviewBlobUrl$} from '../../utils/generatePreviewBlobUrl'
 import {hashFile$, uploadAsset$} from '../../utils/uploadSanityAsset'
