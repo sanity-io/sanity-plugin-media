@@ -2,7 +2,6 @@
 // https://github.com/sanity-io/sanity/blob/ccb777e115a8cdf20d81a9a2bc9d8c228568faff/packages/%40sanity/form-builder/src/sanity/inputs/client-adapters/assets.ts
 
 import type {SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
-import client from 'part:@sanity/base/client'
 import {
   HttpError,
   SanityUploadCompleteEvent,
@@ -11,6 +10,7 @@ import {
 } from '@types'
 import {Observable, of, throwError} from 'rxjs'
 import {map, mergeMap} from 'rxjs/operators'
+import {client} from '../client'
 import {withMaxConcurrency} from './withMaxConcurrency'
 
 const fetchExisting$ = (
@@ -84,17 +84,10 @@ const uploadSanityAsset$ = (
           preserveFilename: true
         })
         .pipe(
-          map((event: SanityUploadProgressEvent | SanityUploadResponseEvent) => {
+          map(event => {
             if (event.type === 'response') {
-              const currentDate = new Date().toISOString()
               return {
-                asset: {
-                  // HACK: we manually add _createdAt / _updatedAt since Sanity doesn't return these
-                  // fields in their upload complete event
-                  _createdAt: currentDate,
-                  _updatedAt: currentDate,
-                  ...event.body.document
-                },
+                asset: event.body.document,
                 id: event.body.document._id,
                 type: 'complete'
               } as SanityUploadCompleteEvent

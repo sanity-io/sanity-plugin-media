@@ -1,9 +1,9 @@
 import {HttpError} from '@types'
 import groq from 'groq'
-import client from 'part:@sanity/base/client'
 import {from, Observable, of, throwError} from 'rxjs'
 import {mergeMap} from 'rxjs/operators'
 
+import {client} from '../client'
 import {TAG_DOCUMENT_NAME} from '../constants'
 
 const checkTagName = (name: string) => {

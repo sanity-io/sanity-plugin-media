@@ -3,7 +3,6 @@ import type {ClientError, Patch, Transaction} from '@sanity/client'
 import {Asset, AssetItem, BrowserView, HttpError, Order, OrderDirection, Tag} from '@types'
 import groq from 'groq'
 import {nanoid} from 'nanoid'
-import client from 'part:@sanity/base/client'
 import {Epic, ofType} from 'redux-observable'
 import {Selector} from 'react-redux'
 import {empty, from, of} from 'rxjs'
@@ -17,6 +16,7 @@ import {
   withLatestFrom
 } from 'rxjs/operators'
 
+import {client} from '../../client'
 import {getOrderTitle} from '../../config/orders'
 import {ORDER_OPTIONS} from '../../constants'
 import constructFilter from '../../utils/constructFilter'
