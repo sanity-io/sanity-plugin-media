@@ -101,7 +101,6 @@
   },
   "peerDependencies": {
     "@sanity/base": ">= 2.0.2",
-    "@sanity/client": ">= 2.0.1",
     "react": ">= 16.9",
     "react-dom": ">=16.9"
   },
