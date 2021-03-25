@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.4...v1.2.0) (2021-03-25)
+
+
+### Features
+
+* use API-versioned client if available ([c953d1e](https://github.com/robinpyon/sanity-plugin-media/commit/c953d1e19219b037010fa530269fee691573ec16))
+
 ### [1.1.4](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.3...v1.1.4) (2021-03-10)
 
 ### [1.1.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.2...v1.1.3) (2021-03-10)
