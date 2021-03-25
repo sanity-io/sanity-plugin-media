@@ -1,5 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup'
-import {MutationEvent} from '@sanity/client'
+import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Dialog, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
 import {Asset, DialogAssetEdit as DialogAssetEdit, ReactSelectOption} from '@types'
 import groq from 'groq'

@@ -1,5 +1,5 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
-import {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
+import type {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
 import {HttpError, SanityUploadProgressEvent, UploadItem} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'

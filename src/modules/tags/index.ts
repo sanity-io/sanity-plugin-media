@@ -1,5 +1,5 @@
 import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ClientError, Transaction} from '@sanity/client'
+import type {ClientError, Transaction} from '@sanity/client'
 import {Asset, HttpError, ReactSelectOption, Tag, TagItem} from '@types'
 import groq from 'groq'
 import client from 'part:@sanity/base/client'

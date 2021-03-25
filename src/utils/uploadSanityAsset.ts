@@ -1,7 +1,7 @@
 // Sourced from:
 // https://github.com/sanity-io/sanity/blob/ccb777e115a8cdf20d81a9a2bc9d8c228568faff/packages/%40sanity/form-builder/src/sanity/inputs/client-adapters/assets.ts
 
-import {SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
+import type {SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
 import client from 'part:@sanity/base/client'
 import {
   HttpError,

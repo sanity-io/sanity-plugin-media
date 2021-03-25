@@ -1,4 +1,4 @@
-import {SanityDocument} from '@sanity/client'
+import type {SanityDocument} from '@sanity/client'
 import {Box, Card, Text} from '@sanity/ui'
 import {IntentLink} from 'part:@sanity/base/router'
 import Preview from 'part:@sanity/base/preview'

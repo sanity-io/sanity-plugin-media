@@ -1,5 +1,5 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
-import {ClientError, Patch, Transaction} from '@sanity/client'
+import type {ClientError, Patch, Transaction} from '@sanity/client'
 import {Asset, AssetItem, BrowserView, HttpError, Order, OrderDirection, Tag} from '@types'
 import groq from 'groq'
 import {nanoid} from 'nanoid'

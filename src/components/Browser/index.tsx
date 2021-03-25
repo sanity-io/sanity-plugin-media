@@ -1,4 +1,4 @@
-import {MutationEvent} from '@sanity/client'
+import type {MutationEvent} from '@sanity/client'
 import {Card, Flex} from '@sanity/ui'
 import {Asset, Tag} from '@types'
 import groq from 'groq'
