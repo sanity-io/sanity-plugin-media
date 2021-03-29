@@ -1,4 +1,4 @@
-import {Box, ThemeProvider, ToastProvider, studioTheme} from '@sanity/ui'
+import {Box, Portal, ThemeProvider, ToastProvider, studioTheme, PortalProvider} from '@sanity/ui'
 import {SanityCustomAssetSourceProps} from '@types'
 import React, {FC, MouseEvent} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
@@ -6,7 +6,6 @@ import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 import {Z_INDEX_APP, Z_INDEX_TOAST_PROVIDER} from './constants'
 import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContext'
 import Browser from './components/Browser'
-import Portal from './components/Portal'
 import ReduxProvider from './components/ReduxProvider'
 import useKeyPress from './hooks/useKeyPress'
 import GlobalStyle from './styled/GlobalStyles'
@@ -32,38 +31,40 @@ const AssetBrowser: FC<Props> = (props: Props) => {
     <ReduxProvider {...props}>
       <ThemeProvider scheme="dark" theme={studioTheme}>
         <LegacyThemeProvider theme={theme}>
-          <ToastProvider zOffset={Z_INDEX_TOAST_PROVIDER}>
-            <AssetBrowserDispatchProvider onSelect={onSelect}>
-              <GlobalStyle />
+          <PortalProvider element={document.body}>
+            <ToastProvider zOffset={Z_INDEX_TOAST_PROVIDER}>
+              <AssetBrowserDispatchProvider onSelect={onSelect}>
+                <GlobalStyle />
 
-              {tool ? (
-                <Box style={{height: '100%', position: 'relative'}}>
-                  <Browser onClose={onClose} />
-                </Box>
-              ) : (
-                <Portal>
-                  <Box
-                    onDragEnter={handleStopPropagation}
-                    onDragLeave={handleStopPropagation}
-                    onDragOver={handleStopPropagation}
-                    onDrop={handleStopPropagation}
-                    onMouseUp={handleStopPropagation}
-                    style={{
-                      bottom: 0,
-                      height: 'auto',
-                      left: 0,
-                      position: 'fixed',
-                      top: 0,
-                      width: '100%',
-                      zIndex: Z_INDEX_APP
-                    }}
-                  >
+                {tool ? (
+                  <Box style={{height: '100%', position: 'relative'}}>
                     <Browser onClose={onClose} />
                   </Box>
-                </Portal>
-              )}
-            </AssetBrowserDispatchProvider>
-          </ToastProvider>
+                ) : (
+                  <Portal>
+                    <Box
+                      onDragEnter={handleStopPropagation}
+                      onDragLeave={handleStopPropagation}
+                      onDragOver={handleStopPropagation}
+                      onDrop={handleStopPropagation}
+                      onMouseUp={handleStopPropagation}
+                      style={{
+                        bottom: 0,
+                        height: 'auto',
+                        left: 0,
+                        position: 'fixed',
+                        top: 0,
+                        width: '100%',
+                        zIndex: Z_INDEX_APP
+                      }}
+                    >
+                      <Browser onClose={onClose} />
+                    </Box>
+                  </Portal>
+                )}
+              </AssetBrowserDispatchProvider>
+            </ToastProvider>
+          </PortalProvider>
         </LegacyThemeProvider>
       </ThemeProvider>
     </ReduxProvider>
