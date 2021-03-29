@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.2.1...v1.2.2) (2021-03-29)
+
+
+### Bug Fixes
+
+* fix portal container positioning: use @sanity/ui portal component with scoped provider ([ea0cb07](https://github.com/robinpyon/sanity-plugin-media/commit/ea0cb0705e986b49c8df3862425e6718e6b131f2))
+
 ### [1.2.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.2.0...v1.2.1) (2021-03-29)
 
 ## [1.2.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.4...v1.2.0) (2021-03-25)
