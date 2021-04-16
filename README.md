@@ -108,6 +108,13 @@ That's it! The browser will now pop up every time you try select an image.
 
 </details>
 
+<details>
+<summary>Limitations when using Sanity's GraphQL endpoints</summary>
+
+- Currently, `opt.media.tags` on assets aren't accessible via GraphQL. This is because `opt` is a custom object used by this plugin and not part of Sanity's asset schema.
+
+</details>
+
 ## FAQ
 
 #### Asset fields
