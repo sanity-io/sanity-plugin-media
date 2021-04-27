@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.2.2...v1.3.0) (2021-04-27)
+
+
+### Features
+
+* add “Copy URL” button to asset metadata actions ([4cf25cc](https://github.com/robinpyon/sanity-plugin-media/commit/4cf25ccf9c7124c83aac1ce07427a2d3344b976d))
+* wrap copy URL button with a timed popover and move to a separate component ([4eb579e](https://github.com/robinpyon/sanity-plugin-media/commit/4eb579ebf416bc43f545ce8320a8b20bace7f5ad))
+
 ### [1.2.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.2.1...v1.2.2) (2021-03-29)
 
 
