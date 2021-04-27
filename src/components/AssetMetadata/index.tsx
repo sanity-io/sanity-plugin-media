@@ -1,13 +1,13 @@
-import {DownloadIcon, ClipboardIcon} from '@sanity/icons'
-import {Box, Button, Flex, Stack, Text} from '@sanity/ui'
+import {DownloadIcon} from '@sanity/icons'
+import {Box, Button, Flex, Inline, Stack, Text} from '@sanity/ui'
 import {Asset, AssetItem} from '@types'
 import format from 'date-fns/format'
 import filesize from 'filesize'
 import React, {FC, ReactNode} from 'react'
-import copy from 'copy-to-clipboard'
 
 import getAssetResolution from '../../utils/getAssetResolution'
 import {isImageAsset} from '../../utils/typeGuards'
+import ButtonAssetCopy from '../ButtonAssetCopy'
 
 type Props = {
   asset: Asset
@@ -51,9 +51,6 @@ const AssetMetadata: FC<Props> = (props: Props) => {
   const handleDownload = () => {
     window.location.href = `${asset.url}?dl=${asset.originalFilename}`
   }
-  const handleCopy = () => {
-    copy(asset.url)
-  }
 
   return (
     <Box marginTop={3}>
@@ -96,23 +93,19 @@ const AssetMetadata: FC<Props> = (props: Props) => {
 
       {/* Asset actions */}
       <Box marginTop={5}>
-        <Button
-          disabled={!item || item?.updating}
-          fontSize={1}
-          icon={DownloadIcon}
-          mode="ghost"
-          onClick={handleDownload}
-          text="Download"
-        />
-
-        <Button
-          disabled={!item || item?.updating}
-          fontSize={1}
-          icon={ClipboardIcon}
-          mode="ghost"
-          onClick={handleCopy}
-          text="Copy URL"
-        />
+        <Inline space={2}>
+          {/* Download */}
+          <Button
+            disabled={!item || item?.updating}
+            fontSize={1}
+            icon={DownloadIcon}
+            mode="ghost"
+            onClick={handleDownload}
+            text="Download"
+          />
+          {/* Copy to clipboard */}
+          <ButtonAssetCopy disabled={!item || item?.updating} url={asset.url} />
+        </Inline>
       </Box>
     </Box>
   )
