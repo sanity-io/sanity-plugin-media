@@ -3,6 +3,7 @@ import type {SanityDocument} from '@sanity/client'
 const isPlainObject = (value: any) =>
   value !== null && typeof value === 'object' && !Array.isArray(value)
 
+// Recursively search node for any linked asset ids (`asset._type === 'reference'`)
 const getAssetIds = (node: Record<string, any>, acc: string[] = []) => {
   if (Array.isArray(node)) {
     node.forEach(v => {
@@ -11,7 +12,7 @@ const getAssetIds = (node: Record<string, any>, acc: string[] = []) => {
   }
 
   if (isPlainObject(node)) {
-    if (['file', 'image'].includes(node?._type) && node?.asset?._type === 'reference') {
+    if (node?.asset?._type === 'reference' && node?.asset?._ref) {
       acc.push(node.asset._ref)
     }
 
@@ -23,6 +24,7 @@ const getAssetIds = (node: Record<string, any>, acc: string[] = []) => {
   return acc
 }
 
+// Retrieve all linked asset ids from a Sanity document
 const getDocumentAssetIds = (document: SanityDocument): string[] => {
   const assetIds = getAssetIds(document)
 

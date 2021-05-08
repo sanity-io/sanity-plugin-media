@@ -1,6 +1,6 @@
 import {Box, Portal, ThemeProvider, ToastProvider, studioTheme, PortalProvider} from '@sanity/ui'
 import {SanityCustomAssetSourceProps} from '@types'
-import React, {FC, MouseEvent} from 'react'
+import React, {FC, MouseEvent, forwardRef, Ref} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 
 import {Z_INDEX_APP, Z_INDEX_TOAST_PROVIDER} from './constants'
@@ -13,7 +13,7 @@ import theme from './styled/theme'
 
 type Props = SanityCustomAssetSourceProps
 
-const AssetBrowser: FC<Props> = (props: Props) => {
+const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const {onClose, onSelect, tool} = props
 
   // Close on escape key press
@@ -37,7 +37,7 @@ const AssetBrowser: FC<Props> = (props: Props) => {
                 <GlobalStyle />
 
                 {tool ? (
-                  <Box style={{height: '100%', position: 'relative'}}>
+                  <Box ref={ref} style={{height: '100%', position: 'relative'}}>
                     <Browser onClose={onClose} />
                   </Box>
                 ) : (
@@ -48,6 +48,7 @@ const AssetBrowser: FC<Props> = (props: Props) => {
                       onDragOver={handleStopPropagation}
                       onDrop={handleStopPropagation}
                       onMouseUp={handleStopPropagation}
+                      ref={ref}
                       style={{
                         bottom: 0,
                         height: 'auto',
@@ -69,6 +70,6 @@ const AssetBrowser: FC<Props> = (props: Props) => {
       </ThemeProvider>
     </ReduxProvider>
   )
-}
+})
 
 export default AssetBrowser
