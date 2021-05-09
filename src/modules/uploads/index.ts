@@ -247,8 +247,8 @@ export const uploadsCheckRequestEpic: MyEpic = (action$, state$) =>
 
       return of(action).pipe(
         delay(1000), // give Sanity some time to register the recently uploaded asset
-        mergeMap(() => client.observable.fetch(query, {documentIds})),
-        mergeMap((resultHashes: any) => {
+        mergeMap(() => client.observable.fetch<string[]>(query, {documentIds})),
+        mergeMap(resultHashes => {
           const checkedResults = assets.reduce((acc: Record<string, string | null>, asset) => {
             acc[asset.sha1hash] = resultHashes.includes(asset.sha1hash) ? asset._id : null
             return acc

@@ -284,15 +284,13 @@ export const tagsCreateEpic: MyEpic = (action$, state$) =>
         debugThrottle(state.debug.badConnection),
         checkTagName(name),
         mergeMap(() =>
-          from(
-            client.create({
-              _type: TAG_DOCUMENT_NAME,
-              name: {
-                _type: 'slug',
-                current: name
-              }
-            })
-          )
+          client.observable.create({
+            _type: TAG_DOCUMENT_NAME,
+            name: {
+              _type: 'slug',
+              current: name
+            }
+          })
         ),
         mergeMap(result => of(tagsSlice.actions.createComplete({assetId, tag: result as Tag}))),
         catchError((error: ClientError) =>
@@ -323,23 +321,21 @@ export const tagsDeleteEpic: MyEpic = (action$, state$) =>
         // Optionally throttle
         debugThrottle(state.debug.badConnection),
         // Fetch assets which reference this tag
-        mergeMap(() => {
-          return from(
-            client.fetch(
-              groq`*[
-                _type in ["sanity.fileAsset", "sanity.imageAsset"]
-                && references(*[_type == "media.tag" && name.current == $tagName]._id)
-              ] {
-                _id,
-                _rev,
-                opt
-              }`,
-              {tagName: tag.name.current}
-            )
-          ) as Observable<Asset[]>
-        }),
+        mergeMap(() =>
+          client.observable.fetch<Asset[]>(
+            groq`*[
+              _type in ["sanity.fileAsset", "sanity.imageAsset"]
+              && references(*[_type == "media.tag" && name.current == $tagName]._id)
+            ] {
+              _id,
+              _rev,
+              opt
+            }`,
+            {tagName: tag.name.current}
+          )
+        ),
         // Create transaction which remove tag references from all matched assets and delete tag
-        mergeMap((assets: Asset[]) => {
+        mergeMap(assets => {
           const patches = assets.map(asset => ({
             id: asset._id,
             patch: {
@@ -387,9 +383,13 @@ export const tagsFetchEpic: MyEpic = (action$, state$) =>
         // Optionally throttle
         debugThrottle(state.debug.badConnection),
         // Fetch tags
-        mergeMap(() => client.observable.fetch(query)),
+        mergeMap(() =>
+          client.observable.fetch<{
+            items: Tag[]
+          }>(query)
+        ),
         // Dispatch complete action
-        mergeMap((result: any) => {
+        mergeMap(result => {
           const {items} = result
           return of(tagsSlice.actions.fetchComplete({tags: items}))
         }),

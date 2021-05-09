@@ -411,8 +411,12 @@ export const assetsFetchEpic: MyEpic = (action$, state$) =>
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        mergeMap(() => client.observable.fetch(query, params)),
-        mergeMap((result: any) => {
+        mergeMap(() =>
+          client.observable.fetch<{
+            items: Asset[]
+          }>(query, params)
+        ),
+        mergeMap(result => {
           const {
             items
             // totalCount
