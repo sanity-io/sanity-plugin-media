@@ -1,7 +1,7 @@
 import {white} from '@sanity/color'
 import {Flex, Text} from '@sanity/ui'
 import React, {FC, ReactNode} from 'react'
-import {useDropzone} from 'react-dropzone'
+import {DropEvent, useDropzone} from 'react-dropzone'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 
@@ -73,27 +73,25 @@ const UploadDropzone: FC<Props> = (props: Props) => {
     acceptedFiles.forEach(file => dispatch(uploadsActions.uploadRequest({file})))
   }
 
-  // Use custom file selector to filter out folders + packages
-  // TODO: use correct type
-  const handleFileGetter = async (event: any) => {
-    let fileList: FileList | undefined = undefined
-
-    switch (event.type) {
-      case 'change':
-        fileList = event.target.files
-        break
-      case 'drop':
-        fileList = event.dataTransfer.files
-        break
-      default:
-        return []
+  // Use custom file selector to obtain files on file drop + change events (excluding folders and packages)
+  const handleFileGetter = async (event: DropEvent) => {
+    let fileList: FileList | undefined
+    if (event.type === 'drop' && 'dataTransfer' in event) {
+      fileList = event?.dataTransfer?.files
+    }
+    if (event.type === 'change') {
+      const target = event?.target as HTMLInputElement
+      if (target?.files) {
+        fileList = target.files
+      }
     }
 
-    let files: File[] = []
-
-    if (fileList) {
-      files = await filterFiles(fileList)
+    if (!fileList) {
+      return []
     }
+
+    // Filter out non-folders / packages
+    const files: File[] = await filterFiles(fileList)
 
     // Dispatch error if some files have been filtered out
     if (fileList?.length !== files.length) {
