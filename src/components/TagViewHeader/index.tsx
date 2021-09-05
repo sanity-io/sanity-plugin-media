@@ -5,7 +5,6 @@ import {TagActions, TagItem} from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import Tag from '../Tag'
@@ -18,7 +17,7 @@ type Props = {
   title: string
 }
 
-const PanelHeader: FC<Props> = (props: Props) => {
+const TagViewHeader: FC<Props> = (props: Props) => {
   const {actions, allowCreate, light, tags, title} = props
 
   // Redux
@@ -40,10 +39,7 @@ const PanelHeader: FC<Props> = (props: Props) => {
         style={{
           background: light ? hues.gray?.[900].hex : black.hex,
           borderBottom: `1px solid ${hues.gray?.[900].hex}`,
-          height: `${PANEL_HEIGHT}px`,
-          position: 'sticky',
-          top: 0,
-          zIndex: 1 // force stacking context
+          height: `${PANEL_HEIGHT}px`
         }}
       >
         <Inline space={2}>
@@ -84,4 +80,4 @@ const PanelHeader: FC<Props> = (props: Props) => {
   )
 }
 
-export default PanelHeader
+export default TagViewHeader

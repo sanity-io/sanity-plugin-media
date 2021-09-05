@@ -1,13 +1,12 @@
 import {CardAssetData, CardUploadData} from '@types'
-import React, {CSSProperties, ReactNode, Ref, forwardRef, memo} from 'react'
+import React, {CSSProperties, forwardRef, memo, ReactNode, Ref} from 'react'
 import {
-  GridOnItemsRenderedProps,
-  GridChildComponentProps,
+  areEqual,
   FixedSizeGrid,
-  areEqual
+  GridChildComponentProps,
+  GridOnItemsRenderedProps
 } from 'react-window'
 import {Box} from 'theme-ui'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import CardAsset from '../CardAsset'
 import CardUpload from '../CardUpload'
