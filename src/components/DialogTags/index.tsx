@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux'
 
 import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
-import Tags from '../Tags'
+import TagView from '../TagView'
 
 type Props = {
   children: ReactNode
@@ -31,10 +31,12 @@ const DialogTags: FC<Props> = (props: Props) => {
     <Dialog header="All Tags" id={id} onClose={handleClose} width={1} zOffset={Z_INDEX_DIALOG}>
       <Box
         style={{
-          borderTop: `1px solid ${hues.gray?.[900].hex}`
+          borderTop: `1px solid ${hues.gray?.[900].hex}`,
+          height: '100%',
+          minHeight: '320px'
         }}
       >
-        <Tags />
+        <TagView />
       </Box>
 
       {children}

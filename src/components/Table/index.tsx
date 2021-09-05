@@ -69,7 +69,6 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
   const selectedAssets = useTypedSelector(state => state.selected.assets)
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
-  const totalCount = items.length
 
   const itemKey = (index: number) => {
     const item = items[index]
@@ -85,7 +84,7 @@ const Table = forwardRef((props: Props, ref: Ref<any>) => {
         items,
         selectedIds
       }}
-      itemCount={totalCount}
+      itemCount={items.length}
       itemKey={itemKey}
       itemSize={100} // px
       onItemsRendered={onItemsRendered}

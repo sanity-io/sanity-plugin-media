@@ -5,7 +5,7 @@ import React, {FC} from 'react'
 import {TAGS_PANEL_WIDTH} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 
-import Tags from '../Tags'
+import TagView from '../TagView'
 
 const TagsPanel: FC = () => {
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
@@ -33,7 +33,7 @@ const TagsPanel: FC = () => {
           width: '100%'
         }}
       >
-        <Tags />
+        <TagView />
       </Box>
     </Box>
   )
