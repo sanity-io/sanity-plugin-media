@@ -644,6 +644,11 @@
   resolved "https://registry.yarnpkg.com/@sanity/color/-/color-2.0.15.tgz#8eca79a13cae491f2321c29cf978e35f53e54d7f"
   integrity sha512-HN+S2H4wq5ZMJe/TmZPUByF6FqSyedYiDxV2YKWNyH4r/NbRvUlGnDe0caIFV0aVkRW+apLYoiqXDsr23kSrOQ==
 
+"@sanity/color@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@sanity/color/-/color-2.1.4.tgz#f66f38c352352378e7eb0b1168b66417a16009fb"
+  integrity sha512-qE043GzfnoM9PQ4SYtT20d14lCgpTnxgn5aZlSJUffUiwqXbu3RcPxxkM5P7pyMXpIu0sIWqenegpkA2Ocbz7w==
+
 "@sanity/eventsource@2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@sanity/eventsource/-/eventsource-2.0.1.tgz#5caef034e77705ce46a10a66479ef27b8da04f26"
@@ -787,6 +792,17 @@
   integrity sha512-iqRQrz8YIF1eEmrt4RCdmS3Vdd5aCyTSpZp3lxfJccvCXbRx0L7k2FpAJScsrllG9C9ZJF+FsnvKw8VUgdttww==
   dependencies:
     "@types/react" "^17.0.0"
+
+"@sanity/types@^2.17.1":
+  version "2.17.1"
+  resolved "https://registry.yarnpkg.com/@sanity/types/-/types-2.17.1.tgz#81f791f7903a58a034d89c1efd27af7d9a0130b7"
+  integrity sha512-wqBAKjUDBBgSMH8HYtW5zo11jeBfNS8pNGc24P4056rZ2RxcG2eX3NhLGCxeLtkI4YJBp74jV2VTbJyf/CWKAQ==
+  dependencies:
+    "@sanity/client" "2.16.0"
+    "@sanity/color" "^2.1.4"
+    "@types/react" "^17.0.0"
+    react "17.0.1"
+    rxjs "^6.5.3"
 
 "@sanity/ui@>=0.33.11":
   version "0.33.11"

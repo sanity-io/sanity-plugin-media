@@ -4,9 +4,9 @@ import React, {FC, ReactNode} from 'react'
 import {DropEvent, useDropzone} from 'react-dropzone'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
-
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import {DropzoneDispatchProvider} from '../../contexts/DropzoneDispatchContext'
+import useTypedSelector from '../../hooks/useTypedSelector'
 import {notificationsActions} from '../../modules/notifications'
 import {uploadsActions} from '../../modules/uploads'
 
@@ -63,14 +63,24 @@ async function filterFiles(fileList: FileList) {
 const UploadDropzone: FC<Props> = (props: Props) => {
   const {children} = props
 
+  const {onSelect} = useAssetSourceActions()
+
   // Redux
   const dispatch = useDispatch()
+  const assetTypes = useTypedSelector(state => state.assets.assetTypes)
 
-  const {onSelect} = useAssetSourceActions()
+  const isImageAssetType = assetTypes.length === 1 && assetTypes[0] === 'image'
 
   // Callbacks
   const handleDrop = async (acceptedFiles: File[]) => {
-    acceptedFiles.forEach(file => dispatch(uploadsActions.uploadRequest({file})))
+    acceptedFiles.forEach(file =>
+      dispatch(
+        uploadsActions.uploadRequest({
+          file,
+          forceAsAssetType: assetTypes.length === 1 ? assetTypes[0] : undefined
+        })
+      )
+    )
   }
 
   // Use custom file selector to obtain files on file drop + change events (excluding folders and packages)
@@ -106,11 +116,12 @@ const UploadDropzone: FC<Props> = (props: Props) => {
     return files
   }
 
+  // Limit file picking to only images if we're specifically within an image selection context (e.g. picking from image fields)
   const {getRootProps, getInputProps, isDragActive, open} = useDropzone({
-    accept: onSelect ? 'image/*' : '',
+    accept: isImageAssetType ? 'image/*' : '',
     getFilesFromEvent: handleFileGetter,
     noClick: true,
-    // Disable drag and drop functionality when in a selecting context
+    // HACK: Disable drag and drop functionality when in a selecting context
     // (This is currently due to Sanity's native image input taking precedence with drag and drop)
     noDrag: !!onSelect,
     onDrop: handleDrop

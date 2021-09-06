@@ -1,13 +1,13 @@
-import {SelectedAsset} from '@types'
 import React, {ReactNode, createContext, useContext} from 'react'
+import type {AssetFromSource} from '@sanity/types'
 
 type ContextProps = {
-  onSelect?: (assets: SelectedAsset[]) => void
+  onSelect?: (assets: AssetFromSource[]) => void
 }
 
 type Props = {
   children: ReactNode
-  onSelect?: (assets: SelectedAsset[]) => void
+  onSelect?: (assets: AssetFromSource[]) => void
 }
 
 const AssetSourceDispatchContext = createContext<ContextProps | undefined>(undefined)

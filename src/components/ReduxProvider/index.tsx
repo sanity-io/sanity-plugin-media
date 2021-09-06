@@ -1,17 +1,18 @@
-import {Store, configureStore, getDefaultMiddleware, AnyAction} from '@reduxjs/toolkit'
+import {AnyAction, configureStore, getDefaultMiddleware, Store} from '@reduxjs/toolkit'
+import {AssetSourceComponentProps} from '@types'
 import React, {Component, ReactNode} from 'react'
 import {Provider} from 'react-redux'
 import {createEpicMiddleware} from 'redux-observable'
-
 import {rootEpic, rootReducer} from '../../modules'
+import {initialState as assetsInitialState} from '../../modules/assets'
 // import {assetsActions} from '../../modules/assets'
 // import {searchActions} from '../../modules/search'
 // import {uploadsActions} from '../../modules/uploads'
 import {RootReducerState} from '../../modules/types'
-import {SanityCustomAssetSourceProps} from '../../types'
 import getDocumentAssetIds from '../../utils/getDocumentAssetIds'
 
-type Props = SanityCustomAssetSourceProps
+type Props = AssetSourceComponentProps
+
 class ReduxProvider extends Component<Props> {
   store: Store
 
@@ -41,6 +42,10 @@ class ReduxProvider extends Component<Props> {
       ],
       devTools: true,
       preloadedState: {
+        assets: {
+          ...assetsInitialState,
+          assetTypes: props?.assetType ? [props.assetType] : ['file', 'image']
+        },
         selected: {
           assets: props.selectedAssets,
           document: props.document,

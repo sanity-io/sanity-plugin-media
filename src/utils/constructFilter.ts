@@ -1,22 +1,25 @@
-import {SearchFacetInputProps} from '@types'
+import {AssetType, SearchFacetInputProps} from '@types'
 import groq from 'groq'
 
 import {operators} from '../config/searchFacets'
 
 const constructFilter = ({
-  hasDocument,
+  assetTypes,
   searchFacets,
   searchQuery
 }: {
-  hasDocument?: boolean
+  assetTypes: AssetType[]
   searchFacets: SearchFacetInputProps[]
   searchQuery?: string
 }): string => {
-  // Fetch both images and files if being used as a tool
-  // Otherwise, only fetch images. Sanity will crash you try and insert a file into an image field!
-  const baseFilter = hasDocument
-    ? groq`_type == "sanity.imageAsset" && !(_id in path("drafts.**"))`
-    : groq`_type in ["sanity.fileAsset", "sanity.imageAsset"] && !(_id in path("drafts.**"))`
+  // Fetch asset types depending on current context.
+  // Either limit to a specific type (if being used as a custom asset source) or fetch both files and images (if being used as a tool)
+  // Sanity will crash if you try and insert incompatible asset types into fields!
+  const documentAssetTypes = assetTypes.map(type => `sanity.${type}Asset`)
+
+  const baseFilter = groq`
+    _type in ${JSON.stringify(documentAssetTypes)} && !(_id in path("drafts.**"))
+  `
 
   const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
     if (facet.type === 'number') {

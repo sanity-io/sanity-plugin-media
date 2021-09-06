@@ -1,7 +1,7 @@
 import {CloseIcon, Icon, UploadIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Text} from '@sanity/ui'
+import pluralize from 'pluralize'
 import React, {FC} from 'react'
-
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import {useDropzoneActions} from '../../contexts/DropzoneDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -14,11 +14,11 @@ const Header: FC<Props> = (props: Props) => {
   const {onClose} = props
 
   const {open} = useDropzoneActions()
+  const {onSelect} = useAssetSourceActions()
 
   // Redux
+  const assetTypes = useTypedSelector(state => state.assets.assetTypes)
   const selectedDocument = useTypedSelector(state => state.selected.document)
-
-  const {onSelect} = useAssetSourceActions()
 
   // Row: Current document / close button
   return (
@@ -28,7 +28,7 @@ const Header: FC<Props> = (props: Props) => {
         <Box flex={1} marginX={3}>
           <Inline style={{whiteSpace: 'nowrap'}}>
             <Text textOverflow="ellipsis" weight="semibold">
-              <span>{onSelect ? 'Insert Image' : 'Browse Assets'}</span>
+              <span>{onSelect ? `Insert ${assetTypes.join(' or ')}` : 'Browse Assets'}</span>
             </Text>
 
             {selectedDocument && (
@@ -51,7 +51,7 @@ const Header: FC<Props> = (props: Props) => {
             icon={UploadIcon}
             mode="bleed"
             onClick={open}
-            text={`Upload ${selectedDocument ? 'images' : 'assets'}`}
+            text={`Upload ${assetTypes.length === 1 ? pluralize(assetTypes[0]) : 'assets'}`}
             tone="primary"
           />
 
