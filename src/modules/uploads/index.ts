@@ -97,7 +97,10 @@ const uploadsSlice = createSlice({
       }
       delete state.byIds[hash]
     },
-    uploadRequest(_state, _action: PayloadAction<{file: File}>) {
+    uploadRequest(
+      _state,
+      _action: PayloadAction<{file: File; forceAsAssetType?: 'file' | 'image'}>
+    ) {
       //
     },
     uploadProgress(
@@ -189,7 +192,7 @@ export const uploadsAssetUploadEpic: MyEpic = action$ =>
   action$.pipe(
     filter(uploadsActions.uploadRequest.match),
     mergeMap(action => {
-      const {file} = action.payload
+      const {file, forceAsAssetType} = action.payload
 
       return of(action).pipe(
         // Generate SHA1 hash from local file
@@ -197,17 +200,17 @@ export const uploadsAssetUploadEpic: MyEpic = action$ =>
         // Ignore if we're unable to generate a hash
         // TODO: we may want to throw an error in `hashFile$` and handle this
         filter(hash => !!hash),
-        // Disaptch start action and begin upload process
+        // Dispatch start action and begin upload process
         mergeMap(hash => {
+          const assetType = forceAsAssetType || (file.type.indexOf('image') >= 0 ? 'image' : 'file')
           const uploadItem = {
             _type: 'upload',
-            assetType: file.type.indexOf('image') >= 0 ? 'image' : 'file',
+            assetType,
             hash,
             name: file.name,
             size: file.size,
             status: 'queued'
           } as UploadItem
-
           return of(uploadsActions.uploadStart({file, uploadItem}))
         })
       )
@@ -236,7 +239,7 @@ export const uploadsCheckRequestEpic: MyEpic = (action$, state$) =>
       const documentIds = assets.map(asset => asset._id)
 
       const filter = constructFilter({
-        hasDocument: !!state.selected.document,
+        assetTypes: state.assets.assetTypes,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
       })

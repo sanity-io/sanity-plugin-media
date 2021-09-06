@@ -3,7 +3,6 @@ import {Button, Flex, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem} from '
 import {SearchFacetDivider, SearchFacetGroup, SearchFacetInputProps} from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {FACETS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
@@ -11,30 +10,45 @@ import {searchActions} from '../../modules/search'
 const SearchFacetsControl: FC = () => {
   // Redux
   const dispatch = useDispatch()
+  const assetTypes = useTypedSelector(state => state.assets.assetTypes)
   const searchFacets = useTypedSelector(state => state.search.facets)
   const selectedDocument = useTypedSelector(state => state.selected.document)
 
   const isTool = !selectedDocument
 
-  // Manually filter facets based on current context, whether it's invoked as a tool, or via selection through
-  // via custom asset source.
-  const filteredFacets = FACETS.filter(facet => {
-    if (facet.type === 'group' || facet.type === 'divider') {
+  const filteredFacets = FACETS
+    // Filter facets based on current context, whether it's invoked as a tool, or via selection through via custom asset source.
+    .filter(facet => {
+      if (facet.type === 'group' || facet.type === 'divider') {
+        return true
+      }
+
+      if (isTool) {
+        return !facet?.selectOnly
+      } else {
+        const matchingAssetTypes = facet.assetTypes.filter(assetType =>
+          assetTypes.includes(assetType)
+        )
+        return matchingAssetTypes.length > 0
+      }
+    })
+    // Remove adjacent and leading / trailing dividers
+    .filter((facet, index, facets) => {
+      const previousFacet = facets[index - 1]
+      // Ignore leading + trailing dividers
+      if ((facet.type === 'divider' && index === 0) || index === facets.length - 1) {
+        return false
+      }
+      // Ignore adjacent dividers
+      if (facet.type === 'divider' && previousFacet?.type === 'divider') {
+        return false
+      }
       return true
-    }
+    })
 
-    if (isTool) {
-      return !facet?.selectOnly
-    } else {
-      // TODO: in future, determine whether we're inserting into a file or image field.
-      // For now, it's only possible to insert into image fields.
-      return facet.assetTypes.includes('image')
-    }
-  })
-
-  // Determine if there are any remaining facets
+  // Determine if there are any remaining un-selected facets
   // (This operates under the assumption that only one of each facet can be active at any given time)
-  const remainingSearchFacets =
+  const hasRemainingSearchFacets =
     filteredFacets.filter(facet => facet).length - searchFacets.length > 0
 
   const renderMenuFacets = (
@@ -77,7 +91,7 @@ const SearchFacetsControl: FC = () => {
       <MenuButton
         button={
           <Button
-            disabled={!remainingSearchFacets}
+            disabled={!hasRemainingSearchFacets}
             fontSize={1}
             icon={AddCircleIcon}
             mode="bleed"

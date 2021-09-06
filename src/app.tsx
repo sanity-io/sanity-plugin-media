@@ -1,5 +1,5 @@
 import {Box, Portal, PortalProvider, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
-import {SanityCustomAssetSourceProps} from '@types'
+import {AssetSourceComponentProps} from '@types'
 import React, {FC, forwardRef, MouseEvent, Ref} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 import Browser from './components/Browser'
@@ -10,7 +10,7 @@ import useKeyPress from './hooks/useKeyPress'
 import GlobalStyle from './styled/GlobalStyles'
 import theme from './styled/theme'
 
-type Props = SanityCustomAssetSourceProps
+type Props = AssetSourceComponentProps
 
 const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const {onClose, onSelect, tool} = props

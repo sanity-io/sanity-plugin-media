@@ -1,4 +1,5 @@
 import type {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
+import type {AssetFromSource} from '@sanity/types'
 import {AnyAction} from 'redux'
 
 type CustomFields = {
@@ -13,7 +14,7 @@ type CustomFields = {
 }
 
 type SearchFacetInputCommon = {
-  assetTypes: ('file' | 'image')[]
+  assetTypes: AssetType[]
   name: string
   operatorType: SearchFacetOperatorType
   operatorTypes?: (SearchFacetOperatorType | null)[]
@@ -29,6 +30,20 @@ export type AssetItem = {
   error?: string
   picked: boolean
   updating: boolean
+}
+
+export type AssetType = 'file' | 'image'
+
+// TODO: use correct type from @sanity/types once it uses the correct signature for `onSelect`
+export type AssetSourceComponentProps = {
+  assetType?: 'file' | 'image'
+  document: SanityDocument
+  dialogHeaderTitle?: string
+  selectedAssets: Asset[]
+  selectionType: 'single' | 'multiple'
+  onClose: () => void
+  onSelect: (assets: AssetFromSource[]) => void
+  tool?: string
 }
 
 export type Block = {
@@ -146,12 +161,9 @@ export type Order = {
 
 export type OrderDirection = 'asc' | 'desc'
 
-export type SanityCustomAssetSourceProps = {
-  document?: SanityDocument
-  onClose?: () => void
-  onSelect?: () => void
-  selectedAssets?: (SanityAssetDocument | SanityImageAssetDocument)[]
-  tool?: string
+export type ReactSelectOption = {
+  label: string
+  value: string
 }
 
 export type SanityReference = {
@@ -256,17 +268,6 @@ export type SearchFacetOperators = Record<
   }
 >
 
-export type SelectedAsset = {
-  assetDocumentProps?: {originalFilename?: string; source?: string; sourceId?: string}
-  kind: 'assetDocumentId' | 'base64' | 'file' | 'url'
-  value: string | File
-}
-
-export type ReactSelectOption = {
-  label: string
-  value: string
-}
-
 export type SanityUploadCompleteEvent = {
   asset: SanityAssetDocument | SanityImageAssetDocument
   id: string
@@ -317,7 +318,7 @@ export type TagItem = {
 
 export type UploadItem = {
   _type: 'upload'
-  assetType: 'image' | 'file'
+  assetType: AssetType
   hash: string
   name: string
   objectUrl?: string

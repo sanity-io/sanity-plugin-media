@@ -1,6 +1,15 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
 import type {ClientError, Patch, Transaction} from '@sanity/client'
-import {Asset, AssetItem, BrowserView, HttpError, Order, OrderDirection, Tag} from '@types'
+import {
+  Asset,
+  AssetItem,
+  AssetType,
+  BrowserView,
+  HttpError,
+  Order,
+  OrderDirection,
+  Tag
+} from '@types'
 import groq from 'groq'
 import {nanoid} from 'nanoid'
 import {Epic, ofType} from 'redux-observable'
@@ -34,6 +43,7 @@ type ItemError = {
 
 export type AssetsReducerState = {
   allIds: string[]
+  assetTypes: AssetType[]
   byIds: Record<string, AssetItem>
   fetchCount: number
   fetching: boolean
@@ -63,8 +73,9 @@ const defaultOrder = ORDER_OPTIONS[0] as {
  * of `fetchCount` and reinstate `totalCount` across the board.
  */
 
-const initialState = {
+export const initialState = {
   allIds: [],
+  assetTypes: [],
   byIds: {},
   fetchCount: -1,
   fetching: false,
@@ -449,7 +460,7 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
       const documentAssetIds = state?.selected?.documentAssetIds
 
       const filter = constructFilter({
-        hasDocument: !!state.selected.document,
+        assetTypes: state.assets.assetTypes,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
       })

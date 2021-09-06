@@ -6,6 +6,10 @@
       "path": "index.js"
     },
     {
+      "implements": "part:@sanity/form-builder/input/file/asset-source",
+      "path": "index.js"
+    },
+    {
       "implements": "part:@sanity/base/tool",
       "path": "index.js"
     },
