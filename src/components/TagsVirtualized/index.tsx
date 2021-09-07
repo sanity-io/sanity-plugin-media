@@ -1,38 +1,48 @@
 import {Box, Flex, Label} from '@sanity/ui'
-import React, {FC, memo} from 'react'
-import AutoSizer from 'react-virtualized-auto-sizer'
-import {areEqual, FixedSizeList, ListChildComponentProps} from 'react-window'
+import React, {FC, memo, useState} from 'react'
+import {Virtuoso} from 'react-virtuoso'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'
 import {TagActions, TagItem} from '../../types'
 import Tag from '../Tag'
 
-const VirtualRow = memo((props: ListChildComponentProps) => {
-  const {data, index, style} = props
-  const {items} = data
-  const item = items[index]
+const VirtualRow = memo(
+  ({
+    isScrolling,
+    item
+  }: {
+    isScrolling?: boolean
+    item:
+      | string
+      | (TagItem & {
+          actions: TagActions[]
+        })
+  }) => {
+    // Render label
+    if (typeof item === 'string') {
+      return (
+        <Flex align="center" justify="space-between" key={item} paddingY={3}>
+          <Label size={0}>{item}</Label>
+        </Flex>
+      )
+    }
 
-  // Render label
-  if (typeof item === 'string') {
+    // Render tag - only display actions if we're not in the process of scrolling
     return (
-      <Flex align="center" justify="space-between" key={item} paddingY={3} style={style}>
-        <Label size={0}>{item}</Label>
-      </Flex>
+      <Box key={item.tag?._id}>
+        <Tag actions={isScrolling ? undefined : item.actions} tag={item} />
+      </Box>
     )
   }
+)
 
-  // Render tag
-  return (
-    <Box key={item.tag?._id} style={style}>
-      <Tag actions={item.actions} tag={item} />
-    </Box>
-  )
-}, areEqual)
-
-const Tags: FC = () => {
+const TagsVirtualized: FC = () => {
   const assetsPicked = useTypedSelector(selectAssetsPicked)
   const tags = useTypedSelector(selectTags)
+
+  // State
+  const [isScrolling, setIsScrolling] = useState(false)
 
   // TODO: refactor, there's most certainly a more performant way to do this
 
@@ -125,40 +135,25 @@ const Tags: FC = () => {
     }
   }
 
-  const itemKey = (index: number) => {
-    const item = items[index]
-    if (typeof item === 'string') {
-      return item
-    }
-    return item?.tag._id
-  }
-
   return (
     <Box paddingX={3} style={{flex: 1}}>
-      <AutoSizer>
-        {({height, width}) => {
-          return (
-            <FixedSizeList
-              className="media__custom-scrollbar"
-              height={height}
-              itemData={{items}}
-              itemCount={items.length}
-              itemKey={itemKey}
-              itemSize={33} // px
-              style={{
-                position: 'relative',
-                overflowX: 'hidden',
-                overflowY: 'scroll'
-              }}
-              width={width}
-            >
-              {VirtualRow}
-            </FixedSizeList>
-          )
+      <Virtuoso
+        className="media__custom-scrollbar"
+        computeItemKey={index => {
+          const item = items[index]
+          if (typeof item === 'string') {
+            return item
+          }
+          return item.tag._id
         }}
-      </AutoSizer>
+        isScrolling={setIsScrolling}
+        itemContent={index => {
+          return <VirtualRow isScrolling={isScrolling} item={items[index]} />
+        }}
+        totalCount={items.length}
+      />
     </Box>
   )
 }
 
-export default Tags
+export default TagsVirtualized

@@ -116,8 +116,8 @@ const Browser: FC<Props> = (props: Props) => {
 
           <Flex flex={1}>
             <Flex align="flex-end" direction="column" flex={1} style={{position: 'relative'}}>
-              <Items />
               <PickedBar />
+              <Items />
             </Flex>
 
             <TagsPanel />

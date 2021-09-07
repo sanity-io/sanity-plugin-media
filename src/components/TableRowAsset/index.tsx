@@ -3,31 +3,30 @@ import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
 import {Box, Checkbox, Container, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
-import React, {CSSProperties, MouseEvent, memo, RefObject} from 'react'
+import React, {memo, MouseEvent, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
 import {Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
-
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
-import {assetsActions, selectAssetById} from '../../modules/assets'
-import {dialogActions} from '../../modules/dialog'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
+import {assetsActions, selectAssetById} from '../../modules/assets'
+import {dialogActions} from '../../modules/dialog'
 import getAssetResolution from '../../utils/getAssetResolution'
-import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import imageDprUrl from '../../utils/imageDprUrl'
+import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
 
 type Props = {
   id: string
   selected: boolean
-  style?: CSSProperties
 }
 
 const ContainerGrid = styled(LegacyGrid)<{selected?: boolean; updating?: boolean}>`
   align-items: center;
   cursor: ${props => (props.selected ? 'default' : 'pointer')};
+  height: 100%;
   pointer-events: ${props => (props.updating ? 'none' : 'auto')};
   user-select: none;
   white-space: nowrap;
@@ -60,7 +59,7 @@ const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
 })
 
 const TableRowAsset = (props: Props) => {
-  const {id, selected, style} = props
+  const {id, selected} = props
 
   // Refs
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
@@ -128,7 +127,6 @@ const TableRowAsset = (props: Props) => {
     <ContainerGrid
       onClick={selected ? undefined : handleClick}
       selected={selected}
-      style={style}
       sx={{
         gridColumnGap: [0, null, null, 3],
         gridRowGap: [0],
