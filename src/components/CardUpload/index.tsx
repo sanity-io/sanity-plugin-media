@@ -2,10 +2,8 @@ import {hues} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text, Tooltip} from '@sanity/ui'
 import filesize from 'filesize'
-import {motion} from 'framer-motion'
-import React, {CSSProperties, FC} from 'react'
+import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectUploadById, uploadsActions} from '../../modules/uploads'
@@ -14,18 +12,21 @@ import Image from '../Image'
 
 type Props = {
   id: string
-  style?: CSSProperties
 }
 
 const CardUpload: FC<Props> = (props: Props) => {
-  const {id, style} = props
+  const {id} = props
 
   // Redux
   const dispatch = useDispatch()
   const item = useTypedSelector(state => selectUploadById(state, id))
 
+  if (!item) {
+    return null
+  }
+
   const fileSize = filesize(item.size, {base: 10, round: 0})
-  const percentLoaded = Math.round(item?.percent || 0) // (0 - 100)
+  const percentLoaded = Math.round(item.percent || 0) // (0 - 100)
 
   const isComplete = item.status === 'complete'
   const isUploading = item.status === 'uploading'
@@ -50,28 +51,25 @@ const CardUpload: FC<Props> = (props: Props) => {
   return (
     <Flex
       direction="column"
-      style={{...style, background: hues.gray[950].hex, border: '1px solid transparent'}}
+      style={{
+        background: hues.gray[950].hex,
+        border: '1px solid transparent',
+        height: '100%',
+        position: 'relative'
+      }}
     >
       {/* Progress bar */}
-      <motion.div
-        animate={{scaleX: percentLoaded * 0.01}}
-        initial={{
-          scaleX: 0
-        }}
+      <div
         style={{
           background: hues.gray[600].hex,
           bottom: 0,
           height: '1px',
           left: 0,
-          originX: 0,
-          originY: '50%',
           position: 'absolute',
-          width: '100%'
-        }}
-        transition={{
-          type: 'spring',
-          damping: 15,
-          stiffness: 100
+          width: '100%',
+          transform: `scaleX(${percentLoaded * 0.01})`,
+          transformOrigin: 'bottom left',
+          transition: 'all 1000ms ease-out'
         }}
       />
 

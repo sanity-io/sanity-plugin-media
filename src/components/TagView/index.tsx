@@ -5,7 +5,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPickedLength} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'
 import TagViewHeader from '../TagViewHeader'
-import Tags from '../Tags'
+import TagsVirtualized from '../TagsVirtualized'
 
 const TagView: FC = () => {
   const numPickedAssets = useTypedSelector(selectAssetsPickedLength)
@@ -40,7 +40,7 @@ const TagView: FC = () => {
         </Box>
       )}
 
-      {hasTags && <Tags />}
+      {hasTags && <TagsVirtualized />}
     </Flex>
   )
 }

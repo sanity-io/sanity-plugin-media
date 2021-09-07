@@ -74,7 +74,7 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.12.16.tgz#cc31257419d2c3189d394081635703f549fc1ed4"
   integrity sha512-c/+u9cqV6F0+4Hpq01jnJO+GLp2DdT63ppz9Xa+6cHaajM9VFzK/iDXiKK65YtpeVwu+ctfS6iqlMqRgQRzeCw==
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.5", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.2.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.5", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.2.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.7":
   version "7.12.13"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.13.tgz#0a21452352b02542db0ffb928ac2d3ca7cb6d66d"
   integrity sha512-8+3UMPBrjFa/6TtKi/7sehPKqfAm4g6K+YQjyyFOLUTxzOngcRZTlAVY8sc2CORJYqdHQY8gRPHmn+qo15rCBw==
@@ -1149,28 +1149,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-virtualized-auto-sizer@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.0.tgz#fc32f30a8dab527b5816f3a757e1e1d040c8f272"
-  integrity sha512-NMErdIdSnm2j/7IqMteRiRvRulpjoELnXWUwdbucYCz84xG9PHcoOrr7QfXwB/ku7wd6egiKFrzt/+QK4Imeeg==
-  dependencies:
-    "@types/react" "*"
-
-"@types/react-window-infinite-loader@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@types/react-window-infinite-loader/-/react-window-infinite-loader-1.0.3.tgz#fade6e7c625a348e83c4e1f0c897736537bc7f8c"
-  integrity sha512-P+XLcLxH23dwDJgPr571vUL79n++pHweCaCa5XocyxEt9YqdV627F6TCM//2zoUbGw/JnT94F8kSJ7/ijcUSIg==
-  dependencies:
-    "@types/react" "*"
-    "@types/react-window" "*"
-
-"@types/react-window@*", "@types/react-window@1.8.2":
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/@types/react-window/-/react-window-1.8.2.tgz#a5a6b2762ce73ffaab7911ee1397cf645f2459fe"
-  integrity sha512-gP1xam68Wc4ZTAee++zx6pTdDAH08rAkQrWm4B4F/y6hhmlT9Mgx2q8lTCXnrPHXsr15XjRN9+K2DLKcz44qEQ==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react@*", "@types/react@^17.0.0":
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.2.tgz#3de24c4efef902dd9795a49c75f760cbe4f7a5a8"
@@ -1317,6 +1295,18 @@
   dependencies:
     "@typescript-eslint/types" "4.11.1"
     eslint-visitor-keys "^2.0.0"
+
+"@virtuoso.dev/react-urx@^0.2.5":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@virtuoso.dev/react-urx/-/react-urx-0.2.6.tgz#e1d8bc717723b2fc23d80ea4e07703dbc276448b"
+  integrity sha512-+PLQ2iWmSH/rW7WGPEf+Kkql+xygHFL43Jij5aREde/O9mE0OFFGqeetA2a6lry3LDVWzupPntvvWhdaYw0TyA==
+  dependencies:
+    "@virtuoso.dev/urx" "^0.2.6"
+
+"@virtuoso.dev/urx@^0.2.5", "@virtuoso.dev/urx@^0.2.6":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@virtuoso.dev/urx/-/urx-0.2.6.tgz#0028c49e52037e673993900d32abea83262fbd53"
+  integrity sha512-EKJ0WvJgWaXIz6zKbh9Q63Bcq//p8OHXHbdz4Fy+ruhjJCyI8ADE8E5gwSqBoUchaiYlgwKrT+sX4L2h/H+hMg==
 
 "@xobotyi/scrollbar-width@1.9.5":
   version "1.9.5"
@@ -3008,19 +2998,6 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-framer-motion@4.1.13:
-  version "4.1.13"
-  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-4.1.13.tgz#0a7f096113a0f80f11116c1a73da9b81523324cd"
-  integrity sha512-E72PyzHXsie1IGcEFMGM3OJsVbtmpS8vcnDjh6tdeCaP7stoioZpmKZcx7c87giymAyuSSWvsGGdVnDGRzRX6g==
-  dependencies:
-    framesync "5.3.0"
-    hey-listen "^1.0.8"
-    popmotion "9.3.5"
-    style-value-types "4.1.4"
-    tslib "^2.1.0"
-  optionalDependencies:
-    "@emotion/is-prop-valid" "^0.8.2"
-
 framer-motion@^2.9.5:
   version "2.9.5"
   resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-2.9.5.tgz#bbb185325d531c57f494cf3f6cf7719fc2c225c7"
@@ -3051,13 +3028,6 @@ framesync@5.2.3:
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/framesync/-/framesync-5.2.3.tgz#73e26c83e108fb95f05515ee5c6fdf20c9fd47ab"
   integrity sha512-5PxjYm5RxvsT68a9trOOL/61POxL7DcHrbx+j/50CR33mvBdp0aUTI+EfrMeVXprx3XOZ37NWg6r5ZQQOA2arA==
-  dependencies:
-    tslib "^2.1.0"
-
-framesync@5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/framesync/-/framesync-5.3.0.tgz#0ecfc955e8f5a6ddc8fdb0cc024070947e1a0d9b"
-  integrity sha512-oc5m68HDO/tuK2blj7ZcdEBRx3p1PjrgHazL8GYEpvULhrtGIFbQArN6cQS2QhW8mitffaB+VYzMjDqBxxQeoA==
   dependencies:
     tslib "^2.1.0"
 
@@ -4230,15 +4200,15 @@ mdn-data@2.0.14:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.14.tgz#7113fc4281917d63ce29b43446f701e68c25ba50"
   integrity sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==
 
-"memoize-one@>=3.1.1 <6", memoize-one@^5.0.0:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
-  integrity sha512-HKeeBpWvqiVJD57ZUAsJNm71eHTykffzcLZVYWiVfQeI1rJtuEaS7hQiEpWfVVk18donPwJEcFKIkCmPJNOhHA==
-
 memoize-one@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-3.1.1.tgz#ef609811e3bc28970eac2884eece64d167830d17"
   integrity sha512-YqVh744GsMlZu6xkhGslPSqSurOv6P+kLN2J3ysBZfagLcL5FdRK/0UpgLoL8hwjjEvvAVkjJZyFP+1T6p1vgA==
+
+memoize-one@^5.0.0:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
+  integrity sha512-HKeeBpWvqiVJD57ZUAsJNm71eHTykffzcLZVYWiVfQeI1rJtuEaS7hQiEpWfVVk18donPwJEcFKIkCmPJNOhHA==
 
 meow@^3.3.0:
   version "3.7.0"
@@ -4914,16 +4884,6 @@ popmotion@9.3.4:
     style-value-types "4.1.4"
     tslib "^2.1.0"
 
-popmotion@9.3.5:
-  version "9.3.5"
-  resolved "https://registry.yarnpkg.com/popmotion/-/popmotion-9.3.5.tgz#e821aff3424a021b0f2c93922db31c55cfe64149"
-  integrity sha512-Lr2rq8OP0j8D7CO2/6eO17ALeFCxjx1hfTGbMg+TLqFj+KZSGOoj6gRBVTzDINGqo6LQrORQSSSDaCL5OrB3bw==
-  dependencies:
-    framesync "5.3.0"
-    hey-listen "^1.0.8"
-    style-value-types "4.1.4"
-    tslib "^2.1.0"
-
 popper-max-size-modifier@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/popper-max-size-modifier/-/popper-max-size-modifier-0.2.0.tgz#1574744401296a488b4974909d130a85db94256f"
@@ -5256,23 +5216,13 @@ react-use@^15.3.4:
     ts-easing "^0.2.0"
     tslib "^2.0.0"
 
-react-virtualized-auto-sizer@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.3.tgz#a491577dc70102b9faaef473d640437eab9db120"
-  integrity sha512-HnJo3Hk5Ky2TUL2GpLOs5sKiyskFwdNllI3P5Mp0tgFatz6ClnEG1gnK76/NhSkd/3YtYPTVjIsINYVBd/fRxw==
-
-react-window-infinite-loader@1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/react-window-infinite-loader/-/react-window-infinite-loader-1.0.5.tgz#6fe094d538a88978c2c9b623052bc50cb28c2abc"
-  integrity sha512-IcPIq8lADK3zsAcqoLqQGyduicqR6jWkiK2VUX5sKSI9X/rou6OWlOEexnGyujdNTG7hSG8OVBFEhLSDs4qrxg==
-
-react-window@1.8.6:
-  version "1.8.6"
-  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.6.tgz#d011950ac643a994118632665aad0c6382e2a112"
-  integrity sha512-8VwEEYyjz6DCnGBsd+MgkD0KJ2/OXFULyDtorIiTz+QzwoP94tBoA7CnbtyXMm+cCeAUER5KJcPtWl9cpKbOBg==
+react-virtuoso@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-2.0.1.tgz#e03875778728584a9d48da149dac0d9740eeeb36"
+  integrity sha512-8NYi+vke/Ez0Y4nBH3wqI/aDNCTah2VNOQNLr3lRWAyMI4FcgJfVRtDGjvlCxU6xaCgoJU87RdUh69VZq1QFSw==
   dependencies:
-    "@babel/runtime" "^7.0.0"
-    memoize-one ">=3.1.1 <6"
+    "@virtuoso.dev/react-urx" "^0.2.5"
+    "@virtuoso.dev/urx" "^0.2.5"
 
 react@17.0.1:
   version "17.0.1"

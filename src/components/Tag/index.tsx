@@ -6,7 +6,6 @@ import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {inputs} from '../../config/searchFacets'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'

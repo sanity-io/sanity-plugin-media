@@ -2,11 +2,9 @@ import {hues} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
 import {Box, Button, Flex, Stack, Text, Tooltip} from '@sanity/ui'
 import filesize from 'filesize'
-import {motion} from 'framer-motion'
-import React, {CSSProperties, FC} from 'react'
+import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import {Box as LegacyBox, Grid as LegacyGrid} from 'theme-ui'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectUploadById, uploadsActions} from '../../modules/uploads'
 import FileIcon from '../FileIcon'
@@ -14,18 +12,21 @@ import Image from '../Image'
 
 type Props = {
   id: string
-  style?: CSSProperties
 }
 
 const TableRowUpload: FC<Props> = (props: Props) => {
-  const {id, style} = props
+  const {id} = props
 
   // Redux
   const dispatch = useDispatch()
   const item = useTypedSelector(state => selectUploadById(state, id))
 
+  if (!item) {
+    return null
+  }
+
   const fileSize = filesize(item.size, {base: 10, round: 0})
-  const percentLoaded = Math.round(item?.percent || 0) // (0 - 100)
+  const percentLoaded = Math.round(item.percent || 0) // (0 - 100)
 
   const isComplete = item.status === 'complete'
   const isUploading = item.status === 'uploading'
@@ -55,32 +56,23 @@ const TableRowUpload: FC<Props> = (props: Props) => {
         gridColumnGap: [0, null, null, 3],
         gridRowGap: [0],
         gridTemplateColumns: ['tableSmall', null, null, 'tableLarge'],
-        gridTemplateRows: ['auto', null, null, '1fr']
+        gridTemplateRows: ['auto', null, null, '1fr'],
+        height: '100%',
+        position: 'relative'
       }}
-      style={style}
     >
       {/* Progress bar */}
-      <motion.div
-        animate={{
-          scaleX: percentLoaded * 0.01
-        }}
-        initial={{
-          scaleX: 0
-        }}
+      <div
         style={{
-          background: hues.gray[800].hex,
+          background: hues.gray[600].hex,
           bottom: 0,
           height: '1px',
           left: 0,
-          originX: 0,
-          originY: '50%',
           position: 'absolute',
-          width: '100%'
-        }}
-        transition={{
-          type: 'spring',
-          damping: 15,
-          stiffness: 100
+          width: '100%',
+          transform: `scaleX(${percentLoaded * 0.01})`,
+          transformOrigin: 'bottom left',
+          transition: 'all 1000ms ease-out'
         }}
       />
 
