@@ -1,9 +1,8 @@
 import {Dialog} from '@types'
 import React, {FC} from 'react'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
-import DialogConfirm from '../DialogConfirm'
 import DialogAssetEdit from '../DialogAssetEdit'
+import DialogConfirm from '../DialogConfirm'
 import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'

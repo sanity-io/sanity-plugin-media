@@ -1,11 +1,11 @@
 import {hues} from '@sanity/color'
-import {Box, Dialog} from '@sanity/ui'
+import {Box} from '@sanity/ui'
 import {DialogTags} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
+import Dialog from '../Dialog'
 import TagView from '../TagView'
 
 type Props = {
@@ -33,7 +33,7 @@ const DialogTags: FC<Props> = (props: Props) => {
         style={{
           borderTop: `1px solid ${hues.gray?.[900].hex}`,
           height: '100%',
-          minHeight: '320px'
+          minHeight: '420px'
         }}
       >
         <TagView />
