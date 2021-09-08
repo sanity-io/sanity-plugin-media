@@ -1,10 +1,10 @@
-import {Box, Dialog} from '@sanity/ui'
+import {Box} from '@sanity/ui'
 import {DialogSearchFacets} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
+import Dialog from '../Dialog'
 import SearchFacets from '../SearchFacets'
 import SearchFacetsControl from '../SearchFacetsControl'
 
@@ -29,7 +29,15 @@ const DialogSearchFacets: FC<Props> = (props: Props) => {
 
   return (
     <Dialog header="Filters" id={id} onClose={handleClose} width={1} zOffset={Z_INDEX_DIALOG}>
-      <Box padding={3}>
+      <Box
+        padding={3}
+        style={{
+          height: '100%'
+          // HACK: we force minimum height to ensure our opened <MenuButton /> doesn't clip within the dialog.
+          // Currently, a portaled <Menubutton /> doesn't increment its z-index when invoked from an existing <Portal />,
+          // causing z-index issues.
+        }}
+      >
         <SearchFacets layout="stack" />
         <SearchFacetsControl />
       </Box>

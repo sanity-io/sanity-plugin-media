@@ -1,11 +1,11 @@
 import {WarningOutlineIcon} from '@sanity/icons'
-import {Box, Button, Dialog, Flex, Stack, Text} from '@sanity/ui'
+import {Box, Button, Flex, Stack, Text} from '@sanity/ui'
 import {DialogConfirm} from '@types'
 import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
+import Dialog from '../Dialog'
 
 type Props = {
   children?: ReactNode

@@ -1,16 +1,16 @@
 import {yupResolver} from '@hookform/resolvers/yup'
-import {Box, Dialog, Flex} from '@sanity/ui'
+import {Box, Flex} from '@sanity/ui'
 import {DialogTagCreate} from '@types'
 import React, {FC, ReactNode, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
-
 import {Z_INDEX_DIALOG} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
 import sanitizeFormData from '../../utils/sanitizeFormData'
+import Dialog from '../Dialog'
 import FormFieldInputText from '../FormFieldInputText'
 import FormSubmitButton from '../FormSubmitButton'
 
