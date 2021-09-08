@@ -40,6 +40,7 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
 
   // Redux
   const creating = useTypedSelector(state => state.tags.creating)
+  const tagsFetching = useTypedSelector(state => state.tags.fetching)
 
   return (
     <Box
@@ -73,7 +74,7 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
               defaultOptions
               instanceId="tags"
               isClearable={false} // TODO: re-enable when we're able to correctly (manually) re-validate on clear
-              isDisabled={creating || disabled}
+              isDisabled={creating || disabled || tagsFetching}
               isLoading={creating}
               isMulti
               name={name}
@@ -82,7 +83,7 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
               onChange={onChange}
               onCreateOption={onCreateTag}
               options={options}
-              placeholder={placeholder}
+              placeholder={tagsFetching ? 'Loading...' : placeholder}
               styles={reactSelectStyles}
               value={controllerValue}
             />
