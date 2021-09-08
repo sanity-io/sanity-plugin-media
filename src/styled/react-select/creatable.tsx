@@ -2,7 +2,8 @@ import {black, hues} from '@sanity/color'
 import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
 import {Box, Card, Flex, Text, studioTheme} from '@sanity/ui'
 import {components} from 'react-select'
-import React, {CSSProperties} from 'react'
+import React, {CSSProperties, forwardRef} from 'react'
+import {Components, Virtuoso} from 'react-virtuoso'
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
 const themeDarkPrimaryGray = studioTheme?.color?.dark?.primary?.spot?.gray
@@ -26,7 +27,7 @@ export const reactSelectStyles = {
         : 'transparent',
       color: 'white',
       border: 'none',
-      borderRadius: themeRadius[2],
+      borderRadius: themeRadius[1],
       boxShadow,
       minHeight: '35px',
       outline: 'none',
@@ -46,8 +47,7 @@ export const reactSelectStyles = {
     marginLeft: themeSpace[2]
   }),
   menuList: (styles: CSSProperties) => ({
-    ...styles,
-    maxHeight: '230px'
+    ...styles
   }),
   multiValue: (styles: CSSProperties, {isDisabled}: {isDisabled: boolean}) => ({
     ...styles,
@@ -57,6 +57,7 @@ export const reactSelectStyles = {
   }),
   multiValueRemove: (styles: CSSProperties) => ({
     ...styles,
+    paddingLeft: 0,
     '&:hover': {
       background: 'transparent',
       color: 'inherit'
@@ -67,7 +68,7 @@ export const reactSelectStyles = {
     backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
     borderRadius: themeRadius[2],
     color: isFocused ? black.hex : 'inherit',
-    padding: '4px 6px', // TODO: use theme value
+    padding: '4px 8px', // TODO: use theme value
     '&:hover': {
       backgroundColor: themeDarkPrimaryBlue,
       color: black.hex
@@ -79,9 +80,9 @@ export const reactSelectStyles = {
   }),
   valueContainer: (styles: CSSProperties) => ({
     ...styles,
-    marginBottom: themeSpace[1],
+    marginBottom: themeSpace[0],
     marginLeft: themeSpace[1],
-    marginTop: themeSpace[1],
+    marginTop: themeSpace[0],
     padding: 0
   })
 }
@@ -109,20 +110,35 @@ const Menu = (props: any) => {
 }
 
 const MenuList = (props: any) => {
-  return (
-    <components.MenuList
-      {...props}
-      className="media__custom-scrollbar media__react-select__menu-list"
-    >
-      {props.children}
-    </components.MenuList>
-  )
+  const {children} = props
+
+  const MAX_ROWS = 5
+  const OPTION_HEIGHT = 37
+
+  if (Array.isArray(children)) {
+    const height =
+      children.length > MAX_ROWS ? OPTION_HEIGHT * MAX_ROWS : children.length * OPTION_HEIGHT
+
+    return (
+      <Virtuoso
+        className="media__custom-scrollbar"
+        itemContent={index => {
+          const item = children[index]
+          return <Option {...item.props} />
+        }}
+        style={{height}}
+        totalCount={children.length}
+      />
+    )
+  } else {
+    return <components.MenuList {...props}>{children}</components.MenuList>
+  }
 }
 
 const MultiValueLabel = (props: any) => {
   return (
     <Box paddingLeft={1} paddingRight={0} paddingY={1}>
-      <Text size={2} weight="semibold">
+      <Text size={2} weight="medium">
         <components.MultiValueLabel {...props} />
       </Text>
     </Box>
@@ -139,7 +155,7 @@ const MultiValueRemove = (props: any) => {
 
 const Option = (props: any) => {
   return (
-    <Box paddingX={2} paddingY={1}>
+    <Box paddingX={1} paddingY={1}>
       <components.Option {...props}>
         <Flex align="center">
           {props.data.__isNew__ && <AddIcon style={{marginRight: '3px'}} />}
