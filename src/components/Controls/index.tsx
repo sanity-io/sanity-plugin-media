@@ -3,7 +3,6 @@ import {Box, Button, Flex, Inline} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import {Flex as LegacyFlex} from 'theme-ui'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
@@ -37,13 +36,7 @@ const Controls: FC = () => {
   }
 
   return (
-    <Box
-      paddingY={2}
-      style={{
-        borderBottom: `1px solid ${hues.gray?.[900].hex}`,
-        zIndex: 2
-      }}
-    >
+    <Box paddingY={2} style={{borderBottom: `1px solid ${hues.gray?.[900].hex}`}}>
       {/* Rows: search / filters / orders  */}
       <Box marginBottom={2}>
         <Flex
