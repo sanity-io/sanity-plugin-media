@@ -41,6 +41,11 @@ const AssetTableVirtualized = (props: Props) => {
   const selectedAssets = useTypedSelector(state => state.selected.assets)
 
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
+  const totalCount = items?.length
+
+  if (totalCount === 0) {
+    return null
+  }
 
   return (
     <GroupedVirtuoso
@@ -50,7 +55,7 @@ const AssetTableVirtualized = (props: Props) => {
         return item?.id || index
       }}
       endReached={onLoadMore}
-      groupCounts={Array(1).fill(items.length)}
+      groupCounts={Array(1).fill(totalCount)}
       groupContent={() => {
         return <TableHeader />
       }}

@@ -51,6 +51,10 @@ const AssetGridVirtualized = (props: Props) => {
   const selectedIds = (selectedAssets && selectedAssets.map(asset => asset._id)) || []
   const totalCount = items?.length
 
+  if (totalCount === 0) {
+    return null
+  }
+
   return (
     <VirtuosoGrid
       className="media__custom-scrollbar"

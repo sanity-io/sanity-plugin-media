@@ -43,20 +43,22 @@ const Items: FC = () => {
 
   return (
     <Box flex={1} style={{width: '100%'}}>
-      {isEmpty && (
+      {isEmpty ? (
         <Box padding={4}>
           <Text size={1} weight="semibold">
             No results for the current query
           </Text>
         </Box>
-      )}
+      ) : (
+        <>
+          {view === 'grid' && (
+            <AssetGridVirtualized items={combinedItems} onLoadMore={handleLoadMoreItems} />
+          )}
 
-      {!isEmpty && view === 'grid' && (
-        <AssetGridVirtualized items={combinedItems} onLoadMore={handleLoadMoreItems} />
-      )}
-
-      {!isEmpty && view === 'table' && (
-        <AssetTableVirtualized items={combinedItems} onLoadMore={handleLoadMoreItems} />
+          {view === 'table' && (
+            <AssetTableVirtualized items={combinedItems} onLoadMore={handleLoadMoreItems} />
+          )}
+        </>
       )}
     </Box>
   )
