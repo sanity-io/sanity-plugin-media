@@ -2,7 +2,8 @@ import {black, hues, white} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
 import {Box, Card, Text, studioTheme} from '@sanity/ui'
 import {components} from 'react-select'
-import React, {CSSProperties} from 'react'
+import React, {CSSProperties, forwardRef} from 'react'
+import {Components, Virtuoso} from 'react-virtuoso'
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
 const themeDarkDefaultBaseBg = studioTheme?.color?.dark?.default?.base?.bg
@@ -44,7 +45,6 @@ export const reactSelectStyles = {
   }),
   menuList: (styles: CSSProperties) => ({
     ...styles,
-    maxHeight: '146px',
     padding: 0
   }),
   noOptionsMessage: (styles: CSSProperties) => ({
@@ -111,11 +111,29 @@ const Menu = (props: any) => {
 }
 
 const MenuList = (props: any) => {
-  return (
-    <components.MenuList {...props} className="media__custom-scrollbar">
-      {props.children}
-    </components.MenuList>
-  )
+  const {children} = props
+
+  const MAX_ROWS = 5
+  const OPTION_HEIGHT = 33
+
+  if (Array.isArray(children)) {
+    const height =
+      children.length > MAX_ROWS ? OPTION_HEIGHT * MAX_ROWS : children.length * OPTION_HEIGHT
+
+    return (
+      <Virtuoso
+        className="media__custom-scrollbar"
+        itemContent={index => {
+          const item = children[index]
+          return <Option {...item.props} />
+        }}
+        style={{height}}
+        totalCount={children.length}
+      />
+    )
+  } else {
+    return <components.MenuList {...props}>{children}</components.MenuList>
+  }
 }
 
 const NoOptionsMessage = (props: any) => {
