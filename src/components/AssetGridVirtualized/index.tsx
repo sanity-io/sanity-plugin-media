@@ -68,6 +68,7 @@ const AssetGridVirtualized = (props: Props) => {
         const selected = selectedIds.includes(item?.id)
         return <VirtualCell item={item} selected={selected} />
       }}
+      overscan={48}
       totalCount={totalCount}
     />
   )
