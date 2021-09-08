@@ -4,7 +4,6 @@ import {Asset, Tag} from '@types'
 import groq from 'groq'
 import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {client} from '../../client'
 import {TAG_DOCUMENT_NAME} from '../../constants'
 import {assetsActions} from '../../modules/assets'

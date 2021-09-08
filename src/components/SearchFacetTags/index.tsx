@@ -4,7 +4,6 @@ import {ReactSelectOption, SearchFacetInputSearchableProps, SearchFacetOperatorT
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import Select from 'react-select'
-
 import {operators} from '../../config/searchFacets'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
