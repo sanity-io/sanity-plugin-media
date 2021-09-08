@@ -1,9 +1,9 @@
 import {black, hues, white} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
-import {Box, Card, Text, studioTheme} from '@sanity/ui'
+import {Box, Card, studioTheme, Text} from '@sanity/ui'
+import React, {CSSProperties} from 'react'
 import {components} from 'react-select'
-import React, {CSSProperties, forwardRef} from 'react'
-import {Components, Virtuoso} from 'react-virtuoso'
+import {Virtuoso} from 'react-virtuoso'
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
 const themeDarkDefaultBaseBg = studioTheme?.color?.dark?.default?.base?.bg

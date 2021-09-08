@@ -1,9 +1,9 @@
 import {black, hues} from '@sanity/color'
 import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
-import {Box, Card, Flex, Text, studioTheme} from '@sanity/ui'
+import {Box, Card, Flex, studioTheme, Text} from '@sanity/ui'
+import React, {CSSProperties} from 'react'
 import {components} from 'react-select'
-import React, {CSSProperties, forwardRef} from 'react'
-import {Components, Virtuoso} from 'react-virtuoso'
+import {Virtuoso} from 'react-virtuoso'
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
 const themeDarkPrimaryGray = studioTheme?.color?.dark?.primary?.spot?.gray

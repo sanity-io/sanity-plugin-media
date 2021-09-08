@@ -63,7 +63,11 @@ const SearchFacetsControl: FC = () => {
 
           // Recursively render menu facets
           if (facet.type === 'group') {
-            return <MenuGroup title={facet.title}>{renderMenuFacets(facet.facets)}</MenuGroup>
+            return (
+              <MenuGroup text={facet.title} title={facet.title}>
+                {renderMenuFacets(facet.facets)}
+              </MenuGroup>
+            )
           }
 
           if (facet) {
