@@ -5,10 +5,13 @@
 
 A convenient way to browse, manage and refine your [Sanity](https://www.sanity.io/) assets.
 
-Use it standalone as a browser, or optionally hook it up as a [custom asset source](https://www.sanity.io/docs/custom-asset-sources) and use it to power asset selection too.
+Use it standalone as a browser, or optionally hook it up as a [custom asset source](https://www.sanity.io/docs/custom-asset-sources) and use it to power both image and file selection too.
 
 ![Grid view](https://user-images.githubusercontent.com/209129/108927411-21aa7f00-7638-11eb-9cf7-334598ac4103.png)
-![Asset view](https://user-images.githubusercontent.com/209129/105532355-9fe6cf00-5ce2-11eb-9982-b2bfd22f3409.png)
+_Default grid view_
+
+![Asset view](https://user-images.githubusercontent.com/209129/132573482-fa866da9-7ee0-42db-b39f-25a0e48bba9f.png)
+_Individual asset view_
 
 ## Features
 
@@ -29,10 +32,10 @@ Use it standalone as a browser, or optionally hook it up as a [custom asset sour
 
 #### Built for large datasets and collaborative editing in mind
 
-- Virtualized grid + tabular views for super speedy browsing, even with thousands of assets
+- Virtualized grid + tabular views for super speedy browsing, even with thousands of assets and tags
 - Utilises Sanity's [real time updates](https://www.sanity.io/docs/realtime-updates) for live changes from other studio members
 
-#### Fits right in with your Sanity studio!
+#### Fits right in with your Sanity studio
 
 - Built with the same [UI components Sanity uses](https://www.sanity.io/ui) under the hood
 - Fully responsive and mobile friendly
@@ -49,17 +52,23 @@ This will add the Media button to your studio menu. If this is all you're after 
 
 ### Enabling it as a global [custom asset source](https://www.sanity.io/docs/custom-asset-sources)
 
-You'll need to do this if you want to use the plugin when selecting images.
+You'll need to do this if you want to use the plugin when selecting images or files.
 
 This plugin exposes `part:sanity-plugin-media/asset-source` which you import when defining custom asset sources.
 
 In `sanity.json`, add the following snippet to the `parts` array:
 
 ```json
+// Images
 {
   "implements": "part:@sanity/form-builder/input/image/asset-sources",
   "path": "./parts/assetSources.js"
-}
+},
+// Files (Sanity >= 2.16.0)
+{
+  "implements": "part:@sanity/form-builder/input/file/asset-sources",
+  "path": "./parts/assetSources.js"
+},
 ```
 
 In `./parts/assetSources.js`:
@@ -70,7 +79,7 @@ import MediaAssetSource from 'part:sanity-plugin-media/asset-source'
 export default [MediaAssetSource]
 ```
 
-That's it! The browser will now pop up every time you try select an image.
+That's it! The browser will now pop up every time you try select an image or file.
 
 ## Known issues
 
@@ -98,13 +107,6 @@ That's it! The browser will now pop up every time you try select an image.
 - Any images downloaded in the plugin are those _already processed_ by Sanity without any [image transformations](https://www.sanity.io/docs/image-urls) applied
 - Please note these are not the original uploaded images: they will likely have a smaller file size and will be stripped of any EXIF data.
 - Currently, it's not possible in Sanity to grab these original image assets within the studio - but this may change in future!
-
-</details>
-
-<details>
-<summary>There isn't a way to use the plugin to select file (non-image) assets</summary>
-
-- This will be possible if and when Sanity enables custom asset sources on `file` fields.
 
 </details>
 
@@ -207,8 +209,8 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 <details>
 <summary>How does the plugin determine what should uploaded as a <code>sanity.imageAsset</code> or <code>sanity.fileAsset</code>?</summary>
 
-- The plugin will look at incoming files' MIME type. All files of type `image/*` will be uploaded as `sanity.imageAsset`, everything else will be treated as `sanity.fileAsset`
-- This means that it's not possible to upload images as `sanity.fileAsset` via the plugin. In the rare case that you do need images to be treated as files, consider uploading them outside of the plugin
+- As a rule of thumb, when uploading when accessing the plugin as a _tool_ (e.g. if you've acceessed it via the header), it will look at incoming files' MIME type. All files of type `image/*` will be uploaded as `sanity.imageAsset` whilst everything else will be treated as `sanity.fileAsset`
+- If you upload when using the plugin in a file selection context, all files will be uploaded as `sanity.fileAsset`, regardless of their MIME type. This is probably not what you want, since images uploaded as files won't have associated metadata nor will they work in Sanity's image pipeline.
 
 </details>
 
