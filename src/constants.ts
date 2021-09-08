@@ -56,8 +56,9 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   divider,
   inputs.isOpaque,
   divider,
+  inputs.fileName,
   inputs.size,
-  inputs.type, // File type
+  inputs.type,
   divider,
   inputs.orientation,
   inputs.width,

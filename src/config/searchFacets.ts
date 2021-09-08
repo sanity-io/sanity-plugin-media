@@ -15,7 +15,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     name: 'altText',
     operatorType: 'empty',
     operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
-    title: 'Alt Text',
+    title: 'Alt text',
     type: 'string',
     value: ''
   },
@@ -26,6 +26,16 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     operatorType: 'empty',
     operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
     title: 'Description',
+    type: 'string',
+    value: ''
+  },
+  fileName: {
+    assetTypes: ['file', 'image'],
+    field: 'originalFilename',
+    name: 'filename',
+    operatorType: 'includes',
+    operatorTypes: ['includes', 'doesNotInclude'],
+    title: 'File name',
     type: 'string',
     value: ''
   },
@@ -160,7 +170,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
       null,
       'equalTo'
     ],
-    title: 'File Size',
+    title: 'File size',
     type: 'number',
     value: 0
   },
@@ -210,7 +220,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
         value: 'mimeType == "application/pdf"'
       }
     ],
-    title: 'File Type',
+    title: 'File type',
     type: 'select',
     value: 'image'
   },

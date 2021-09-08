@@ -233,6 +233,7 @@ export type SearchFacetInputStringProps = SearchFacetInputCommon & {
 export type SearchFacetName =
   | 'altText'
   | 'description'
+  | 'fileName'
   | 'height'
   | 'inCurrentDocument'
   | 'inUse'
