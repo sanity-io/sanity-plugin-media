@@ -106,7 +106,6 @@ const SearchFacetsControl: FC = () => {
         id="facets"
         menu={<Menu>{renderMenuFacets(filteredFacets)}</Menu>}
         placement="right-start"
-        portal
       />
 
       {/* Clear facets button */}
