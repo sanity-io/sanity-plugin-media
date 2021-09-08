@@ -23,6 +23,7 @@ const SearchFacetTags: FC<Props> = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
   const tags = useTypedSelector(state => selectTags(state))
+  const tagsFetching = useTypedSelector(state => state.tags.fetching)
   const allTagOptions = getTagSelectOptions(tags)
 
   const handleChange = (option: ReactSelectOption) => {
@@ -89,12 +90,13 @@ const SearchFacetTags: FC<Props> = (props: Props) => {
             components={reactSelectComponents}
             instanceId="facet-searchable"
             isClearable
+            isDisabled={tagsFetching}
             isSearchable
             name="tags"
             noOptionsMessage={() => 'No tags'}
             onChange={value => handleChange(value as ReactSelectOption)}
             options={allTagOptions}
-            placeholder="Select..."
+            placeholder={tagsFetching ? 'Loading...' : 'Select...'}
             styles={reactSelectStyles}
             value={facet?.value}
           />
