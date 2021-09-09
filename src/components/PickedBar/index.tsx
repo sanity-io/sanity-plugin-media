@@ -3,11 +3,10 @@ import {Box, Button, Flex, Label} from '@sanity/ui'
 import pluralize from 'pluralize'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
-
-import useTypedSelector from '../../hooks/useTypedSelector'
-import {dialogActions} from '../../modules/dialog'
-import {assetsActions, selectAssetsPicked} from '../../modules/assets'
 import {PANEL_HEIGHT} from '../../constants'
+import useTypedSelector from '../../hooks/useTypedSelector'
+import {assetsActions, selectAssetsPicked} from '../../modules/assets'
+import {dialogActions} from '../../modules/dialog'
 
 const PickedBar: FC = () => {
   // Redux
@@ -41,33 +40,32 @@ const PickedBar: FC = () => {
       }}
     >
       <Flex align="center">
-        <Label size={0} style={{color: 'inherit'}}>
-          {assetsPicked.length} {pluralize('asset', assetsPicked.length)} selected
-        </Label>
+        <Box paddingRight={2}>
+          <Label size={0} style={{color: 'inherit'}}>
+            {assetsPicked.length} {pluralize('asset', assetsPicked.length)} selected
+          </Label>
+        </Box>
 
         {/* Deselect button */}
-        <Flex marginLeft={4} marginRight={0}>
-          <Button
-            mode="bleed"
-            onClick={handlePickClear}
-            style={{background: 'none', boxShadow: 'none'}}
-          >
-            <Box padding={2}>
-              <Label size={0}>Deselect</Label>
-            </Box>
-          </Button>
-        </Flex>
+        <Button
+          mode="bleed"
+          onClick={handlePickClear}
+          padding={2}
+          style={{background: 'none', boxShadow: 'none'}}
+          tone="default"
+        >
+          <Label size={0}>Deselect</Label>
+        </Button>
 
         {/* Delete button */}
         <Button
           mode="bleed"
           onClick={handleDeletePicked}
+          padding={2}
           style={{background: 'none', boxShadow: 'none'}}
           tone="critical"
         >
-          <Box padding={2}>
-            <Label size={0}>Delete</Label>
-          </Box>
+          <Label size={0}>Delete</Label>
         </Button>
       </Flex>
     </Flex>
