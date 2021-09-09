@@ -30,7 +30,7 @@ const VirtualRow = memo(
 
     // Render tag - only display actions if we're not in the process of scrolling
     return (
-      <Box key={item.tag?._id}>
+      <Box key={item.tag?._id} paddingLeft={3}>
         <Tag actions={isScrolling ? undefined : item.actions} tag={item} />
       </Box>
     )
@@ -136,23 +136,22 @@ const TagsVirtualized: FC = () => {
   }
 
   return (
-    <Box paddingX={3} style={{flex: 1}}>
-      <Virtuoso
-        className="media__custom-scrollbar"
-        computeItemKey={index => {
-          const item = items[index]
-          if (typeof item === 'string') {
-            return item
-          }
-          return item.tag._id
-        }}
-        isScrolling={setIsScrolling}
-        itemContent={index => {
-          return <VirtualRow isScrolling={isScrolling} item={items[index]} />
-        }}
-        totalCount={items.length}
-      />
-    </Box>
+    <Virtuoso
+      className="media__custom-scrollbar"
+      computeItemKey={index => {
+        const item = items[index]
+        if (typeof item === 'string') {
+          return item
+        }
+        return item.tag._id
+      }}
+      isScrolling={setIsScrolling}
+      itemContent={index => {
+        return <VirtualRow isScrolling={isScrolling} item={items[index]} />
+      }}
+      style={{flex: 1, overflowX: 'hidden'}}
+      totalCount={items.length}
+    />
   )
 }
 
