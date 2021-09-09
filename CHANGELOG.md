@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0-beta.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.3.1...v1.4.0-beta.0) (2021-09-09)
+
+
+### Features
+
+* add filename facet ([43b10da](https://github.com/robinpyon/sanity-plugin-media/commit/43b10dac3e5bd4e56be009caf8a198ff951995c4))
+* add initial file custom asset source support: conditionally filter and facet by asset type ([cb96447](https://github.com/robinpyon/sanity-plugin-media/commit/cb96447706637eafa5ea5f509a53ecf596a1eb37))
+* add overscan to asset grid view ([abebeab](https://github.com/robinpyon/sanity-plugin-media/commit/abebeab349e25e248d5fa53ffe45a1d08e50375d))
+* disable react-select until all tags have loaded in full ([35849df](https://github.com/robinpyon/sanity-plugin-media/commit/35849df57f9cad19f07b3d5c80ad6e2b27cb7e32))
+* virtualize react-select views ([fa7da0a](https://github.com/robinpyon/sanity-plugin-media/commit/fa7da0a39d086b8a72501591efc97255ad7a43d2))
+
+
+### Bug Fixes
+
+* ensure that no empty virtuoso views are rendered ([dc4a606](https://github.com/robinpyon/sanity-plugin-media/commit/dc4a60611d4a9014a25d068a2de110912d2e646c))
+* force fixed positioning on sanity-ui Dialogs to prevent mobile scrolling issues ([097ec0c](https://github.com/robinpyon/sanity-plugin-media/commit/097ec0cd29db9d19d7952769b27f6464a7511b02))
+* force search facet <MenuButton /> to render in a portal, remove hard-coded z-index ([b708e75](https://github.com/robinpyon/sanity-plugin-media/commit/b708e75db0b12a753252b83663fd104d4b46b272))
+* **tags:** render all tags in a virtualized container ([dd8c755](https://github.com/robinpyon/sanity-plugin-media/commit/dd8c755f7bbee83d7202fda6a27cf340a3238241))
+
 ### [1.3.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.3.0...v1.3.1) (2021-05-09)
 
 
