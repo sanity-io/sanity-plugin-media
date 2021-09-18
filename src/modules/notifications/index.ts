@@ -141,6 +141,7 @@ export const notificationsGenericErrorEpic: MyEpic = action$ =>
       assetsActions.fetchError.type,
       assetsActions.updateError.type,
       tagsActions.createError.type,
+      tagsActions.deleteError.type,
       tagsActions.fetchError.type,
       tagsActions.updateError.type,
       uploadsActions.uploadError.type

@@ -1,4 +1,4 @@
-import {Box, Flex, Label} from '@sanity/ui'
+import {Flex, Label} from '@sanity/ui'
 import React, {FC, memo, useState} from 'react'
 import {Virtuoso} from 'react-virtuoso'
 import {PANEL_HEIGHT} from '../../constants'
