@@ -1,6 +1,7 @@
 import {Box, Flex, Label} from '@sanity/ui'
 import React, {FC, memo, useState} from 'react'
 import {Virtuoso} from 'react-virtuoso'
+import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'
@@ -22,18 +23,20 @@ const VirtualRow = memo(
     // Render label
     if (typeof item === 'string') {
       return (
-        <Flex align="center" justify="space-between" key={item} paddingY={3}>
+        <Flex
+          align="center"
+          justify="space-between"
+          key={item}
+          paddingX={3}
+          style={{height: `${PANEL_HEIGHT}px`}}
+        >
           <Label size={0}>{item}</Label>
         </Flex>
       )
     }
 
     // Render tag - only display actions if we're not in the process of scrolling
-    return (
-      <Box key={item.tag?._id} paddingLeft={3}>
-        <Tag actions={isScrolling ? undefined : item.actions} tag={item} />
-      </Box>
-    )
+    return <Tag actions={isScrolling ? undefined : item.actions} key={item.tag?._id} tag={item} />
   }
 )
 

@@ -6,6 +6,7 @@ import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {inputs} from '../../config/searchFacets'
+import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
@@ -16,7 +17,10 @@ type Props = {
   tag: TagItem
 }
 
-const TagContainer = styled(Flex)``
+const TagContainer = styled(Flex)`
+  height: ${PANEL_HEIGHT}px;
+  width: 100%;
+`
 
 const ButtonContainer = styled(Flex)`
   @media (pointer: fine) {
@@ -119,8 +123,8 @@ const Tag: FC<Props> = (props: Props) => {
   }
 
   return (
-    <TagContainer align="center" justify="space-between">
-      <Box flex={1} paddingY={3}>
+    <TagContainer align="center" justify="space-between" paddingLeft={3}>
+      <Box flex={1}>
         <Text
           size={1}
           style={{
