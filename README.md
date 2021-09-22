@@ -48,7 +48,9 @@ In your Sanity project folder:
 sanity install media
 ```
 
-This will add the Media button to your studio menu. If this is all you're after – that's all you need to do!
+This will add the Media plugin as a standalone tool, accessible via your studio menu.
+
+If you're happy with Sanity's default image and file pickers, then this is all you need to do!
 
 ### Enabling it as a global [custom asset source](https://www.sanity.io/docs/custom-asset-sources)
 
@@ -56,15 +58,15 @@ You'll need to do this if you want to use the plugin when selecting images or fi
 
 This plugin exposes `part:sanity-plugin-media/asset-source` which you import when defining custom asset sources.
 
-In `sanity.json`, add the following snippet to the `parts` array:
+In `sanity.json`, add the following snippet to the `parts` array.
+
+_File asset support requires Sanity 2.16.x or greater._
 
 ```json
-// Images
 {
   "implements": "part:@sanity/form-builder/input/image/asset-sources",
   "path": "./parts/assetSources.js"
 },
-// Files (Sanity >= 2.16.0)
 {
   "implements": "part:@sanity/form-builder/input/file/asset-sources",
   "path": "./parts/assetSources.js"
@@ -79,7 +81,7 @@ import MediaAssetSource from 'part:sanity-plugin-media/asset-source'
 export default [MediaAssetSource]
 ```
 
-That's it! The browser will now pop up every time you try select an image or file.
+That's it! The plugin will now pop up every time you try select an image or file.
 
 ## Known issues
 
@@ -197,7 +199,7 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 #### Deleting assets
 
 <details>
-<summary>How come deleting multiple assets fails, even if only one asset is in use?</summary>
+<summary>Why am I unable to delete multiple assets, even if only one asset is in use?</summary>
 
 - Batch mutations are carried out via Sanity [transactions](https://www.sanity.io/docs/transactions). These transactions are _atomic_, meaning that if one deletion fails (often because it's referenced elsewhere), then all mutations in the transaction will fail and no changes will occur
 - To get around this, simply make sure that all assets you've marked for deletion are not referenced – this can be easily accomplished by using a search facet to only show assets which are not in use
@@ -209,8 +211,8 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 <details>
 <summary>How does the plugin determine what should uploaded as a <code>sanity.imageAsset</code> or <code>sanity.fileAsset</code>?</summary>
 
-- As a rule of thumb, when uploading when accessing the plugin as a _tool_ (e.g. if you've acceessed it via the header), it will look at incoming files' MIME type. All files of type `image/*` will be uploaded as `sanity.imageAsset` whilst everything else will be treated as `sanity.fileAsset`
-- If you upload when using the plugin in a file selection context, all files will be uploaded as `sanity.fileAsset`, regardless of their MIME type. This is probably not what you want, since images uploaded as files won't have associated metadata nor will they work in Sanity's image pipeline.
+- As a rule of thumb, when uploading when accessing the plugin as a _tool_ (e.g. if you've acceessed it via the studio menu), it will look at any incoming files' MIME type. All files of type `image/*` will be uploaded as `sanity.imageAsset` whilst everything else will be treated as `sanity.fileAsset`
+- If you upload when using the plugin in a _file_ selection context, these be uploaded as `sanity.fileAsset` regardless of their MIME type. This is probably not what you want, since images uploaded as files won't have associated metadata nor will they work in Sanity's image pipeline.
 
 </details>
 
