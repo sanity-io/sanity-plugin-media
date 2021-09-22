@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.3.1...v1.4.0) (2021-09-22)
+
+
+### Features
+
+* add filename facet ([4f70fab](https://github.com/robinpyon/sanity-plugin-media/commit/4f70fabbf7a47c16e60ae3d7d861b1381a5c4a9f))
+* add initial file custom asset source support: conditionally filter and facet by asset type ([7a2b988](https://github.com/robinpyon/sanity-plugin-media/commit/7a2b9883827ff5283fed842cb8635fa7d509483b))
+* add overscan to asset grid view ([7b3aaba](https://github.com/robinpyon/sanity-plugin-media/commit/7b3aabafa75cdda41380c900d9b96c0b654054c9))
+* disable react-select until all tags have loaded in full ([5948a94](https://github.com/robinpyon/sanity-plugin-media/commit/5948a947ee32c860edad0a47aa9b8d20ec7111e8))
+* virtualize react-select views ([f712c4c](https://github.com/robinpyon/sanity-plugin-media/commit/f712c4ccec9901321bcaaef7dca237c07dbdc49c))
+
+
+### Bug Fixes
+
+* ensure that generic tag deletion errors are caught and displayed in notifications ([b65e0e6](https://github.com/robinpyon/sanity-plugin-media/commit/b65e0e69cbce78fc0b49610ba87f5c0ec2707122))
+* ensure that no empty virtuoso views are rendered ([04904e5](https://github.com/robinpyon/sanity-plugin-media/commit/04904e5ca408d424e28c2dca05d0b545d1b04b21))
+* force fixed positioning on sanity-ui Dialogs to prevent mobile scrolling issues ([94465a5](https://github.com/robinpyon/sanity-plugin-media/commit/94465a5c89166501cd65d9d387f09d5c7d567b41))
+* force search facet <MenuButton /> to render in a portal, remove hard-coded z-index ([4afb51e](https://github.com/robinpyon/sanity-plugin-media/commit/4afb51eed57926ca7279b351fd588f3ac86c70d6))
+* **tags:** render all tags in a virtualized container ([abdc7e3](https://github.com/robinpyon/sanity-plugin-media/commit/abdc7e362d4ed5f62ff5bd632e9b886fdbd36771))
+
 ### [1.3.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.3.0...v1.3.1) (2021-05-09)
 
 
