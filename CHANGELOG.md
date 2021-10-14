@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.0...v1.4.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* quickfix to work around a minor regression in sanity 2.21.0 ([1abf9e8](https://github.com/robinpyon/sanity-plugin-media/commit/1abf9e8b3f5f24e3848d4193193fba187fa65ab2))
+
 ## [1.4.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.3.1...v1.4.0) (2021-09-22)
 
 
