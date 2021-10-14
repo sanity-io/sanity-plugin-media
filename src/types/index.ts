@@ -43,7 +43,6 @@ export type AssetSourceComponentProps = {
   selectionType: 'single' | 'multiple'
   onClose: () => void
   onSelect: (assets: AssetFromSource[]) => void
-  tool?: string
 }
 
 export type Block = {

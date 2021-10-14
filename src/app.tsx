@@ -13,7 +13,7 @@ import theme from './styled/theme'
 type Props = AssetSourceComponentProps
 
 const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
-  const {onClose, onSelect, tool} = props
+  const {onClose, onSelect} = props
 
   // Close on escape key press
   useKeyPress('escape', onClose)
@@ -35,9 +35,9 @@ const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElemen
               <AssetBrowserDispatchProvider onSelect={onSelect}>
                 <GlobalStyle />
 
-                {tool ? (
-                  <Box ref={ref} style={{height: '100%', position: 'relative'}}>
-                    <Browser onClose={onClose} />
+                {!onClose ? (
+                  <Box ref={ref} style={{background: 'red', height: '100%', position: 'relative'}}>
+                    <Browser />
                   </Box>
                 ) : (
                   <Portal>
