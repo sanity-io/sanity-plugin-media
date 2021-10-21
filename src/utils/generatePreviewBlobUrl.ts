@@ -7,9 +7,11 @@ const createBlob = (img: HTMLImageElement) => {
   return new Promise(resolve => {
     const imageAspect = img.width / img.height
 
+    // Create a canvas element which we'll use to generate a low resolution preview.
+    // Ensure that the canvas is at least 1 pixel high as blob generation will fail otherwise.
     const canvas: HTMLCanvasElement = document.createElement('canvas')
     canvas.width = PREVIEW_WIDTH
-    canvas.height = PREVIEW_WIDTH / imageAspect
+    canvas.height = Math.max(PREVIEW_WIDTH / imageAspect, 1)
 
     const ctx = canvas.getContext('2d')
     ctx?.drawImage(img, 0, 0, PREVIEW_WIDTH, PREVIEW_WIDTH / imageAspect)
