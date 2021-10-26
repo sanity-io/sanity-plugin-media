@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.2...v1.4.3) (2021-10-26)
+
+
+### Bug Fixes
+
+* expose _id, assetId and url in default input search ([0f7d544](https://github.com/robinpyon/sanity-plugin-media/commit/0f7d544d7b688972e3d12f1fac1b6a2bc3b94a02))
+
 ### [1.4.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.1...v1.4.2) (2021-10-21)
 
 
