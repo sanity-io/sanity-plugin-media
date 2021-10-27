@@ -1,4 +1,4 @@
-import {AnyAction, configureStore, getDefaultMiddleware, Store} from '@reduxjs/toolkit'
+import {AnyAction, configureStore, Store} from '@reduxjs/toolkit'
 import {AssetSourceComponentProps} from '@types'
 import React, {Component, ReactNode} from 'react'
 import {Provider} from 'react-redux'
@@ -23,9 +23,8 @@ class ReduxProvider extends Component<Props> {
     const epicMiddleware = createEpicMiddleware<AnyAction, AnyAction, RootReducerState>()
     this.store = configureStore({
       reducer: rootReducer,
-      middleware: [
-        epicMiddleware,
-        ...getDefaultMiddleware({
+      middleware: getDefaultMiddleware =>
+        getDefaultMiddleware({
           /*
           serializableCheck: {
             ignoredActions: [
@@ -38,8 +37,7 @@ class ReduxProvider extends Component<Props> {
           // TODO: remove once we're no longer storing non-serializable data in the store
           serializableCheck: false,
           thunk: false
-        })
-      ],
+        }).prepend(epicMiddleware),
       devTools: true,
       preloadedState: {
         assets: {

@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "2.0.0-beta.3",
-    "@reduxjs/toolkit": "1.5.1",
+    "@reduxjs/toolkit": "1.6.2",
     "@sanity/color": "2.1.5",
     "@sanity/icons": "1.1.7",
     "@sanity/types": "^2.17.1",
