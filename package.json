@@ -56,7 +56,6 @@
     "react-redux": "7.2.2",
     "react-select": "4.1.0",
     "react-virtuoso": "2.0.1",
-    "redux": "4.0.5",
     "redux-observable": "1.2.0",
     "rxjs": "6.6.3",
     "styled-components": "^5.2.1",

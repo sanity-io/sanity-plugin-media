@@ -1,6 +1,6 @@
+import {AnyAction} from '@reduxjs/toolkit'
 import type {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
 import type {AssetFromSource} from '@sanity/types'
-import {AnyAction} from 'redux'
 
 type CustomFields = {
   altText?: string
