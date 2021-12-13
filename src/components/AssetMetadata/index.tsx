@@ -46,6 +46,7 @@ const AssetMetadata: FC<Props> = (props: Props) => {
   const {asset, item} = props
 
   const exif = asset?.metadata?.exif
+  const source = asset?.source
 
   // Callbacks
   const handleDownload = () => {
@@ -86,6 +87,25 @@ const AssetMetadata: FC<Props> = (props: Props) => {
               {exif.DateTimeOriginal && (
                 <Row label="Original date" value={format(new Date(exif.DateTimeOriginal), 'PPp')} />
               )}
+            </Stack>
+          </Box>
+        </>
+      )}
+      {source && (
+        <>
+          {/* Divider */}
+          <Box
+            marginY={4}
+            style={{
+              background: '#222',
+              height: '1px',
+              width: '100%'
+            }}
+          />
+          <Box>
+            <Stack space={3}>
+              <Row label="Source name" value={source?.name} />
+              <Row label="Source ID" value={source?.id} />
             </Stack>
           </Box>
         </>
