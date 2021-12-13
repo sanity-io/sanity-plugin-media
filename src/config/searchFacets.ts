@@ -240,6 +240,26 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     title: 'Width',
     type: 'number',
     value: 400
+  },
+  sourceName: {
+    assetTypes: ['file', 'image'],
+    field: 'source.name',
+    name: 'sourceName',
+    operatorType: 'includes',
+    operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
+    title: 'Source name',
+    type: 'string',
+    value: ''
+  },
+  sourceID: {
+    assetTypes: ['file', 'image'],
+    field: 'source.id',
+    name: 'sourceID',
+    operatorType: 'includes',
+    operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
+    title: 'Source ID',
+    type: 'string',
+    value: ''
   }
 }
 

@@ -60,6 +60,9 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   inputs.size,
   inputs.type,
   divider,
+  inputs.sourceName,
+  inputs.sourceID,
+  divider,
   inputs.orientation,
   inputs.width,
   inputs.height

@@ -243,6 +243,8 @@ export type SearchFacetName =
   | 'title'
   | 'type'
   | 'width'
+  | 'sourceName'
+  | 'sourceID'
 
 export type SearchFacetOperatorType =
   | 'doesNotInclude'
