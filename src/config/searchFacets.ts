@@ -249,11 +249,11 @@ export const operators: SearchFacetOperators = {
     label: 'does not include'
   },
   doesNotReference: {
-    fn: (value, _) => (value ? `!references('${value}')` : undefined),
+    fn: (value, _field) => (value ? `!references('${value}')` : undefined),
     label: 'does not include'
   },
   empty: {
-    fn: (_, field) => `!defined(${field})`,
+    fn: (_value, field) => `!defined(${field})`,
     hideInput: true,
     label: 'is empty'
   },
@@ -274,11 +274,11 @@ export const operators: SearchFacetOperators = {
     label: 'includes'
   },
   is: {
-    fn: (value, _) => `${value}`,
+    fn: (value, _field) => `${value}`,
     label: 'is'
   },
   isNot: {
-    fn: (value, _) => `!(${value})`,
+    fn: (value, _field) => `!(${value})`,
     label: 'is not'
   },
   lessThan: {
@@ -290,12 +290,12 @@ export const operators: SearchFacetOperators = {
     label: 'is less than or equal to'
   },
   notEmpty: {
-    fn: (_, field) => `defined(${field})`,
+    fn: (_value, field) => `defined(${field})`,
     hideInput: true,
     label: 'is not empty'
   },
   references: {
-    fn: (value, _) => (value ? `references('${value}')` : undefined),
+    fn: (value, _field) => (value ? `references('${value}')` : undefined),
     label: 'includes'
   }
 }

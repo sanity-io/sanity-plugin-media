@@ -5,15 +5,7 @@ import groq from 'groq'
 import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
 import {empty, merge, of} from 'rxjs'
-import {
-  // bufferTime,
-  catchError,
-  delay,
-  filter,
-  mergeMap,
-  takeUntil,
-  withLatestFrom
-} from 'rxjs/operators'
+import {catchError, delay, filter, mergeMap, takeUntil, withLatestFrom} from 'rxjs/operators'
 
 import {RootReducerState} from '../types'
 import {client} from '../../client'

@@ -485,7 +485,7 @@ export const assetsFetchNextPageEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(assetsActions.loadNextPage.match),
     withLatestFrom(state$),
-    switchMap(([_, state]) =>
+    switchMap(([_action, state]) =>
       of(assetsActions.loadPageIndex({pageIndex: state.assets.pageIndex + 1}))
     )
   )
@@ -494,7 +494,7 @@ export const assetsFetchAfterDeleteAllEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(assetsActions.deleteComplete.match),
     withLatestFrom(state$),
-    switchMap(([_, state]) => {
+    switchMap(([_action, state]) => {
       if (state.assets.allIds.length === 0) {
         const nextPageIndex = Math.floor(state.assets.allIds.length / state.assets.pageSize)
         return of(assetsActions.loadPageIndex({pageIndex: nextPageIndex}))

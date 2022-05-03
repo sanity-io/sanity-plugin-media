@@ -24,8 +24,13 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 0,
-    '@typescript-eslint/no-unused-vars': 'error',
-    argsIgnorePattern: '^_',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_'
+      }
+    ],
     'import/no-unresolved': ['error', {ignore: ['^react$', '.*:.*']}],
     'react/display-name': 0,
     'no-unused-vars': 'off'
