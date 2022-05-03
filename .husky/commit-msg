@@ -1,4 +1,8 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+<<<<<<< HEAD
 npx --no -- commitlint --edit "$1"
+=======
+npx --no -- commitlint --edit ""
+>>>>>>> 890df56 (build: add lint-staged, bump husky + commitlint deps)
