@@ -1,7 +1,6 @@
-# don't ever lint node_modules
-node_modules
-# don't lint build output
-dist
-# don't lint nyc coverage output
+.eslintrc.js
+commitlint.config.js
 coverage
+dist
 lint-staged.config.js
+node_modules
