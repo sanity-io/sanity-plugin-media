@@ -1,4 +1,12 @@
-import {Box, Portal, PortalProvider, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
+import {
+  Box,
+  Flex,
+  Portal,
+  PortalProvider,
+  studioTheme,
+  ThemeProvider,
+  ToastProvider
+} from '@sanity/ui'
 import {AssetSourceComponentProps} from '@types'
 import React, {FC, forwardRef, MouseEvent, Ref} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
@@ -36,9 +44,9 @@ const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElemen
                 <GlobalStyle />
 
                 {!onClose ? (
-                  <Box ref={ref} style={{background: 'red', height: '100%', position: 'relative'}}>
+                  <Flex direction="column" ref={ref}>
                     <Browser />
-                  </Box>
+                  </Flex>
                 ) : (
                   <Portal>
                     <Box

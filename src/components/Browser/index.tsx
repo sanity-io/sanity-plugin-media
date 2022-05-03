@@ -94,19 +94,8 @@ const Browser: FC<Props> = (props: Props) => {
       <Dialogs />
       <Notifications />
 
-      <Card
-        style={{
-          height: '100%',
-          minHeight: '100%'
-        }}
-      >
-        <Flex
-          direction="column"
-          style={{
-            height: '100%',
-            minHeight: '100%'
-          }}
-        >
+      <Card display="flex" height="fill">
+        <Flex direction="column" flex={1}>
           {/* Header */}
           <Header onClose={onClose} />
 
@@ -118,7 +107,6 @@ const Browser: FC<Props> = (props: Props) => {
               <PickedBar />
               <Items />
             </Flex>
-
             <TagsPanel />
           </Flex>
 
