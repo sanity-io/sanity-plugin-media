@@ -178,18 +178,24 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
     })
   )
 
-export const uploadsAssetUploadEpic: MyEpic = action$ =>
+export const uploadsAssetUploadEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(uploadsActions.uploadRequest.match),
-    mergeMap(action => {
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
       const {file, forceAsAssetType} = action.payload
 
       return of(action).pipe(
         // Generate SHA1 hash from local file
         mergeMap(() => hashFile$(file)),
-        // Ignore if we're unable to generate a hash
-        // TODO: we may want to throw an error in `hashFile$` and handle this
-        filter(hash => !!hash),
+        // Ignore if we're unable to generate a hash, or if the file is currently being uploaded
+        filter(hash => {
+          if (!hash) {
+            return false
+          }
+          const exists = !!state.uploads.byIds[hash]
+          return !exists
+        }),
         // Dispatch start action and begin upload process
         mergeMap(hash => {
           const assetType = forceAsAssetType || (file.type.indexOf('image') >= 0 ? 'image' : 'file')
