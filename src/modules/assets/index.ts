@@ -182,13 +182,13 @@ const assetsSlice = createSlice({
         delete state.fetchingError
       },
       prepare: ({
-        filter,
         params = {},
+        queryFilter,
         selector = ``,
         sort = groq`order(_updatedAt desc)`
       }: {
-        filter: string
         params?: Record<string, any>
+        queryFilter: string
         replace?: boolean
         selector?: string
         sort?: string
@@ -198,7 +198,7 @@ const assetsSlice = createSlice({
         // Construct query
         const query = groq`
           {
-            "items": *[${filter}] {
+            "items": *[${queryFilter}] {
               _id,
               _type,
               _createdAt,
@@ -319,9 +319,8 @@ const assetsSlice = createSlice({
           return state.order.direction === 'asc' ? -1 : 1
         } else if (tagA > tagB) {
           return state.order.direction === 'asc' ? 1 : -1
-        } else {
-          return 0
         }
+        return 0
       })
     },
     tagsAddComplete(state, action: PayloadAction<{assets: AssetItem[]; tag: Tag}>) {
@@ -459,7 +458,7 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
       const documentId = state?.selected.document?._id
       const documentAssetIds = state?.selected?.documentAssetIds
 
-      const filter = constructFilter({
+      const constructedFilter = constructFilter({
         assetTypes: state.assets.assetTypes,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
@@ -472,8 +471,8 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
 
       return of(
         assetsActions.fetchRequest({
-          filter,
           params,
+          queryFilter: constructedFilter,
           selector: groq`[${start}...${end}]`,
           sort: groq`order(${state.assets?.order?.field} ${state.assets?.order?.direction})`
         })
@@ -504,6 +503,21 @@ export const assetsFetchAfterDeleteAllEpic: MyEpic = (action$, state$) =>
     })
   )
 
+const filterAssetWithoutTag = (tag: Tag) => (asset: AssetItem) => {
+  const tagIndex = asset?.asset?.opt?.media?.tags?.findIndex(t => t._ref === tag?._id) ?? -1
+  return tagIndex < 0
+}
+
+const patchOperationTagAppend = ({tag}: {tag: Tag}) => (patch: Patch) =>
+  patch
+    .setIfMissing({opt: {}})
+    .setIfMissing({'opt.media': {}})
+    .setIfMissing({'opt.media.tags': []})
+    .append('opt.media.tags', [{_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}])
+
+const patchOperationTagUnset = ({asset, tag}: {asset: AssetItem; tag: Tag}) => (patch: Patch) =>
+  patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.tags[_ref == "${tag._id}"]`])
+
 export const assetsRemoveTagsEpic: MyEpic = (action$, state$) => {
   return action$.pipe(
     filter(assetsActions.tagsAddRequest.match),
@@ -519,24 +533,10 @@ export const assetsRemoveTagsEpic: MyEpic = (action$, state$) => {
           const pickedAssets = selectAssetsPicked(state)
 
           // Filter out picked assets which already include tag
-          const pickedAssetsFiltered = pickedAssets?.filter(assetItem => {
-            const tagIndex =
-              assetItem?.asset?.opt?.media?.tags?.findIndex(t => t._ref === tag?._id) ?? -1
-            return tagIndex < 0
-          })
+          const pickedAssetsFiltered = pickedAssets?.filter(filterAssetWithoutTag(tag))
 
           const transaction: Transaction = pickedAssetsFiltered.reduce(
-            (transaction, pickedAsset) => {
-              return transaction.patch(pickedAsset?.asset?._id, (patch: Patch) =>
-                patch
-                  .setIfMissing({opt: {}})
-                  .setIfMissing({'opt.media': {}})
-                  .setIfMissing({'opt.media.tags': []})
-                  .append('opt.media.tags', [
-                    {_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}
-                  ])
-              )
-            },
+            (tx, pickedAsset) => tx.patch(pickedAsset?.asset?._id, patchOperationTagAppend({tag})),
             client.transaction()
           )
 
@@ -649,25 +649,10 @@ export const assetsTagsAddEpic: MyEpic = (action$, state$) => {
           const pickedAssets = selectAssetsPicked(state)
 
           // Filter out picked assets which already include tag
-          const pickedAssetsFiltered = pickedAssets?.filter(assetItem => {
-            const tagIndex =
-              assetItem?.asset?.opt?.media?.tags?.findIndex(t => t._ref === tag?._id) ?? -1
-            return tagIndex < 0
-          })
+          const pickedAssetsFiltered = pickedAssets?.filter(filterAssetWithoutTag(tag))
 
           const transaction: Transaction = pickedAssetsFiltered.reduce(
-            (transaction, pickedAsset) => {
-              return transaction.patch(pickedAsset?.asset?._id, (patch: Patch) =>
-                patch
-                  .ifRevisionId(pickedAsset?.asset?._rev)
-                  .setIfMissing({opt: {}})
-                  .setIfMissing({'opt.media': {}})
-                  .setIfMissing({'opt.media.tags': []})
-                  .append('opt.media.tags', [
-                    {_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}
-                  ])
-              )
-            },
+            (tx, pickedAsset) => tx.patch(pickedAsset?.asset?._id, patchOperationTagAppend({tag})),
             client.transaction()
           )
 
@@ -706,13 +691,11 @@ export const assetsTagsRemoveEpic: MyEpic = (action$, state$) => {
         mergeMap(() => {
           const pickedAssets = selectAssetsPicked(state)
 
-          const transaction: Transaction = pickedAssets.reduce((transaction, pickedAsset) => {
-            return transaction.patch(pickedAsset?.asset?._id, (patch: Patch) =>
-              patch
-                .ifRevisionId(pickedAsset?.asset?._rev)
-                .unset([`opt.media.tags[_ref == "${tag._id}"]`])
-            )
-          }, client.transaction())
+          const transaction: Transaction = pickedAssets.reduce(
+            (tx, pickedAsset) =>
+              tx.patch(pickedAsset?.asset?._id, patchOperationTagUnset({asset: pickedAsset, tag})),
+            client.transaction()
+          )
 
           return from(transaction.commit())
         }),

@@ -25,7 +25,7 @@ const useBreakpointIndex = (): number => {
       } catch (err) {
         try {
           mql.addListener(handleBreakpoint)
-        } catch (err) {
+        } catch (_err) {
           // Do nothing
         }
       }
@@ -36,7 +36,7 @@ const useBreakpointIndex = (): number => {
       } catch (err) {
         try {
           mediaQueryLists.forEach(mql => mql.removeListener(handleBreakpoint))
-        } catch (err) {
+        } catch (_err) {
           // Do nothing
         }
       }

@@ -233,9 +233,8 @@ const tagsSlice = createSlice({
           return -1
         } else if (tagA > tagB) {
           return 1
-        } else {
-          return 0
         }
+        return 0
       })
     },
     updateComplete(state, action: PayloadAction<{closeDialogId?: string; tag: Tag}>) {
@@ -344,7 +343,7 @@ export const tagsDeleteEpic: MyEpic = (action$, state$) =>
           }))
 
           const transaction: Transaction = patches.reduce(
-            (transaction, patch) => transaction.patch(patch.id, patch.patch),
+            (tx, patch) => tx.patch(patch.id, patch.patch),
             client.transaction()
           )
 

@@ -84,19 +84,16 @@ const uploadSanityAsset$ = (
           preserveFilename: true
         })
         .pipe(
-          map(event => {
-            if (event.type === 'response') {
-              return {
-                asset: event.body.document,
-                id: event.body.document._id,
-                type: 'complete'
-              } as SanityUploadCompleteEvent
-            }
-
-            if (event.type === 'progress') {
-              return event
-            }
-          })
+          map(event =>
+            event.type === 'response'
+              ? {
+                  // rewrite to a 'complete' event
+                  type: 'complete',
+                  id: event.body.document._id,
+                  asset: event.body.document
+                }
+              : event
+          )
         ) as Observable<
         SanityUploadCompleteEvent | SanityUploadProgressEvent | SanityUploadResponseEvent
       >

@@ -143,7 +143,7 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
           takeUntil(
             action$.pipe(
               filter(uploadsActions.uploadCancel.match),
-              filter(action => action.payload.hash === uploadItem.hash)
+              filter(v => v.payload.hash === uploadItem.hash)
             )
           ),
           mergeMap(event => {
@@ -230,14 +230,14 @@ export const uploadsCheckRequestEpic: MyEpic = (action$, state$) =>
 
       const documentIds = assets.map(asset => asset._id)
 
-      const filter = constructFilter({
+      const constructedFilter = constructFilter({
         assetTypes: state.assets.assetTypes,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
       })
 
       const query = groq`
-        *[${filter} && _id in $documentIds].sha1hash
+        *[${constructedFilter} && _id in $documentIds].sha1hash
       `
 
       return of(action).pipe(

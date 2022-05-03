@@ -3,7 +3,7 @@ import {mergeMap} from 'rxjs/operators'
 
 const PREVIEW_WIDTH = 180 // px
 
-const createBlob = (img: HTMLImageElement) => {
+const createBlob = (img: HTMLImageElement): Promise<Blob | null> => {
   return new Promise(resolve => {
     const imageAspect = img.width / img.height
 
@@ -34,6 +34,10 @@ const createImageEl = (file: File): Promise<HTMLImageElement> => {
 const generatePreviewBlobUrl = async (file: File): Promise<string> => {
   const imageEl = await createImageEl(file)
   const blob = await createBlob(imageEl)
+
+  if (!blob) {
+    throw Error('Unable to generate file Blob')
+  }
 
   return window.URL.createObjectURL(blob)
 }

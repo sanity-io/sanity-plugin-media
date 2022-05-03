@@ -106,14 +106,14 @@ export const searchFacetTagUpdateEpic: MyEpic = (action$, state$) =>
 // Selectors
 
 export const selectHasSearchFacetTag: Selector<RootReducerState, boolean> = createSelector(
-  state => state.search.facets,
+  (state: RootReducerState) => state.search.facets,
   searchFacets => !!searchFacets?.find(facet => facet.name === 'tag')
 )
 
 export const selectIsSearchFacetTag = createSelector(
   [
     (state: RootReducerState) => state.tags.byIds,
-    state => state.search.facets,
+    (state: RootReducerState) => state.search.facets,
     (_state: RootReducerState, tagId: string) => tagId
   ],
   (tagsByIds, searchFacets, tagId) => {

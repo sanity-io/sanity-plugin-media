@@ -196,9 +196,8 @@ export const dialogClearOnAssetUpdateEpic: MyEpic = action$ =>
       const dialogId = action?.payload?.closeDialogId
       if (dialogId) {
         return of(dialogSlice.actions.remove({id: dialogId}))
-      } else {
-        return empty()
       }
+      return empty()
     })
   )
 

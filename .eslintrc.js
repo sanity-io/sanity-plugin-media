@@ -4,15 +4,9 @@ module.exports = {
     node: false
   },
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:import/errors',
-    'plugin:import/typescript',
-    'plugin:import/warnings',
-    'plugin:prettier/recommended',
-    'plugin:react/recommended',
-    'prettier',
-    'prettier/@typescript-eslint'
+    'sanity/react', // must come before sanity/typescript
+    'sanity/typescript',
+    'plugin:prettier/recommended'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -24,6 +18,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -31,9 +26,9 @@ module.exports = {
         varsIgnorePattern: '^_'
       }
     ],
-    'import/no-unresolved': ['error', {ignore: ['^react$', '.*:.*']}],
+    'no-shadow': 'off',
     'react/display-name': 0,
-    'no-unused-vars': 'off'
+    'react/jsx-no-bind': 0
   },
   settings: {
     'import/ignore': ['.*node_modules.*', '.*:.*'],
@@ -41,9 +36,6 @@ module.exports = {
       node: {
         paths: ['src'],
         extensions: ['.js', '.jsx', '.ts', '.tsx']
-      },
-      typescript: {
-        project: './tsconfig.json'
       }
     }
   }

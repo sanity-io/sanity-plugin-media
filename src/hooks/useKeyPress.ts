@@ -1,7 +1,7 @@
 import isHotkey from 'is-hotkey'
 import {RefObject, useEffect, useRef} from 'react'
 
-const useKeyPress = (hotkey: string, callback?: () => void): RefObject<boolean> => {
+const useKeyPress = (hotkey: string, onPress?: () => void): RefObject<boolean> => {
   const keyPressed = useRef(false)
 
   // If pressed key is our target key then set to true
@@ -9,8 +9,8 @@ const useKeyPress = (hotkey: string, callback?: () => void): RefObject<boolean> 
     if (isHotkey(hotkey, e)) {
       keyPressed.current = true
 
-      if (callback) {
-        callback()
+      if (onPress) {
+        onPress()
       }
     }
   }
