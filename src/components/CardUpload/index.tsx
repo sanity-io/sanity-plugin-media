@@ -90,8 +90,13 @@ const CardUpload: FC<Props> = (props: Props) => {
           </div>
         )}
 
-        {/* Cancel upload button */}
-        {!isComplete && (
+        {/* 
+          Cancel upload button.
+          Assets will only have a `complete` status _after_ it has been created on your dataset.
+          As such, we also hide the cancel button when `percentLoaded === 100`, as cancelling when the asset 
+          has been fully uploaded (even with a status of `progress`) won't stop the asset from being created.
+        */}
+        {!isComplete && percentLoaded !== 100 && (
           <Flex
             align="center"
             direction="column"
