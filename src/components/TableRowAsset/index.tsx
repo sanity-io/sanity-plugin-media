@@ -88,12 +88,10 @@ const TableRowAsset = (props: Props) => {
 
     if (onSelect) {
       dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
+    } else if (shiftPressed.current && !picked) {
+      dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
     } else {
-      if (shiftPressed.current && !picked) {
-        dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
-      } else {
-        dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
-      }
+      dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
     }
   }
 
@@ -107,16 +105,14 @@ const TableRowAsset = (props: Props) => {
           value: asset._id
         }
       ])
-    } else {
-      if (shiftPressed.current) {
-        if (picked) {
-          dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
-        } else {
-          dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
-        }
+    } else if (shiftPressed.current) {
+      if (picked) {
+        dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
       } else {
-        dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
+        dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
       }
+    } else {
+      dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
     }
   }
 

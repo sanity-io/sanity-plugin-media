@@ -35,9 +35,7 @@ const ItemContainer = styled.div`
 
 const ListContainer = styled.div`
   display: grid;
-  grid-column-gap: 5px;
   grid-template-columns: repeat(auto-fill, ${CARD_WIDTH}px);
-  grid-row-gap: 5px;
   justify-content: center;
   margin: 0 auto;
 `

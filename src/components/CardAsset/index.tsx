@@ -20,11 +20,17 @@ type Props = {
   selected: boolean
 }
 
-const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
-  /* background: ${hues.gray[950].hex}; */
-  border: 1px solid transparent;
+const CardWrapper = styled(Flex)`
   height: 100%;
   overflow: hidden;
+  padding: 2px;
+  position: relative;
+  width: 100%;
+`
+
+const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
+  border: 1px solid transparent;
+  height: 100%;
   pointer-events: ${props => (props.updating ? 'none' : 'auto')};
   position: relative;
   transition: all 300ms;
@@ -100,16 +106,14 @@ const CardAsset = (props: Props) => {
           value: asset._id
         }
       ])
-    } else {
-      if (shiftPressed.current) {
-        if (picked) {
-          dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
-        } else {
-          dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
-        }
+    } else if (shiftPressed.current) {
+      if (picked) {
+        dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
       } else {
-        dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
+        dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
       }
+    } else {
+      dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
     }
   }
 
@@ -118,12 +122,10 @@ const CardAsset = (props: Props) => {
 
     if (onSelect) {
       dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
+    } else if (shiftPressed.current && !picked) {
+      dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
     } else {
-      if (shiftPressed.current && !picked) {
-        dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
-      } else {
-        dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
-      }
+      dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
     }
   }
 
@@ -131,131 +133,133 @@ const CardAsset = (props: Props) => {
   const opacityPreview = selected || updating ? 0.25 : 1
 
   return (
-    <CardContainer direction="column" picked={picked} updating={item.updating}>
-      {/* Image */}
-      <Box
-        flex={1}
-        style={{
-          cursor: selected ? 'default' : 'pointer',
-          position: 'relative'
-        }}
-      >
-        <div onClick={handleAssetClick} style={{height: '100%', opacity: opacityPreview}}>
-          {/* File icon */}
-          {isFileAsset(asset) && <FileIcon extension={asset.extension} width="80px" />}
+    <CardWrapper>
+      <CardContainer direction="column" picked={picked} updating={item.updating}>
+        {/* Image */}
+        <Box
+          flex={1}
+          style={{
+            cursor: selected ? 'default' : 'pointer',
+            position: 'relative'
+          }}
+        >
+          <div onClick={handleAssetClick} style={{height: '100%', opacity: opacityPreview}}>
+            {/* File icon */}
+            {isFileAsset(asset) && <FileIcon extension={asset.extension} width="80px" />}
 
-          {/* Image */}
-          {isImageAsset(asset) && (
-            <Image
-              draggable={false}
-              showCheckerboard={!isOpaque}
-              src={imageDprUrl(asset, {height: 250, width: 250})}
+            {/* Image */}
+            {isImageAsset(asset) && (
+              <Image
+                draggable={false}
+                showCheckerboard={!isOpaque}
+                src={imageDprUrl(asset, {height: 250, width: 250})}
+                style={{
+                  draggable: false,
+                  transition: 'opacity 1000ms'
+                }}
+              />
+            )}
+          </div>
+
+          {/* Selected check icon */}
+          {selected && !updating && (
+            <Flex
+              align="center"
+              justify="center"
               style={{
-                draggable: false,
-                transition: 'opacity 1000ms'
+                height: '100%',
+                left: 0,
+                opacity: opacityContainer,
+                position: 'absolute',
+                top: 0,
+                width: '100%'
+              }}
+            >
+              <Text size={2}>
+                <CheckmarkCircleIcon />
+              </Text>
+            </Flex>
+          )}
+
+          {/* Spinner */}
+          {updating && (
+            <Flex
+              align="center"
+              justify="center"
+              style={{
+                height: '100%',
+                left: 0,
+                position: 'absolute',
+                top: 0,
+                width: '100%'
+              }}
+            >
+              <Spinner />
+            </Flex>
+          )}
+        </Box>
+
+        {/* Footer */}
+        <ContextActionContainer
+          align="center"
+          onClick={handleContextActionClick}
+          paddingX={1}
+          style={{opacity: opacityContainer}}
+        >
+          {onSelect ? (
+            <EditIcon
+              style={{
+                flexShrink: 0,
+                opacity: 0.5
+              }}
+            />
+          ) : (
+            <Checkbox
+              checked={picked}
+              readOnly
+              style={{
+                flexShrink: 0,
+                pointerEvents: 'none',
+                transform: 'scale(0.8)'
               }}
             />
           )}
-        </div>
 
-        {/* Selected check icon */}
-        {selected && !updating && (
-          <Flex
-            align="center"
-            justify="center"
-            style={{
-              height: '100%',
-              left: 0,
-              opacity: opacityContainer,
-              position: 'absolute',
-              top: 0,
-              width: '100%'
-            }}
-          >
-            <Text size={2}>
-              <CheckmarkCircleIcon />
+          <Box marginLeft={2}>
+            <Text muted size={0} textOverflow="ellipsis">
+              {asset.originalFilename}
             </Text>
-          </Flex>
-        )}
+          </Box>
+        </ContextActionContainer>
 
-        {/* Spinner */}
-        {updating && (
-          <Flex
-            align="center"
-            justify="center"
+        {/* TODO: DRY */}
+        {/* Error button */}
+        {error && (
+          <Box
+            padding={3}
             style={{
-              height: '100%',
-              left: 0,
               position: 'absolute',
-              top: 0,
-              width: '100%'
+              right: 0,
+              top: 0
             }}
           >
-            <Spinner />
-          </Flex>
+            <Tooltip
+              content={
+                <Container padding={2} width={0}>
+                  <Text size={1}>{error}</Text>
+                </Container>
+              }
+              placement="left"
+              portal
+            >
+              <Text size={1}>
+                <StyledWarningOutlineIcon color="critical" />
+              </Text>
+            </Tooltip>
+          </Box>
         )}
-      </Box>
-
-      {/* Footer */}
-      <ContextActionContainer
-        align="center"
-        onClick={handleContextActionClick}
-        paddingX={1}
-        style={{opacity: opacityContainer}}
-      >
-        {onSelect ? (
-          <EditIcon
-            style={{
-              flexShrink: 0,
-              opacity: 0.5
-            }}
-          />
-        ) : (
-          <Checkbox
-            checked={picked}
-            readOnly
-            style={{
-              flexShrink: 0,
-              pointerEvents: 'none',
-              transform: 'scale(0.8)'
-            }}
-          />
-        )}
-
-        <Box marginLeft={2}>
-          <Text muted size={0} textOverflow="ellipsis">
-            {asset.originalFilename}
-          </Text>
-        </Box>
-      </ContextActionContainer>
-
-      {/* TODO: DRY */}
-      {/* Error button */}
-      {error && (
-        <Box
-          padding={3}
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: 0
-          }}
-        >
-          <Tooltip
-            content={
-              <Container padding={2} width={0}>
-                <Text size={1}>{error}</Text>
-              </Container>
-            }
-            placement="left"
-            portal
-          >
-            <Text size={1}>
-              <StyledWarningOutlineIcon color="critical" />
-            </Text>
-          </Tooltip>
-        </Box>
-      )}
-    </CardContainer>
+      </CardContainer>
+    </CardWrapper>
   )
 }
 

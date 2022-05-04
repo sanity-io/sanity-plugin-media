@@ -44,20 +44,24 @@ const TableHeader: FC = () => {
     }
   }
 
+  // Note that even though we hide the table header on smaller breakpoints, we never set it to
+  // `display: none`, as doing so causes issues with react-virtuoso.
+  // Instead, we give it 0 height and hide it with `visibility: hidden`.
   return (
     <LegacyBox
       sx={{
         alignItems: 'center',
         bg: black.hex,
         borderBottom: `1px solid ${hues.gray?.[900].hex}`,
-        display: ['none', null, null, 'grid'],
+        display: 'grid',
         gridColumnGap: [0, null, null, 3],
         gridTemplateColumns: 'tableLarge',
-        height: `${PANEL_HEIGHT}px`,
+        height: [0, null, null, `${PANEL_HEIGHT}px`],
         letterSpacing: '0.025em',
         position: 'sticky',
         textTransform: 'uppercase',
         top: 0,
+        visibility: ['hidden', null, null, 'visible'],
         width: '100%',
         zIndex: 1 // force stacking context
       }}
