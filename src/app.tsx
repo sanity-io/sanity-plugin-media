@@ -7,7 +7,7 @@ import {
   ThemeProvider,
   ToastProvider
 } from '@sanity/ui'
-import {AssetSourceComponentProps} from '@types'
+import {AssetSourceComponentProps} from '@sanity/types'
 import React, {FC, forwardRef, MouseEvent, Ref} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 import Browser from './components/Browser'
@@ -43,11 +43,7 @@ const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElemen
               <AssetBrowserDispatchProvider onSelect={onSelect}>
                 <GlobalStyle />
 
-                {!onClose ? (
-                  <Flex direction="column" ref={ref}>
-                    <Browser />
-                  </Flex>
-                ) : (
+                {onClose ? (
                   <Portal>
                     <Box
                       onDragEnter={handleStopPropagation}
@@ -69,6 +65,10 @@ const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElemen
                       <Browser onClose={onClose} />
                     </Box>
                   </Portal>
+                ) : (
+                  <Flex direction="column" ref={ref}>
+                    <Browser />
+                  </Flex>
                 )}
               </AssetBrowserDispatchProvider>
             </ToastProvider>

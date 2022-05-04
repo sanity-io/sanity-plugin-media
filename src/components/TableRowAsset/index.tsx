@@ -99,12 +99,10 @@ const TableRowAsset = (props: Props) => {
     e.stopPropagation()
 
     if (onSelect) {
-      onSelect([
-        {
-          kind: 'assetDocumentId',
-          value: asset._id
-        }
-      ])
+      onSelect({
+        kind: 'assetDocumentId',
+        value: asset._id
+      })
     } else if (shiftPressed.current) {
       if (picked) {
         dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))

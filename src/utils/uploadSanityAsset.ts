@@ -2,21 +2,13 @@
 // https://github.com/sanity-io/sanity/blob/ccb777e115a8cdf20d81a9a2bc9d8c228568faff/packages/%40sanity/form-builder/src/sanity/inputs/client-adapters/assets.ts
 
 import type {SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
-import {
-  HttpError,
-  SanityUploadCompleteEvent,
-  SanityUploadProgressEvent,
-  SanityUploadResponseEvent
-} from '@types'
+import {HttpError} from '@types'
 import {Observable, of, throwError} from 'rxjs'
 import {map, mergeMap} from 'rxjs/operators'
 import {client} from '../client'
 import {withMaxConcurrency} from './withMaxConcurrency'
 
-const fetchExisting$ = (
-  type: string,
-  hash: string
-): Observable<SanityAssetDocument | SanityImageAssetDocument | null> => {
+const fetchExisting$ = (type: string, hash: string) => {
   return client.observable.fetch('*[_type == $documentType && sha1hash == $hash][0]', {
     documentType: type,
     hash
@@ -56,16 +48,11 @@ export const hashFile$ = (file: File): Observable<string | null> => {
   )
 }
 
-const uploadSanityAsset$ = (
-  assetType: 'file' | 'image',
-  file: File,
-  hash: string
-): Observable<
-  SanityUploadCompleteEvent | SanityUploadProgressEvent | SanityUploadResponseEvent | null
-> => {
+const uploadSanityAsset$ = (assetType: 'file' | 'image', file: File, hash: string) => {
   return of(null).pipe(
     // NOTE: the sanity api will still dedupe unique files, but this saves us from uploading the asset file entirely
     mergeMap(() => fetchExisting$(`sanity.${assetType}Asset`, hash)),
+    // Cancel if the asset already exists
     mergeMap((existingAsset: SanityAssetDocument | SanityImageAssetDocument | null) => {
       if (existingAsset) {
         return throwError({
@@ -80,7 +67,7 @@ const uploadSanityAsset$ = (
       // Begin upload if no existing asset found
       return client.observable.assets
         .upload(assetType, file, {
-          extract: ['exif', 'location', 'lqip', 'palette'],
+          extract: ['blurhash', 'exif', 'location', 'lqip', 'palette'],
           preserveFilename: true
         })
         .pipe(
@@ -88,15 +75,13 @@ const uploadSanityAsset$ = (
             event.type === 'response'
               ? {
                   // rewrite to a 'complete' event
-                  type: 'complete',
+                  asset: event.body.document,
                   id: event.body.document._id,
-                  asset: event.body.document
+                  type: 'complete'
                 }
               : event
           )
-        ) as Observable<
-        SanityUploadCompleteEvent | SanityUploadProgressEvent | SanityUploadResponseEvent
-      >
+        )
     })
   )
 }

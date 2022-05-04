@@ -1,6 +1,6 @@
 import {AnyAction, configureStore, Store} from '@reduxjs/toolkit'
-import {AssetSourceComponentProps} from '@types'
-import React, {Component, ReactNode} from 'react'
+import {AssetSourceComponentProps} from '@sanity/types'
+import React, {Component} from 'react'
 import {Provider} from 'react-redux'
 import {createEpicMiddleware} from 'redux-observable'
 import {rootEpic, rootReducer} from '../../modules'
@@ -54,7 +54,8 @@ class ReduxProvider extends Component<Props> {
     epicMiddleware.run(rootEpic)
   }
 
-  render(): ReactNode {
+  render() {
+    // @ts-ignore
     return <Provider store={this.store}>{this.props.children}</Provider>
   }
 }

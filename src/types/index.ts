@@ -1,6 +1,5 @@
 import {AnyAction} from '@reduxjs/toolkit'
 import type {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
-import type {AssetFromSource} from '@sanity/types'
 
 type CustomFields = {
   altText?: string
@@ -33,17 +32,6 @@ export type AssetItem = {
 }
 
 export type AssetType = 'file' | 'image'
-
-// TODO: use correct type from @sanity/types once it uses the correct signature for `onSelect`
-export type AssetSourceComponentProps = {
-  assetType?: 'file' | 'image'
-  document: SanityDocument
-  dialogHeaderTitle?: string
-  selectedAssets: Asset[]
-  selectionType: 'single' | 'multiple'
-  onClose: () => void
-  onSelect: (assets: AssetFromSource[]) => void
-}
 
 export type Block = {
   _type: string
