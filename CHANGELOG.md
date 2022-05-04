@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.7](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.6...v1.4.7) (2022-05-04)
+
+
+### Bug Fixes
+
+* render search facets <MenuButton> in a portal to prevent clipping at smaller breakpoints ([b0c7f91](https://github.com/robinpyon/sanity-plugin-media/commit/b0c7f911d900e92096548482deb2f550913e4aa2))
+
 ### [1.4.6](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.5...v1.4.6) (2022-05-04)
 
 ### [1.4.5](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.3...v1.4.5) (2022-05-04)
