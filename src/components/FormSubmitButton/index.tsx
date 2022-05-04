@@ -1,6 +1,6 @@
 import {Box, Button, Text, Tooltip} from '@sanity/ui'
 import format from 'date-fns/format'
-import React, {FC} from 'react'
+import React, {FC, ReactNode} from 'react'
 
 type Props = {
   disabled: boolean
@@ -12,23 +12,29 @@ type Props = {
 const FormSubmitButton: FC<Props> = (props: Props) => {
   const {disabled, isValid, lastUpdated, onClick} = props
 
+  let content: ReactNode
+  if (isValid) {
+    if (lastUpdated) {
+      content = (
+        <>
+          Last updated
+          <br /> {format(new Date(lastUpdated), 'PPp')}
+        </>
+      )
+    } else {
+      content = 'No unpublished changes'
+    }
+  } else {
+    content =
+      'There are validation errors that need to be fixed before this document can be published'
+  }
+
   return (
     <Tooltip
       content={
         <Box padding={3} style={{maxWidth: '185px'}}>
           <Text muted size={1}>
-            {isValid ? (
-              lastUpdated ? (
-                <>
-                  Last updated
-                  <br /> {format(new Date(lastUpdated), 'PPp')}
-                </>
-              ) : (
-                'No unpublished changes'
-              )
-            ) : (
-              'There are validation errors that need to be fixed before this document can be published'
-            )}
+            {content}
           </Text>
         </Box>
       }

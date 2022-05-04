@@ -56,16 +56,16 @@ export type CardUploadData = {
 }
 
 export type Dialog =
-  | DialogAssetEdit
-  | DialogConfirm
-  | DialogSearchFacets
-  | DialogTagCreate
-  | DialogTagEdit
-  | DialogTags
+  | DialogAssetEditProps
+  | DialogConfirmProps
+  | DialogSearchFacetsProps
+  | DialogTagCreateProps
+  | DialogTagEditProps
+  | DialogTagsProps
 
 export type DialogAction = 'deleteAsset' | 'deleteTag'
 
-export type DialogAssetEdit = {
+export type DialogAssetEditProps = {
   assetId?: string
   closeDialogId?: string
   id: string
@@ -77,7 +77,7 @@ export type DialogAssetEdit = {
   type: 'assetEdit'
 }
 
-export type DialogConfirm = {
+export type DialogConfirmProps = {
   closeDialogId?: string
   confirmCallbackAction: AnyAction // TODO: reconsider
   confirmText: string
@@ -89,25 +89,25 @@ export type DialogConfirm = {
   type: 'confirm'
 }
 
-export type DialogSearchFacets = {
+export type DialogSearchFacetsProps = {
   closeDialogId?: string
   id: string
   type: 'searchFacets'
 }
 
-export type DialogTags = {
+export type DialogTagsProps = {
   closeDialogId?: string
   id: string
   type: 'tags'
 }
 
-export type DialogTagCreate = {
+export type DialogTagCreateProps = {
   closeDialogId?: string
   id: string
   type: 'tagCreate'
 }
 
-export type DialogTagEdit = {
+export type DialogTagEditProps = {
   closeDialogId?: string
   id: string
   tagId?: string

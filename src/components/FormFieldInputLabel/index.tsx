@@ -43,7 +43,7 @@ const FormFieldInputLabel: FC<Props> = (props: Props) => {
                 }
                 fallbackPlacements={['top', 'left']}
                 placement="right"
-                portal={true}
+                portal
               >
                 <StyledErrorOutlineIcon />
               </Tooltip>

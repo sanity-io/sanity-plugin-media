@@ -25,12 +25,12 @@ const SearchFacetsControl: FC = () => {
 
       if (isTool) {
         return !facet?.selectOnly
-      } else {
-        const matchingAssetTypes = facet.assetTypes.filter(assetType =>
-          assetTypes.includes(assetType)
-        )
-        return matchingAssetTypes.length > 0
       }
+
+      const matchingAssetTypes = facet.assetTypes.filter(assetType =>
+        assetTypes.includes(assetType)
+      )
+      return matchingAssetTypes.length > 0
     })
     // Remove adjacent and leading / trailing dividers
     .filter((facet, index, facets) => {
@@ -84,6 +84,8 @@ const SearchFacetsControl: FC = () => {
               />
             )
           }
+
+          return null
         })}
       </>
     )

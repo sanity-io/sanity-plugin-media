@@ -81,7 +81,7 @@ const Controls: FC = () => {
                   fontSize={1}
                   mode="ghost"
                   onClick={handleShowSearchFacetDialog}
-                  text={`Filters${searchFacets.length > 0 ? ' (' + searchFacets.length + ')' : ''}`}
+                  text={`Filters${searchFacets.length > 0 ? ` (${searchFacets.length})` : ''}`}
                   tone="primary"
                 />
 

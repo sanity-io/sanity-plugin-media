@@ -1,11 +1,11 @@
 import {Flex, Label} from '@sanity/ui'
+import {TagActions, TagItem} from '@types'
 import React, {FC, memo, useState} from 'react'
 import {Virtuoso} from 'react-virtuoso'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'
-import {TagActions, TagItem} from '../../types'
 import Tag from '../Tag'
 
 const VirtualRow = memo(
@@ -65,9 +65,7 @@ const TagsVirtualized: FC = () => {
       const tagIsInEveryAsset = assetsPicked.every(assetItem => {
         const tagIndex =
           assetItem.asset.opt?.media?.tags?.findIndex(tag => tag._ref === tagId) ?? -1
-        if (tagIndex >= 0) {
-          return true
-        }
+        return tagIndex >= 0
       })
 
       if (tagIsInEveryAsset) {

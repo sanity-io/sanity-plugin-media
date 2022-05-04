@@ -8,7 +8,11 @@ module.exports = {
     'sanity/typescript',
     'plugin:prettier/recommended'
   ],
-  parser: '@typescript-eslint/parser',
+  overrides: [
+    {
+      files: ['*.{ts,tsx}']
+    }
+  ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true

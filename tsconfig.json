@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "downlevelIteration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -10,9 +10,10 @@
     "lib": ["dom", "dom.iterable", "es5"],
     "module": "commonjs",
     "moduleResolution": "node",
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "./dist",
+    "outDir": "dist",
     "paths": {
       "@types": ["./src/types"]
     },
@@ -21,6 +22,5 @@
     "strict": true,
     "target": "es5"
   },
-  "exclude": ["**/node_modules"],
   "include": [".d.ts", "./src/**/*.ts", "./src/**/*.tsx"]
 }

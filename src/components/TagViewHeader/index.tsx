@@ -1,24 +1,20 @@
 import {black, hues} from '@sanity/color'
 import {ComposeIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Label} from '@sanity/ui'
-import {TagActions, TagItem} from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
-import Tag from '../Tag'
 
 type Props = {
-  actions?: TagActions[]
   allowCreate?: boolean
   light?: boolean
-  tags?: TagItem[]
   title: string
 }
 
 const TagViewHeader: FC<Props> = (props: Props) => {
-  const {actions, allowCreate, light, tags, title} = props
+  const {allowCreate, light, title} = props
 
   // Redux
   const dispatch = useDispatch()
@@ -51,7 +47,6 @@ const TagViewHeader: FC<Props> = (props: Props) => {
             </Label>
           )}
         </Inline>
-
         {/* Create new tag button */}
         {allowCreate && (
           <Box marginRight={1}>
@@ -69,13 +64,6 @@ const TagViewHeader: FC<Props> = (props: Props) => {
           </Box>
         )}
       </Flex>
-      {tags && (
-        <Box paddingLeft={3} paddingRight={2}>
-          {tags?.map(tagItem => (
-            <Tag actions={actions} key={tagItem?.tag?._id} tag={tagItem} />
-          ))}
-        </Box>
-      )}
     </>
   )
 }

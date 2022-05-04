@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Text} from '@sanity/ui'
-import {DialogTagEdit, Tag} from '@types'
+import {DialogTagEditProps, Tag} from '@types'
 import groq from 'groq'
 import React, {FC, ReactNode, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
@@ -19,7 +19,7 @@ import FormSubmitButton from '../FormSubmitButton'
 
 type Props = {
   children: ReactNode
-  dialog: DialogTagEdit
+  dialog: DialogTagEditProps
 }
 
 type FormData = yup.InferType<typeof formSchema>
@@ -131,7 +131,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   // - Listen for asset mutations and update snapshot
   useEffect(() => {
     if (!tagItem?.tag) {
-      return
+      return undefined
     }
 
     // Remember that Sanity listeners ignore joins, order clauses and projections

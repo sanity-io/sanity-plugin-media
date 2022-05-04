@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
-import {Asset, DialogAssetEdit as DialogAssetEdit, ReactSelectOption} from '@types'
+import {Asset, DialogAssetEditProps, ReactSelectOption} from '@types'
 import groq from 'groq'
 import React, {FC, ReactNode, useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
@@ -31,7 +31,7 @@ import Image from '../Image'
 
 type Props = {
   children: ReactNode
-  dialog: DialogAssetEdit
+  dialog: DialogAssetEditProps
 }
 
 type FormData = yup.InferType<typeof formSchema>
@@ -177,7 +177,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   // - Listen for asset mutations and update snapshot
   useEffect(() => {
     if (!assetItem?.asset) {
-      return
+      return undefined
     }
 
     // Remember that Sanity listeners ignore joins, order clauses and projections

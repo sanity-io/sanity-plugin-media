@@ -26,7 +26,7 @@ const FormFieldInputText = forwardRef<Ref, Props>((props: Props, ref) => {
       {/* Input */}
       <TextInput
         autoComplete="off"
-        autoFocus={true}
+        autoFocus
         defaultValue={value}
         disabled={disabled}
         id={name}

@@ -1,6 +1,6 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import {Box, Flex} from '@sanity/ui'
-import {DialogTagCreate} from '@types'
+import {DialogTagCreateProps} from '@types'
 import React, {FC, ReactNode, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
@@ -16,7 +16,7 @@ import FormSubmitButton from '../FormSubmitButton'
 
 type Props = {
   children: ReactNode
-  dialog: DialogTagCreate
+  dialog: DialogTagCreateProps
 }
 
 type FormData = yup.InferType<typeof formSchema>

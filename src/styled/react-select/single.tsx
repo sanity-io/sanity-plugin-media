@@ -131,9 +131,8 @@ const MenuList = (props: any) => {
         totalCount={children.length}
       />
     )
-  } else {
-    return <components.MenuList {...props}>{children}</components.MenuList>
   }
+  return <components.MenuList {...props}>{children}</components.MenuList>
 }
 
 const NoOptionsMessage = (props: any) => {

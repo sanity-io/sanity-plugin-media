@@ -1,7 +1,7 @@
 import {hues} from '@sanity/color'
 import {ArrowDownIcon, ArrowUpIcon, CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Container, Flex, Text, Tooltip} from '@sanity/ui'
-import {SearchFacetInputSearchableProps, Tag, TagActions, TagItem} from '@types'
+import {SearchFacetInputSearchableProps, TagActions, TagItem} from '@types'
 import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'

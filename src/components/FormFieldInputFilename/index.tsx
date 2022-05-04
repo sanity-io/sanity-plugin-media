@@ -12,7 +12,6 @@ type Props = {
   label: string
   name: string
   placeholder?: string
-  suffix?: string
   value?: string
 }
 
@@ -41,7 +40,7 @@ const FormFieldInputText = forwardRef<Ref, Props>((props: Props, ref) => {
           />
         </Box>
         <Box style={{width: '70px'}}>
-          <TextInput defaultValue={`.${extension}`} disabled={true} />
+          <TextInput defaultValue={`.${extension}`} disabled />
         </Box>
       </Flex>
     </Box>

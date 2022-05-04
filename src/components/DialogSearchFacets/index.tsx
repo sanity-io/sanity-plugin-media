@@ -1,5 +1,5 @@
 import {Box} from '@sanity/ui'
-import {DialogSearchFacets} from '@types'
+import {DialogSearchFacetsProps} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 import {Z_INDEX_DIALOG} from '../../constants'
@@ -10,7 +10,7 @@ import SearchFacetsControl from '../SearchFacetsControl'
 
 type Props = {
   children: ReactNode
-  dialog: DialogSearchFacets
+  dialog: DialogSearchFacetsProps
 }
 
 const DialogSearchFacets: FC<Props> = (props: Props) => {

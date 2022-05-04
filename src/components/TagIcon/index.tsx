@@ -17,7 +17,7 @@ const TagIcon: FC = () => (
       strokeLinejoin="round"
       strokeWidth="32"
     />
-    <path d="M384 160a32 32 0 1132-32 32 32 0 01-32 32z"></path>
+    <path d="M384 160a32 32 0 1132-32 32 32 0 01-32 32z" />
   </svg>
 )
 

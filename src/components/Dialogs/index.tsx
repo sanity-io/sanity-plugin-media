@@ -10,7 +10,7 @@ import DialogTags from '../DialogTags'
 
 const Dialogs: FC = () => {
   // Redux
-  const dialogs = useTypedSelector(state => state.dialog.items)
+  const currentDialogs = useTypedSelector(state => state.dialog.items)
 
   const renderDialogs = (dialogs: Dialog[], index: number) => {
     if (dialogs.length === 0 || index >= dialogs.length) {
@@ -71,7 +71,7 @@ const Dialogs: FC = () => {
     return null
   }
 
-  return renderDialogs(dialogs, 0)
+  return renderDialogs(currentDialogs, 0)
 }
 
 export default Dialogs
