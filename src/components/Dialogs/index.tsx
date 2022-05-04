@@ -1,5 +1,5 @@
 import {Dialog} from '@types'
-import React, {FC} from 'react'
+import React from 'react'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import DialogAssetEdit from '../DialogAssetEdit'
 import DialogConfirm from '../DialogConfirm'
@@ -8,7 +8,7 @@ import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'
 import DialogTags from '../DialogTags'
 
-const Dialogs: FC = () => {
+const Dialogs = () => {
   // Redux
   const currentDialogs = useTypedSelector(state => state.dialog.items)
 

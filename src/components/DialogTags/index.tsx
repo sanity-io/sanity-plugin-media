@@ -33,7 +33,7 @@ const DialogTags: FC<Props> = (props: Props) => {
         style={{
           borderTop: `1px solid ${hues.gray?.[900].hex}`,
           height: '100%',
-          minHeight: '420px'
+          minHeight: '420px' // explicit height required as <TagView> is virtualized
         }}
       >
         <TagView />
