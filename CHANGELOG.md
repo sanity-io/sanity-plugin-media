@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.5](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.3...v1.4.5) (2022-05-04)
+
+
+### Bug Fixes
+
+* don't re-upload files that are in the process of being uploaded ([150df9e](https://github.com/robinpyon/sanity-plugin-media/commit/150df9e8711d6e06356eb6c1be20a9ed8fa26dcb))
+* extract blurhash on new uploads, move @sanity/client and rxjs to peer deps ([c67cae2](https://github.com/robinpyon/sanity-plugin-media/commit/c67cae28676689cb21f1015aca1e9576fe3a859b))
+* flatten blob gen + upload actions to ensure null blobs correctly throw errors and bubble up ([834ebb0](https://github.com/robinpyon/sanity-plugin-media/commit/834ebb0eca4cb4556436b37d24735f9c45e40801))
+* prevent layout issues and 'zero-sized element' errors in react-virtuoso ([c0233c9](https://github.com/robinpyon/sanity-plugin-media/commit/c0233c9e898594b6475b03ac4f0020339e02044a))
+* prevent upload cancellation when asset `percentLoaded === 100` ([501e452](https://github.com/robinpyon/sanity-plugin-media/commit/501e452df91c0eae1f74ce98947fa4912c658cc1))
+* wrap tool browser in a flex element, fix layout issues on smaller breakpoints ([20b1877](https://github.com/robinpyon/sanity-plugin-media/commit/20b18771a7e824ca0620cd0aa30b90978a421352))
+
 ### [1.4.4](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.3...v1.4.4) (2021-11-14)
 
 ### [1.4.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.2...v1.4.3) (2021-10-26)
