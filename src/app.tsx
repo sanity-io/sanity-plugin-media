@@ -8,7 +8,7 @@ import {
   ToastProvider
 } from '@sanity/ui'
 import {AssetSourceComponentProps} from '@sanity/types'
-import React, {FC, forwardRef, MouseEvent, Ref} from 'react'
+import React, {forwardRef, MouseEvent, Ref} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 import Browser from './components/Browser'
 import ReduxProvider from './components/ReduxProvider'
@@ -20,7 +20,7 @@ import theme from './styled/theme'
 
 type Props = AssetSourceComponentProps
 
-const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
+const AssetBrowser = forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const {onClose, onSelect} = props
 
   // Close on escape key press
@@ -40,6 +40,7 @@ const AssetBrowser: FC<Props> = forwardRef((props: Props, ref: Ref<HTMLDivElemen
         <LegacyThemeProvider theme={theme}>
           <PortalProvider element={document.body}>
             <ToastProvider zOffset={Z_INDEX_TOAST_PROVIDER}>
+              {/* @ts-expect-error */}
               <AssetBrowserDispatchProvider onSelect={onSelect}>
                 <GlobalStyle />
 
