@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.8](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.7...v1.4.8) (2022-05-05)
+
+
+### Bug Fixes
+
+* fix regression with onSelect not passing an array ([dae8628](https://github.com/robinpyon/sanity-plugin-media/commit/dae86286ec11555b5ed4619a7de34e3d1a8c66e4))
+
 ### [1.4.7](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.6...v1.4.7) (2022-05-04)
 
 
