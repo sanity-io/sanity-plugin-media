@@ -61,7 +61,7 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
   }
 
   // - submit react-hook-form
-  const onSubmit = async (formData: FormData) => {
+  const onSubmit = (formData: FormData) => {
     const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(tagsActions.createRequest({name: sanitizedFormData.name}))
@@ -74,7 +74,7 @@ const DialogTagCreate: FC<Props> = (props: Props) => {
         message: creatingError?.message
       })
     }
-  }, [creatingError])
+  }, [creatingError, setError])
 
   const Footer = () => (
     <Box padding={3}>

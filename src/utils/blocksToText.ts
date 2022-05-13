@@ -5,7 +5,7 @@ const defaults = {nonTextBehavior: 'remove'}
 // Serialize portable text to plain text
 // Based off: https://www.sanity.io/docs/presenting-block-text#plain-text-serialization
 
-export default function (blocks: string | Block[] = '', opts = {}) {
+export default function (blocks: string | Block[] = '', opts = {}): string {
   if (typeof blocks === 'string') {
     return blocks
   }

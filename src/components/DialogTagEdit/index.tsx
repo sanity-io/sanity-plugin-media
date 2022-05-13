@@ -3,7 +3,7 @@ import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Text} from '@sanity/ui'
 import {DialogTagEditProps, Tag} from '@types'
 import groq from 'groq'
-import React, {FC, ReactNode, useEffect, useState} from 'react'
+import React, {FC, ReactNode, useCallback, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
@@ -73,7 +73,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   }
 
   // - submit react-hook-form
-  const onSubmit = async (formData: FormData) => {
+  const onSubmit = (formData: FormData) => {
     if (!tagItem?.tag) {
       return
     }
@@ -107,17 +107,20 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     )
   }
 
-  const handleTagUpdate = (update: MutationEvent) => {
-    const {result, transition} = update
+  const handleTagUpdate = useCallback(
+    (update: MutationEvent) => {
+      const {result, transition} = update
 
-    if (result && transition === 'update') {
-      // Regenerate snapshot
-      setTagSnapshot(result as Tag)
+      if (result && transition === 'update') {
+        // Regenerate snapshot
+        setTagSnapshot(result as Tag)
 
-      // Reset react-hook-form
-      reset(generateDefaultValues(result as Tag))
-    }
-  }
+        // Reset react-hook-form
+        reset(generateDefaultValues(result as Tag))
+      }
+    },
+    [reset]
+  )
 
   // Effects
   useEffect(() => {
@@ -126,7 +129,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
         message: tagItem.error?.message
       })
     }
-  }, [tagItem?.error])
+  }, [setError, tagItem?.error])
 
   // - Listen for asset mutations and update snapshot
   useEffect(() => {
@@ -142,7 +145,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
     return () => {
       subscriptionAsset?.unsubscribe()
     }
-  }, [])
+  }, [handleTagUpdate, tagItem?.tag])
 
   const Footer = () => (
     <Box padding={3}>

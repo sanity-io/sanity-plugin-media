@@ -3,7 +3,7 @@ import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
 import {Asset, DialogAssetEditProps, ReactSelectOption} from '@types'
 import groq from 'groq'
-import React, {FC, ReactNode, useEffect, useRef, useState} from 'react'
+import React, {FC, ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {AspectRatio} from 'theme-ui'
@@ -70,13 +70,16 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   // Redux
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
 
-  const generateDefaultValues = (asset?: Asset) => ({
-    altText: asset?.altText || '',
-    description: asset?.description || '',
-    originalFilename: asset ? getFilenameWithoutExtension(asset) : undefined,
-    opt: {media: {tags: assetTagOptions}},
-    title: asset?.title || ''
-  })
+  const generateDefaultValues = useCallback(
+    (asset?: Asset) => ({
+      altText: asset?.altText || '',
+      description: asset?.description || '',
+      originalFilename: asset ? getFilenameWithoutExtension(asset) : undefined,
+      opt: {media: {tags: assetTagOptions}},
+      title: asset?.title || ''
+    }),
+    [assetTagOptions]
+  )
 
   // Generate a string from all current tag labels
   // This is used purely to determine tag updates to then update the form in real time
@@ -118,17 +121,20 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     )
   }
 
-  const handleAssetUpdate = (update: MutationEvent) => {
-    const {result, transition} = update
+  const handleAssetUpdate = useCallback(
+    (update: MutationEvent) => {
+      const {result, transition} = update
 
-    if (result && transition === 'update') {
-      // Regenerate asset snapshot
-      setAssetSnapshot(result as Asset)
+      if (result && transition === 'update') {
+        // Regenerate asset snapshot
+        setAssetSnapshot(result as Asset)
 
-      // Reset react-hook-form
-      reset(generateDefaultValues(result as Asset))
-    }
-  }
+        // Reset react-hook-form
+        reset(generateDefaultValues(result as Asset))
+      }
+    },
+    [generateDefaultValues, reset]
+  )
 
   const handleCreateTag = (tagName: string) => {
     // Dispatch action to create new tag
@@ -141,7 +147,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   }
 
   // - submit react-hook-form
-  const onSubmit = async (formData: FormData) => {
+  const onSubmit = (formData: FormData) => {
     if (!assetItem?.asset) {
       return
     }
@@ -188,7 +194,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
     return () => {
       subscriptionAsset?.unsubscribe()
     }
-  }, [])
+  }, [assetItem?.asset, handleAssetUpdate])
 
   // - Partially reset form when current tags have changed (and after initial mount)
   useEffect(() => {
@@ -209,7 +215,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
 
     // Mark as mounted
     isMounted.current = true
-  }, [currentTagLabels])
+  }, [assetTagOptions, currentTagLabels, reset])
 
   // - Update tags form field (react-select) when a new _inline_ tag has been created
   useEffect(() => {
@@ -218,7 +224,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
       const updatedTags = existingTags.concat([lastCreatedTag])
       setValue('opt.media.tags', updatedTags, {shouldDirty: true})
     }
-  }, [lastCreatedTag])
+  }, [getValues, lastCreatedTag, setValue])
 
   // - Update tags form field (react-select) when an _inline_ tag has been removed elsewhere
   useEffect(() => {
@@ -230,7 +236,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
 
       setValue('opt.media.tags', updatedTags, {shouldDirty: true})
     }
-  }, [lastRemovedTagIds])
+  }, [getValues, lastRemovedTagIds, setValue])
 
   const Footer = () => (
     <Box padding={3}>

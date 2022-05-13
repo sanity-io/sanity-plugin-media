@@ -37,7 +37,7 @@ const Items: FC = () => {
     if (breakpointIndex <= 1 && tagsPanelVisible) {
       dispatch(tagsActions.panelVisibleSet({panelVisible: false}))
     }
-  }, [breakpointIndex])
+  }, [breakpointIndex, dispatch, tagsPanelVisible])
 
   const isEmpty = !hasItems && hasFetchedOnce && !fetching
 

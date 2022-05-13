@@ -52,9 +52,11 @@ const TagsVirtualized: FC = () => {
   // Filter out all tag IDS used (across all) and dedupe
   const pickedTagIds = assetsPicked?.reduce((acc: string[], val) => {
     const assetTagIds = val?.asset?.opt?.media?.tags?.map(tag => tag._ref) || []
+    // eslint-disable-next-line no-param-reassign
     acc = acc.concat(assetTagIds)
     return acc
   }, [])
+
   const pickedTagIdsUnique = [...new Set(pickedTagIds)]
 
   // Segment tags into two buckets:

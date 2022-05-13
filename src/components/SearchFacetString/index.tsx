@@ -3,7 +3,6 @@ import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem, TextInput} from '@
 import {SearchFacetInputStringProps, SearchFacetOperatorType} from '@types'
 import React, {ChangeEvent, FC} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {operators} from '../../config/searchFacets'
 import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
@@ -58,6 +57,7 @@ const SearchFacetString: FC<Props> = (props: Props) => {
                   )
                 }
 
+                // eslint-disable-next-line react/no-array-index-key
                 return <MenuDivider key={index} />
               })}
             </Menu>

@@ -6,7 +6,8 @@ module.exports = {
   extends: [
     'sanity/react', // must come before sanity/typescript
     'sanity/typescript',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
+    'plugin:react-hooks/recommended'
   ],
   overrides: [
     {

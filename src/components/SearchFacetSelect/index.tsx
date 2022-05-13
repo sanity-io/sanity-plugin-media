@@ -1,13 +1,12 @@
 import {SelectIcon} from '@sanity/icons'
 import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import {
-  SearchFacetInputSelectProps,
   SearchFacetInputSelectListItemProps,
+  SearchFacetInputSelectProps,
   SearchFacetOperatorType
 } from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
-
 import {operators} from '../../config/searchFacets'
 import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
@@ -69,6 +68,7 @@ const SearchFacetSelect: FC<Props> = (props: Props) => {
                   )
                 }
 
+                // eslint-disable-next-line react/no-array-index-key
                 return <MenuDivider key={index} />
               })}
             </Menu>
