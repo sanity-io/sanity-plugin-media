@@ -124,8 +124,8 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
       const {file, uploadItem} = action.payload
 
       return merge(
+        // Generate low res preview
         of(null).pipe(
-          // Generate low res preview
           mergeMap(() => generatePreviewBlobUrl$(file)),
           mergeMap(url => {
             return of(
@@ -134,8 +134,10 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
                 hash: uploadItem.hash
               })
             )
-          }),
-          // Upload asset and receive progress / complete events
+          })
+        ),
+        // Upload asset and receive progress / complete events
+        of(null).pipe(
           // delay(500000), // debug uploads
           mergeMap(() => uploadAsset$(uploadItem.assetType, file, uploadItem.hash)),
           takeUntil(
