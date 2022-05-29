@@ -2,131 +2,123 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.4.8](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.7...v1.4.8) (2022-05-05)
-
+### [1.4.9](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v1.4.9) (2022-05-29)
 
 ### Bug Fixes
 
-* fix regression with onSelect not passing an array ([dae8628](https://github.com/robinpyon/sanity-plugin-media/commit/dae86286ec11555b5ed4619a7de34e3d1a8c66e4))
+- remove rxjs and @sanity/client from peerDependencies ([b4df1f5](https://github.com/robinpyon/sanity-plugin-media/commit/b4df1f5ba067ff0e28dda08d376b03d444967d68))
+- revert "fix: flatten blob gen + upload actions to ensure null blobs correctly throw errors and bubble up" ([7a387c4](https://github.com/robinpyon/sanity-plugin-media/commit/7a387c43c7a6701a9c3e7876d189722e03161e17))
+
+### [1.4.8](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.7...v1.4.8) (2022-05-05)
+
+### Bug Fixes
+
+- fix regression with onSelect not passing an array ([dae8628](https://github.com/robinpyon/sanity-plugin-media/commit/dae86286ec11555b5ed4619a7de34e3d1a8c66e4))
 
 ### [1.4.7](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.6...v1.4.7) (2022-05-04)
 
-
 ### Bug Fixes
 
-* render search facets <MenuButton> in a portal to prevent clipping at smaller breakpoints ([b0c7f91](https://github.com/robinpyon/sanity-plugin-media/commit/b0c7f911d900e92096548482deb2f550913e4aa2))
+- render search facets <MenuButton> in a portal to prevent clipping at smaller breakpoints ([b0c7f91](https://github.com/robinpyon/sanity-plugin-media/commit/b0c7f911d900e92096548482deb2f550913e4aa2))
 
 ### [1.4.6](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.5...v1.4.6) (2022-05-04)
 
 ### [1.4.5](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.3...v1.4.5) (2022-05-04)
 
-
 ### Bug Fixes
 
-* don't re-upload files that are in the process of being uploaded ([150df9e](https://github.com/robinpyon/sanity-plugin-media/commit/150df9e8711d6e06356eb6c1be20a9ed8fa26dcb))
-* extract blurhash on new uploads, move @sanity/client and rxjs to peer deps ([c67cae2](https://github.com/robinpyon/sanity-plugin-media/commit/c67cae28676689cb21f1015aca1e9576fe3a859b))
-* flatten blob gen + upload actions to ensure null blobs correctly throw errors and bubble up ([834ebb0](https://github.com/robinpyon/sanity-plugin-media/commit/834ebb0eca4cb4556436b37d24735f9c45e40801))
-* prevent layout issues and 'zero-sized element' errors in react-virtuoso ([c0233c9](https://github.com/robinpyon/sanity-plugin-media/commit/c0233c9e898594b6475b03ac4f0020339e02044a))
-* prevent upload cancellation when asset `percentLoaded === 100` ([501e452](https://github.com/robinpyon/sanity-plugin-media/commit/501e452df91c0eae1f74ce98947fa4912c658cc1))
-* wrap tool browser in a flex element, fix layout issues on smaller breakpoints ([20b1877](https://github.com/robinpyon/sanity-plugin-media/commit/20b18771a7e824ca0620cd0aa30b90978a421352))
+- don't re-upload files that are in the process of being uploaded ([150df9e](https://github.com/robinpyon/sanity-plugin-media/commit/150df9e8711d6e06356eb6c1be20a9ed8fa26dcb))
+- extract blurhash on new uploads, move @sanity/client and rxjs to peer deps ([c67cae2](https://github.com/robinpyon/sanity-plugin-media/commit/c67cae28676689cb21f1015aca1e9576fe3a859b))
+- flatten blob gen + upload actions to ensure null blobs correctly throw errors and bubble up ([834ebb0](https://github.com/robinpyon/sanity-plugin-media/commit/834ebb0eca4cb4556436b37d24735f9c45e40801))
+- prevent layout issues and 'zero-sized element' errors in react-virtuoso ([c0233c9](https://github.com/robinpyon/sanity-plugin-media/commit/c0233c9e898594b6475b03ac4f0020339e02044a))
+- prevent upload cancellation when asset `percentLoaded === 100` ([501e452](https://github.com/robinpyon/sanity-plugin-media/commit/501e452df91c0eae1f74ce98947fa4912c658cc1))
+- wrap tool browser in a flex element, fix layout issues on smaller breakpoints ([20b1877](https://github.com/robinpyon/sanity-plugin-media/commit/20b18771a7e824ca0620cd0aa30b90978a421352))
 
 ### [1.4.4](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.3...v1.4.4) (2021-11-14)
 
 ### [1.4.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.2...v1.4.3) (2021-10-26)
 
-
 ### Bug Fixes
 
-* expose _id, assetId and url in default input search ([0f7d544](https://github.com/robinpyon/sanity-plugin-media/commit/0f7d544d7b688972e3d12f1fac1b6a2bc3b94a02))
+- expose \_id, assetId and url in default input search ([0f7d544](https://github.com/robinpyon/sanity-plugin-media/commit/0f7d544d7b688972e3d12f1fac1b6a2bc3b94a02))
 
 ### [1.4.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.1...v1.4.2) (2021-10-21)
 
-
 ### Bug Fixes
 
-* force minimum height on canvas when generating low res previews ([8e30854](https://github.com/robinpyon/sanity-plugin-media/commit/8e3085462cb2eeaa289b83e21dfa2e6ec7787831))
+- force minimum height on canvas when generating low res previews ([8e30854](https://github.com/robinpyon/sanity-plugin-media/commit/8e3085462cb2eeaa289b83e21dfa2e6ec7787831))
 
 ### [1.4.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.0...v1.4.1) (2021-10-14)
 
-
 ### Bug Fixes
 
-* quickfix to work around a minor regression in sanity 2.21.0 ([1abf9e8](https://github.com/robinpyon/sanity-plugin-media/commit/1abf9e8b3f5f24e3848d4193193fba187fa65ab2))
+- quickfix to work around a minor regression in sanity 2.21.0 ([1abf9e8](https://github.com/robinpyon/sanity-plugin-media/commit/1abf9e8b3f5f24e3848d4193193fba187fa65ab2))
 
 ## [1.4.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.3.1...v1.4.0) (2021-09-22)
 
-
 ### Features
 
-* add filename facet ([4f70fab](https://github.com/robinpyon/sanity-plugin-media/commit/4f70fabbf7a47c16e60ae3d7d861b1381a5c4a9f))
-* add initial file custom asset source support: conditionally filter and facet by asset type ([7a2b988](https://github.com/robinpyon/sanity-plugin-media/commit/7a2b9883827ff5283fed842cb8635fa7d509483b))
-* add overscan to asset grid view ([7b3aaba](https://github.com/robinpyon/sanity-plugin-media/commit/7b3aabafa75cdda41380c900d9b96c0b654054c9))
-* disable react-select until all tags have loaded in full ([5948a94](https://github.com/robinpyon/sanity-plugin-media/commit/5948a947ee32c860edad0a47aa9b8d20ec7111e8))
-* virtualize react-select views ([f712c4c](https://github.com/robinpyon/sanity-plugin-media/commit/f712c4ccec9901321bcaaef7dca237c07dbdc49c))
-
+- add filename facet ([4f70fab](https://github.com/robinpyon/sanity-plugin-media/commit/4f70fabbf7a47c16e60ae3d7d861b1381a5c4a9f))
+- add initial file custom asset source support: conditionally filter and facet by asset type ([7a2b988](https://github.com/robinpyon/sanity-plugin-media/commit/7a2b9883827ff5283fed842cb8635fa7d509483b))
+- add overscan to asset grid view ([7b3aaba](https://github.com/robinpyon/sanity-plugin-media/commit/7b3aabafa75cdda41380c900d9b96c0b654054c9))
+- disable react-select until all tags have loaded in full ([5948a94](https://github.com/robinpyon/sanity-plugin-media/commit/5948a947ee32c860edad0a47aa9b8d20ec7111e8))
+- virtualize react-select views ([f712c4c](https://github.com/robinpyon/sanity-plugin-media/commit/f712c4ccec9901321bcaaef7dca237c07dbdc49c))
 
 ### Bug Fixes
 
-* ensure that generic tag deletion errors are caught and displayed in notifications ([b65e0e6](https://github.com/robinpyon/sanity-plugin-media/commit/b65e0e69cbce78fc0b49610ba87f5c0ec2707122))
-* ensure that no empty virtuoso views are rendered ([04904e5](https://github.com/robinpyon/sanity-plugin-media/commit/04904e5ca408d424e28c2dca05d0b545d1b04b21))
-* force fixed positioning on sanity-ui Dialogs to prevent mobile scrolling issues ([94465a5](https://github.com/robinpyon/sanity-plugin-media/commit/94465a5c89166501cd65d9d387f09d5c7d567b41))
-* force search facet <MenuButton /> to render in a portal, remove hard-coded z-index ([4afb51e](https://github.com/robinpyon/sanity-plugin-media/commit/4afb51eed57926ca7279b351fd588f3ac86c70d6))
-* **tags:** render all tags in a virtualized container ([abdc7e3](https://github.com/robinpyon/sanity-plugin-media/commit/abdc7e362d4ed5f62ff5bd632e9b886fdbd36771))
+- ensure that generic tag deletion errors are caught and displayed in notifications ([b65e0e6](https://github.com/robinpyon/sanity-plugin-media/commit/b65e0e69cbce78fc0b49610ba87f5c0ec2707122))
+- ensure that no empty virtuoso views are rendered ([04904e5](https://github.com/robinpyon/sanity-plugin-media/commit/04904e5ca408d424e28c2dca05d0b545d1b04b21))
+- force fixed positioning on sanity-ui Dialogs to prevent mobile scrolling issues ([94465a5](https://github.com/robinpyon/sanity-plugin-media/commit/94465a5c89166501cd65d9d387f09d5c7d567b41))
+- force search facet <MenuButton /> to render in a portal, remove hard-coded z-index ([4afb51e](https://github.com/robinpyon/sanity-plugin-media/commit/4afb51eed57926ca7279b351fd588f3ac86c70d6))
+- **tags:** render all tags in a virtualized container ([abdc7e3](https://github.com/robinpyon/sanity-plugin-media/commit/abdc7e362d4ed5f62ff5bd632e9b886fdbd36771))
 
 ### [1.3.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.3.0...v1.3.1) (2021-05-09)
 
-
 ### Bug Fixes
 
-* only check against asset._type when searching for linked asset IDs ([39a7a77](https://github.com/robinpyon/sanity-plugin-media/commit/39a7a774b1472f40042a1fc43c53b130af6d40f7))
+- only check against asset.\_type when searching for linked asset IDs ([39a7a77](https://github.com/robinpyon/sanity-plugin-media/commit/39a7a774b1472f40042a1fc43c53b130af6d40f7))
 
 ## [1.3.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.2.2...v1.3.0) (2021-04-27)
 
-
 ### Features
 
-* add “Copy URL” button to asset metadata actions ([4cf25cc](https://github.com/robinpyon/sanity-plugin-media/commit/4cf25ccf9c7124c83aac1ce07427a2d3344b976d))
-* wrap copy URL button with a timed popover and move to a separate component ([4eb579e](https://github.com/robinpyon/sanity-plugin-media/commit/4eb579ebf416bc43f545ce8320a8b20bace7f5ad))
+- add “Copy URL” button to asset metadata actions ([4cf25cc](https://github.com/robinpyon/sanity-plugin-media/commit/4cf25ccf9c7124c83aac1ce07427a2d3344b976d))
+- wrap copy URL button with a timed popover and move to a separate component ([4eb579e](https://github.com/robinpyon/sanity-plugin-media/commit/4eb579ebf416bc43f545ce8320a8b20bace7f5ad))
 
 ### [1.2.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.2.1...v1.2.2) (2021-03-29)
 
-
 ### Bug Fixes
 
-* fix portal container positioning: use @sanity/ui portal component with scoped provider ([ea0cb07](https://github.com/robinpyon/sanity-plugin-media/commit/ea0cb0705e986b49c8df3862425e6718e6b131f2))
+- fix portal container positioning: use @sanity/ui portal component with scoped provider ([ea0cb07](https://github.com/robinpyon/sanity-plugin-media/commit/ea0cb0705e986b49c8df3862425e6718e6b131f2))
 
 ### [1.2.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.2.0...v1.2.1) (2021-03-29)
 
 ## [1.2.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.4...v1.2.0) (2021-03-25)
 
-
 ### Features
 
-* use API-versioned client if available ([c953d1e](https://github.com/robinpyon/sanity-plugin-media/commit/c953d1e19219b037010fa530269fee691573ec16))
+- use API-versioned client if available ([c953d1e](https://github.com/robinpyon/sanity-plugin-media/commit/c953d1e19219b037010fa530269fee691573ec16))
 
 ### [1.1.4](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.3...v1.1.4) (2021-03-10)
 
 ### [1.1.3](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.2...v1.1.3) (2021-03-10)
 
-
 ### Bug Fixes
 
-* move sanity-ui and styled-components into peer deps ([6c51ba3](https://github.com/robinpyon/sanity-plugin-media/commit/6c51ba3ba8b6f5241c45934838820b7d78376519))
+- move sanity-ui and styled-components into peer deps ([6c51ba3](https://github.com/robinpyon/sanity-plugin-media/commit/6c51ba3ba8b6f5241c45934838820b7d78376519))
 
 ### [1.1.2](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.1...v1.1.2) (2021-02-27)
 
-
 ### Bug Fixes
 
-* re-add ability to display all assets in current document, create dedicated selected reducer ([e89702d](https://github.com/robinpyon/sanity-plugin-media/commit/e89702d1cfc73d772856b3c8dacc4bc345aa7f16))
+- re-add ability to display all assets in current document, create dedicated selected reducer ([e89702d](https://github.com/robinpyon/sanity-plugin-media/commit/e89702d1cfc73d772856b3c8dacc4bc345aa7f16))
 
 ### [1.1.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.1.0...v1.1.1) (2021-02-26)
 
-
 ### Bug Fixes
 
-* prevent dnd propagation in select context to prevent accidental uploads with native inputs ([6fe2297](https://github.com/robinpyon/sanity-plugin-media/commit/6fe22972f2d63bdfcf8b0d13918e903cfceb87b4))
-* revert to wrapping select browser inside a custom portal to prevent z-index clashing ([14462ab](https://github.com/robinpyon/sanity-plugin-media/commit/14462abad1170a11e3fe26364b22ed94173809ad))
+- prevent dnd propagation in select context to prevent accidental uploads with native inputs ([6fe2297](https://github.com/robinpyon/sanity-plugin-media/commit/6fe22972f2d63bdfcf8b0d13918e903cfceb87b4))
+- revert to wrapping select browser inside a custom portal to prevent z-index clashing ([14462ab](https://github.com/robinpyon/sanity-plugin-media/commit/14462abad1170a11e3fe26364b22ed94173809ad))
 
 ## [1.1.0](https://github.com/robinpyon/sanity-plugin-media/compare/v1.0.2...v1.1.0) (2021-02-24)
 
