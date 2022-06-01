@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.10](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v1.4.10) (2022-06-01)
+
+
+### Bug Fixes
+
+* remove rxjs and @sanity/client from peerDependencies ([b4df1f5](https://github.com/robinpyon/sanity-plugin-media/commit/b4df1f5ba067ff0e28dda08d376b03d444967d68))
+
 ### [1.4.9](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v1.4.9) (2022-05-29)
 
 ### Bug Fixes
