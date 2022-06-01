@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.10](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v1.4.10) (2022-06-01)
+
+### Bug Fixes
+
+- revert "refactor: add eslint-plugin-react-hooks, fix `exhaustive-deps` issues" ([5f55231](https://github.com/robinpyon/sanity-plugin-media/commit/5f5523100e7215e143396f760e527172579f0299))
+
 ### [1.4.9](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v1.4.9) (2022-05-29)
 
 ### Bug Fixes
