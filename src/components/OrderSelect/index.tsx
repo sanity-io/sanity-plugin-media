@@ -2,6 +2,7 @@ import {SelectIcon, SortIcon} from '@sanity/icons'
 import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
+
 import {getOrderTitle} from '../../config/orders'
 import {ORDER_OPTIONS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -33,7 +34,7 @@ const OrderSelect: FC = () => {
                 <MenuItem
                   disabled={order.field === item.field && order.direction === item.direction}
                   fontSize={1}
-                  key={`${item.direction}-${item.field}`}
+                  key={index}
                   onClick={() =>
                     dispatch(
                       assetsActions.orderSet({
@@ -47,7 +48,6 @@ const OrderSelect: FC = () => {
               )
             }
 
-            // eslint-disable-next-line react/no-array-index-key
             return <MenuDivider key={index} />
           })}
         </Menu>

@@ -25,7 +25,7 @@ const DialogTags: FC<Props> = (props: Props) => {
   // Callbacks
   const handleClose = useCallback(() => {
     dispatch(dialogActions.clear())
-  }, [dispatch])
+  }, [])
 
   return (
     <Dialog header="All Tags" id={id} onClose={handleClose} width={1} zOffset={Z_INDEX_DIALOG}>

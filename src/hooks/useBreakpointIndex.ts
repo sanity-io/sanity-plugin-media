@@ -1,5 +1,5 @@
 import {studioTheme} from '@sanity/ui'
-import {useCallback, useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 
 // Determine the current breakpoint index
 // - create MediaQueryLists from every breakpoint defined in our sanity studio theme
@@ -9,9 +9,7 @@ const useBreakpointIndex = (): number => {
     window.matchMedia(`(max-width: ${width}px)`)
   )
 
-  const getBreakpointIndex = useCallback(() => mediaQueryLists.findIndex(mql => mql.matches), [
-    mediaQueryLists
-  ])
+  const getBreakpointIndex = () => mediaQueryLists.findIndex(mql => mql.matches)
 
   const [value, setValue] = useState(getBreakpointIndex())
 
@@ -43,7 +41,7 @@ const useBreakpointIndex = (): number => {
         }
       }
     }
-  }, [getBreakpointIndex, mediaQueryLists])
+  }, [])
 
   return value
 }

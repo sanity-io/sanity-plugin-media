@@ -2,7 +2,7 @@ import type {MutationEvent} from '@sanity/client'
 import {Card, Flex} from '@sanity/ui'
 import {Asset, Tag} from '@types'
 import groq from 'groq'
-import React, {FC, useCallback, useEffect} from 'react'
+import React, {FC, useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 import {client} from '../../client'
 import {TAG_DOCUMENT_NAME} from '../../constants'
@@ -29,43 +29,37 @@ const Browser: FC<Props> = (props: Props) => {
   const dispatch = useDispatch()
 
   // Callbacks
-  const handleAssetUpdate = useCallback(
-    (update: MutationEvent) => {
-      const {documentId, result, transition} = update
+  const handleAssetUpdate = (update: MutationEvent) => {
+    const {documentId, result, transition} = update
 
-      if (transition === 'appear') {
-        dispatch(assetsActions.listenerCreateQueue({asset: result as Asset}))
-      }
+    if (transition === 'appear') {
+      dispatch(assetsActions.listenerCreateQueue({asset: result as Asset}))
+    }
 
-      if (transition === 'disappear') {
-        dispatch(assetsActions.listenerDeleteQueue({assetId: documentId}))
-      }
+    if (transition === 'disappear') {
+      dispatch(assetsActions.listenerDeleteQueue({assetId: documentId}))
+    }
 
-      if (transition === 'update') {
-        dispatch(assetsActions.listenerUpdateQueue({asset: result as Asset}))
-      }
-    },
-    [dispatch]
-  )
+    if (transition === 'update') {
+      dispatch(assetsActions.listenerUpdateQueue({asset: result as Asset}))
+    }
+  }
 
-  const handleTagUpdate = useCallback(
-    (update: MutationEvent) => {
-      const {documentId, result, transition} = update
+  const handleTagUpdate = (update: MutationEvent) => {
+    const {documentId, result, transition} = update
 
-      if (transition === 'appear') {
-        dispatch(tagsActions.listenerCreateQueue({tag: result as Tag}))
-      }
+    if (transition === 'appear') {
+      dispatch(tagsActions.listenerCreateQueue({tag: result as Tag}))
+    }
 
-      if (transition === 'disappear') {
-        dispatch(tagsActions.listenerDeleteQueue({tagId: documentId}))
-      }
+    if (transition === 'disappear') {
+      dispatch(tagsActions.listenerDeleteQueue({tagId: documentId}))
+    }
 
-      if (transition === 'update') {
-        dispatch(tagsActions.listenerUpdateQueue({tag: result as Tag}))
-      }
-    },
-    [dispatch]
-  )
+    if (transition === 'update') {
+      dispatch(tagsActions.listenerUpdateQueue({tag: result as Tag}))
+    }
+  }
 
   // Effects
   useEffect(() => {
@@ -93,7 +87,7 @@ const Browser: FC<Props> = (props: Props) => {
       subscriptionAsset?.unsubscribe()
       subscriptionTag?.unsubscribe()
     }
-  }, [dispatch, handleAssetUpdate, handleTagUpdate])
+  }, [])
 
   return (
     <UploadDropzone>

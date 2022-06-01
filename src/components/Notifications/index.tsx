@@ -1,5 +1,6 @@
 import {useToast} from '@sanity/ui'
 import {FC, useEffect} from 'react'
+
 import useTypedSelector from '../../hooks/useTypedSelector'
 
 const Notifications: FC = () => {
@@ -15,7 +16,7 @@ const Notifications: FC = () => {
         title: lastItem.title
       })
     }
-  }, [items, toast])
+  }, [items.length])
 
   return null
 }

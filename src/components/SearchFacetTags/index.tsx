@@ -75,7 +75,6 @@ const SearchFacetTags: FC<Props> = (props: Props) => {
                   )
                 }
 
-                // eslint-disable-next-line react/no-array-index-key
                 return <MenuDivider key={index} />
               })}
             </Menu>

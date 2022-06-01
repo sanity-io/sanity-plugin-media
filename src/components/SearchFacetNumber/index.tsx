@@ -7,6 +7,7 @@ import {
 } from '@types'
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
+
 import {operators} from '../../config/searchFacets'
 import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
@@ -71,13 +72,13 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
                   )
                 }
 
-                // eslint-disable-next-line react/no-array-index-key
                 return <MenuDivider key={index} />
               })}
             </Menu>
           }
         />
       )}
+
       {/* Value */}
       <Box marginX={1} style={{maxWidth: '50px'}}>
         <TextInputNumber
@@ -89,6 +90,7 @@ const SearchFacetNumber: FC<Props> = (props: Props) => {
           value={facet?.value}
         />
       </Box>
+
       {/* Modifiers */}
       {modifiers && (
         <MenuButton

@@ -72,7 +72,7 @@ const UploadDropzone: FC<Props> = (props: Props) => {
   const isImageAssetType = assetTypes.length === 1 && assetTypes[0] === 'image'
 
   // Callbacks
-  const handleDrop = (acceptedFiles: File[]) => {
+  const handleDrop = async (acceptedFiles: File[]) => {
     acceptedFiles.forEach(file =>
       dispatch(
         uploadsActions.uploadRequest({
