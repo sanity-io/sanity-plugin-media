@@ -1,6 +1,7 @@
 import {Box, Flex} from '@sanity/ui'
-import {FileIcon as ReactFileIcon, defaultStyles} from 'react-file-icon'
-import React, {FC, MouseEvent} from 'react'
+import React, {MouseEvent} from 'react'
+import {defaultStyles, FileIcon as ReactFileIcon} from 'react-file-icon'
+import type {DefaultExtensionType} from 'react-file-icon'
 import styled from 'styled-components'
 
 type Props = {
@@ -18,14 +19,17 @@ const Container = styled(Box)`
   }
 `
 
-const FileIcon: FC<Props> = (props: Props) => {
+const FileIcon = (props: Props) => {
   const {extension, onClick, width} = props
 
   return (
     <Flex align="center" justify="center" onClick={onClick} style={{height: '100%'}}>
       <Container style={{width}}>
         {extension ? (
-          <ReactFileIcon extension={extension} {...defaultStyles[extension]} />
+          <ReactFileIcon
+            extension={extension}
+            {...defaultStyles[extension as DefaultExtensionType]}
+          />
         ) : (
           <ReactFileIcon />
         )}

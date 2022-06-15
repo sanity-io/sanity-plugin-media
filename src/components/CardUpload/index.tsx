@@ -2,7 +2,7 @@ import {hues} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text, Tooltip} from '@sanity/ui'
 import filesize from 'filesize'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -14,7 +14,7 @@ type Props = {
   id: string
 }
 
-const CardUpload: FC<Props> = (props: Props) => {
+const CardUpload = (props: Props) => {
   const {id} = props
 
   // Redux

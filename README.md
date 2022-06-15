@@ -1,5 +1,11 @@
 # Sanity Media
 
+> ⚠️ This version of `sanity-plugin-media` is for [Sanity Studio V3](https://www.sanity.io/blog/sanity-studio-v3-developer-preview), which is currently in developer preview.
+>
+> The Studio V2 compatible version can be found on the [V2 branch](https://github.com/robinpyon/sanity-plugin-media).
+
+## What is it?
+
 ![npm-v](https://img.shields.io/npm/v/sanity-plugin-media?style=flat-square)
 ![npm-dw](https://img.shields.io/npm/dw/sanity-plugin-media?style=flat-square)
 
@@ -40,50 +46,66 @@ _Individual asset view_
 - Built with the same [UI components Sanity uses](https://www.sanity.io/ui) under the hood
 - Fully responsive and mobile friendly
 
-## Install
+## Install (V3 Studio only)
 
-In your Sanity project folder:
+In your Sanity project folder, install the plugin and its peer dependency:
 
 ```sh
-sanity install media
+npm install --save sanity-plugin-media@v3-studio @mdx-js/react
 ```
 
-This will add the Media plugin as a standalone tool, accessible via your studio menu.
+or
 
-If you're happy with Sanity's default image and file pickers, then this is all you need to do!
-
-### Enabling it as a global [custom asset source](https://www.sanity.io/docs/custom-asset-sources)
-
-You'll need to do this if you want to use the plugin when selecting images or files.
-
-This plugin exposes `part:sanity-plugin-media/asset-source` which you import when defining custom asset sources.
-
-In `sanity.json`, add the following snippet to the `parts` array.
-
-_File asset support requires Sanity 2.16.x or greater._
-
-```json
-{
-  "implements": "part:@sanity/form-builder/input/image/asset-sources",
-  "path": "./parts/assetSources.js"
-},
-{
-  "implements": "part:@sanity/form-builder/input/file/asset-sources",
-  "path": "./parts/assetSources.js"
-},
+```sh
+yarn add sanity-plugin-media@v3-studio @mdx-js/react
 ```
 
-In `./parts/assetSources.js`:
+`@mdx-js/react` will be removed as a dependency in a future version.
+
+## Usage
+
+Add it as a plugin in your `sanity.config.ts` (or .js) file:
 
 ```js
-import MediaAssetSource from 'part:sanity-plugin-media/asset-source'
+import {media} from 'sanity-plugin-media'
 
-export default [MediaAssetSource]
+export default createConfig({
+  // ...
+  plugins: [media()]
+})
 ```
 
-That's it! The plugin will now pop up every time you try select an image or file.
+This will enable the Media plugin as both a standalone tool (accessible in your studio menu) and as an additional asset source for your image and file fields.
+
+### Customizing the asset source
+
+You can configure your studio to use this asset source either exclusively, or conditionally enable it based on the type of asset (image or file).
+
+```js
+import {media, mediaAssetSource} from 'sanity-plugin-media'
+
+export default createConfig({
+  // ...
+  plugins: [media()],
+  form: {
+    // Don't use this plugin when selecting files only (but allow all other enabled asset sources)
+    file: {
+      assetSources: previousAssetSources => {
+        return previousAssetSources.filter(assetSource => assetSource !== mediaAssetSource)
+      }
+    }
+  }
+})
+```
 
 ## Known issues
+
+<details>
+<summary>(V3) Where has the references tab gone?</summary>
+
+- This will be enabled in a future version!
+
+</details>
 
 <details>
 <summary>There isn't a way to edit asset fields directly from the desk (without opening the plugin)</summary>
@@ -233,3 +255,25 @@ Contributions, issues and feature requests are welcome!
 ## License
 
 MIT. See [license](LICENSE)
+
+## Develop & test
+
+Make sure to run `npm run build` once, then run
+
+```bash
+npm run link-watch
+```
+
+In another shell, `cd` to your test studio and run:
+
+```bash
+npx yalc add sanity-plugin-media && yarn install
+```
+
+Now, changes in this repo will be automatically built and pushed to the studio,
+triggering hotreload. Yalc avoids issues with react-hooks that are typical when using yarn/npm link.
+
+### About build & watch
+
+This plugin uses [@sanity/plugin-sdk](https://github.com/sanity-io/plugin-sdk)
+with default configuration for build & watch scripts.

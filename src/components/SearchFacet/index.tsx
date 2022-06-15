@@ -1,10 +1,9 @@
 import {CloseIcon} from '@sanity/icons'
 import {Box, Flex, Label, Text} from '@sanity/ui'
 import {SearchFacetInputProps} from '@types'
-import React, {FC, ReactNode} from 'react'
+import React, {ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
-
 import {searchActions} from '../../modules/search'
 
 type Props = {
@@ -17,7 +16,7 @@ const Container = styled(Box)`
   border-radius: ${props => props.theme.sanity.radius[2]}px;
 `
 
-const SearchFacet: FC<Props> = (props: Props) => {
+const SearchFacet = (props: Props) => {
   const {children, facet} = props
 
   // Redux

@@ -1,9 +1,8 @@
 import {useToast} from '@sanity/ui'
-import {FC, useEffect} from 'react'
-
+import {useEffect} from 'react'
 import useTypedSelector from '../../hooks/useTypedSelector'
 
-const Notifications: FC = () => {
+const Notifications = () => {
   const items = useTypedSelector(state => state.notifications.items)
   const toast = useToast()
 

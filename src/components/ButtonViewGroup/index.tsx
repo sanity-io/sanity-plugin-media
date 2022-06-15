@@ -1,12 +1,11 @@
 import {ThLargeIcon, ThListIcon} from '@sanity/icons'
 import {Button, Inline} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions} from '../../modules/assets'
 
-const ButtonViewGroup: FC = () => {
+const ButtonViewGroup = () => {
   // Redux
   const dispatch = useDispatch()
   const view = useTypedSelector(state => state.assets.view)

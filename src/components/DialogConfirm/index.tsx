@@ -1,7 +1,7 @@
 import {WarningOutlineIcon} from '@sanity/icons'
 import {Box, Button, Flex, Stack, Text} from '@sanity/ui'
 import {DialogConfirmProps} from '@types'
-import React, {FC, ReactNode} from 'react'
+import React, {ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
@@ -12,7 +12,7 @@ type Props = {
   dialog: DialogConfirmProps
 }
 
-const DialogConfirm: FC<Props> = (props: Props) => {
+const DialogConfirm = (props: Props) => {
   const {children, dialog} = props
 
   // Redux
@@ -61,6 +61,7 @@ const DialogConfirm: FC<Props> = (props: Props) => {
   )
 
   return (
+    // @ts-expect-error
     <Dialog
       footer={<Footer />}
       header={<Header />}

@@ -2,7 +2,7 @@ import {hues} from '@sanity/color'
 import {ArrowDownIcon, ArrowUpIcon, CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Container, Flex, Text, Tooltip} from '@sanity/ui'
 import {SearchFacetInputSearchableProps, TagActions, TagItem} from '@types'
-import React, {FC, ReactNode} from 'react'
+import React, {ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {inputs} from '../../config/searchFacets'
@@ -10,6 +10,7 @@ import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 import {searchActions, selectHasSearchFacetTag, selectIsSearchFacetTag} from '../../modules/search'
 
 type Props = {
@@ -42,7 +43,7 @@ type TagButtonProps = {
   tooltip: string
 }
 
-const TagButton: FC<TagButtonProps> = (props: TagButtonProps) => {
+const TagButton = (props: TagButtonProps) => {
   const {disabled, icon, onClick, tone, tooltip} = props
   return (
     <Tooltip
@@ -70,7 +71,7 @@ const TagButton: FC<TagButtonProps> = (props: TagButtonProps) => {
   )
 }
 
-const Tag: FC<Props> = (props: Props) => {
+const Tag = (props: Props) => {
   const {actions, tag} = props
 
   // Redux
@@ -97,7 +98,7 @@ const Tag: FC<Props> = (props: Props) => {
   }
 
   const handleShowTagEditDialog = () => {
-    dispatch(dialogActions.showTagEdit({tagId: tag?.tag?._id}))
+    dispatch(DIALOG_ACTIONS.showTagEdit({tagId: tag?.tag?._id}))
   }
 
   const handleSearchFacetTagAddOrUpdate = () => {
@@ -142,7 +143,7 @@ const Tag: FC<Props> = (props: Props) => {
         {actions?.includes('search') && (
           <TagButton
             disabled={tag?.updating}
-            icon={isSearchFacetTag ? CloseIcon : SearchIcon}
+            icon={isSearchFacetTag ? <CloseIcon /> : <SearchIcon />}
             onClick={
               isSearchFacetTag ? handleSearchFacetTagRemove : handleSearchFacetTagAddOrUpdate
             }
@@ -153,7 +154,7 @@ const Tag: FC<Props> = (props: Props) => {
         {actions?.includes('edit') && (
           <TagButton
             disabled={tag?.updating}
-            icon={EditIcon}
+            icon={<EditIcon />}
             onClick={handleShowTagEditDialog}
             tone="primary"
             tooltip="Edit tag"
@@ -163,7 +164,7 @@ const Tag: FC<Props> = (props: Props) => {
         {actions?.includes('applyAll') && (
           <TagButton
             disabled={tag?.updating}
-            icon={ArrowUpIcon}
+            icon={<ArrowUpIcon />}
             onClick={handleShowAddTagToAssetsDialog}
             tone="primary"
             tooltip="Add tag to selected assets"
@@ -173,7 +174,7 @@ const Tag: FC<Props> = (props: Props) => {
         {actions?.includes('removeAll') && (
           <TagButton
             disabled={tag?.updating}
-            icon={ArrowDownIcon}
+            icon={<ArrowDownIcon />}
             onClick={handleShowRemoveTagFromAssetsDialog}
             tone="critical"
             tooltip="Remove tag from selected assets"
@@ -184,7 +185,7 @@ const Tag: FC<Props> = (props: Props) => {
         {actions?.includes('delete') && (
           <TagButton
             disabled={tag?.updating}
-            icon={TrashIcon}
+            icon={<TrashIcon />}
             onClick={handleShowTagDeleteDialog}
             tone="critical"
             tooltip="Delete tag"

@@ -1,7 +1,7 @@
 import {hues} from '@sanity/color'
 import {Box} from '@sanity/ui'
 import {DialogTagsProps} from '@types'
-import React, {FC, ReactNode, useCallback} from 'react'
+import React, {ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
@@ -13,7 +13,7 @@ type Props = {
   dialog: DialogTagsProps
 }
 
-const DialogTags: FC<Props> = (props: Props) => {
+const DialogTags = (props: Props) => {
   const {
     children,
     dialog: {id}
@@ -28,6 +28,7 @@ const DialogTags: FC<Props> = (props: Props) => {
   }, [])
 
   return (
+    // @ts-expect-error
     <Dialog header="All Tags" id={id} onClose={handleClose} width={1} zOffset={Z_INDEX_DIALOG}>
       <Box
         style={{

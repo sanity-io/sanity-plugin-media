@@ -1,13 +1,13 @@
 import {AddCircleIcon} from '@sanity/icons'
 import {Button, Flex, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem} from '@sanity/ui'
 import {SearchFacetDivider, SearchFacetGroup, SearchFacetInputProps} from '@types'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 import {FACETS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
 
-const SearchFacetsControl: FC = () => {
+const SearchFacetsControl = () => {
   // Redux
   const dispatch = useDispatch()
   const assetTypes = useTypedSelector(state => state.assets.assetTypes)

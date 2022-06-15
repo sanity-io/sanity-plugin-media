@@ -5,7 +5,7 @@ import {
   SearchFacetInputSelectListItemProps,
   SearchFacetOperatorType
 } from '@types'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 
 import {operators} from '../../config/searchFacets'
@@ -16,7 +16,7 @@ type Props = {
   facet: SearchFacetInputSelectProps
 }
 
-const SearchFacetSelect: FC<Props> = (props: Props) => {
+const SearchFacetSelect = (props: Props) => {
   const {facet} = props
 
   // Redux

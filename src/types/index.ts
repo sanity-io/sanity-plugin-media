@@ -1,5 +1,12 @@
 import {AnyAction} from '@reduxjs/toolkit'
-import type {SanityAssetDocument, SanityDocument, SanityImageAssetDocument} from '@sanity/client'
+import type {
+  SanityAssetDocument,
+  SanityClient,
+  SanityDocument,
+  SanityImageAssetDocument
+} from '@sanity/client'
+import type {Epic} from 'redux-observable'
+import {RootReducerState} from '../modules/types'
 
 type CustomFields = {
   altText?: string
@@ -140,6 +147,15 @@ export type ImageAsset = SanityImageAssetDocument &
   }
 
 export type MarkDef = {_key: string; _type: string}
+
+export type MyEpic = Epic<
+  AnyAction,
+  AnyAction,
+  RootReducerState,
+  {
+    client: SanityClient
+  }
+>
 
 export type Order = {
   direction: OrderDirection

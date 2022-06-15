@@ -1,26 +1,31 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
+    "checkJs": false,
+    "declaration": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "inlineSourceMap": false,
     "isolatedModules": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "lib": ["dom", "dom.iterable", "es5"],
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "dist",
+    "outDir": "lib",
     "paths": {
       "@types": ["./src/types"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "sourceMap": false,
     "strict": true,
-    "target": "es5"
+    "target": "esnext"
   },
-  "include": [".d.ts", "./src/**/*.ts", "./src/**/*.tsx"]
+  "include": [".d.ts", "./src/**/*", "node_modules/microbundle/index.d.ts"]
 }

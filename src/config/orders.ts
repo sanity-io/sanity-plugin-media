@@ -1,4 +1,4 @@
-import {OrderDirection} from '../types'
+import type {OrderDirection} from '../types'
 
 const ORDER_DICTIONARY: Record<string, {asc: string; desc: string}> = {
   _createdAt: {

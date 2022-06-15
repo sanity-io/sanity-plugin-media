@@ -1,9 +1,10 @@
+/*
 import type {SanityDocument} from '@sanity/client'
 import {Box, Card, Text} from '@sanity/ui'
-import {IntentLink} from 'part:@sanity/base/router'
-import Preview from 'part:@sanity/base/preview'
-import schema from 'part:@sanity/base/schema'
-import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'
+import {IntentLink} from 'part:sanity/router'
+import Preview from 'part:sanity/preview'
+import schema from 'part:sanity/schema'
+import {WithReferringDocuments} from 'part:sanity/with-referring-documents'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -88,6 +89,19 @@ const DocumentList = (props: Props) => {
       <WithReferringDocuments id={assetId}>{renderChild}</WithReferringDocuments>
     </Container>
   )
+}
+*/
+
+import React from 'react'
+import {Text} from '@sanity/ui'
+
+type Props = {
+  assetId: string
+}
+
+const DocumentList = (props: Props) => {
+  const {assetId} = props
+  return <Text>Document list for Asset with ID {assetId} should go here</Text>
 }
 
 export default DocumentList

@@ -1,6 +1,8 @@
 .eslintrc.js
 commitlint.config.js
 coverage
-dist
+lib
 lint-staged.config.js
 node_modules
+
+.parcel-cache

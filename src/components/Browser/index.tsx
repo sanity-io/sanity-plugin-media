@@ -1,13 +1,18 @@
+import {useClient} from 'sanity'
 import type {MutationEvent} from '@sanity/client'
-import {Card, Flex} from '@sanity/ui'
+import type {AssetSourceComponentProps, SanityDocument} from 'sanity'
+import {Card, Flex, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
 import {Asset, Tag} from '@types'
 import groq from 'groq'
-import React, {FC, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import {client} from '../../client'
-import {TAG_DOCUMENT_NAME} from '../../constants'
+import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
+import {TAG_DOCUMENT_NAME, Z_INDEX_TOAST_PROVIDER} from '../../constants'
+import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
 import {assetsActions} from '../../modules/assets'
 import {tagsActions} from '../../modules/tags'
+import GlobalStyle from '../../styled/GlobalStyles'
+import theme from '../../styled/theme'
 import Controls from '../Controls'
 import DebugControls from '../DebugControls'
 import Dialogs from '../Dialogs'
@@ -15,15 +20,20 @@ import Header from '../Header'
 import Items from '../Items'
 import Notifications from '../Notifications'
 import PickedBar from '../PickedBar'
+import ReduxProvider from '../ReduxProvider'
 import TagsPanel from '../TagsPanel'
 import UploadDropzone from '../UploadDropzone'
 
 type Props = {
-  onClose?: () => void
+  assetType?: AssetSourceComponentProps['assetType']
+  document?: SanityDocument
+  onClose?: AssetSourceComponentProps['onClose']
+  onSelect?: AssetSourceComponentProps['onSelect']
+  selectedAssets?: AssetSourceComponentProps['selectedAssets']
 }
 
-const Browser: FC<Props> = (props: Props) => {
-  const {onClose} = props
+const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose']}) => {
+  const client = useClient()
 
   // Redux
   const dispatch = useDispatch()
@@ -115,6 +125,31 @@ const Browser: FC<Props> = (props: Props) => {
         </Flex>
       </Card>
     </UploadDropzone>
+  )
+}
+
+const Browser = (props: Props) => {
+  const client = useClient()
+
+  return (
+    <ReduxProvider
+      assetType={props?.assetType}
+      client={client}
+      document={props?.document}
+      selectedAssets={props?.selectedAssets}
+    >
+      <ThemeProvider scheme="dark" theme={studioTheme}>
+        <LegacyThemeProvider theme={theme}>
+          <ToastProvider zOffset={Z_INDEX_TOAST_PROVIDER}>
+            <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
+              <GlobalStyle />
+
+              <BrowserContent onClose={props?.onClose} />
+            </AssetBrowserDispatchProvider>
+          </ToastProvider>
+        </LegacyThemeProvider>
+      </ThemeProvider>
+    </ReduxProvider>
   )
 }
 

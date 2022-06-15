@@ -2,7 +2,7 @@ import {hues} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
 import {Box, Button, Flex, Stack, Text, Tooltip} from '@sanity/ui'
 import filesize from 'filesize'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 import {Box as LegacyBox, Grid as LegacyGrid} from 'theme-ui'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -14,7 +14,7 @@ type Props = {
   id: string
 }
 
-const TableRowUpload: FC<Props> = (props: Props) => {
+const TableRowUpload = (props: Props) => {
   const {id} = props
 
   // Redux

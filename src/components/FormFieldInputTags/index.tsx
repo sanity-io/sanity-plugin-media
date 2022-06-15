@@ -1,11 +1,10 @@
 import {Box} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import {Controller, FieldError} from 'react-hook-form'
 import CreatableSelect from 'react-select/creatable'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/creatable'
-import {ReactSelectOption} from '../../types'
+import type {ReactSelectOption} from '../../types'
 import FormFieldInputLabel from '../FormFieldInputLabel'
 
 type Props = {
@@ -24,7 +23,7 @@ type Props = {
   value?: ReactSelectOption[] | null
 }
 
-const FormFieldInputTags: FC<Props> = (props: Props) => {
+const FormFieldInputTags = (props: Props) => {
   const {
     control,
     description,
@@ -69,6 +68,7 @@ const FormFieldInputTags: FC<Props> = (props: Props) => {
           // At this point, the form will still be marked as dirty when it shouldnt be
           return (
             <CreatableSelect
+              // @ts-expect-error
               cacheOptions={false}
               components={reactSelectComponents}
               defaultOptions

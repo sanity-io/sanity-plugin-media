@@ -3,8 +3,7 @@ import {Box, Button, Flex, Inline, Stack, Text} from '@sanity/ui'
 import {Asset, AssetItem} from '@types'
 import format from 'date-fns/format'
 import filesize from 'filesize'
-import React, {FC, ReactNode} from 'react'
-
+import React, {ReactNode} from 'react'
 import getAssetResolution from '../../utils/getAssetResolution'
 import {isImageAsset} from '../../utils/typeGuards'
 import ButtonAssetCopy from '../ButtonAssetCopy'
@@ -42,7 +41,7 @@ const Row = ({label, value}: {label: string; value: ReactNode}) => {
   )
 }
 
-const AssetMetadata: FC<Props> = (props: Props) => {
+const AssetMetadata = (props: Props) => {
   const {asset, item} = props
 
   const exif = asset?.metadata?.exif

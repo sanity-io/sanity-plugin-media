@@ -1,5 +1,5 @@
 # Compiled files
-dist
+lib
 
 # Dependency directories
 /node_modules
@@ -16,3 +16,13 @@ yarn-error.log*
 
 # VS Code
 .vscode
+
+# Parcel
+.parcel-cache
+
+# Yarn
+yarn.lock
+
+# IntelliJ
+.idea/
+*.iml

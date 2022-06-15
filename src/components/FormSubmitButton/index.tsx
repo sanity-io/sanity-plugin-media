@@ -1,6 +1,6 @@
 import {Box, Button, Text, Tooltip} from '@sanity/ui'
 import format from 'date-fns/format'
-import React, {FC, ReactNode} from 'react'
+import React, {ReactNode} from 'react'
 
 type Props = {
   disabled: boolean
@@ -9,7 +9,7 @@ type Props = {
   onClick: () => void
 }
 
-const FormSubmitButton: FC<Props> = (props: Props) => {
+const FormSubmitButton = (props: Props) => {
   const {disabled, isValid, lastUpdated, onClick} = props
 
   let content: ReactNode

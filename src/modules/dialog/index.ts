@@ -1,14 +1,13 @@
-import {AnyAction, PayloadAction, createSlice} from '@reduxjs/toolkit'
-import {AssetItem, Dialog, Tag} from '@types'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {AssetItem, Dialog, MyEpic, Tag} from '@types'
 import pluralize from 'pluralize'
-import {Epic, ofType} from 'redux-observable'
+import {ofType} from 'redux-observable'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap} from 'rxjs/operators'
-
 import {assetsActions} from '../assets'
+import {ASSETS_ACTIONS} from '../assets/actions'
 import {tagsActions} from '../tags'
-
-import {RootReducerState} from '../types'
+import {DIALOG_ACTIONS} from './actions'
 
 type DialogReducerState = {
   items: Dialog[]
@@ -21,6 +20,22 @@ const initialState = {
 const dialogSlice = createSlice({
   name: 'dialog',
   initialState,
+  extraReducers: builder => {
+    builder.addCase(DIALOG_ACTIONS.showTagCreate, state => {
+      state.items.push({
+        id: 'tagCreate',
+        type: 'tagCreate'
+      })
+    })
+    builder.addCase(DIALOG_ACTIONS.showTagEdit, (state, action) => {
+      const {tagId} = action.payload
+      state.items.push({
+        id: tagId,
+        tagId,
+        type: 'tagEdit'
+      })
+    })
+  },
   reducers: {
     // Clear all dialogs
     clear(state) {
@@ -68,7 +83,7 @@ const dialogSlice = createSlice({
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: assetsActions.tagsAddRequest({
+        confirmCallbackAction: ASSETS_ACTIONS.tagsAddRequest({
           assets: assetsPicked,
           tag
         }),
@@ -94,7 +109,7 @@ const dialogSlice = createSlice({
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: assetsActions.tagsRemoveRequest({assets: assetsPicked, tag}),
+        confirmCallbackAction: ASSETS_ACTIONS.tagsRemoveRequest({assets: assetsPicked, tag}),
         confirmText: `Yes, remove tag from ${suffix}`,
         headerTitle: 'Confirm tag removal',
         id: 'confirm',
@@ -156,20 +171,6 @@ const dialogSlice = createSlice({
         type: 'searchFacets'
       })
     },
-    showTagCreate(state) {
-      state.items.push({
-        id: 'tagCreate',
-        type: 'tagCreate'
-      })
-    },
-    showTagEdit(state, action: PayloadAction<{tagId: string}>) {
-      const {tagId} = action.payload
-      state.items.push({
-        id: tagId,
-        tagId,
-        type: 'tagEdit'
-      })
-    },
     showTags(state) {
       state.items.push({
         id: 'tags',
@@ -180,8 +181,6 @@ const dialogSlice = createSlice({
 })
 
 // Epics
-
-type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 
 export const dialogClearOnAssetUpdateEpic: MyEpic = action$ =>
   action$.pipe(

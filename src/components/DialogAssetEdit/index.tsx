@@ -1,14 +1,14 @@
 import {yupResolver} from '@hookform/resolvers/yup'
+import {useClient} from 'sanity'
 import type {MutationEvent} from '@sanity/client'
-import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
+import {Box, Button, Card, Flex, Stack, TabPanel, Text} from '@sanity/ui'
 import {Asset, DialogAssetEditProps, ReactSelectOption} from '@types'
 import groq from 'groq'
-import React, {FC, ReactNode, useEffect, useRef, useState} from 'react'
+import React, {ReactNode, useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {AspectRatio} from 'theme-ui'
 import * as yup from 'yup'
-import {client} from '../../client'
 import {Z_INDEX_DIALOG} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetById} from '../../modules/assets'
@@ -20,7 +20,7 @@ import sanitizeFormData from '../../utils/sanitizeFormData'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import AssetMetadata from '../AssetMetadata'
 import Dialog from '../Dialog'
-import DocumentList from '../DocumentList'
+// import DocumentList from '../DocumentList'
 import FileAssetPreview from '../FileAssetPreview'
 import FormFieldInputFilename from '../FormFieldInputFilename'
 import FormFieldInputTags from '../FormFieldInputTags'
@@ -45,11 +45,13 @@ const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
   return asset?.originalFilename?.slice(0, extensionIndex)
 }
 
-const DialogAssetEdit: FC<Props> = (props: Props) => {
+const DialogAssetEdit = (props: Props) => {
   const {
     children,
     dialog: {assetId, id, lastCreatedTag, lastRemovedTagIds}
   } = props
+
+  const client = useClient()
 
   // Redux
   const dispatch = useDispatch()
@@ -62,7 +64,10 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   // State
   // - Generate a snapshot of the current asset
   const [assetSnapshot, setAssetSnapshot] = useState(assetItem?.asset)
-  const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
+  const [
+    tabSection
+    // setTabSection
+  ] = useState<'details' | 'references'>('details')
 
   const currentAsset = assetItem ? assetItem?.asset : assetSnapshot
   const allTagOptions = getTagSelectOptions(tags)
@@ -261,6 +266,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
   }
 
   return (
+    // @ts-expect-error
     <Dialog
       footer={<Footer />}
       header="Asset details"
@@ -277,6 +283,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
       <Flex direction={['column-reverse', 'column-reverse', 'row-reverse']}>
         <Box flex={1} marginTop={[5, 5, 0]} padding={4}>
           {/* Tabs */}
+          {/*
           <TabList space={2}>
             <Tab
               aria-controls="details-panel"
@@ -297,6 +304,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
               size={2}
             />
           </TabList>
+          */}
 
           {/* Form fields */}
           <Box as="form" marginTop={4} onSubmit={handleSubmit(onSubmit)}>
@@ -371,6 +379,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
             </TabPanel>
 
             {/* Panel: References */}
+            {/*
             <TabPanel
               aria-labelledby="references"
               hidden={tabSection !== 'references'}
@@ -380,6 +389,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
                 {assetItem?.asset && <DocumentList assetId={assetItem?.asset._id} />}
               </Box>
             </TabPanel>
+            */}
           </Box>
         </Box>
 

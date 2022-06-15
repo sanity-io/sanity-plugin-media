@@ -1,12 +1,10 @@
-import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
-import {SearchFacetInputProps, SearchFacetOperatorType} from '@types'
-import {Epic} from 'redux-observable'
+import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import type {MyEpic, SearchFacetInputProps, SearchFacetOperatorType} from '@types'
 import {Selector} from 'react-redux'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
-
-import {RootReducerState} from '../types'
 import {tagsActions} from '../tags'
+import type {RootReducerState} from '../types'
 
 // TODO: don't store non-serializable data in the search store
 // (The main offender is `fieldModifier` which is currently a function)
@@ -71,8 +69,6 @@ const searchSlice = createSlice({
 })
 
 // Epics
-
-type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 
 // On tag update success -> update existing tag search facet (if present)
 export const searchFacetTagUpdateEpic: MyEpic = (action$, state$) =>

@@ -1,6 +1,6 @@
 import {ErrorOutlineIcon} from '@sanity/icons'
 import {Box, Inline, Text, Tooltip} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import {FieldError} from 'react-hook-form'
 import styled from 'styled-components'
 
@@ -17,7 +17,7 @@ const StyledErrorOutlineIcon = styled(ErrorOutlineIcon)(({theme}) => {
   }
 })
 
-const FormFieldInputLabel: FC<Props> = (props: Props) => {
+const FormFieldInputLabel = (props: Props) => {
   const {description, error, label, name} = props
 
   return (

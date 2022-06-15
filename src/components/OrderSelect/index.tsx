@@ -1,6 +1,6 @@
 import {SelectIcon, SortIcon} from '@sanity/icons'
 import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 
 import {getOrderTitle} from '../../config/orders'
@@ -8,7 +8,7 @@ import {ORDER_OPTIONS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions} from '../../modules/assets'
 
-const OrderSelect: FC = () => {
+const OrderSelect = () => {
   // Redux
   const dispatch = useDispatch()
   const order = useTypedSelector(state => state.assets.order)

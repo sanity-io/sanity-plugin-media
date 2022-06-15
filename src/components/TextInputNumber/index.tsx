@@ -1,5 +1,5 @@
 import {TextInput} from '@sanity/ui'
-import React, {ChangeEvent, FC} from 'react'
+import React, {ChangeEvent} from 'react'
 
 // TODO: use correct type
 type Props = any & {
@@ -7,7 +7,7 @@ type Props = any & {
   value?: number
 }
 
-const TextInputNumber: FC<Props> = (props: Props) => {
+const TextInputNumber = (props: Props) => {
   const {onValueChange, value, ...remainingProps} = props
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -1,5 +1,5 @@
 import {Box, Text} from '@sanity/ui'
-import React, {FC, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 import useBreakpointIndex from '../../hooks/useBreakpointIndex'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -9,7 +9,7 @@ import {tagsActions} from '../../modules/tags'
 import AssetGridVirtualized from '../AssetGridVirtualized'
 import AssetTableVirtualized from '../AssetTableVirtualized'
 
-const Items: FC = () => {
+const Items = () => {
   // Redux
   const dispatch = useDispatch()
   const fetchCount = useTypedSelector(state => state.assets.fetchCount)

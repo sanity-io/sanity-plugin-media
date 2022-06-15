@@ -1,12 +1,11 @@
-import {HttpError} from '@types'
+import type {SanityClient} from '@sanity/client'
+import type {HttpError} from '@types'
 import groq from 'groq'
 import {from, Observable, of, throwError} from 'rxjs'
 import {mergeMap} from 'rxjs/operators'
-
-import {client} from '../client'
 import {TAG_DOCUMENT_NAME} from '../constants'
 
-const checkTagName = (name: string) => {
+const checkTagName = (client: SanityClient, name: string) => {
   return function <T>(source: Observable<T>): Observable<boolean> {
     return source.pipe(
       mergeMap(() => {

@@ -1,13 +1,13 @@
 import {yupResolver} from '@hookform/resolvers/yup'
+import {useClient} from 'sanity'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Text} from '@sanity/ui'
 import {DialogTagEditProps, Tag} from '@types'
 import groq from 'groq'
-import React, {FC, ReactNode, useEffect, useState} from 'react'
+import React, {ReactNode, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
-import {client} from '../../client'
 import {Z_INDEX_DIALOG} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
@@ -28,11 +28,13 @@ const formSchema = yup.object().shape({
   name: yup.string().required('Name cannot be empty')
 })
 
-const DialogTagEdit: FC<Props> = (props: Props) => {
+const DialogTagEdit = (props: Props) => {
   const {
     children,
     dialog: {id, tagId}
   } = props
+
+  const client = useClient()
 
   // Redux
   const dispatch = useDispatch()
@@ -43,7 +45,6 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   const [tagSnapshot, setTagSnapshot] = useState(tagItem?.tag)
 
   const currentTag = tagItem ? tagItem?.tag : tagSnapshot
-
   const generateDefaultValues = (tag?: Tag) => ({
     name: tag?.name?.current || ''
   })
@@ -173,6 +174,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   }
 
   return (
+    // @ts-expect-error
     <Dialog
       footer={<Footer />}
       header="Edit Tag"

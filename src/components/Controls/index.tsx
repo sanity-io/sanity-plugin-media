@@ -1,9 +1,8 @@
 import {hues} from '@sanity/color'
 import {Box, Button, Flex, Inline} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 import {Flex as LegacyFlex} from 'theme-ui'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
@@ -15,7 +14,7 @@ import SearchFacetsControl from '../SearchFacetsControl'
 import TagIcon from '../TagIcon'
 import TextInputSearch from '../TextInputSearch'
 
-const Controls: FC = () => {
+const Controls = () => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)

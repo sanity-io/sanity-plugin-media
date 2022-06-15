@@ -1,11 +1,11 @@
 import {black, hues} from '@sanity/color'
 import {ComposeIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Label} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {dialogActions} from '../../modules/dialog'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 
 type Props = {
   allowCreate?: boolean
@@ -13,7 +13,7 @@ type Props = {
   title: string
 }
 
-const TagViewHeader: FC<Props> = (props: Props) => {
+const TagViewHeader = (props: Props) => {
   const {allowCreate, light, title} = props
 
   // Redux
@@ -23,7 +23,7 @@ const TagViewHeader: FC<Props> = (props: Props) => {
 
   // Callbacks
   const handleTagCreate = () => {
-    dispatch(dialogActions.showTagCreate())
+    dispatch(DIALOG_ACTIONS.showTagCreate())
   }
 
   return (

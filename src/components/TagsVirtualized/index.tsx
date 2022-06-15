@@ -1,6 +1,6 @@
 import {Flex, Label} from '@sanity/ui'
 import {TagActions, TagItem} from '@types'
-import React, {FC, memo, useState} from 'react'
+import React, {memo, useState} from 'react'
 import {Virtuoso} from 'react-virtuoso'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -40,7 +40,7 @@ const VirtualRow = memo(
   }
 )
 
-const TagsVirtualized: FC = () => {
+const TagsVirtualized = () => {
   const assetsPicked = useTypedSelector(selectAssetsPicked)
   const tags = useTypedSelector(selectTags)
 

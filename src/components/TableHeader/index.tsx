@@ -1,11 +1,10 @@
 import {black, hues} from '@sanity/color'
 import {Checkbox, Flex} from '@sanity/ui'
-import React, {FC, MouseEvent} from 'react'
+import React, {MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {Box as LegacyBox} from 'theme-ui'
 import {PANEL_HEIGHT} from '../../constants'
-
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsLength, selectAssetsPickedLength} from '../../modules/assets'
@@ -22,7 +21,7 @@ const ContextActionContainer = styled(Flex)`
   }
 `
 
-const TableHeader: FC = () => {
+const TableHeader = () => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)

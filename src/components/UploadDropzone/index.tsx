@@ -1,6 +1,6 @@
 import {white} from '@sanity/color'
 import {Flex, Text} from '@sanity/ui'
-import React, {FC, ReactNode} from 'react'
+import React, {ReactNode} from 'react'
 import {DropEvent, useDropzone} from 'react-dropzone'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
@@ -18,7 +18,6 @@ const UploadContainer = styled.div`
   color: white;
   height: 100%;
   min-height: 100%;
-  position: absolute;
   right: 0;
   top: 0;
   width: 100%;
@@ -60,7 +59,7 @@ async function filterFiles(fileList: FileList) {
   return filteredFiles
 }
 
-const UploadDropzone: FC<Props> = (props: Props) => {
+const UploadDropzone = (props: Props) => {
   const {children} = props
 
   const {onSelect} = useAssetSourceActions()
