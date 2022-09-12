@@ -38,9 +38,12 @@ const hexFromBuffer = (buffer: ArrayBuffer): string => {
     .join('')
 }
 
-export const hashFile$ = (file: File): Observable<string | null> => {
+export const hashFile$ = (file: File): Observable<string> => {
   if (!window.crypto || !window.crypto.subtle || !window.FileReader) {
-    return of(null)
+    return throwError({
+      message: 'Unable to generate hash: uploads are only allowed in secure contexts',
+      statusCode: 500
+    })
   }
   return readFile$(file).pipe(
     mergeMap(arrayBuffer => window.crypto.subtle.digest('SHA-1', arrayBuffer)),
