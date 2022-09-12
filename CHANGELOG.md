@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.11](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v1.4.11) (2022-09-12)
+
+
+### Bug Fixes
+
+* don't hardcode z-indices, correctly render last filter item ([#57](https://github.com/robinpyon/sanity-plugin-media/issues/57), [#82](https://github.com/robinpyon/sanity-plugin-media/issues/82)) ([b16375e](https://github.com/robinpyon/sanity-plugin-media/commit/b16375e664b662b4657823c90bc6447bc7d9d5d2))
+* remove rxjs and @sanity/client from peerDependencies ([b4df1f5](https://github.com/robinpyon/sanity-plugin-media/commit/b4df1f5ba067ff0e28dda08d376b03d444967d68))
+* throw an error when trying to call window.crypto from insecure contexts ([#50](https://github.com/robinpyon/sanity-plugin-media/issues/50)) ([fd02d72](https://github.com/robinpyon/sanity-plugin-media/commit/fd02d727d6e6ae5771f1bcb64ef818fe2aff05dc))
+
 ### [1.4.10](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v1.4.10) (2022-06-01)
 
 ### Bug Fixes
