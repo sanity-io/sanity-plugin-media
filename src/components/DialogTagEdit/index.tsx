@@ -8,7 +8,6 @@ import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
 import {client} from '../../client'
-import {Z_INDEX_DIALOG} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {selectTagById, tagsActions} from '../../modules/tags'
@@ -173,14 +172,7 @@ const DialogTagEdit: FC<Props> = (props: Props) => {
   }
 
   return (
-    <Dialog
-      footer={<Footer />}
-      header="Edit Tag"
-      id={id}
-      onClose={handleClose}
-      width={1}
-      zOffset={Z_INDEX_DIALOG}
-    >
+    <Dialog footer={<Footer />} header="Edit Tag" id={id} onClose={handleClose} width={1}>
       {/* Form fields */}
       <Box as="form" padding={4} onSubmit={handleSubmit(onSubmit)}>
         {/* Deleted notification */}

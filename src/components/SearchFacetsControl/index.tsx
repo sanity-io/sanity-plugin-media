@@ -36,7 +36,7 @@ const SearchFacetsControl: FC = () => {
     .filter((facet, index, facets) => {
       const previousFacet = facets[index - 1]
       // Ignore leading + trailing dividers
-      if ((facet.type === 'divider' && index === 0) || index === facets.length - 1) {
+      if (facet.type === 'divider' && (index === 0 || index === facets.length - 1)) {
         return false
       }
       // Ignore adjacent dividers

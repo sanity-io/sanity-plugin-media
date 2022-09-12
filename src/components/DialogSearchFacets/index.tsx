@@ -2,7 +2,6 @@ import {Box} from '@sanity/ui'
 import {DialogSearchFacetsProps} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
-import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
 import Dialog from '../Dialog'
 import SearchFacets from '../SearchFacets'
@@ -28,7 +27,7 @@ const DialogSearchFacets: FC<Props> = (props: Props) => {
   }, [])
 
   return (
-    <Dialog header="Filters" id={id} onClose={handleClose} width={1} zOffset={Z_INDEX_DIALOG}>
+    <Dialog header="Filters" id={id} onClose={handleClose} width={1}>
       <Box padding={3}>
         <SearchFacets layout="stack" />
         <SearchFacetsControl />

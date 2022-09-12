@@ -3,7 +3,6 @@ import {Box} from '@sanity/ui'
 import {DialogTagsProps} from '@types'
 import React, {FC, ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
-import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
 import Dialog from '../Dialog'
 import TagView from '../TagView'
@@ -28,7 +27,7 @@ const DialogTags: FC<Props> = (props: Props) => {
   }, [])
 
   return (
-    <Dialog header="All Tags" id={id} onClose={handleClose} width={1} zOffset={Z_INDEX_DIALOG}>
+    <Dialog header="All Tags" id={id} onClose={handleClose} width={1}>
       <Box
         style={{
           borderTop: `1px solid ${hues.gray?.[900].hex}`,

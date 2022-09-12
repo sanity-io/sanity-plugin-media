@@ -3,7 +3,6 @@ import {Box, Button, Flex, Stack, Text} from '@sanity/ui'
 import {DialogConfirmProps} from '@types'
 import React, {FC, ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
-import {Z_INDEX_DIALOG} from '../../constants'
 import {dialogActions} from '../../modules/dialog'
 import Dialog from '../Dialog'
 
@@ -61,14 +60,7 @@ const DialogConfirm: FC<Props> = (props: Props) => {
   )
 
   return (
-    <Dialog
-      footer={<Footer />}
-      header={<Header />}
-      id="confirm"
-      onClose={handleClose}
-      width={1}
-      zOffset={Z_INDEX_DIALOG}
-    >
+    <Dialog footer={<Footer />} header={<Header />} id="confirm" onClose={handleClose} width={1}>
       <Box paddingX={4} paddingY={4}>
         <Stack space={3}>
           {dialog?.title && <Text size={1}>{dialog.title}</Text>}

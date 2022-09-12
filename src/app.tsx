@@ -5,14 +5,14 @@ import {
   PortalProvider,
   studioTheme,
   ThemeProvider,
-  ToastProvider
+  ToastProvider,
+  useLayer
 } from '@sanity/ui'
 import {AssetSourceComponentProps} from '@sanity/types'
 import React, {forwardRef, MouseEvent, Ref} from 'react'
 import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
 import Browser from './components/Browser'
 import ReduxProvider from './components/ReduxProvider'
-import {Z_INDEX_APP, Z_INDEX_TOAST_PROVIDER} from './constants'
 import {AssetBrowserDispatchProvider} from './contexts/AssetSourceDispatchContext'
 import useKeyPress from './hooks/useKeyPress'
 import GlobalStyle from './styled/GlobalStyles'
@@ -22,6 +22,8 @@ type Props = AssetSourceComponentProps
 
 const AssetBrowser = forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
   const {onClose, onSelect} = props
+
+  const {zIndex} = useLayer()
 
   // Close on escape key press
   useKeyPress('escape', onClose)
@@ -39,7 +41,7 @@ const AssetBrowser = forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
       <ThemeProvider scheme="dark" theme={studioTheme}>
         <LegacyThemeProvider theme={theme}>
           <PortalProvider element={document.body}>
-            <ToastProvider zOffset={Z_INDEX_TOAST_PROVIDER}>
+            <ToastProvider>
               {/* @ts-expect-error */}
               <AssetBrowserDispatchProvider onSelect={onSelect}>
                 <GlobalStyle />
@@ -60,7 +62,7 @@ const AssetBrowser = forwardRef((props: Props, ref: Ref<HTMLDivElement>) => {
                         position: 'fixed',
                         top: 0,
                         width: '100%',
-                        zIndex: Z_INDEX_APP
+                        zIndex
                       }}
                     >
                       <Browser onClose={onClose} />
