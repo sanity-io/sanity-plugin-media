@@ -13,9 +13,15 @@ const createBlob = (img: HTMLImageElement): Promise<Blob | null> => {
     canvas.width = PREVIEW_WIDTH
     canvas.height = Math.max(PREVIEW_WIDTH / imageAspect, 1)
 
-    const ctx = canvas.getContext('2d')
-    ctx?.drawImage(img, 0, 0, PREVIEW_WIDTH, PREVIEW_WIDTH / imageAspect)
-    canvas.toBlob(resolve, 'image/jpeg')
+    // Fail silently if we're unable to generate a preview image.
+    // This can often be the case when trying to render SVGs containing `<foreignObject>` elements.
+    try {
+      const ctx = canvas.getContext('2d')
+      ctx?.drawImage(img, 0, 0, PREVIEW_WIDTH, PREVIEW_WIDTH / imageAspect)
+      canvas.toBlob(resolve, 'image/jpeg')
+    } catch (err) {
+      console.warn(`Unable to generate preview image:`, err)
+    }
   })
 }
 
