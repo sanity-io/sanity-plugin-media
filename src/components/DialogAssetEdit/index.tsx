@@ -6,9 +6,9 @@ import groq from 'groq'
 import React, {ReactNode, useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import {useClient} from 'sanity'
 import * as yup from 'yup'
 import useTypedSelector from '../../hooks/useTypedSelector'
+import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import {selectTags, selectTagSelectOptions, tagsActions} from '../../modules/tags'
@@ -49,7 +49,7 @@ const DialogAssetEdit = (props: Props) => {
     dialog: {assetId, id, lastCreatedTag, lastRemovedTagIds}
   } = props
 
-  const client = useClient()
+  const client = useVersionedClient()
 
   // Redux
   const dispatch = useDispatch()

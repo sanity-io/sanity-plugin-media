@@ -6,9 +6,9 @@ import groq from 'groq'
 import React, {ReactNode, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import {useClient} from 'sanity'
 import * as yup from 'yup'
 import useTypedSelector from '../../hooks/useTypedSelector'
+import useVersionedClient from '../../hooks/useVersionedClient'
 import {dialogActions} from '../../modules/dialog'
 import {selectTagById, tagsActions} from '../../modules/tags'
 import sanitizeFormData from '../../utils/sanitizeFormData'
@@ -33,7 +33,7 @@ const DialogTagEdit = (props: Props) => {
     dialog: {id, tagId}
   } = props
 
-  const client = useClient()
+  const client = useVersionedClient()
 
   // Redux
   const dispatch = useDispatch()

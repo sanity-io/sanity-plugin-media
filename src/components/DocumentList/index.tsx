@@ -1,7 +1,7 @@
 import type {SanityDocument} from '@sanity/client'
 import {Box, Button, Card, Stack, Text} from '@sanity/ui'
 import React from 'react'
-import {useIntentLink, useSchema} from 'sanity'
+import {SchemaType, useIntentLink, useSchema} from 'sanity'
 import {SanityPreview, useDocumentStore, WithReferringDocuments} from 'sanity/_unstable'
 
 type Props = {
@@ -48,34 +48,32 @@ const ReferringDocuments = (props: {isLoading: boolean; referringDocuments: Sani
   return (
     <Card flex={1} marginBottom={2} padding={2} radius={2} shadow={1}>
       <Stack space={2}>
-        {filteredDocuments?.map(doc => {
-          const schemaType = schema.get(doc._type)
-
-          const {onClick} = useIntentLink({
-            intent: 'edit',
-            params: {id: doc._id}
-          })
-
-          return schemaType ? (
-            <Button
-              key={doc._id}
-              mode="bleed"
-              onClick={onClick}
-              padding={2}
-              style={{width: '100%'}}
-            >
-              <SanityPreview layout="default" schemaType={schemaType} value={doc} />
-            </Button>
-          ) : (
-            <Box padding={2}>
-              <Text size={1}>
-                A document of the unknown type <em>{doc._type}</em>
-              </Text>
-            </Box>
-          )
-        })}
+        {filteredDocuments?.map(doc => (
+          <ReferringDocument doc={doc} key={doc._id} schemaType={schema.get(doc._type)} />
+        ))}
       </Stack>
     </Card>
+  )
+}
+
+const ReferringDocument = (props: {doc: SanityDocument; schemaType?: SchemaType}) => {
+  const {doc, schemaType} = props
+
+  const {onClick} = useIntentLink({
+    intent: 'edit',
+    params: {id: doc._id}
+  })
+
+  return schemaType ? (
+    <Button key={doc._id} mode="bleed" onClick={onClick} padding={2} style={{width: '100%'}}>
+      <SanityPreview layout="default" schemaType={schemaType} value={doc} />
+    </Button>
+  ) : (
+    <Box padding={2}>
+      <Text size={1}>
+        A document of the unknown type <em>{doc._type}</em>
+      </Text>
+    </Box>
   )
 }
 

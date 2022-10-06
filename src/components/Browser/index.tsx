@@ -1,13 +1,13 @@
-import {useClient} from 'sanity'
 import type {MutationEvent} from '@sanity/client'
-import type {AssetSourceComponentProps, SanityDocument} from 'sanity'
 import {Card, Flex, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
 import {Asset, Tag} from '@types'
 import groq from 'groq'
 import React, {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
+import type {AssetSourceComponentProps, SanityDocument} from 'sanity'
 import {TAG_DOCUMENT_NAME} from '../../constants'
 import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
+import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions} from '../../modules/assets'
 import {tagsActions} from '../../modules/tags'
 import GlobalStyle from '../../styled/GlobalStyles'
@@ -31,7 +31,7 @@ type Props = {
 }
 
 const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose']}) => {
-  const client = useClient()
+  const client = useVersionedClient()
 
   // Redux
   const dispatch = useDispatch()
@@ -127,7 +127,7 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
 }
 
 const Browser = (props: Props) => {
-  const client = useClient()
+  const client = useVersionedClient()
 
   return (
     <ReduxProvider
