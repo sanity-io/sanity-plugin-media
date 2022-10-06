@@ -1,5 +1,4 @@
 import {yupResolver} from '@hookform/resolvers/yup'
-import {useClient} from 'sanity'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Text} from '@sanity/ui'
 import {DialogTagEditProps, Tag} from '@types'
@@ -7,8 +6,8 @@ import groq from 'groq'
 import React, {ReactNode, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
+import {useClient} from 'sanity'
 import * as yup from 'yup'
-import {Z_INDEX_DIALOG} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {selectTagById, tagsActions} from '../../modules/tags'
@@ -174,15 +173,7 @@ const DialogTagEdit = (props: Props) => {
   }
 
   return (
-    // @ts-expect-error
-    <Dialog
-      footer={<Footer />}
-      header="Edit Tag"
-      id={id}
-      onClose={handleClose}
-      width={1}
-      zOffset={Z_INDEX_DIALOG}
-    >
+    <Dialog footer={<Footer />} header="Edit Tag" id={id} onClose={handleClose} width={1}>
       {/* Form fields */}
       <Box as="form" padding={4} onSubmit={handleSubmit(onSubmit)}>
         {/* Deleted notification */}

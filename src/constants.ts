@@ -65,11 +65,11 @@ export const FACETS: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputPr
   inputs.height
 ]
 
+export const API_VERSION = '2021-06-07'
+export const GRID_TEMPLATE_COLUMNS = {
+  SMALL: '3rem 100px auto 1.5rem',
+  LARGE: '3rem 100px auto 5.5rem 5.5rem 3.5rem 8.5rem 2rem'
+}
 export const PANEL_HEIGHT = 32 // px
 export const TAG_DOCUMENT_NAME = 'media.tag'
 export const TAGS_PANEL_WIDTH = 250 // px
-// NOTE: Manually set plugin z-index values to be higher than Sanity's header search field
-// (which is currently 500202). Also ensure toasts always sit above dialogs.
-export const Z_INDEX_APP = 600000
-export const Z_INDEX_DIALOG = 600001
-export const Z_INDEX_TOAST_PROVIDER = 600002

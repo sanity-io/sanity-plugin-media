@@ -1,8 +1,7 @@
 import {hues} from '@sanity/color'
-import {Box, Button, Flex, Inline} from '@sanity/ui'
+import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import React from 'react'
 import {useDispatch} from 'react-redux'
-import {Flex as LegacyFlex} from 'theme-ui'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
@@ -21,6 +20,8 @@ const Controls = () => {
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.search.facets)
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
+
+  const mediaIndex = useMediaIndex()
 
   // Callbacks
   const handleShowSearchFacetDialog = () => {
@@ -51,12 +52,13 @@ const Controls = () => {
           justify="space-between"
         >
           {/* Search + Filters */}
-          <LegacyFlex
-            sx={{
+          <Flex
+            flex={1}
+            style={{
               alignItems: 'flex-start',
               flex: 1,
               height: '100%',
-              justifyContent: ['space-between', null, 'flex-start'],
+              justifyContent: mediaIndex < 2 ? 'space-between' : 'flex-start',
               position: 'relative',
               width: '100%'
             }}
@@ -94,7 +96,7 @@ const Controls = () => {
                 />
               </Inline>
             </Box>
-          </LegacyFlex>
+          </Flex>
         </Flex>
       </Box>
 

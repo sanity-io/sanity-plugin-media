@@ -1,10 +1,10 @@
 import {hues} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
-import {Box, Button, Flex, Stack, Text, Tooltip} from '@sanity/ui'
+import {Box, Button, Flex, Grid, Stack, Text, Tooltip, useMediaIndex} from '@sanity/ui'
 import filesize from 'filesize'
 import React from 'react'
 import {useDispatch} from 'react-redux'
-import {Box as LegacyBox, Grid as LegacyGrid} from 'theme-ui'
+import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectUploadById, uploadsActions} from '../../modules/uploads'
 import FileIcon from '../FileIcon'
@@ -20,6 +20,8 @@ const TableRowUpload = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
   const item = useTypedSelector(state => selectUploadById(state, id))
+
+  const mediaIndex = useMediaIndex()
 
   if (!item) {
     return null
@@ -49,14 +51,15 @@ const TableRowUpload = (props: Props) => {
   }
 
   return (
-    <LegacyGrid
-      sx={{
+    <Grid
+      style={{
         alignItems: 'center',
-        bg: hues.gray[950].hex,
-        gridColumnGap: [0, null, null, 3],
-        gridRowGap: [0],
-        gridTemplateColumns: ['tableSmall', null, null, 'tableLarge'],
-        gridTemplateRows: ['auto', null, null, '1fr'],
+        background: hues.gray[950].hex,
+        gridColumnGap: mediaIndex < 3 ? 0 : '16px',
+        gridRowGap: 0,
+        gridTemplateColumns:
+          mediaIndex < 3 ? GRID_TEMPLATE_COLUMNS.SMALL : GRID_TEMPLATE_COLUMNS.LARGE,
+        gridTemplateRows: mediaIndex < 3 ? 'auto' : '1fr',
         height: '100%',
         position: 'relative'
       }}
@@ -77,11 +80,11 @@ const TableRowUpload = (props: Props) => {
       />
 
       {/* Image */}
-      <LegacyBox
-        sx={{
-          gridColumn: [2],
-          gridRowStart: ['1', null, null, 'auto'],
-          gridRowEnd: ['span 4', null, null, 'auto'],
+      <Box
+        style={{
+          gridColumn: 2,
+          gridRowStart: mediaIndex < 3 ? 1 : 'auto',
+          gridRowEnd: mediaIndex < 3 ? 'span 4' : 'auto',
           height: '90px',
           width: '100px'
         }}
@@ -139,14 +142,14 @@ const TableRowUpload = (props: Props) => {
             </Flex>
           )}
         </Box>
-      </LegacyBox>
+      </Box>
 
       {/* Filename */}
-      <LegacyBox
-        sx={{
-          gridColumn: [3, null, null, '3/8'],
-          gridRow: ['2/4', null, null, 'auto'],
-          marginLeft: [3, null, null, 0]
+      <Box
+        style={{
+          gridColumn: mediaIndex < 3 ? 3 : '3/8',
+          gridRow: mediaIndex < 3 ? '2/4' : 'auto',
+          marginLeft: mediaIndex < 3 ? 3 : 0
         }}
       >
         <Stack space={3}>
@@ -157,8 +160,8 @@ const TableRowUpload = (props: Props) => {
             {status}
           </Text>
         </Stack>
-      </LegacyBox>
-    </LegacyGrid>
+      </Box>
+    </Grid>
   )
 }
 

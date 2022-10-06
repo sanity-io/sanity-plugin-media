@@ -36,7 +36,7 @@ const SearchFacetsControl = () => {
     .filter((facet, index, facets) => {
       const previousFacet = facets[index - 1]
       // Ignore leading + trailing dividers
-      if ((facet.type === 'divider' && index === 0) || index === facets.length - 1) {
+      if (facet.type === 'divider' && (index === 0 || index === facets.length - 1)) {
         return false
       }
       // Ignore adjacent dividers
@@ -52,7 +52,8 @@ const SearchFacetsControl = () => {
     filteredFacets.filter(facet => facet).length - searchFacets.length > 0
 
   const renderMenuFacets = (
-    facets: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[]
+    facets: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[],
+    level: number = 0
   ) => {
     return (
       <>
@@ -64,8 +65,8 @@ const SearchFacetsControl = () => {
           // Recursively render menu facets
           if (facet.type === 'group') {
             return (
-              <MenuGroup text={facet.title} title={facet.title}>
-                {renderMenuFacets(facet.facets)}
+              <MenuGroup key={`group-${level}-${index}`} text={facet.title} title={facet.title}>
+                {renderMenuFacets(facet.facets, level + 1)}
               </MenuGroup>
             )
           }

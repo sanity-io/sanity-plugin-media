@@ -1,6 +1,6 @@
 # Sanity Media
 
-> ⚠️ This version of `sanity-plugin-media` is for [Sanity Studio V3](https://www.sanity.io/blog/sanity-studio-v3-developer-preview), which is currently in developer preview.
+> This version of `sanity-plugin-media` is for [Sanity Studio V3](https://www.sanity.io/blog/sanity-studio-v3-developer-preview), which is currently in developer preview.
 >
 > The Studio V2 compatible version can be found on the [V2 branch](https://github.com/robinpyon/sanity-plugin-media).
 
@@ -48,19 +48,17 @@ _Individual asset view_
 
 ## Install (V3 Studio only)
 
-In your Sanity project folder, install the plugin and its peer dependency:
+In your Sanity project folder:
 
 ```sh
-npm install --save sanity-plugin-media@v3-studio @mdx-js/react
+npm install --save sanity-plugin-media@v3-studio
 ```
 
 or
 
 ```sh
-yarn add sanity-plugin-media@v3-studio @mdx-js/react
+yarn add sanity-plugin-media@v3-studio
 ```
-
-`@mdx-js/react` will be removed as a dependency in a future version.
 
 ## Usage
 

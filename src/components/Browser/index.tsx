@@ -6,13 +6,11 @@ import {Asset, Tag} from '@types'
 import groq from 'groq'
 import React, {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
-import {ThemeProvider as LegacyThemeProvider} from 'theme-ui'
-import {TAG_DOCUMENT_NAME, Z_INDEX_TOAST_PROVIDER} from '../../constants'
+import {TAG_DOCUMENT_NAME} from '../../constants'
 import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
 import {assetsActions} from '../../modules/assets'
 import {tagsActions} from '../../modules/tags'
 import GlobalStyle from '../../styled/GlobalStyles'
-import theme from '../../styled/theme'
 import Controls from '../Controls'
 import DebugControls from '../DebugControls'
 import Dialogs from '../Dialogs'
@@ -139,15 +137,13 @@ const Browser = (props: Props) => {
       selectedAssets={props?.selectedAssets}
     >
       <ThemeProvider scheme="dark" theme={studioTheme}>
-        <LegacyThemeProvider theme={theme}>
-          <ToastProvider zOffset={Z_INDEX_TOAST_PROVIDER}>
-            <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
-              <GlobalStyle />
+        <ToastProvider>
+          <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
+            <GlobalStyle />
 
-              <BrowserContent onClose={props?.onClose} />
-            </AssetBrowserDispatchProvider>
-          </ToastProvider>
-        </LegacyThemeProvider>
+            <BrowserContent onClose={props?.onClose} />
+          </AssetBrowserDispatchProvider>
+        </ToastProvider>
       </ThemeProvider>
     </ReduxProvider>
   )

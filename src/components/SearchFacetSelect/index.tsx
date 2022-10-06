@@ -1,8 +1,8 @@
 import {SelectIcon} from '@sanity/icons'
 import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import {
-  SearchFacetInputSelectProps,
   SearchFacetInputSelectListItemProps,
+  SearchFacetInputSelectProps,
   SearchFacetOperatorType
 } from '@types'
 import React from 'react'

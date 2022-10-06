@@ -71,6 +71,7 @@ const AssetGridVirtualized = (props: Props) => {
         return <VirtualCell item={item} selected={selected} />
       }}
       overscan={48}
+      style={{overflowX: 'hidden'}}
       totalCount={totalCount}
     />
   )

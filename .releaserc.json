@@ -1,0 +1,4 @@
+{
+  "extends": "@sanity/semantic-release-preset",
+  "branches": ["main", {"name": "v3", "channel": "studio-v3", "prerelease": "v3-studio"}]
+}

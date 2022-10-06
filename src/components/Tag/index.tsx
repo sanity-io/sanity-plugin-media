@@ -20,7 +20,6 @@ type Props = {
 
 const TagContainer = styled(Flex)`
   height: ${PANEL_HEIGHT}px;
-  width: 100%;
 `
 
 const ButtonContainer = styled(Flex)`
@@ -56,7 +55,6 @@ const TagButton = (props: TagButtonProps) => {
       }
       disabled={'ontouchstart' in window}
       placement="top"
-      portal
     >
       <Button
         disabled={disabled}
@@ -124,7 +122,7 @@ const Tag = (props: Props) => {
   }
 
   return (
-    <TagContainer align="center" justify="space-between" paddingLeft={3}>
+    <TagContainer align="center" flex={1} justify="space-between" paddingLeft={3}>
       <Box flex={1}>
         <Text
           size={1}

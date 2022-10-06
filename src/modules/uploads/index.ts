@@ -184,12 +184,10 @@ export const uploadsAssetUploadEpic: MyEpic = (action$, state$) =>
 
       return of(action).pipe(
         // Generate SHA1 hash from local file
+        // This will throw in insecure contexts (non-localhost / https)
         mergeMap(() => hashFile$(file)),
-        // Ignore if we're unable to generate a hash, or if the file is currently being uploaded
+        // Ignore if the file exists and is currently being uploaded
         filter(hash => {
-          if (!hash) {
-            return false
-          }
           const exists = !!state.uploads.byIds[hash]
           return !exists
         }),

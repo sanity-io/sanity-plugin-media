@@ -7,7 +7,6 @@ import {
 } from '@types'
 import React from 'react'
 import {useDispatch} from 'react-redux'
-
 import {operators} from '../../config/searchFacets'
 import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'

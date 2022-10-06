@@ -24,6 +24,7 @@ const TagsPanel = () => {
         style={{
           borderLeft: `1px solid ${hues.gray?.[900].hex}`,
           height: '100%',
+          overflowX: 'hidden',
           overflowY: 'auto',
           position: 'absolute',
           right: 0,

@@ -30,7 +30,6 @@ const PickedBar = () => {
     <Flex
       align="center"
       justify="flex-start"
-      paddingX={3}
       style={{
         background: hues.gray?.[900].hex,
         borderBottom: `1px solid ${hues.gray?.[900].hex}`,
@@ -39,7 +38,7 @@ const PickedBar = () => {
         width: '100%'
       }}
     >
-      <Flex align="center">
+      <Flex align="center" paddingX={3}>
         <Box paddingRight={2}>
           <Label size={0} style={{color: 'inherit'}}>
             {assetsPicked.length} {pluralize('asset', assetsPicked.length)} selected

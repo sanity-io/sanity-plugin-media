@@ -6,7 +6,7 @@ module.exports = {
   extends: [
     'sanity/react', // must come before sanity/typescript
     'sanity/typescript',
-    'plugin:prettier/recommended'
+    'prettier'
   ],
   overrides: [
     {
@@ -19,7 +19,7 @@ module.exports = {
     },
     project: './tsconfig.json'
   },
-  plugins: ['@typescript-eslint'],
+  plugins: ['prettier'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-shadow': 'error',

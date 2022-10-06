@@ -7,9 +7,7 @@ import groq from 'groq'
 import React, {ReactNode, useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import {AspectRatio} from 'theme-ui'
 import * as yup from 'yup'
-import {Z_INDEX_DIALOG} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
@@ -41,7 +39,7 @@ const formSchema = yup.object().shape({
 })
 
 const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
-  const extensionIndex = asset?.originalFilename?.lastIndexOf(`.${asset.extension}`)
+  const extensionIndex = asset?.originalFilename?.toLowerCase().lastIndexOf(`.${asset.extension}`)
   return asset?.originalFilename?.slice(0, extensionIndex)
 }
 
@@ -266,15 +264,7 @@ const DialogAssetEdit = (props: Props) => {
   }
 
   return (
-    // @ts-expect-error
-    <Dialog
-      footer={<Footer />}
-      header="Asset details"
-      id={id}
-      onClose={handleClose}
-      width={3}
-      zOffset={Z_INDEX_DIALOG}
-    >
+    <Dialog footer={<Footer />} header="Asset details" id={id} onClose={handleClose} width={3}>
       {/*
         We reverse direction to ensure the download button doesn't appear (in the DOM) before other tabbable items.
         This ensures that the dialog doesn't scroll down to the download button (which on smaller screens, can sometimes
@@ -394,7 +384,7 @@ const DialogAssetEdit = (props: Props) => {
         </Box>
 
         <Box flex={1} padding={4}>
-          <AspectRatio ratio={1}>
+          <Box style={{aspectRatio: '1'}}>
             {/* File */}
             {isFileAsset(currentAsset) && <FileAssetPreview asset={currentAsset} />}
 
@@ -406,7 +396,7 @@ const DialogAssetEdit = (props: Props) => {
                 src={imageDprUrl(currentAsset, {height: 600, width: 600})}
               />
             )}
-          </AspectRatio>
+          </Box>
 
           {/* Metadata */}
           {currentAsset && (
