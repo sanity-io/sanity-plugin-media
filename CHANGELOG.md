@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.13](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.12...v1.4.13) (2022-10-06)
+
+### Bug Fixes
+
+- fix minor regression with tag positioning, dont portal tooltips to prevent overflow issues ([4b6e46b](https://github.com/robinpyon/sanity-plugin-media/commit/4b6e46b299dfafcd523eab33d7c0e4e029270903))
+
 ## [1.4.12](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.11...v1.4.12) (2022-10-06)
 
 ### Bug Fixes
