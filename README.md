@@ -6,7 +6,7 @@
 
 ## What is it?
 
-![npm-v](https://img.shields.io/npm/v/sanity-plugin-media?style=flat-square)
+![npm-v](https://img.shields.io/npm/v/sanity-plugin-media/studio-v3?style=flat-square)
 ![npm-dw](https://img.shields.io/npm/dw/sanity-plugin-media?style=flat-square)
 
 A convenient way to browse, manage and refine your [Sanity](https://www.sanity.io/) assets.
@@ -51,13 +51,13 @@ _Individual asset view_
 In your Sanity project folder:
 
 ```sh
-npm install --save sanity-plugin-media@v3-studio
+npm install --save sanity-plugin-media@studio-v3
 ```
 
 or
 
 ```sh
-yarn add sanity-plugin-media@v3-studio
+yarn add sanity-plugin-media@studio-v3
 ```
 
 ## Usage
