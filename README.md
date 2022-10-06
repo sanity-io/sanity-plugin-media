@@ -99,13 +99,6 @@ export default createConfig({
 ## Known issues
 
 <details>
-<summary>(V3) Where has the references tab gone?</summary>
-
-- This will be enabled in a future version!
-
-</details>
-
-<details>
 <summary>There isn't a way to edit asset fields directly from the desk (without opening the plugin)</summary>
 
 - This is a bit of a sticking point, especially when working with large datasets

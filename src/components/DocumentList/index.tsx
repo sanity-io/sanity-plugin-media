@@ -1,107 +1,82 @@
-/*
 import type {SanityDocument} from '@sanity/client'
-import {Box, Card, Text} from '@sanity/ui'
-import {IntentLink} from 'part:sanity/router'
-import Preview from 'part:sanity/preview'
-import schema from 'part:sanity/schema'
-import {WithReferringDocuments} from 'part:sanity/with-referring-documents'
+import {Box, Button, Card, Stack, Text} from '@sanity/ui'
 import React from 'react'
-import styled from 'styled-components'
+import {useIntentLink, useSchema} from 'sanity'
+import {SanityPreview, useDocumentStore, WithReferringDocuments} from 'sanity/_unstable'
 
 type Props = {
   assetId: string
 }
 
-// Brute force styles on all of Sanity's preview components.
-// TODO: Consider using a custom preview component that is able to resolve custom titles
-// (and potentially subtitles) defined at the document schema level. Or anything to ensure
-// that future upstream changes to Sanity's preview components don't break anything here.
-const Container = styled(Box)`
-  * {
-    color: ${props => props.theme.sanity.color.base.fg};
-  }
-
-  a {
-    text-decoration: none;
-  }
-
-  h2 {
-    font-size: ${props => props.theme.sanity.fonts.text.sizes[1]};
-  }
-`
-
 const DocumentList = (props: Props) => {
   const {assetId} = props
 
-  const renderChild = (renderProps: {isLoading: boolean; referringDocuments: SanityDocument}) => {
-    const {isLoading, referringDocuments} = renderProps
+  const documentStore = useDocumentStore()
 
-    const draftIds = referringDocuments.reduce(
-      (acc: string[], doc: SanityDocument) =>
-        doc._id.startsWith('drafts.') ? acc.concat(doc._id.slice(7)) : acc,
-      []
-    )
+  return (
+    <WithReferringDocuments documentStore={documentStore} id={assetId}>
+      {({isLoading, referringDocuments}) => (
+        <ReferringDocuments isLoading={isLoading} referringDocuments={referringDocuments} />
+      )}
+    </WithReferringDocuments>
+  )
+}
 
-    const filteredDocuments: SanityDocument[] = referringDocuments.filter(
-      (doc: SanityDocument) => !draftIds.includes(doc._id)
-    )
+const ReferringDocuments = (props: {isLoading: boolean; referringDocuments: SanityDocument[]}) => {
+  const {isLoading, referringDocuments} = props
 
-    if (isLoading) {
-      return <Text size={1}>Loading...</Text>
-    }
+  const schema = useSchema()
 
-    if (filteredDocuments.length === 0) {
-      return <Text size={1}>No documents are referencing this asset</Text>
-    }
+  const draftIds = referringDocuments.reduce(
+    (acc: string[], doc: SanityDocument) =>
+      doc._id.startsWith('drafts.') ? acc.concat(doc._id.slice(7)) : acc,
+    []
+  )
 
-    return filteredDocuments?.map(doc => {
-      const schemaType = schema.get(doc._type)
+  const filteredDocuments: SanityDocument[] = referringDocuments.filter(
+    (doc: SanityDocument) => !draftIds.includes(doc._id)
+  )
 
-      return (
-        <Card
-          key={doc._id}
-          marginBottom={2}
-          padding={2}
-          radius={2}
-          shadow={1}
-          style={{overflow: 'hidden'}}
-        >
-          <Box>
-            {schemaType ? (
-              <IntentLink intent="edit" params={{id: doc._id}} key={doc._id}>
-                <Preview layout="default" value={doc} type={schemaType} />
-              </IntentLink>
-            ) : (
-              <Box padding={2}>
-                <Text size={1}>
-                  A document of the unknown type <em>{doc._type}</em>
-                </Text>
-              </Box>
-            )}
-          </Box>
-        </Card>
-      )
-    })
+  if (isLoading) {
+    return <Text size={1}>Loading...</Text>
+  }
+
+  if (filteredDocuments.length === 0) {
+    return <Text size={1}>No documents are referencing this asset</Text>
   }
 
   return (
-    <Container>
-      <WithReferringDocuments id={assetId}>{renderChild}</WithReferringDocuments>
-    </Container>
+    <Card flex={1} marginBottom={2} padding={2} radius={2} shadow={1}>
+      <Stack space={2}>
+        {filteredDocuments?.map(doc => {
+          const schemaType = schema.get(doc._type)
+
+          const {onClick} = useIntentLink({
+            intent: 'edit',
+            params: {id: doc._id}
+          })
+
+          return schemaType ? (
+            <Button
+              key={doc._id}
+              mode="bleed"
+              onClick={onClick}
+              padding={2}
+              style={{width: '100%'}}
+            >
+              <SanityPreview layout="default" schemaType={schemaType} value={doc} />
+            </Button>
+          ) : (
+            <Box padding={2}>
+              <Text size={1}>
+                A document of the unknown type <em>{doc._type}</em>
+              </Text>
+            </Box>
+          )
+        })}
+      </Stack>
+    </Card>
   )
-}
-*/
-
-import React from 'react'
-import {Text} from '@sanity/ui'
-
-type Props = {
-  assetId: string
-}
-
-const DocumentList = (props: Props) => {
-  const {assetId} = props
-  return <Text>Document list for Asset with ID {assetId} should go here</Text>
 }
 
 export default DocumentList
