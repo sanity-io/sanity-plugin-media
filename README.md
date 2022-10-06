@@ -1,8 +1,8 @@
 # Sanity Media
 
-> ⚠️ This version of `sanity-plugin-media` is compatible with Sanity Studio V2.
+> This version of `sanity-plugin-media` is compatible with Sanity Studio V2.
 >
-> A Studio V3 compatible version can be found on the [V3 branch](https://github.com/robinpyon/sanity-plugin-media/tree/v3-studio).
+> A Studio V3 compatible version can be found on the [V3 branch](https://github.com/robinpyon/sanity-plugin-media/tree/v3).
 
 ![npm-v](https://img.shields.io/npm/v/sanity-plugin-media?style=flat-square)
 ![npm-dw](https://img.shields.io/npm/dw/sanity-plugin-media?style=flat-square)
