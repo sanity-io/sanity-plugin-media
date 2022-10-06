@@ -1,3 +1,31 @@
+<!-- markdownlint-disable --><!-- textlint-disable -->
+
+# 📓 Changelog
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [2.0.0-v3-studio.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v2.0.0-v3-studio.1) (2022-10-06)
+
+### ⚠ BREAKING CHANGES
+
+- initial studio v3 version
+
+### Features
+
+- initial studio v3 version ([beb5531](https://github.com/robinpyon/sanity-plugin-media/commit/beb55317235792c7337e9dbfc8c3ffe4f88ff5e5))
+
+### Bug Fixes
+
+- apply upstream v2-studio fixes, add semver automation workflow ([100f3eb](https://github.com/robinpyon/sanity-plugin-media/commit/100f3eb226e80d8eef81dae1dc1c688d1ceab797)), closes [#88](https://github.com/robinpyon/sanity-plugin-media/issues/88) [#50](https://github.com/robinpyon/sanity-plugin-media/issues/50) [#57](https://github.com/robinpyon/sanity-plugin-media/issues/57) [#82](https://github.com/robinpyon/sanity-plugin-media/issues/82)
+- initial v3 work ([4517bb5](https://github.com/robinpyon/sanity-plugin-media/commit/4517bb532b60c42eb9058887d206969b23191373))
+- re-enable references tab panel ([ac698b3](https://github.com/robinpyon/sanity-plugin-media/commit/ac698b3a74be31774914c7f68981485826a67807))
+- remove rxjs and @sanity/client from peerDependencies ([b4df1f5](https://github.com/robinpyon/sanity-plugin-media/commit/b4df1f5ba067ff0e28dda08d376b03d444967d68))
+
+### Reverts
+
+- Revert "fix: flatten blob gen + upload actions to ensure null blobs correctly throw errors and bubble up" ([7a387c4](https://github.com/robinpyon/sanity-plugin-media/commit/7a387c43c7a6701a9c3e7876d189722e03161e17))
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
