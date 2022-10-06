@@ -39,7 +39,7 @@ const formSchema = yup.object().shape({
 })
 
 const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
-  const extensionIndex = asset?.originalFilename?.lastIndexOf(`.${asset.extension}`)
+  const extensionIndex = asset?.originalFilename?.toLowerCase().lastIndexOf(`.${asset.extension}`)
   return asset?.originalFilename?.slice(0, extensionIndex)
 }
 
