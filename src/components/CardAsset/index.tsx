@@ -21,6 +21,7 @@ type Props = {
 }
 
 const CardWrapper = styled(Flex)`
+  box-sizing: border-box;
   height: 100%;
   overflow: hidden;
   padding: 2px;

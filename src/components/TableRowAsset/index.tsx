@@ -1,12 +1,22 @@
 import {hues} from '@sanity/color'
 import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
-import {Box, Checkbox, Container, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
+import {
+  Box,
+  Checkbox,
+  Container,
+  Flex,
+  Grid,
+  Spinner,
+  Text,
+  Tooltip,
+  useMediaIndex
+} from '@sanity/ui'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {memo, MouseEvent, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
-import {Box as LegacyBox, Flex as LegacyFlex, Grid as LegacyGrid} from 'theme-ui'
+import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -23,7 +33,7 @@ type Props = {
   selected: boolean
 }
 
-const ContainerGrid = styled(LegacyGrid)<{selected?: boolean; updating?: boolean}>`
+const ContainerGrid = styled(Grid)<{selected?: boolean; updating?: boolean}>`
   align-items: center;
   cursor: ${props => (props.selected ? 'default' : 'pointer')};
   height: 100%;
@@ -42,7 +52,7 @@ const ContainerGrid = styled(LegacyGrid)<{selected?: boolean; updating?: boolean
     `}
 `
 
-const ContextActionContainer = styled(LegacyFlex)`
+const ContextActionContainer = styled(Flex)`
   cursor: pointer;
 
   @media (hover: hover) and (pointer: fine) {
@@ -68,6 +78,8 @@ const TableRowAsset = (props: Props) => {
   const dispatch = useDispatch()
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
   const item = useTypedSelector(state => selectAssetById(state, id))
+
+  const mediaIndex = useMediaIndex()
 
   const asset = item?.asset
   const error = item?.error
@@ -123,22 +135,23 @@ const TableRowAsset = (props: Props) => {
     <ContainerGrid
       onClick={selected ? undefined : handleClick}
       selected={selected}
-      sx={{
-        gridColumnGap: [0, null, null, 3],
-        gridRowGap: [0],
-        gridTemplateColumns: ['tableSmall', null, null, 'tableLarge'],
-        gridTemplateRows: ['auto', null, null, '1fr']
+      style={{
+        gridColumnGap: mediaIndex < 3 ? 0 : '16px',
+        gridRowGap: 0,
+        gridTemplateColumns:
+          mediaIndex < 3 ? GRID_TEMPLATE_COLUMNS.SMALL : GRID_TEMPLATE_COLUMNS.LARGE,
+        gridTemplateRows: mediaIndex < 3 ? 'auto' : '1fr'
       }}
       updating={item.updating}
     >
       {/* Picked checkbox */}
       <ContextActionContainer
         onClick={handleContextActionClick}
-        sx={{
+        style={{
           alignItems: 'center',
           gridColumn: 1,
-          gridRowStart: ['1', null, null, 'auto'],
-          gridRowEnd: ['span 5', null, null, 'auto'],
+          gridRowStart: 1,
+          gridRowEnd: 'span 5',
           height: '100%',
           justifyContent: 'center',
           opacity: opacityCell,
@@ -165,11 +178,11 @@ const TableRowAsset = (props: Props) => {
       </ContextActionContainer>
 
       {/* Preview image + spinner */}
-      <LegacyBox
-        sx={{
-          gridColumn: [2],
-          gridRowStart: ['1', null, null, 'auto'],
-          gridRowEnd: ['span 5', null, null, 'auto'],
+      <Box
+        style={{
+          gridColumn: 2,
+          gridRowStart: 1,
+          gridRowEnd: 'span 5',
           height: '90px',
           width: '100px'
         }}
@@ -225,40 +238,40 @@ const TableRowAsset = (props: Props) => {
             </Flex>
           )}
         </Flex>
-      </LegacyBox>
+      </Box>
 
       {/* Filename */}
-      <LegacyBox
-        sx={{
-          gridColumn: [3],
-          gridRow: [2, null, null, 'auto'],
-          marginLeft: [3, null, null, 0],
+      <Box
+        marginLeft={mediaIndex < 3 ? 3 : 0}
+        style={{
+          gridColumn: 3,
+          gridRow: mediaIndex < 3 ? 2 : 'auto',
           opacity: opacityCell
         }}
       >
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {asset.originalFilename}
         </Text>
-      </LegacyBox>
+      </Box>
 
       {/* Resolution */}
-      <LegacyBox
-        sx={{
-          gridColumn: [3, null, null, 4],
-          gridRow: [3, null, null, 'auto'],
-          marginLeft: [3, null, null, 0],
+      <Box
+        marginLeft={mediaIndex < 3 ? 3 : 0}
+        style={{
+          gridColumn: mediaIndex < 3 ? 3 : 4,
+          gridRow: mediaIndex < 3 ? 3 : 'auto',
           opacity: opacityCell
         }}
       >
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {isImageAsset(asset) && getAssetResolution(asset)}
         </Text>
-      </LegacyBox>
+      </Box>
 
       {/* MIME type */}
-      <LegacyBox
-        sx={{
-          display: ['none', null, null, 'block'],
+      <Box
+        style={{
+          display: mediaIndex < 3 ? 'none' : 'block',
           gridColumn: 5,
           gridRow: 'auto',
           opacity: opacityCell
@@ -267,12 +280,12 @@ const TableRowAsset = (props: Props) => {
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {asset.mimeType}
         </Text>
-      </LegacyBox>
+      </Box>
 
       {/* Size */}
-      <LegacyBox
-        sx={{
-          display: ['none', null, null, 'block'],
+      <Box
+        style={{
+          display: mediaIndex < 3 ? 'none' : 'block',
           gridColumn: 6,
           gridRow: 'auto',
           opacity: opacityCell
@@ -281,36 +294,37 @@ const TableRowAsset = (props: Props) => {
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {filesize(asset.size, {base: 10, round: 0})}
         </Text>
-      </LegacyBox>
+      </Box>
 
       {/* Last updated */}
-      <LegacyBox
-        sx={{
-          gridColumn: [3, null, null, 7],
-          gridRow: [4, null, null, 'auto'],
-          marginLeft: [3, null, null, 0],
+      <Box
+        marginLeft={mediaIndex < 3 ? 3 : 0}
+        style={{
+          gridColumn: mediaIndex < 3 ? 3 : 7,
+          gridRow: mediaIndex < 3 ? 4 : 'auto',
           opacity: opacityCell
         }}
       >
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {formatRelative(new Date(asset._updatedAt), new Date())}
         </Text>
-      </LegacyBox>
+      </Box>
 
       {/* Error */}
-      <LegacyBox
-        sx={{
-          gridColumn: [4, null, null, 8],
+      <Flex
+        align="center"
+        justify="center"
+        style={{
+          gridColumn: mediaIndex < 3 ? 4 : 8,
           gridRowStart: '1',
-          gridRowEnd: ['span 5', null, null, 'auto'],
-          mx: 'auto',
+          gridRowEnd: mediaIndex < 3 ? 'span 5' : 'auto',
           opacity: opacityCell
         }}
       >
         {/* TODO: DRY */}
         {/* Error button */}
         {error && (
-          <Box padding={3}>
+          <Box padding={2}>
             <Tooltip
               content={
                 <Container padding={2} width={0}>
@@ -326,7 +340,7 @@ const TableRowAsset = (props: Props) => {
             </Tooltip>
           </Box>
         )}
-      </LegacyBox>
+      </Flex>
     </ContainerGrid>
   )
 }

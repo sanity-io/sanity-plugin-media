@@ -1,13 +1,13 @@
 import {black, hues} from '@sanity/color'
 import {Box, Flex, Text} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPickedLength} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'
-import TagViewHeader from '../TagViewHeader'
 import TagsVirtualized from '../TagsVirtualized'
+import TagViewHeader from '../TagViewHeader'
 
-const TagView: FC = () => {
+const TagView = () => {
   const numPickedAssets = useTypedSelector(selectAssetsPickedLength)
   const tags = useTypedSelector(selectTags)
   const fetching = useTypedSelector(state => state.tags.fetching)

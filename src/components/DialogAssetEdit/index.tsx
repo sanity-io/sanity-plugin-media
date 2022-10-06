@@ -3,10 +3,9 @@ import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
 import {Asset, DialogAssetEditProps, ReactSelectOption} from '@types'
 import groq from 'groq'
-import React, {FC, ReactNode, useEffect, useRef, useState} from 'react'
+import React, {ReactNode, useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import {AspectRatio} from 'theme-ui'
 import * as yup from 'yup'
 import {client} from '../../client'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -44,7 +43,7 @@ const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
   return asset?.originalFilename?.slice(0, extensionIndex)
 }
 
-const DialogAssetEdit: FC<Props> = (props: Props) => {
+const DialogAssetEdit = (props: Props) => {
   const {
     children,
     dialog: {assetId, id, lastCreatedTag, lastRemovedTagIds}
@@ -376,7 +375,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
         </Box>
 
         <Box flex={1} padding={4}>
-          <AspectRatio ratio={1}>
+          <Box style={{aspectRatio: '1'}}>
             {/* File */}
             {isFileAsset(currentAsset) && <FileAssetPreview asset={currentAsset} />}
 
@@ -388,7 +387,7 @@ const DialogAssetEdit: FC<Props> = (props: Props) => {
                 src={imageDprUrl(currentAsset, {height: 600, width: 600})}
               />
             )}
-          </AspectRatio>
+          </Box>
 
           {/* Metadata */}
           {currentAsset && (

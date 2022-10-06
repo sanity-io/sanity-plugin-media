@@ -1,14 +1,14 @@
 import {ClipboardIcon} from '@sanity/icons'
 import {Button, Popover, Text} from '@sanity/ui'
 import copy from 'copy-to-clipboard'
-import React, {FC, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 
 type Props = {
   disabled?: boolean
   url: string
 }
 
-const ButtonAssetCopy: FC<Props> = (props: Props) => {
+const ButtonAssetCopy = (props: Props) => {
   const {disabled, url} = props
 
   // Refs

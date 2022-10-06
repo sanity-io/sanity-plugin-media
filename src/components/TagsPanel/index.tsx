@@ -1,13 +1,13 @@
 import {hues} from '@sanity/color'
 import {Box} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 
 import {TAGS_PANEL_WIDTH} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 
 import TagView from '../TagView'
 
-const TagsPanel: FC = () => {
+const TagsPanel = () => {
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
 
   if (!tagsPanelVisible) {
@@ -26,6 +26,7 @@ const TagsPanel: FC = () => {
         style={{
           borderLeft: `1px solid ${hues.gray?.[900].hex}`,
           height: '100%',
+          overflowX: 'hidden',
           overflowY: 'auto',
           position: 'absolute',
           right: 0,

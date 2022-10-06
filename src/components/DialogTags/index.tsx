@@ -1,7 +1,7 @@
 import {hues} from '@sanity/color'
 import {Box} from '@sanity/ui'
 import {DialogTagsProps} from '@types'
-import React, {FC, ReactNode, useCallback} from 'react'
+import React, {ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 import {dialogActions} from '../../modules/dialog'
 import Dialog from '../Dialog'
@@ -12,7 +12,7 @@ type Props = {
   dialog: DialogTagsProps
 }
 
-const DialogTags: FC<Props> = (props: Props) => {
+const DialogTags = (props: Props) => {
   const {
     children,
     dialog: {id}

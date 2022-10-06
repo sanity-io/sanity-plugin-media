@@ -2,7 +2,7 @@ import {hues} from '@sanity/color'
 import {ArrowDownIcon, ArrowUpIcon, CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Container, Flex, Text, Tooltip} from '@sanity/ui'
 import {SearchFacetInputSearchableProps, TagActions, TagItem} from '@types'
-import React, {FC, ReactNode} from 'react'
+import React, {ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {inputs} from '../../config/searchFacets'
@@ -42,7 +42,7 @@ type TagButtonProps = {
   tooltip: string
 }
 
-const TagButton: FC<TagButtonProps> = (props: TagButtonProps) => {
+const TagButton = (props: TagButtonProps) => {
   const {disabled, icon, onClick, tone, tooltip} = props
   return (
     <Tooltip
@@ -70,7 +70,7 @@ const TagButton: FC<TagButtonProps> = (props: TagButtonProps) => {
   )
 }
 
-const Tag: FC<Props> = (props: Props) => {
+const Tag = (props: Props) => {
   const {actions, tag} = props
 
   // Redux

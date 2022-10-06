@@ -64,6 +64,7 @@ const AssetTableVirtualized = (props: Props) => {
         const selected = selectedIds.includes(item?.id)
         return <VirtualRow item={item} selected={selected} />
       }}
+      style={{overflowX: 'hidden'}}
     />
   )
 }

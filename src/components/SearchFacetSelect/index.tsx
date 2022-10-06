@@ -1,11 +1,11 @@
 import {SelectIcon} from '@sanity/icons'
 import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import {
-  SearchFacetInputSelectProps,
   SearchFacetInputSelectListItemProps,
+  SearchFacetInputSelectProps,
   SearchFacetOperatorType
 } from '@types'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 
 import {operators} from '../../config/searchFacets'
@@ -16,7 +16,7 @@ type Props = {
   facet: SearchFacetInputSelectProps
 }
 
-const SearchFacetSelect: FC<Props> = (props: Props) => {
+const SearchFacetSelect = (props: Props) => {
   const {facet} = props
 
   // Redux

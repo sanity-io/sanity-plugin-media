@@ -1,13 +1,12 @@
 import {PlugIcon} from '@sanity/icons'
 import {Box, Flex, Switch, Text, Tooltip} from '@sanity/ui'
-import React, {ChangeEvent, FC} from 'react'
+import React, {ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
-
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {debugActions} from '../../modules/debug'
 
-const DebugControls: FC = () => {
+const DebugControls = () => {
   // Redux
   const dispatch = useDispatch()
   const badConnection = useTypedSelector(state => state.debug.badConnection)

@@ -3,7 +3,7 @@ import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Text} from '@sanity/ui'
 import {DialogTagEditProps, Tag} from '@types'
 import groq from 'groq'
-import React, {FC, ReactNode, useEffect, useState} from 'react'
+import React, {ReactNode, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
@@ -27,7 +27,7 @@ const formSchema = yup.object().shape({
   name: yup.string().required('Name cannot be empty')
 })
 
-const DialogTagEdit: FC<Props> = (props: Props) => {
+const DialogTagEdit = (props: Props) => {
   const {
     children,
     dialog: {id, tagId}

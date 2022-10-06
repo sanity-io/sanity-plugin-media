@@ -1,6 +1,6 @@
-import React, {FC} from 'react'
+import React from 'react'
 
-const TagIcon: FC = () => (
+const TagIcon = () => (
   <svg
     data-sanity-icon="media__tag" // For icon usage with @sanity/ui <Button />
     fill="currentColor"

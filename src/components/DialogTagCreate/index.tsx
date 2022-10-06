@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup'
 import {Box, Flex} from '@sanity/ui'
 import {DialogTagCreateProps} from '@types'
-import React, {FC, ReactNode, useEffect} from 'react'
+import React, {ReactNode, useEffect} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
@@ -24,7 +24,7 @@ const formSchema = yup.object().shape({
   name: yup.string().required('Name cannot be empty')
 })
 
-const DialogTagCreate: FC<Props> = (props: Props) => {
+const DialogTagCreate = (props: Props) => {
   const {
     children,
     dialog: {id}

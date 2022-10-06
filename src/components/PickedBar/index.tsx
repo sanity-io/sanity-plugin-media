@@ -1,14 +1,14 @@
 import {hues} from '@sanity/color'
 import {Box, Button, Flex, Label} from '@sanity/ui'
 import pluralize from 'pluralize'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 
-const PickedBar: FC = () => {
+const PickedBar = () => {
   // Redux
   const dispatch = useDispatch()
   const assetsPicked = useTypedSelector(selectAssetsPicked)
@@ -30,7 +30,6 @@ const PickedBar: FC = () => {
     <Flex
       align="center"
       justify="flex-start"
-      paddingX={3}
       style={{
         background: hues.gray?.[900].hex,
         borderBottom: `1px solid ${hues.gray?.[900].hex}`,
@@ -39,7 +38,7 @@ const PickedBar: FC = () => {
         width: '100%'
       }}
     >
-      <Flex align="center">
+      <Flex align="center" paddingX={3}>
         <Box paddingRight={2}>
           <Label size={0} style={{color: 'inherit'}}>
             {assetsPicked.length} {pluralize('asset', assetsPicked.length)} selected

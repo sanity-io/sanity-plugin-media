@@ -1,12 +1,12 @@
 import {CloseIcon, SearchIcon} from '@sanity/icons'
 import {Box, Flex, TextInput} from '@sanity/ui'
-import React, {ChangeEvent, FC} from 'react'
+import React, {ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
 
-const TextInputSearch: FC = () => {
+const TextInputSearch = () => {
   // Redux
   const searchQuery = useTypedSelector(state => state.search.query)
 

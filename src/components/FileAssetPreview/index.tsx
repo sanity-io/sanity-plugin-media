@@ -1,6 +1,6 @@
 import {Flex} from '@sanity/ui'
 import {Asset} from '@types'
-import React, {FC} from 'react'
+import React from 'react'
 
 import FileIcon from '../FileIcon'
 
@@ -8,7 +8,7 @@ type Props = {
   asset: Asset
 }
 
-const FileAssetPreview: FC<Props> = (props: Props) => {
+const FileAssetPreview = (props: Props) => {
   const {asset} = props
 
   if (asset.mimeType.search('audio') === 0) {

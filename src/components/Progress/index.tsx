@@ -1,12 +1,12 @@
 import {Box} from '@sanity/ui'
 import {useNProgress} from '@tanem/react-nprogress'
-import React, {FC} from 'react'
+import React from 'react'
 
 type Props = {
   loading?: boolean
 }
 
-const Progress: FC<Props> = (props: Props) => {
+const Progress = (props: Props) => {
   const {loading} = props
 
   const {animationDuration, isFinished, progress} = useNProgress({

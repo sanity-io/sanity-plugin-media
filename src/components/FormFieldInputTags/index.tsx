@@ -1,8 +1,7 @@
 import {Box} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import {Controller, FieldError} from 'react-hook-form'
 import CreatableSelect from 'react-select/creatable'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/creatable'
 import {ReactSelectOption} from '../../types'
@@ -24,7 +23,7 @@ type Props = {
   value?: ReactSelectOption[] | null
 }
 
-const FormFieldInputTags: FC<Props> = (props: Props) => {
+const FormFieldInputTags = (props: Props) => {
   const {
     control,
     description,

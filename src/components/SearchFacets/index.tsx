@@ -1,12 +1,12 @@
 import {Box, Flex, Inline} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import SearchFacetNumber from '../SearchFacetNumber'
-import SearchFacetTags from '../SearchFacetTags'
 import SearchFacetSelect from '../SearchFacetSelect'
 import SearchFacetString from '../SearchFacetString'
+import SearchFacetTags from '../SearchFacetTags'
 
 type Props = {
   layout?: 'inline' | 'stack'
@@ -18,7 +18,7 @@ const StackContainer = styled(Flex)`
   }
 `
 
-const SearchFacets: FC<Props> = (props: Props) => {
+const SearchFacets = (props: Props) => {
   const {layout = 'inline'} = props
 
   // Redux

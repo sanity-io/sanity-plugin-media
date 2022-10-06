@@ -1,11 +1,9 @@
 import {black, hues} from '@sanity/color'
-import {Checkbox, Flex} from '@sanity/ui'
-import React, {FC, MouseEvent} from 'react'
+import {Checkbox, Flex, Grid, useMediaIndex} from '@sanity/ui'
+import React, {MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
-import {Box as LegacyBox} from 'theme-ui'
-import {PANEL_HEIGHT} from '../../constants'
-
+import {GRID_TEMPLATE_COLUMNS, PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsLength, selectAssetsPickedLength} from '../../modules/assets'
@@ -22,13 +20,14 @@ const ContextActionContainer = styled(Flex)`
   }
 `
 
-const TableHeader: FC = () => {
+const TableHeader = () => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
   const itemsLength = useTypedSelector(selectAssetsLength)
   const numPickedAssets = useTypedSelector(selectAssetsPickedLength)
 
+  const mediaIndex = useMediaIndex()
   const {onSelect} = useAssetSourceActions()
 
   const allSelected = numPickedAssets === itemsLength
@@ -48,20 +47,19 @@ const TableHeader: FC = () => {
   // `display: none`, as doing so causes issues with react-virtuoso.
   // Instead, we give it 0 height and hide it with `visibility: hidden`.
   return (
-    <LegacyBox
-      sx={{
+    <Grid
+      style={{
         alignItems: 'center',
-        bg: black.hex,
+        background: black.hex,
         borderBottom: `1px solid ${hues.gray?.[900].hex}`,
-        display: 'grid',
-        gridColumnGap: [0, null, null, 3],
-        gridTemplateColumns: 'tableLarge',
-        height: [0, null, null, `${PANEL_HEIGHT}px`],
+        gridColumnGap: mediaIndex < 3 ? 0 : '16px',
+        gridTemplateColumns: GRID_TEMPLATE_COLUMNS.LARGE,
+        height: mediaIndex < 3 ? 0 : `${PANEL_HEIGHT}px`,
         letterSpacing: '0.025em',
         position: 'sticky',
         textTransform: 'uppercase',
         top: 0,
-        visibility: ['hidden', null, null, 'visible'],
+        visibility: mediaIndex < 3 ? 'hidden' : 'visible',
         width: '100%',
         zIndex: 1 // force stacking context
       }}
@@ -96,7 +94,7 @@ const TableHeader: FC = () => {
       <TableHeaderItem field="size" title="Size" />
       <TableHeaderItem field="_updatedAt" title="Last updated" />
       <TableHeaderItem />
-    </LegacyBox>
+    </Grid>
   )
 }
 

@@ -1,8 +1,7 @@
 import {ChevronDownIcon, ChevronUpIcon} from '@sanity/icons'
 import {Box, Label} from '@sanity/ui'
-import React, {FC} from 'react'
+import React from 'react'
 import {useDispatch} from 'react-redux'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions} from '../../modules/assets'
 
@@ -11,7 +10,7 @@ type Props = {
   title?: string
 }
 
-const TableHeaderItem: FC<Props> = (props: Props) => {
+const TableHeaderItem = (props: Props) => {
   const {field, title} = props
 
   // Redux

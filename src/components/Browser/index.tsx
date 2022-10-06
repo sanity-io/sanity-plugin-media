@@ -2,7 +2,7 @@ import type {MutationEvent} from '@sanity/client'
 import {Card, Flex} from '@sanity/ui'
 import {Asset, Tag} from '@types'
 import groq from 'groq'
-import React, {FC, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 import {client} from '../../client'
 import {TAG_DOCUMENT_NAME} from '../../constants'
@@ -22,7 +22,7 @@ type Props = {
   onClose?: () => void
 }
 
-const Browser: FC<Props> = (props: Props) => {
+const Browser = (props: Props) => {
   const {onClose} = props
 
   // Redux

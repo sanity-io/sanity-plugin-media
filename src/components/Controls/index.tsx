@@ -1,9 +1,7 @@
 import {hues} from '@sanity/color'
-import {Box, Button, Flex, Inline} from '@sanity/ui'
-import React, {FC} from 'react'
+import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
+import React from 'react'
 import {useDispatch} from 'react-redux'
-import {Flex as LegacyFlex} from 'theme-ui'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
@@ -15,13 +13,15 @@ import SearchFacetsControl from '../SearchFacetsControl'
 import TagIcon from '../TagIcon'
 import TextInputSearch from '../TextInputSearch'
 
-const Controls: FC = () => {
+const Controls = () => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.search.facets)
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
+
+  const mediaIndex = useMediaIndex()
 
   // Callbacks
   const handleShowSearchFacetDialog = () => {
@@ -52,12 +52,13 @@ const Controls: FC = () => {
           justify="space-between"
         >
           {/* Search + Filters */}
-          <LegacyFlex
-            sx={{
+          <Flex
+            flex={1}
+            style={{
               alignItems: 'flex-start',
               flex: 1,
               height: '100%',
-              justifyContent: ['space-between', null, 'flex-start'],
+              justifyContent: mediaIndex < 2 ? 'space-between' : 'flex-start',
               position: 'relative',
               width: '100%'
             }}
@@ -95,7 +96,7 @@ const Controls: FC = () => {
                 />
               </Inline>
             </Box>
-          </LegacyFlex>
+          </Flex>
         </Flex>
       </Box>
 
