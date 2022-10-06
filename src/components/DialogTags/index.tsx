@@ -1,4 +1,3 @@
-import {hues} from '@sanity/color'
 import {Box} from '@sanity/ui'
 import {DialogTagsProps} from '@types'
 import React, {ReactNode, useCallback} from 'react'
@@ -30,7 +29,6 @@ const DialogTags = (props: Props) => {
     <Dialog header="All Tags" id={id} onClose={handleClose} width={1}>
       <Box
         style={{
-          borderTop: `1px solid ${hues.gray?.[900].hex}`,
           height: '100%',
           minHeight: '420px' // explicit height required as <TagView> is virtualized
         }}

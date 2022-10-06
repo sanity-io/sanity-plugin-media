@@ -11,10 +11,6 @@ All notable changes to this project will be documented in this file. See
 
 - catch errors when preview images fail to be generated ([#88](https://github.com/robinpyon/sanity-plugin-media/issues/88)) ([5b40ad7](https://github.com/robinpyon/sanity-plugin-media/commit/5b40ad7b32f11021e2da9440ca03c73d651ae533))
 
-# Changelog
-
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-
 ### [1.4.11](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v1.4.11) (2022-09-12)
 
 ### Bug Fixes
