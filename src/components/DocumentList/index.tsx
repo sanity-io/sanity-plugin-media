@@ -1,8 +1,14 @@
 import type {SanityDocument} from '@sanity/client'
 import {Box, Button, Card, Stack, Text} from '@sanity/ui'
 import React from 'react'
-import {SchemaType, useIntentLink, useSchema} from 'sanity'
-import {SanityPreview, useDocumentStore, WithReferringDocuments} from 'sanity/_unstable'
+import {
+  SanityPreview,
+  SchemaType,
+  useDocumentStore,
+  useSchema,
+  WithReferringDocuments
+} from 'sanity'
+import {useIntentLink} from 'sanity/router'
 
 type Props = {
   assetId: string

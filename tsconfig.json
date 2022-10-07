@@ -11,7 +11,7 @@
     "inlineSourceMap": false,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "es5"],
+    "lib": ["dom", "es2015", "es2016", "es2017", "es2021"],
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -27,5 +27,5 @@
     "strict": true,
     "target": "esnext"
   },
-  "include": [".d.ts", "./src/**/*", "node_modules/microbundle/index.d.ts"]
+  "include": [".d.ts", "./src/**/*"]
 }
