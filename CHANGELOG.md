@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.0-v3-studio.2](https://github.com/robinpyon/sanity-plugin-media/compare/v2.0.0-v3-studio.1...v2.0.0-v3-studio.2) (2022-10-07)
+
+### Bug Fixes
+
+- **deps:** dev-preview.21 ([4f9588a](https://github.com/robinpyon/sanity-plugin-media/commit/4f9588addd4828c5d9beb7457a2437bcb25c464c))
+
 ## [2.0.0-v3-studio.1](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.8...v2.0.0-v3-studio.1) (2022-10-06)
 
 ### Bug Fixes
