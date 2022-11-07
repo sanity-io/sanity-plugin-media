@@ -1,8 +1,10 @@
 # Sanity Media
 
-> This version of `sanity-plugin-media` is for [Sanity Studio V3](https://www.sanity.io/blog/sanity-studio-v3-developer-preview), which is currently in developer preview.
+> **NOTE**
 >
-> The Studio V2 compatible version can be found on the [V2 branch](https://github.com/robinpyon/sanity-plugin-media).
+> This is the **Sanity Studio v3 version** of sanity-plugin-media.
+>
+> For the v2 version, please refer to the [v2-branch](https://github.com/sanity-io/sanity-plugin-media).
 
 ## What is it?
 
@@ -67,7 +69,7 @@ Add it as a plugin in your `sanity.config.ts` (or .js) file:
 ```js
 import {media} from 'sanity-plugin-media'
 
-export default createConfig({
+export default defineConfig({
   // ...
   plugins: [media()]
 })
@@ -82,7 +84,7 @@ You can configure your studio to use this asset source either exclusively, or co
 ```js
 import {media, mediaAssetSource} from 'sanity-plugin-media'
 
-export default createConfig({
+export default defineConfig({
   // ...
   plugins: [media()],
   form: {
@@ -245,26 +247,19 @@ Contributions, issues and feature requests are welcome!
 
 ## License
 
-MIT. See [license](LICENSE)
+MIT-licensed. See LICENSE.
 
 ## Develop & test
 
-Make sure to run `npm run build` once, then run
-
-```bash
-npm run link-watch
-```
-
-In another shell, `cd` to your test studio and run:
-
-```bash
-npx yalc add sanity-plugin-media && yarn install
-```
-
-Now, changes in this repo will be automatically built and pushed to the studio,
-triggering hotreload. Yalc avoids issues with react-hooks that are typical when using yarn/npm link.
-
-### About build & watch
-
-This plugin uses [@sanity/plugin-sdk](https://github.com/sanity-io/plugin-sdk)
+This plugin uses [@sanity/plugin-kit](https://github.com/sanity-io/plugin-kit)
 with default configuration for build & watch scripts.
+
+See [Testing a plugin in Sanity Studio](https://github.com/sanity-io/plugin-kit#testing-a-plugin-in-sanity-studio)
+on how to run this plugin with hotreload in the studio.
+
+### Release new version
+
+Run ["CI & Release" workflow](https://github.com/robinpyon/sanity-plugin-media/actions/workflows/main.yml).
+Make sure to select the main branch and check "Release new version".
+
+Semantic release will only release on configured branches, so it is safe to run release on any branch.

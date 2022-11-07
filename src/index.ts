@@ -1,4 +1,4 @@
-import {createPlugin, Tool as SanityTool} from 'sanity'
+import {definePlugin, Tool as SanityTool} from 'sanity'
 import {ImageIcon} from '@sanity/icons'
 import type {AssetSource} from 'sanity'
 import FormBuilderTool from './components/FormBuilderTool'
@@ -21,7 +21,7 @@ const tool = {
   component: Tool
 } as SanityTool
 
-export const media = createPlugin({
+export const media = definePlugin({
   name: 'media',
   form: {
     file: {

@@ -1,8 +1,6 @@
 .eslintrc.js
 commitlint.config.js
-coverage
 lib
 lint-staged.config.js
-node_modules
-.parcel-cache
-v2-incompatible.js
+package.config.ts
+*.js
