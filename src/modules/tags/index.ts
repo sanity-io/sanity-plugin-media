@@ -521,23 +521,23 @@ export const selectTagById = createSelector(
 
 // TODO: use createSelector
 // Map tag references to react-select options, skipping over items with no linked tags
-export const selectTagSelectOptions = (asset?: Asset) => (
-  state: RootReducerState
-): ReactSelectOption[] | null => {
-  const tags = asset?.opt?.media?.tags?.reduce((acc: TagItem[], v) => {
-    const tagItem = state.tags.byIds[v._ref]
-    if (tagItem?.tag) {
-      acc.push(tagItem)
+export const selectTagSelectOptions =
+  (asset?: Asset) =>
+  (state: RootReducerState): ReactSelectOption[] | null => {
+    const tags = asset?.opt?.media?.tags?.reduce((acc: TagItem[], v) => {
+      const tagItem = state.tags.byIds[v._ref]
+      if (tagItem?.tag) {
+        acc.push(tagItem)
+      }
+      return acc
+    }, [])
+
+    if (tags && tags?.length > 0) {
+      return getTagSelectOptions(tags)
     }
-    return acc
-  }, [])
 
-  if (tags && tags?.length > 0) {
-    return getTagSelectOptions(tags)
+    return null
   }
-
-  return null
-}
 
 export const tagsActions = tagsSlice.actions
 

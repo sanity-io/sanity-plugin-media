@@ -34,7 +34,8 @@ module.exports = {
     ],
     'no-shadow': 'off',
     'react/display-name': 0,
-    'react/jsx-no-bind': 0
+    'react/jsx-no-bind': 0,
+    'no-use-before-define': 0
   },
   settings: {
     'import/ignore': ['.*node_modules.*', '.*:.*'],

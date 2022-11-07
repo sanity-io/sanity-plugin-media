@@ -33,7 +33,6 @@ import {searchActions} from '../search'
 import type {RootReducerState} from '../types'
 import {UPLOADS_ACTIONS} from '../uploads/actions'
 import {ASSETS_ACTIONS} from './actions'
-
 type ItemError = {
   description: string
   id: string
@@ -503,15 +502,19 @@ const filterAssetWithoutTag = (tag: Tag) => (asset: AssetItem) => {
   return tagIndex < 0
 }
 
-const patchOperationTagAppend = ({tag}: {tag: Tag}) => (patch: Patch) =>
-  patch
-    .setIfMissing({opt: {}})
-    .setIfMissing({'opt.media': {}})
-    .setIfMissing({'opt.media.tags': []})
-    .append('opt.media.tags', [{_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}])
+const patchOperationTagAppend =
+  ({tag}: {tag: Tag}) =>
+  (patch: Patch) =>
+    patch
+      .setIfMissing({opt: {}})
+      .setIfMissing({'opt.media': {}})
+      .setIfMissing({'opt.media.tags': []})
+      .append('opt.media.tags', [{_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}])
 
-const patchOperationTagUnset = ({asset, tag}: {asset: AssetItem; tag: Tag}) => (patch: Patch) =>
-  patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.tags[_ref == "${tag._id}"]`])
+const patchOperationTagUnset =
+  ({asset, tag}: {asset: AssetItem; tag: Tag}) =>
+  (patch: Patch) =>
+    patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.tags[_ref == "${tag._id}"]`])
 
 export const assetsRemoveTagsEpic: MyEpic = (action$, state$, {client}) => {
   return action$.pipe(
