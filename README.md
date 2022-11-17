@@ -1,10 +1,7 @@
 # Sanity Media
 
-> **NOTE**
->
-> This is the **Sanity Studio v3 version** of sanity-plugin-media.
->
-> For the v2 version, please refer to the [v2-branch](https://github.com/sanity-io/sanity-plugin-media).
+>This is a **Sanity Studio v3** plugin.
+> For the v2 version, please refer to the [v2-branch](https://github.com/sanity-io/sanity-plugin-media/tree/studio-v2).
 
 ## What is it?
 
@@ -247,7 +244,7 @@ Contributions, issues and feature requests are welcome!
 
 ## License
 
-MIT-licensed. See LICENSE.
+[MIT](LICENSE) © Robin Pyon
 
 ## Develop & test
 
