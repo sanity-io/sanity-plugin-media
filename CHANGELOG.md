@@ -5,6 +5,27 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.0](https://github.com/sanity-io/sanity-plugin-media/compare/v1.4.13...v2.0.0) (2022-11-17)
+
+### ⚠ BREAKING CHANGES
+
+- this version does not work in Sanity Studio v2
+- initial studio v3 version
+
+### Features
+
+- initial Sanity Studio v3 release ([8f6dd55](https://github.com/sanity-io/sanity-plugin-media/commit/8f6dd5561a9c811b21263b574104f9c89cc8fb36))
+- initial studio v3 version ([beb5531](https://github.com/sanity-io/sanity-plugin-media/commit/beb55317235792c7337e9dbfc8c3ffe4f88ff5e5))
+
+### Bug Fixes
+
+- apply upstream v2-studio fixes, add semver automation workflow ([100f3eb](https://github.com/sanity-io/sanity-plugin-media/commit/100f3eb226e80d8eef81dae1dc1c688d1ceab797)), closes [#88](https://github.com/sanity-io/sanity-plugin-media/issues/88) [#50](https://github.com/sanity-io/sanity-plugin-media/issues/50) [#57](https://github.com/sanity-io/sanity-plugin-media/issues/57) [#82](https://github.com/sanity-io/sanity-plugin-media/issues/82)
+- correctly infer filename from files containing uppercase extensions, tweak upload card layout ([1e96b79](https://github.com/sanity-io/sanity-plugin-media/commit/1e96b79d2bbec456fac9c39b072a487eef9932ad))
+- **deps:** compiled for sanity 3.0.0-rc.0 ([20466ab](https://github.com/sanity-io/sanity-plugin-media/commit/20466abce56aae41d0406f4fa7d817a927c741e8))
+- **deps:** dev-preview.21 ([4f9588a](https://github.com/sanity-io/sanity-plugin-media/commit/4f9588addd4828c5d9beb7457a2437bcb25c464c))
+- initial v3 work ([4517bb5](https://github.com/sanity-io/sanity-plugin-media/commit/4517bb532b60c42eb9058887d206969b23191373))
+- re-enable references tab panel ([ac698b3](https://github.com/sanity-io/sanity-plugin-media/commit/ac698b3a74be31774914c7f68981485826a67807))
+
 ## [2.0.0-v3-studio.3](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.0-v3-studio.2...v2.0.0-v3-studio.3) (2022-11-07)
 
 ### Bug Fixes
