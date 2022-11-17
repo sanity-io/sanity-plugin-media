@@ -5,7 +5,7 @@ import React from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {dialogActions} from '../../modules/dialog'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 
 type Props = {
   allowCreate?: boolean
@@ -23,7 +23,7 @@ const TagViewHeader = (props: Props) => {
 
   // Callbacks
   const handleTagCreate = () => {
-    dispatch(dialogActions.showTagCreate())
+    dispatch(DIALOG_ACTIONS.showTagCreate())
   }
 
   return (

@@ -4,9 +4,11 @@ module.exports = {
     node: false
   },
   extends: [
-    'sanity/react', // must come before sanity/typescript
+    'sanity',
     'sanity/typescript',
-    'prettier'
+    'sanity/react',
+    'plugin:react-hooks/recommended',
+    'plugin:prettier/recommended'
   ],
   overrides: [
     {
@@ -32,7 +34,8 @@ module.exports = {
     ],
     'no-shadow': 'off',
     'react/display-name': 0,
-    'react/jsx-no-bind': 0
+    'react/jsx-no-bind': 0,
+    'no-use-before-define': 0
   },
   settings: {
     'import/ignore': ['.*node_modules.*', '.*:.*'],

@@ -10,6 +10,7 @@ import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 import {searchActions, selectHasSearchFacetTag, selectIsSearchFacetTag} from '../../modules/search'
 
 type Props = {
@@ -95,7 +96,7 @@ const Tag = (props: Props) => {
   }
 
   const handleShowTagEditDialog = () => {
-    dispatch(dialogActions.showTagEdit({tagId: tag?.tag?._id}))
+    dispatch(DIALOG_ACTIONS.showTagEdit({tagId: tag?.tag?._id}))
   }
 
   const handleSearchFacetTagAddOrUpdate = () => {
@@ -140,7 +141,7 @@ const Tag = (props: Props) => {
         {actions?.includes('search') && (
           <TagButton
             disabled={tag?.updating}
-            icon={isSearchFacetTag ? CloseIcon : SearchIcon}
+            icon={isSearchFacetTag ? <CloseIcon /> : <SearchIcon />}
             onClick={
               isSearchFacetTag ? handleSearchFacetTagRemove : handleSearchFacetTagAddOrUpdate
             }
@@ -151,7 +152,7 @@ const Tag = (props: Props) => {
         {actions?.includes('edit') && (
           <TagButton
             disabled={tag?.updating}
-            icon={EditIcon}
+            icon={<EditIcon />}
             onClick={handleShowTagEditDialog}
             tone="primary"
             tooltip="Edit tag"
@@ -161,7 +162,7 @@ const Tag = (props: Props) => {
         {actions?.includes('applyAll') && (
           <TagButton
             disabled={tag?.updating}
-            icon={ArrowUpIcon}
+            icon={<ArrowUpIcon />}
             onClick={handleShowAddTagToAssetsDialog}
             tone="primary"
             tooltip="Add tag to selected assets"
@@ -171,7 +172,7 @@ const Tag = (props: Props) => {
         {actions?.includes('removeAll') && (
           <TagButton
             disabled={tag?.updating}
-            icon={ArrowDownIcon}
+            icon={<ArrowDownIcon />}
             onClick={handleShowRemoveTagFromAssetsDialog}
             tone="critical"
             tooltip="Remove tag from selected assets"
@@ -182,7 +183,7 @@ const Tag = (props: Props) => {
         {actions?.includes('delete') && (
           <TagButton
             disabled={tag?.updating}
-            icon={TrashIcon}
+            icon={<TrashIcon />}
             onClick={handleShowTagDeleteDialog}
             tone="critical"
             tooltip="Delete tag"

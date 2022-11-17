@@ -1,25 +1,8 @@
 {
   "parts": [
     {
-      "name": "part:sanity-plugin-media/asset-source",
-      "implements": "part:@sanity/form-builder/input/image/asset-source",
-      "path": "index.js"
-    },
-    {
-      "implements": "part:@sanity/form-builder/input/file/asset-source",
-      "path": "index.js"
-    },
-    {
-      "implements": "part:@sanity/base/tool",
-      "path": "index.js"
-    },
-    {
-      "implements": "part:@sanity/base/schema-type",
-      "path": "schemas/tag.js"
+      "implements": "part:@sanity/base/sanity-root",
+      "path": "./v2-incompatible.js"
     }
-  ],
-  "paths": {
-    "source": "./src",
-    "compiled": "./dist"
-  }
+  ]
 }

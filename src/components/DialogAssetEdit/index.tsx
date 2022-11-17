@@ -7,8 +7,8 @@ import React, {ReactNode, useEffect, useRef, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
-import {client} from '../../client'
 import useTypedSelector from '../../hooks/useTypedSelector'
+import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import {selectTags, selectTagSelectOptions, tagsActions} from '../../modules/tags'
@@ -48,6 +48,8 @@ const DialogAssetEdit = (props: Props) => {
     children,
     dialog: {assetId, id, lastCreatedTag, lastRemovedTagIds}
   } = props
+
+  const client = useVersionedClient()
 
   // Redux
   const dispatch = useDispatch()

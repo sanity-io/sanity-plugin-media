@@ -1,12 +1,12 @@
-import {AnyAction, PayloadAction, createSlice} from '@reduxjs/toolkit'
-import {ImageAsset} from '@types'
+import {PayloadAction, createSlice} from '@reduxjs/toolkit'
+import type {ImageAsset, MyEpic} from '@types'
 import pluralize from 'pluralize'
-import {Epic, ofType} from 'redux-observable'
+import {ofType} from 'redux-observable'
 import {of} from 'rxjs'
 import {bufferTime, filter, mergeMap} from 'rxjs/operators'
 import {assetsActions} from '../assets'
+import {ASSETS_ACTIONS} from '../assets/actions'
 import {tagsActions} from '../tags'
-import {RootReducerState} from '../types'
 import {uploadsActions} from '../uploads'
 
 type Notification = {
@@ -39,8 +39,6 @@ const notificationsSlice = createSlice({
 })
 
 // Epics
-
-type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
 
 export const notificationsAssetsDeleteCompleteEpic: MyEpic = action$ =>
   action$.pipe(
@@ -93,7 +91,7 @@ export const notificationsAssetsUploadCompleteEpic: MyEpic = action$ =>
 
 export const notificationsAssetsTagsAddCompleteEpic: MyEpic = action$ =>
   action$.pipe(
-    filter(assetsActions.tagsAddComplete.match),
+    filter(ASSETS_ACTIONS.tagsAddComplete.match),
     mergeMap(action => {
       const count = action?.payload?.assets?.length
       return of(
@@ -107,7 +105,7 @@ export const notificationsAssetsTagsAddCompleteEpic: MyEpic = action$ =>
 
 export const notificationsAssetsTagsRemoveCompleteEpic: MyEpic = action$ =>
   action$.pipe(
-    filter(assetsActions.tagsRemoveComplete.match),
+    filter(ASSETS_ACTIONS.tagsRemoveComplete.match),
     mergeMap(action => {
       const count = action?.payload?.assets?.length
       return of(

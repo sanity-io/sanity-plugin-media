@@ -1,10 +1,8 @@
 import {hues} from '@sanity/color'
 import {Box} from '@sanity/ui'
 import React from 'react'
-
 import {TAGS_PANEL_WIDTH} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
-
 import TagView from '../TagView'
 
 const TagsPanel = () => {

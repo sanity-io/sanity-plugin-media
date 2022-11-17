@@ -1,14 +1,13 @@
 // Sourced from:
 // https://github.com/sanity-io/sanity/blob/ccb777e115a8cdf20d81a9a2bc9d8c228568faff/packages/%40sanity/form-builder/src/sanity/inputs/client-adapters/assets.ts
 
-import type {SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
+import type {SanityAssetDocument, SanityClient, SanityImageAssetDocument} from '@sanity/client'
 import {HttpError} from '@types'
 import {Observable, of, throwError} from 'rxjs'
 import {map, mergeMap} from 'rxjs/operators'
-import {client} from '../client'
 import {withMaxConcurrency} from './withMaxConcurrency'
 
-const fetchExisting$ = (type: string, hash: string) => {
+const fetchExisting$ = (client: SanityClient, type: string, hash: string) => {
   return client.observable.fetch('*[_type == $documentType && sha1hash == $hash][0]', {
     documentType: type,
     hash
@@ -51,10 +50,15 @@ export const hashFile$ = (file: File): Observable<string> => {
   )
 }
 
-const uploadSanityAsset$ = (assetType: 'file' | 'image', file: File, hash: string) => {
+const uploadSanityAsset$ = (
+  client: SanityClient,
+  assetType: 'file' | 'image',
+  file: File,
+  hash: string
+) => {
   return of(null).pipe(
     // NOTE: the sanity api will still dedupe unique files, but this saves us from uploading the asset file entirely
-    mergeMap(() => fetchExisting$(`sanity.${assetType}Asset`, hash)),
+    mergeMap(() => fetchExisting$(client, `sanity.${assetType}Asset`, hash)),
     // Cancel if the asset already exists
     mergeMap((existingAsset: SanityAssetDocument | SanityImageAssetDocument | null) => {
       if (existingAsset) {

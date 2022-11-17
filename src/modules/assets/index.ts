@@ -1,4 +1,4 @@
-import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
+import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, Patch, Transaction} from '@sanity/client'
 import {
   Asset,
@@ -6,14 +6,15 @@ import {
   AssetType,
   BrowserView,
   HttpError,
+  MyEpic,
   Order,
   OrderDirection,
   Tag
 } from '@types'
 import groq from 'groq'
 import {nanoid} from 'nanoid'
-import {Epic, ofType} from 'redux-observable'
 import {Selector} from 'react-redux'
+import {ofType} from 'redux-observable'
 import {empty, from, of} from 'rxjs'
 import {
   bufferTime,
@@ -24,16 +25,14 @@ import {
   switchMap,
   withLatestFrom
 } from 'rxjs/operators'
-
-import {client} from '../../client'
 import {getOrderTitle} from '../../config/orders'
 import {ORDER_OPTIONS} from '../../constants'
-import constructFilter from '../../utils/constructFilter'
 import debugThrottle from '../../operators/debugThrottle'
-import {RootReducerState} from '../types'
+import constructFilter from '../../utils/constructFilter'
 import {searchActions} from '../search'
-import {uploadsActions} from '../uploads'
-
+import type {RootReducerState} from '../types'
+import {UPLOADS_ACTIONS} from '../uploads/actions'
+import {ASSETS_ACTIONS} from './actions'
 type ItemError = {
   description: string
   id: string
@@ -97,7 +96,7 @@ const assetsSlice = createSlice({
   initialState,
   extraReducers: builder => {
     builder //
-      .addCase(uploadsActions.uploadComplete, (state, action) => {
+      .addCase(UPLOADS_ACTIONS.uploadComplete, (state, action) => {
         const {asset} = action.payload
 
         state.byIds[asset._id] = {
@@ -106,6 +105,42 @@ const assetsSlice = createSlice({
           picked: false,
           updating: false
         }
+      })
+      .addCase(ASSETS_ACTIONS.tagsAddComplete, (state, action) => {
+        const {assets} = action.payload
+        assets.forEach(asset => {
+          state.byIds[asset.asset._id].updating = false
+        })
+      })
+      .addCase(ASSETS_ACTIONS.tagsAddError, (state, action) => {
+        const {assets} = action.payload
+        assets.forEach(asset => {
+          state.byIds[asset.asset._id].updating = false
+        })
+      })
+      .addCase(ASSETS_ACTIONS.tagsAddRequest, (state, action) => {
+        const {assets} = action.payload
+        assets.forEach(asset => {
+          state.byIds[asset.asset._id].updating = true
+        })
+      })
+      .addCase(ASSETS_ACTIONS.tagsRemoveComplete, (state, action) => {
+        const {assets} = action.payload
+        assets.forEach(asset => {
+          state.byIds[asset.asset._id].updating = false
+        })
+      })
+      .addCase(ASSETS_ACTIONS.tagsRemoveError, (state, action) => {
+        const {assets} = action.payload
+        assets.forEach(asset => {
+          state.byIds[asset.asset._id].updating = false
+        })
+      })
+      .addCase(ASSETS_ACTIONS.tagsRemoveRequest, (state, action) => {
+        const {assets} = action.payload
+        assets.forEach(asset => {
+          state.byIds[asset.asset._id].updating = true
+        })
       })
   },
   reducers: {
@@ -323,45 +358,6 @@ const assetsSlice = createSlice({
         return 0
       })
     },
-    tagsAddComplete(state, action: PayloadAction<{assets: AssetItem[]; tag: Tag}>) {
-      const {assets} = action.payload
-      assets.forEach(asset => {
-        state.byIds[asset.asset._id].updating = false
-      })
-    },
-    tagsAddError(state, action: PayloadAction<{assets: AssetItem[]; error: HttpError; tag: Tag}>) {
-      const {assets} = action.payload
-      assets.forEach(asset => {
-        state.byIds[asset.asset._id].updating = false
-      })
-    },
-    tagsAddRequest(state, action: PayloadAction<{assets: AssetItem[]; tag: Tag}>) {
-      const {assets} = action.payload
-      assets.forEach(asset => {
-        state.byIds[asset.asset._id].updating = true
-      })
-    },
-    tagsRemoveComplete(state, action: PayloadAction<{assets: AssetItem[]; tag: Tag}>) {
-      const {assets} = action.payload
-      assets.forEach(asset => {
-        state.byIds[asset.asset._id].updating = false
-      })
-    },
-    tagsRemoveError(
-      state,
-      action: PayloadAction<{assets: AssetItem[]; error: HttpError; tag: Tag}>
-    ) {
-      const {assets} = action.payload
-      assets.forEach(asset => {
-        state.byIds[asset.asset._id].updating = false
-      })
-    },
-    tagsRemoveRequest(state, action: PayloadAction<{assets: AssetItem[]; tag: Tag}>) {
-      const {assets} = action.payload
-      assets.forEach(asset => {
-        state.byIds[asset.asset._id].updating = true
-      })
-    },
     updateComplete(state, action: PayloadAction<{asset: Asset; closeDialogId?: string}>) {
       const {asset} = action.payload
       state.byIds[asset._id].updating = false
@@ -389,9 +385,7 @@ const assetsSlice = createSlice({
 
 // Epics
 
-type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
-
-export const assetsDeleteEpic: MyEpic = action$ =>
+export const assetsDeleteEpic: MyEpic = (action$, _state$, {client}) =>
   action$.pipe(
     filter(assetsActions.deleteRequest.match),
     mergeMap(action => {
@@ -411,7 +405,7 @@ export const assetsDeleteEpic: MyEpic = action$ =>
     })
   )
 
-export const assetsFetchEpic: MyEpic = (action$, state$) =>
+export const assetsFetchEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(assetsActions.fetchRequest.match),
     withLatestFrom(state$),
@@ -508,19 +502,23 @@ const filterAssetWithoutTag = (tag: Tag) => (asset: AssetItem) => {
   return tagIndex < 0
 }
 
-const patchOperationTagAppend = ({tag}: {tag: Tag}) => (patch: Patch) =>
-  patch
-    .setIfMissing({opt: {}})
-    .setIfMissing({'opt.media': {}})
-    .setIfMissing({'opt.media.tags': []})
-    .append('opt.media.tags', [{_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}])
+const patchOperationTagAppend =
+  ({tag}: {tag: Tag}) =>
+  (patch: Patch) =>
+    patch
+      .setIfMissing({opt: {}})
+      .setIfMissing({'opt.media': {}})
+      .setIfMissing({'opt.media.tags': []})
+      .append('opt.media.tags', [{_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}])
 
-const patchOperationTagUnset = ({asset, tag}: {asset: AssetItem; tag: Tag}) => (patch: Patch) =>
-  patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.tags[_ref == "${tag._id}"]`])
+const patchOperationTagUnset =
+  ({asset, tag}: {asset: AssetItem; tag: Tag}) =>
+  (patch: Patch) =>
+    patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.tags[_ref == "${tag._id}"]`])
 
-export const assetsRemoveTagsEpic: MyEpic = (action$, state$) => {
+export const assetsRemoveTagsEpic: MyEpic = (action$, state$, {client}) => {
   return action$.pipe(
-    filter(assetsActions.tagsAddRequest.match),
+    filter(ASSETS_ACTIONS.tagsAddRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {assets, tag} = action.payload
@@ -543,10 +541,10 @@ export const assetsRemoveTagsEpic: MyEpic = (action$, state$) => {
           return from(transaction.commit())
         }),
         // Dispatch complete action
-        mergeMap(() => of(assetsActions.tagsAddComplete({assets, tag}))),
+        mergeMap(() => of(ASSETS_ACTIONS.tagsAddComplete({assets, tag}))),
         catchError((error: ClientError) =>
           of(
-            assetsActions.tagsAddError({
+            ASSETS_ACTIONS.tagsAddError({
               assets,
               error: {
                 message: error?.message || 'Internal error',
@@ -634,9 +632,9 @@ export const assetsSortEpic: MyEpic = action$ =>
     mergeMap(() => of(assetsActions.sort()))
   )
 
-export const assetsTagsAddEpic: MyEpic = (action$, state$) => {
+export const assetsTagsAddEpic: MyEpic = (action$, state$, {client}) => {
   return action$.pipe(
-    filter(assetsActions.tagsAddRequest.match),
+    filter(ASSETS_ACTIONS.tagsAddRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {assets, tag} = action.payload
@@ -659,10 +657,10 @@ export const assetsTagsAddEpic: MyEpic = (action$, state$) => {
           return from(transaction.commit())
         }),
         // Dispatch complete action
-        mergeMap(() => of(assetsActions.tagsAddComplete({assets, tag}))),
+        mergeMap(() => of(ASSETS_ACTIONS.tagsAddComplete({assets, tag}))),
         catchError((error: ClientError) =>
           of(
-            assetsActions.tagsAddError({
+            ASSETS_ACTIONS.tagsAddError({
               assets,
               error: {
                 message: error?.message || 'Internal error',
@@ -677,9 +675,9 @@ export const assetsTagsAddEpic: MyEpic = (action$, state$) => {
   )
 }
 
-export const assetsTagsRemoveEpic: MyEpic = (action$, state$) => {
+export const assetsTagsRemoveEpic: MyEpic = (action$, state$, {client}) => {
   return action$.pipe(
-    filter(assetsActions.tagsRemoveRequest.match),
+    filter(ASSETS_ACTIONS.tagsRemoveRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {assets, tag} = action.payload
@@ -700,10 +698,10 @@ export const assetsTagsRemoveEpic: MyEpic = (action$, state$) => {
           return from(transaction.commit())
         }),
         // Dispatch complete action
-        mergeMap(() => of(assetsActions.tagsRemoveComplete({assets, tag}))),
+        mergeMap(() => of(ASSETS_ACTIONS.tagsRemoveComplete({assets, tag}))),
         catchError((error: ClientError) =>
           of(
-            assetsActions.tagsRemoveError({
+            ASSETS_ACTIONS.tagsRemoveError({
               assets,
               error: {
                 message: error?.message || 'Internal error',
@@ -734,7 +732,7 @@ export const assetsUnpickEpic: MyEpic = action$ =>
     })
   )
 
-export const assetsUpdateEpic: MyEpic = (action$, state$) =>
+export const assetsUpdateEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(assetsActions.updateRequest.match),
     withLatestFrom(state$),

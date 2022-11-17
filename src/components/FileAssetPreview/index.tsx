@@ -1,7 +1,6 @@
 import {Flex} from '@sanity/ui'
 import {Asset} from '@types'
 import React from 'react'
-
 import FileIcon from '../FileIcon'
 
 type Props = {

@@ -4,7 +4,6 @@ import {SearchFacetInputProps} from '@types'
 import React, {ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
-
 import {searchActions} from '../../modules/search'
 
 type Props = {

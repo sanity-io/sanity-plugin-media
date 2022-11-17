@@ -18,7 +18,6 @@ const UploadContainer = styled.div`
   color: white;
   height: 100%;
   min-height: 100%;
-  position: absolute;
   right: 0;
   top: 0;
   width: 100%;

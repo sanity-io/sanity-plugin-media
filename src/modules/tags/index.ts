@@ -1,19 +1,18 @@
-import {AnyAction, createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, Transaction} from '@sanity/client'
-import {Asset, HttpError, ReactSelectOption, Tag, TagItem} from '@types'
+import type {Asset, HttpError, MyEpic, ReactSelectOption, Tag, TagItem} from '@types'
 import groq from 'groq'
 import {Selector} from 'react-redux'
-import {Epic, ofType} from 'redux-observable'
+import {ofType} from 'redux-observable'
 import {from, Observable, of} from 'rxjs'
 import {bufferTime, catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
-import {client} from '../../client'
 import {TAG_DOCUMENT_NAME} from '../../constants'
 import checkTagName from '../../operators/checkTagName'
 import debugThrottle from '../../operators/debugThrottle'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
-import {assetsActions} from '../assets'
-import {dialogActions} from '../dialog'
-import {RootReducerState} from '../types'
+import {ASSETS_ACTIONS} from '../assets/actions'
+import {DIALOG_ACTIONS} from '../dialog/actions'
+import type {RootReducerState} from '../types'
 
 type TagsReducerState = {
   allIds: string[]
@@ -43,20 +42,20 @@ const tagsSlice = createSlice({
   initialState,
   extraReducers: builder => {
     builder
-      .addCase(dialogActions.showTagCreate, state => {
+      .addCase(DIALOG_ACTIONS.showTagCreate, state => {
         delete state.creatingError
       })
-      .addCase(dialogActions.showTagEdit, (state, action) => {
+      .addCase(DIALOG_ACTIONS.showTagEdit, (state, action) => {
         const {tagId} = action.payload
         delete state.byIds[tagId].error
       })
       .addMatcher(
         action =>
           [
-            assetsActions.tagsAddComplete.type,
-            assetsActions.tagsAddError.type,
-            assetsActions.tagsRemoveComplete.type,
-            assetsActions.tagsRemoveError.type
+            ASSETS_ACTIONS.tagsAddComplete.type,
+            ASSETS_ACTIONS.tagsAddError.type,
+            ASSETS_ACTIONS.tagsRemoveComplete.type,
+            ASSETS_ACTIONS.tagsRemoveError.type
           ].includes(action.type),
         (state, action) => {
           const {tag} = action.payload
@@ -66,8 +65,8 @@ const tagsSlice = createSlice({
       .addMatcher(
         action =>
           [
-            assetsActions.tagsAddRequest.type, //
-            assetsActions.tagsRemoveRequest.type
+            ASSETS_ACTIONS.tagsAddRequest.type, //
+            ASSETS_ACTIONS.tagsRemoveRequest.type
           ].includes(action.type),
         (state, action) => {
           const {tag} = action.payload
@@ -264,13 +263,11 @@ const tagsSlice = createSlice({
 
 // Epics
 
-type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
-
 // On tag create request:
 // - async check to see if tag already exists
 // - throw if tag already exists
 // - otherwise, create new tag
-export const tagsCreateEpic: MyEpic = (action$, state$) =>
+export const tagsCreateEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(tagsSlice.actions.createRequest.match),
     withLatestFrom(state$),
@@ -279,7 +276,7 @@ export const tagsCreateEpic: MyEpic = (action$, state$) =>
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        checkTagName(name),
+        checkTagName(client, name),
         mergeMap(() =>
           client.observable.create({
             _type: TAG_DOCUMENT_NAME,
@@ -308,7 +305,7 @@ export const tagsCreateEpic: MyEpic = (action$, state$) =>
 // On tag delete request
 // - find referenced assets
 // - remove tag from referenced assets in a sanity transaction
-export const tagsDeleteEpic: MyEpic = (action$, state$) =>
+export const tagsDeleteEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(tagsSlice.actions.deleteRequest.match),
     withLatestFrom(state$),
@@ -369,7 +366,7 @@ export const tagsDeleteEpic: MyEpic = (action$, state$) =>
   )
 
 // Async fetch tags
-export const tagsFetchEpic: MyEpic = (action$, state$) =>
+export const tagsFetchEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(tagsSlice.actions.fetchRequest.match),
     withLatestFrom(state$),
@@ -460,7 +457,7 @@ export const tagsSortEpic: MyEpic = action$ =>
 // - check if tag name already exists
 // - throw if tag already exists
 // - otherwise, patch document
-export const tagsUpdateEpic: MyEpic = (action$, state$) =>
+export const tagsUpdateEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(tagsSlice.actions.updateRequest.match),
     withLatestFrom(state$),
@@ -471,7 +468,7 @@ export const tagsUpdateEpic: MyEpic = (action$, state$) =>
         // Optionally throttle
         debugThrottle(state.debug.badConnection),
         // Check if tag name is available, throw early if not
-        checkTagName(formData?.name?.current),
+        checkTagName(client, formData?.name?.current),
         // Patch document (Update tag)
         mergeMap(
           () =>
@@ -524,23 +521,23 @@ export const selectTagById = createSelector(
 
 // TODO: use createSelector
 // Map tag references to react-select options, skipping over items with no linked tags
-export const selectTagSelectOptions = (asset?: Asset) => (
-  state: RootReducerState
-): ReactSelectOption[] | null => {
-  const tags = asset?.opt?.media?.tags?.reduce((acc: TagItem[], v) => {
-    const tagItem = state.tags.byIds[v._ref]
-    if (tagItem?.tag) {
-      acc.push(tagItem)
+export const selectTagSelectOptions =
+  (asset?: Asset) =>
+  (state: RootReducerState): ReactSelectOption[] | null => {
+    const tags = asset?.opt?.media?.tags?.reduce((acc: TagItem[], v) => {
+      const tagItem = state.tags.byIds[v._ref]
+      if (tagItem?.tag) {
+        acc.push(tagItem)
+      }
+      return acc
+    }, [])
+
+    if (tags && tags?.length > 0) {
+      return getTagSelectOptions(tags)
     }
-    return acc
-  }, [])
 
-  if (tags && tags?.length > 0) {
-    return getTagSelectOptions(tags)
+    return null
   }
-
-  return null
-}
 
 export const tagsActions = tagsSlice.actions
 

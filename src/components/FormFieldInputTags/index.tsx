@@ -4,7 +4,7 @@ import {Controller, FieldError} from 'react-hook-form'
 import CreatableSelect from 'react-select/creatable'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/creatable'
-import {ReactSelectOption} from '../../types'
+import type {ReactSelectOption} from '../../types'
 import FormFieldInputLabel from '../FormFieldInputLabel'
 
 type Props = {

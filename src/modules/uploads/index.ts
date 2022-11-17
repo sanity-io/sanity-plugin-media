@@ -1,18 +1,16 @@
-import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
+import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
-import {HttpError, SanityUploadProgressEvent, UploadItem} from '@types'
+import type {HttpError, MyEpic, SanityUploadProgressEvent, UploadItem} from '@types'
 import groq from 'groq'
-import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
 import {empty, merge, of} from 'rxjs'
 import {catchError, delay, filter, mergeMap, takeUntil, withLatestFrom} from 'rxjs/operators'
-
-import {RootReducerState} from '../types'
-import {client} from '../../client'
 import constructFilter from '../../utils/constructFilter'
 import {generatePreviewBlobUrl$} from '../../utils/generatePreviewBlobUrl'
 import {hashFile$, uploadAsset$} from '../../utils/uploadSanityAsset'
 import {assetsActions} from '../assets'
+import type {RootReducerState} from '../types'
+import {UPLOADS_ACTIONS} from './actions'
 
 export type UploadsReducerState = {
   allIds: string[]
@@ -27,6 +25,15 @@ const initialState = {
 const uploadsSlice = createSlice({
   name: 'uploads',
   initialState,
+  extraReducers: builder => {
+    builder //
+      .addCase(UPLOADS_ACTIONS.uploadComplete, (state, action) => {
+        const {asset} = action.payload
+        if (state.byIds[asset.sha1hash]) {
+          state.byIds[asset.sha1hash].status = 'complete'
+        }
+      })
+  },
   reducers: {
     checkRequest(
       _state,
@@ -71,16 +78,6 @@ const uploadsSlice = createSlice({
         delete state.byIds[hash]
       }
     },
-    uploadComplete(
-      state,
-      action: PayloadAction<{asset: SanityAssetDocument | SanityImageAssetDocument}>
-    ) {
-      const {asset} = action.payload
-
-      if (state.byIds[asset.sha1hash]) {
-        state.byIds[asset.sha1hash].status = 'complete'
-      }
-    },
     uploadError(state, action: PayloadAction<{error: HttpError; hash: string}>) {
       const {hash} = action.payload
       const deleteIndex = state.allIds.indexOf(hash)
@@ -115,9 +112,7 @@ const uploadsSlice = createSlice({
 
 // Epics
 
-type MyEpic = Epic<AnyAction, AnyAction, RootReducerState>
-
-export const uploadsAssetStartEpic: MyEpic = action$ =>
+export const uploadsAssetStartEpic: MyEpic = (action$, _state$, {client}) =>
   action$.pipe(
     filter(uploadsActions.uploadStart.match),
     mergeMap(action => {
@@ -139,7 +134,7 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
         // Upload asset and receive progress / complete events
         of(null).pipe(
           // delay(500000), // debug uploads
-          mergeMap(() => uploadAsset$(uploadItem.assetType, file, uploadItem.hash)),
+          mergeMap(() => uploadAsset$(client, uploadItem.assetType, file, uploadItem.hash)),
           takeUntil(
             action$.pipe(
               filter(uploadsActions.uploadCancel.match),
@@ -149,7 +144,7 @@ export const uploadsAssetStartEpic: MyEpic = action$ =>
           mergeMap(event => {
             if (event?.type === 'complete') {
               return of(
-                uploadsActions.uploadComplete({
+                UPLOADS_ACTIONS.uploadComplete({
                   asset: event.asset
                 })
               )
@@ -215,7 +210,7 @@ export const uploadsAssetUploadEpic: MyEpic = (action$, state$) =>
 
 export const uploadsCompleteQueueEpic: MyEpic = action$ =>
   action$.pipe(
-    filter(uploadsActions.uploadComplete.match),
+    filter(UPLOADS_ACTIONS.uploadComplete.match),
     mergeMap(action => {
       return of(
         uploadsActions.checkRequest({
@@ -225,7 +220,7 @@ export const uploadsCompleteQueueEpic: MyEpic = action$ =>
     })
   )
 
-export const uploadsCheckRequestEpic: MyEpic = (action$, state$) =>
+export const uploadsCheckRequestEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(uploadsActions.checkRequest.match),
     withLatestFrom(state$),

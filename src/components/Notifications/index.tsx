@@ -1,6 +1,5 @@
 import {useToast} from '@sanity/ui'
 import {useEffect} from 'react'
-
 import useTypedSelector from '../../hooks/useTypedSelector'
 
 const Notifications = () => {

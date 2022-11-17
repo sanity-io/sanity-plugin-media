@@ -7,8 +7,8 @@ import React, {ReactNode, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import * as yup from 'yup'
-import {client} from '../../client'
 import useTypedSelector from '../../hooks/useTypedSelector'
+import useVersionedClient from '../../hooks/useVersionedClient'
 import {dialogActions} from '../../modules/dialog'
 import {selectTagById, tagsActions} from '../../modules/tags'
 import sanitizeFormData from '../../utils/sanitizeFormData'
@@ -33,6 +33,8 @@ const DialogTagEdit = (props: Props) => {
     dialog: {id, tagId}
   } = props
 
+  const client = useVersionedClient()
+
   // Redux
   const dispatch = useDispatch()
   const tagItem = useTypedSelector(state => selectTagById(state, String(tagId))) // TODO: double check string cast
@@ -42,7 +44,6 @@ const DialogTagEdit = (props: Props) => {
   const [tagSnapshot, setTagSnapshot] = useState(tagItem?.tag)
 
   const currentTag = tagItem ? tagItem?.tag : tagSnapshot
-
   const generateDefaultValues = (tag?: Tag) => ({
     name: tag?.name?.current || ''
   })

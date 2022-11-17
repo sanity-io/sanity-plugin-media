@@ -97,7 +97,7 @@ export const rootEpic = combineEpics(
   uploadsCompleteQueueEpic
 )
 
-export const rootReducer = combineReducers({
+const reducers = combineReducers({
   assets: assetsReducer,
   debug: debugReducer,
   dialog: dialogReducer,
@@ -107,3 +107,4 @@ export const rootReducer = combineReducers({
   tags: tagsReducer,
   uploads: uploadsReducer
 })
+export const rootReducer = reducers

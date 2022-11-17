@@ -1,12 +1,7 @@
 {
   "name": "sanity-plugin-media",
-  "version": "1.4.13",
-  "license": "MIT",
-  "author": {
-    "name": "Robin Pyon",
-    "email": "robin@robinpyon.com",
-    "url": "https://robinpyon.com"
-  },
+  "version": "2.0.0-v3-studio.3",
+  "description": "This version of `sanity-plugin-media` is for Sanity Studio V3.",
   "keywords": [
     "sanity",
     "cms",
@@ -17,31 +12,52 @@
     "asset",
     "browser"
   ],
-  "files": [
-    "dist/",
-    "sanity.json",
-    "CHANGELOG.md",
-    "README.md",
-    "LICENSE"
-  ],
-  "main": "dist/index.js",
+  "homepage": "https://github.com/sanity-io/sanity-plugin-media#readme",
+  "bugs": {
+    "url": "https://github.com/sanity-io/sanity-plugin-media/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/robinpyon/sanity-plugin-media.git"
+    "url": "https://github.com/sanity-io/sanity-plugin-media.git"
   },
+  "license": "MIT",
+  "author": "Robin Pyon <robin@robinpyon.com>",
+  "exports": {
+    ".": {
+      "types": "./lib/src/index.d.ts",
+      "source": "./src/index.ts",
+      "import": "./lib/index.esm.js",
+      "require": "./lib/index.js",
+      "default": "./lib/index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.esm.js",
+  "source": "./src/index.ts",
+  "types": "./lib/src/index.d.ts",
+  "files": [
+    "src",
+    "lib",
+    "v2-incompatible.js",
+    "sanity.json"
+  ],
   "scripts": {
+    "prebuild": "npm run clean && plugin-kit verify-package --silent && pkg-utils",
+    "build": "pkg-utils build",
+    "clean": "rimraf lib",
     "dev": "npm run watch",
+    "link-watch": "plugin-kit link-watch",
     "lint": "eslint .",
-    "prepare": "npm run build && husky install",
-    "build": "tsc --sourceMap",
-    "watch": "tsc -w",
-    "prepublishOnly": "npm run compile && npm run build",
-    "compile": "tsc --noEmit"
+    "prepare": "husky install",
+    "prepublishOnly": "npm run build",
+    "watch": "pkg-utils watch"
   },
   "dependencies": {
     "@hookform/resolvers": "2.0.0-beta.3",
-    "@reduxjs/toolkit": "^1.8.1",
-    "@sanity/ui": "^0.37.5",
+    "@reduxjs/toolkit": "^1.9.0",
+    "@sanity/incompatible-plugin": "^1.0.4",
+    "@sanity/ui": "1.0.0-beta.32",
     "@tanem/react-nprogress": "^5.0.0",
     "copy-to-clipboard": "^3.3.1",
     "date-fns": "^2.27.0",
@@ -56,50 +72,58 @@
     "react-redux": "^7.2.2",
     "react-select": "^5.3.2",
     "react-virtuoso": "^2.11.0",
-    "redux": "^4.0.5",
+    "redux": "^4.2.0",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.5.3",
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.1.2",
-    "@commitlint/config-conventional": "^17.1.0",
-    "@sanity/base": "^2.30.1",
-    "@sanity/client": "^3.3.0",
+    "@commitlint/cli": "^17.2.0",
+    "@commitlint/config-conventional": "^17.2.0",
+    "@sanity/client": "^3.4.1",
     "@sanity/color": "^2.1.8",
     "@sanity/icons": "^1.2.5",
-    "@sanity/semantic-release-preset": "^2.0.1",
-    "@sanity/types": "^2.34.0",
+    "@sanity/pkg-utils": "^1.17.2",
+    "@sanity/plugin-kit": "^2.1.7",
+    "@sanity/semantic-release-preset": "^2.0.2",
     "@types/is-hotkey": "^0.1.7",
     "@types/pluralize": "^0.0.29",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "@types/react-file-icon": "^1.0.1",
     "@types/react-redux": "^7.1.24",
     "@types/styled-components": "^5.1.7",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
+    "@types/yup": "^0.29.14",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
     "conventional-changelog-conventionalcommits": "^5.0.0",
-    "eslint": "^8.24.0",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-config-sanity": "^6.0.0",
-    "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-react": "^7.31.8",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "prettier-plugin-packagejson": "^2.3.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "rimraf": "^3.0.2",
+    "sanity": "3.0.0-rc.0",
+    "standard-version": "^9.5.0",
     "styled-components": "^5.3.3",
-    "typescript": "4.7.3"
+    "typescript": "^4.8.4"
   },
   "peerDependencies": {
-    "@sanity/base": "^2.30.1",
     "@sanity/color": "^2.1.8",
-    "@sanity/icons": "^1.2.5",
-    "@sanity/types": "^2.28.0",
-    "react": "^16.0.0 || ^17.0.0",
-    "react-dom": "^16.0.0 || ^17.0.0",
+    "@sanity/icons": "^1.2.8",
+    "react": "^18",
+    "react-dom": "^18",
+    "sanity": "dev-preview || 3.0.0-rc.0",
     "styled-components": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=14"
   }
 }
