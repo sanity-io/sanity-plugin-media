@@ -1,8 +1,6 @@
 # Sanity Media
-
-> This version of `sanity-plugin-media` is compatible with Sanity Studio V2.
->
-> A Studio V3 compatible version can be found on the [V3 branch](https://github.com/robinpyon/sanity-plugin-media/tree/v3).
+> This is a **Sanity Studio v3** plugin.
+> For the v2 version, please refer to the [v2-branch](https://github.com/sanity-io/sanity-plugin-media).
 
 ![npm-v](https://img.shields.io/npm/v/sanity-plugin-media?style=flat-square)
 ![npm-dw](https://img.shields.io/npm/dw/sanity-plugin-media?style=flat-square)
@@ -49,7 +47,7 @@ _Individual asset view_
 In your Sanity project folder:
 
 ```sh
-sanity install media
+sanity install media@studio-v2
 ```
 
 This will add the Media plugin as a standalone tool, accessible via your studio menu.

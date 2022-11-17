@@ -19,3 +19,7 @@ yarn-error.log*
 
 # Yarn lockfile
 yarn.lock
+
+.idea
+*.iml
+lib
