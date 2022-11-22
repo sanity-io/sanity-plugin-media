@@ -1,12 +1,6 @@
 {
   "name": "sanity-plugin-media",
   "version": "1.4.13",
-  "license": "MIT",
-  "author": {
-    "name": "Robin Pyon",
-    "email": "robin@robinpyon.com",
-    "url": "https://robinpyon.com"
-  },
   "keywords": [
     "sanity",
     "cms",
@@ -17,6 +11,17 @@
     "asset",
     "browser"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sanity-io/sanity-plugin-media.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Robin Pyon",
+    "email": "robin@robinpyon.com",
+    "url": "https://robinpyon.com"
+  },
+  "main": "dist/index.js",
   "files": [
     "dist/",
     "sanity.json",
@@ -24,19 +29,14 @@
     "README.md",
     "LICENSE"
   ],
-  "main": "dist/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/robinpyon/sanity-plugin-media.git"
-  },
   "scripts": {
+    "build": "tsc --sourceMap",
+    "compile": "tsc --noEmit",
     "dev": "npm run watch",
     "lint": "eslint .",
     "prepare": "npm run build && husky install",
-    "build": "tsc --sourceMap",
-    "watch": "tsc -w",
     "prepublishOnly": "npm run compile && npm run build",
-    "compile": "tsc --noEmit"
+    "watch": "tsc -w"
   },
   "dependencies": {
     "@hookform/resolvers": "2.0.0-beta.3",
