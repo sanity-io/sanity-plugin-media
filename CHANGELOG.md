@@ -5,6 +5,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.14](https://github.com/sanity-io/sanity-plugin-media/compare/v1.4.13...v1.4.14) (2022-11-22)
+
+### Bug Fixes
+
+- correctly infer filename from files containing uppercase extensions, tweak upload card layout ([1e96b79](https://github.com/sanity-io/sanity-plugin-media/commit/1e96b79d2bbec456fac9c39b072a487eef9932ad))
+- **docs:** v2 install command ([ad7232c](https://github.com/sanity-io/sanity-plugin-media/commit/ad7232c47a3762d623f890b7a6b47b3175a28e39))
+
 ## [1.4.13](https://github.com/robinpyon/sanity-plugin-media/compare/v1.4.12...v1.4.13) (2022-10-06)
 
 ### Bug Fixes
