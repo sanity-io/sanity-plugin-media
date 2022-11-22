@@ -47,7 +47,14 @@ _Individual asset view_
 In your Sanity project folder:
 
 ```sh
-sanity install media@studio-v2
+yarn add sanity-plugin-media@studio-v2
+```
+
+Next, add `"media"` to `sanity.json` plugins array:
+```json
+"plugins": [
+  "media"
+]
 ```
 
 This will add the Media plugin as a standalone tool, accessible via your studio menu.
