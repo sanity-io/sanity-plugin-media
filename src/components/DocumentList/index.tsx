@@ -1,13 +1,7 @@
 import type {SanityDocument} from '@sanity/client'
 import {Box, Button, Card, Stack, Text} from '@sanity/ui'
 import React from 'react'
-import {
-  SanityPreview,
-  SchemaType,
-  useDocumentStore,
-  useSchema,
-  WithReferringDocuments
-} from 'sanity'
+import {Preview, SchemaType, useDocumentStore, useSchema, WithReferringDocuments} from 'sanity'
 import {useIntentLink} from 'sanity/router'
 
 type Props = {
@@ -72,7 +66,7 @@ const ReferringDocument = (props: {doc: SanityDocument; schemaType?: SchemaType}
 
   return schemaType ? (
     <Button key={doc._id} mode="bleed" onClick={onClick} padding={2} style={{width: '100%'}}>
-      <SanityPreview layout="default" schemaType={schemaType} value={doc} />
+      <Preview layout="default" schemaType={schemaType} value={doc} />
     </Button>
   ) : (
     <Box padding={2}>
