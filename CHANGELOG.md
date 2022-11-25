@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.2](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.1...v2.0.2) (2022-11-25)
+
+### Bug Fixes
+
+- **deps:** bump ([ed758ee](https://github.com/sanity-io/sanity-plugin-media/commit/ed758eef2a58fde92d8b451630388c52ccb37316))
+
 ## [2.0.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.0...v2.0.1) (2022-11-25)
 
 ### Bug Fixes
