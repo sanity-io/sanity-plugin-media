@@ -5,6 +5,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.0...v2.0.1) (2022-11-25)
+
+### Bug Fixes
+
+- **deps:** 3.0.0-rc.3 ([c823c5a](https://github.com/sanity-io/sanity-plugin-media/commit/c823c5a27eec30679e0aab7f9d2b2b6a5d9cd105))
+- renamed import ([8f81da7](https://github.com/sanity-io/sanity-plugin-media/commit/8f81da7590020ab91e41daafdb133bdd870d5fd2))
+
 ## [2.0.0](https://github.com/sanity-io/sanity-plugin-media/compare/v1.4.13...v2.0.0) (2022-11-17)
 
 ### ⚠ BREAKING CHANGES
