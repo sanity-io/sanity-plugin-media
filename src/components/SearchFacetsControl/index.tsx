@@ -49,7 +49,7 @@ const SearchFacetsControl = () => {
   // Determine if there are any remaining un-selected facets
   // (This operates under the assumption that only one of each facet can be active at any given time)
   const hasRemainingSearchFacets =
-    filteredFacets.filter(facet => facet).length - searchFacets.length > 0
+    filteredFacets.filter(facet => facet.type !== 'divider').length - searchFacets.length > 0
 
   const renderMenuFacets = (
     facets: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[],
