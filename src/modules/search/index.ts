@@ -4,6 +4,7 @@ import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
+import {v4 as uuid} from 'uuid';
 
 import {RootReducerState} from '../types'
 import {tagsActions} from '../tags'
@@ -12,7 +13,7 @@ import {tagsActions} from '../tags'
 // (The main offender is `fieldModifier` which is currently a function)
 
 type SearchState = {
-  facets: SearchFacetInputProps[]
+  facets: (SearchFacetInputProps & {id: string})[]
   query: string
 }
 
@@ -27,7 +28,7 @@ const searchSlice = createSlice({
   reducers: {
     // Add search facet
     facetsAdd(state, action: PayloadAction<{facet: SearchFacetInputProps}>) {
-      state.facets.push(action.payload.facet)
+      state.facets.push({...action.payload.facet, id: uuid()})
     },
     // Clear all search facets
     facetsClear(state) {

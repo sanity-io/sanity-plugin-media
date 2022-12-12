@@ -46,10 +46,7 @@ const SearchFacetsControl = () => {
       return true
     })
 
-  // Determine if there are any remaining un-selected facets
-  // (This operates under the assumption that only one of each facet can be active at any given time)
-  const hasRemainingSearchFacets =
-    filteredFacets.filter(facet => facet.type !== 'divider').length - searchFacets.length > 0
+  const hasSearchFacets = filteredFacets.length > 0
 
   const renderMenuFacets = (
     facets: (SearchFacetDivider | SearchFacetGroup | SearchFacetInputProps)[],
@@ -72,11 +69,8 @@ const SearchFacetsControl = () => {
           }
 
           if (facet) {
-            const isPresent = !!searchFacets.find(v => v.name === facet.name)
-
             return (
               <MenuItem
-                disabled={isPresent}
                 fontSize={1}
                 key={facet.name}
                 onClick={() => dispatch(searchActions.facetsAdd({facet}))}
@@ -98,7 +92,7 @@ const SearchFacetsControl = () => {
       <MenuButton
         button={
           <Button
-            disabled={!hasRemainingSearchFacets}
+            disabled={!hasSearchFacets}
             fontSize={1}
             icon={AddCircleIcon}
             mode="bleed"
