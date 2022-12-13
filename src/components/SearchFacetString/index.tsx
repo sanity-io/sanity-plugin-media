@@ -9,7 +9,7 @@ import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
-  facet: SearchFacetInputStringProps
+  facet: SearchFacetInputStringProps & {id:string}
 }
 
 const SearchFacetString = (props: Props) => {

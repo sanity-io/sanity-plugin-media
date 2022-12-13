@@ -165,6 +165,8 @@ export type SearchFacetInputProps =
   | SearchFacetInputSelectProps
   | SearchFacetInputStringProps
 
+export type SearchFacetActiveInputProps = SearchFacetInputProps & {id: string}
+
 export type SearchFacetDivider = {
   type: 'divider'
 }

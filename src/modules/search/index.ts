@@ -1,5 +1,5 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
-import {SearchFacetInputProps, SearchFacetOperatorType} from '@types'
+import {SearchFacetActiveInputProps, SearchFacetInputProps, SearchFacetOperatorType} from '@types'
 import {Epic} from 'redux-observable'
 import {Selector} from 'react-redux'
 import {empty, of} from 'rxjs'
@@ -13,7 +13,7 @@ import {tagsActions} from '../tags'
 // (The main offender is `fieldModifier` which is currently a function)
 
 type SearchState = {
-  facets: (SearchFacetInputProps & {id: string})[]
+  facets: SearchFacetActiveInputProps[]
   query: string
 }
 
@@ -35,8 +35,12 @@ const searchSlice = createSlice({
       state.facets = []
     },
     // Remove search facet by name
-    facetsRemove(state, action: PayloadAction<{facetName: string}>) {
+    facetsRemoveByName(state, action: PayloadAction<{facetName: string}>) {
       state.facets = state.facets.filter(facet => facet.name !== action.payload.facetName)
+    },
+    // Remove search facet by name
+    facetRemoveById(state, action: PayloadAction<{facetId: string}>) {
+      state.facets = state.facets.filter(facet => facet.id !== action.payload.facetId)
     },
     // Update an existing search facet
     facetsUpdate(

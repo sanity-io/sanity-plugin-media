@@ -13,7 +13,7 @@ import SearchFacet from '../SearchFacet'
 import TextInputNumber from '../TextInputNumber'
 
 type Props = {
-  facet: SearchFacetInputNumberProps
+  facet: SearchFacetInputNumberProps & {id:string}
 }
 
 const SearchFacetNumber = (props: Props) => {

@@ -577,7 +577,8 @@ export const assetsSearchEpic: MyEpic = action$ =>
     ofType(
       searchActions.facetsAdd.type,
       searchActions.facetsClear.type,
-      searchActions.facetsRemove.type,
+      searchActions.facetsRemoveByName.type,
+      searchActions.facetRemoveById.type,
       searchActions.facetsUpdate.type,
       searchActions.querySet.type
     ),
@@ -725,7 +726,8 @@ export const assetsUnpickEpic: MyEpic = action$ =>
       assetsActions.viewSet.type,
       searchActions.facetsAdd.type,
       searchActions.facetsClear.type,
-      searchActions.facetsRemove.type,
+      searchActions.facetsRemoveByName.type,
+      searchActions.facetRemoveById.type,
       searchActions.facetsUpdate.type,
       searchActions.querySet.type
     ),

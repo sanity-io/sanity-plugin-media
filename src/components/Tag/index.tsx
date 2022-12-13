@@ -79,7 +79,7 @@ const Tag = (props: Props) => {
 
   // Callbacks
   const handleSearchFacetTagRemove = () => {
-    dispatch(searchActions.facetsRemove({facetName: 'tag'}))
+    dispatch(searchActions.facetsRemoveByName({facetName: 'tag'}))
   }
 
   const handleShowAddTagToAssetsDialog = () => {

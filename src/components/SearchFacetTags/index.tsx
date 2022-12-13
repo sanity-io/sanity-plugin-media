@@ -13,7 +13,7 @@ import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
-  facet: SearchFacetInputSearchableProps
+  facet: SearchFacetInputSearchableProps & {id:string}
 }
 
 const SearchFacetTags = (props: Props) => {
