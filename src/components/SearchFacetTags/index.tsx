@@ -27,8 +27,8 @@ const SearchFacetTags = (props: Props) => {
 
   const handleChange = (option: ReactSelectOption) => {
     dispatch(
-      searchActions.facetsUpdate({
-        name: facet.name,
+      searchActions.facetsUpdateById({
+        id: facet.id,
         value: option
       })
     )
@@ -36,8 +36,8 @@ const SearchFacetTags = (props: Props) => {
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
-      searchActions.facetsUpdate({
-        name: facet.name,
+      searchActions.facetsUpdateById({
+        id: facet.id,
         operatorType
       })
     )

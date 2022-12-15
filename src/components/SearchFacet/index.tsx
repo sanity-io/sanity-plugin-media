@@ -24,7 +24,7 @@ const SearchFacet = (props: Props) => {
   const dispatch = useDispatch()
 
   const handleClose = () => {
-    dispatch(searchActions.facetRemoveById({facetId: facet.id}))
+    dispatch(searchActions.facetsRemoveById({facetId: facet.id}))
   }
 
   return (

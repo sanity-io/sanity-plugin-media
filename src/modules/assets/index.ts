@@ -578,7 +578,8 @@ export const assetsSearchEpic: MyEpic = action$ =>
       searchActions.facetsAdd.type,
       searchActions.facetsClear.type,
       searchActions.facetsRemoveByName.type,
-      searchActions.facetRemoveById.type,
+      searchActions.facetsRemoveByTag.type,
+      searchActions.facetsRemoveById.type,
       searchActions.facetsUpdate.type,
       searchActions.querySet.type
     ),
@@ -727,7 +728,8 @@ export const assetsUnpickEpic: MyEpic = action$ =>
       searchActions.facetsAdd.type,
       searchActions.facetsClear.type,
       searchActions.facetsRemoveByName.type,
-      searchActions.facetRemoveById.type,
+      searchActions.facetsRemoveByTag.type,
+      searchActions.facetsRemoveById.type,
       searchActions.facetsUpdate.type,
       searchActions.querySet.type
     ),

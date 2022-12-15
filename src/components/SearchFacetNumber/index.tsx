@@ -28,15 +28,15 @@ const SearchFacetNumber = (props: Props) => {
     : modifiers?.[0]
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
-    dispatch(searchActions.facetsUpdate({name: facet.name, operatorType}))
+    dispatch(searchActions.facetsUpdateById({id: facet.id, operatorType}))
   }
 
   const handleModifierClick = (modifier: SearchFacetInputNumberModifier) => {
-    dispatch(searchActions.facetsUpdate({name: facet.name, modifier: modifier.name}))
+    dispatch(searchActions.facetsUpdateById({id: facet.id, modifier: modifier.name}))
   }
 
   const handleValueChange = (value: number) => {
-    dispatch(searchActions.facetsUpdate({name: facet.name, value}))
+    dispatch(searchActions.facetsUpdateById({id: facet.id, value}))
   }
 
   const selectedOperatorType: SearchFacetOperatorType = facet.operatorType ?? 'greaterThan'

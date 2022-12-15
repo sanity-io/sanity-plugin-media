@@ -19,11 +19,11 @@ const SearchFacetString = (props: Props) => {
   const dispatch = useDispatch()
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
-    dispatch(searchActions.facetsUpdate({name: facet.name, operatorType}))
+    dispatch(searchActions.facetsUpdateById({id: facet.id, operatorType}))
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(searchActions.facetsUpdate({name: facet.name, value: e.target.value}))
+    dispatch(searchActions.facetsUpdateById({id: facet.id, value: e.target.value}))
   }
 
   const selectedOperatorType: SearchFacetOperatorType = facet.operatorType
