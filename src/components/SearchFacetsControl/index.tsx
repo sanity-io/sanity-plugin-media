@@ -69,8 +69,11 @@ const SearchFacetsControl = () => {
           }
 
           if (facet) {
+            const disabled = !facet.operatorTypes && !!searchFacets.find(v => v.name === facet.name)
+
             return (
               <MenuItem
+                disabled={disabled}
                 fontSize={1}
                 key={facet.name}
                 onClick={() => dispatch(searchActions.facetsAdd({facet}))}
