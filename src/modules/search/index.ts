@@ -3,7 +3,7 @@ import {SearchFacetActiveInputProps, SearchFacetInputProps, SearchFacetOperatorT
 import {Epic} from 'redux-observable'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
-import {v4 as uuid} from 'uuid';
+import {uuid} from '@sanity/uuid'
 
 import {RootReducerState} from '../types'
 import {tagsActions} from '../tags'
