@@ -3,7 +3,8 @@ import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import {
   SearchFacetInputNumberModifier,
   SearchFacetInputNumberProps,
-  SearchFacetOperatorType
+  SearchFacetOperatorType,
+  WithId
 } from '@types'
 import React from 'react'
 import {useDispatch} from 'react-redux'
@@ -13,7 +14,7 @@ import SearchFacet from '../SearchFacet'
 import TextInputNumber from '../TextInputNumber'
 
 type Props = {
-  facet: SearchFacetInputNumberProps & {id:string}
+  facet: WithId<SearchFacetInputNumberProps>
 }
 
 const SearchFacetNumber = (props: Props) => {

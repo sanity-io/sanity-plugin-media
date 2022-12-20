@@ -1,6 +1,6 @@
 import {CloseIcon} from '@sanity/icons'
 import {Box, Flex, Label, Text} from '@sanity/ui'
-import {SearchFacetActiveInputProps} from '@types'
+import {SearchFacetInputProps, WithId} from '@types'
 import React, {ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
@@ -9,7 +9,7 @@ import {searchActions} from '../../modules/search'
 
 type Props = {
   children: ReactNode
-  facet: SearchFacetActiveInputProps
+  facet: WithId<SearchFacetInputProps>
 }
 
 const Container = styled(Box)`

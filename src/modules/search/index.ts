@@ -1,5 +1,5 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
-import {SearchFacetActiveInputProps, SearchFacetInputProps, SearchFacetOperatorType} from '@types'
+import {SearchFacetInputProps, SearchFacetOperatorType, WithId} from '@types'
 import {Epic} from 'redux-observable'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
@@ -12,7 +12,7 @@ import {tagsActions} from '../tags'
 // (The main offender is `fieldModifier` which is currently a function)
 
 type SearchState = {
-  facets: SearchFacetActiveInputProps[]
+  facets: WithId<SearchFacetInputProps>[]
   query: string
 }
 

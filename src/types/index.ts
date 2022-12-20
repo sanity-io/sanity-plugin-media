@@ -165,8 +165,6 @@ export type SearchFacetInputProps =
   | SearchFacetInputSelectProps
   | SearchFacetInputStringProps
 
-export type SearchFacetActiveInputProps = SearchFacetInputProps & {id: string}
-
 export type SearchFacetDivider = {
   type: 'divider'
 }
@@ -315,4 +313,8 @@ export type UploadItem = {
   percent?: number
   size: number
   status: 'complete' | 'queued' | 'uploading'
+}
+
+export type WithId<T extends SearchFacetInputProps> = T & {
+  id: string
 }

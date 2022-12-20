@@ -1,6 +1,6 @@
 import {SelectIcon} from '@sanity/icons'
 import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem, TextInput} from '@sanity/ui'
-import {SearchFacetInputStringProps, SearchFacetOperatorType} from '@types'
+import {SearchFacetInputStringProps, SearchFacetOperatorType, WithId} from '@types'
 import React, {ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
 
@@ -9,7 +9,7 @@ import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
-  facet: SearchFacetInputStringProps & {id:string}
+  facet: WithId<SearchFacetInputStringProps>
 }
 
 const SearchFacetString = (props: Props) => {
