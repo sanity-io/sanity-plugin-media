@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://github.com/sanity-io/sanity-plugin-media/compare/v1.5.0...v1.5.1) (2022-12-21)
+
+### Bug Fixes
+
+- revert to react-select 4.x to workaround Sanity v2 webpack issues ([a946e6a](https://github.com/sanity-io/sanity-plugin-media/commit/a946e6a338ee9f796be74e3c2a05bf1d3b627093))
+
 ## [1.5.0](https://github.com/sanity-io/sanity-plugin-media/compare/v1.4.14...v1.5.0) (2022-12-21)
 
 ### Features
