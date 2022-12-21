@@ -1,8 +1,8 @@
-import {black, hues, white} from '@sanity/color'
+import {black, hues} from '@sanity/color'
 import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
 import {Box, Card, Flex, studioTheme, Text} from '@sanity/ui'
-import React from 'react'
-import {components, StylesConfig} from 'react-select'
+import React, {CSSProperties} from 'react'
+import {components} from 'react-select'
 import {Virtuoso} from 'react-virtuoso'
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
@@ -10,14 +10,11 @@ const themeDarkPrimaryGray = studioTheme?.color?.dark?.primary?.spot?.gray
 const themeRadius = studioTheme?.radius
 const themeSpace = studioTheme?.space
 
-export const reactSelectStyles: StylesConfig<
-  {
-    label: string
-    value: string
-  },
-  true
-> = {
-  control: (styles, {isDisabled, isFocused}) => {
+export const reactSelectStyles = {
+  control: (
+    styles: CSSProperties,
+    {isDisabled, isFocused}: {isDisabled: boolean; isFocused: boolean}
+  ) => {
     let boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}`
     if (isFocused) {
       boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}, 0 0 0 1px var(--card-bg-color), 0 0 0 3px var(--card-focus-ring-color) !important`
@@ -28,7 +25,7 @@ export const reactSelectStyles: StylesConfig<
       background: isDisabled
         ? studioTheme.color.dark.default.input.default.disabled.bg
         : 'transparent',
-      color: white.hex,
+      color: 'white',
       border: 'none',
       borderRadius: themeRadius[1],
       boxShadow,
@@ -40,26 +37,25 @@ export const reactSelectStyles: StylesConfig<
       }
     }
   },
-  indicatorsContainer: (styles, {isDisabled}) => ({
+  indicatorsContainer: (styles: CSSProperties, {isDisabled}: {isDisabled: boolean}) => ({
     ...styles,
     opacity: isDisabled ? 0.25 : 1
   }),
-  input: styles => ({
+  input: (styles: CSSProperties) => ({
     ...styles,
-    color: white.hex,
-    fontFamily: studioTheme.fonts.text.family,
+    color: 'white',
     marginLeft: themeSpace[2]
   }),
-  menuList: styles => ({
+  menuList: (styles: CSSProperties) => ({
     ...styles
   }),
-  multiValue: (styles, {isDisabled}) => ({
+  multiValue: (styles: CSSProperties, {isDisabled}: {isDisabled: boolean}) => ({
     ...styles,
     backgroundColor: themeDarkPrimaryGray,
     borderRadius: themeRadius[2],
     opacity: isDisabled ? 0.5 : 1
   }),
-  multiValueRemove: styles => ({
+  multiValueRemove: (styles: CSSProperties) => ({
     ...styles,
     paddingLeft: 0,
     '&:hover': {
@@ -67,29 +63,22 @@ export const reactSelectStyles: StylesConfig<
       color: 'inherit'
     }
   }),
-  noOptionsMessage: styles => ({
-    ...styles,
-    fontFamily: studioTheme.fonts.text.family,
-    lineHeight: '1em'
-  }),
-  option: (styles, {isFocused}) => ({
+  option: (styles: CSSProperties, {isFocused}: {isFocused: boolean}) => ({
     ...styles,
     backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
     borderRadius: themeRadius[2],
     color: isFocused ? black.hex : 'inherit',
-    fontFamily: studioTheme.fonts.text.family,
     padding: '4px 8px', // TODO: use theme value
     '&:hover': {
       backgroundColor: themeDarkPrimaryBlue,
       color: black.hex
     }
   }),
-  placeholder: styles => ({
+  placeholder: (styles: CSSProperties) => ({
     ...styles,
-    fontFamily: studioTheme.fonts.text.family,
     marginLeft: themeSpace[2]
   }),
-  valueContainer: styles => ({
+  valueContainer: (styles: CSSProperties) => ({
     ...styles,
     marginBottom: themeSpace[0],
     marginLeft: themeSpace[1],

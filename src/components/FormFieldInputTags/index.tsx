@@ -68,7 +68,9 @@ const FormFieldInputTags = (props: Props) => {
           // At this point, the form will still be marked as dirty when it shouldnt be
           return (
             <CreatableSelect
+              cacheOptions={false}
               components={reactSelectComponents}
+              defaultOptions
               instanceId="tags"
               isClearable={false} // TODO: re-enable when we're able to correctly (manually) re-validate on clear
               isDisabled={creating || disabled || tagsFetching}

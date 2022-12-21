@@ -1,8 +1,8 @@
 import {black, hues, white} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
 import {Box, Card, studioTheme, Text} from '@sanity/ui'
-import React from 'react'
-import {components, StylesConfig} from 'react-select'
+import React, {CSSProperties} from 'react'
+import {components} from 'react-select'
 import {Virtuoso} from 'react-virtuoso'
 
 const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
@@ -11,14 +11,11 @@ const themeRadius = studioTheme?.radius
 const themeSpace = studioTheme?.space
 const themeTextSizes = studioTheme?.fonts?.text?.sizes
 
-export const reactSelectStyles: StylesConfig<
-  {
-    label: string
-    value: string
-  },
-  false
-> = {
-  control: (styles, {isDisabled, isFocused}) => {
+export const reactSelectStyles = {
+  control: (
+    styles: CSSProperties,
+    {isDisabled, isFocused}: {isDisabled: boolean; isFocused: boolean}
+  ) => {
     let boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}`
     if (isFocused) {
       boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}, 0 0 0 1px var(--card-bg-color), 0 0 0 3px var(--card-focus-ring-color) !important`
@@ -41,23 +38,21 @@ export const reactSelectStyles: StylesConfig<
       }
     }
   },
-  input: styles => ({
+  input: (styles: CSSProperties) => ({
     ...styles,
     color: white.hex,
-    fontFamily: studioTheme.fonts.text.family,
     marginLeft: themeSpace[2]
   }),
-  menuList: styles => ({
+  menuList: (styles: CSSProperties) => ({
     ...styles,
     padding: 0
   }),
-  noOptionsMessage: styles => ({
+  noOptionsMessage: (styles: CSSProperties) => ({
     ...styles,
-    fontFamily: studioTheme.fonts.text.family,
     fontSize: themeTextSizes[1].fontSize,
     lineHeight: '1em'
   }),
-  option: (styles, {isFocused}) => ({
+  option: (styles: CSSProperties, {isFocused}: {isFocused: boolean}) => ({
     ...styles,
     backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
     borderRadius: themeRadius[2],
@@ -70,19 +65,18 @@ export const reactSelectStyles: StylesConfig<
       color: black.hex
     }
   }),
-  placeholder: styles => ({
+  placeholder: (styles: CSSProperties) => ({
     ...styles,
-    fontFamily: studioTheme.fonts.text.family,
     marginLeft: themeSpace[2],
     paddingBottom: '2px'
   }),
-  singleValue: styles => ({
+  singleValue: (styles: CSSProperties) => ({
     ...styles,
     color: white.hex,
     lineHeight: '1em',
     paddingBottom: '1px'
   }),
-  valueContainer: styles => ({
+  valueContainer: (styles: CSSProperties) => ({
     ...styles,
     margin: 0,
     padding: 0
