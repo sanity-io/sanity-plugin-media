@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.0](https://github.com/sanity-io/sanity-plugin-media/compare/v1.4.14...v1.5.0) (2022-12-21)
+
+### Features
+
+- **search:** add additional support for multi-faceted search ([#106](https://github.com/sanity-io/sanity-plugin-media/issues/106)) ([9cb9dc9](https://github.com/sanity-io/sanity-plugin-media/commit/9cb9dc905c5e8d5f9e3054050f88f60215262d2f))
+
 ## [1.4.14](https://github.com/sanity-io/sanity-plugin-media/compare/v1.4.13...v1.4.14) (2022-11-22)
 
 ### Bug Fixes
