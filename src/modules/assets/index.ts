@@ -577,8 +577,11 @@ export const assetsSearchEpic: MyEpic = action$ =>
     ofType(
       searchActions.facetsAdd.type,
       searchActions.facetsClear.type,
-      searchActions.facetsRemove.type,
+      searchActions.facetsRemoveByName.type,
+      searchActions.facetsRemoveByTag.type,
+      searchActions.facetsRemoveById.type,
       searchActions.facetsUpdate.type,
+      searchActions.facetsUpdateById.type,
       searchActions.querySet.type
     ),
     debounceTime(400),
@@ -725,8 +728,11 @@ export const assetsUnpickEpic: MyEpic = action$ =>
       assetsActions.viewSet.type,
       searchActions.facetsAdd.type,
       searchActions.facetsClear.type,
-      searchActions.facetsRemove.type,
+      searchActions.facetsRemoveByName.type,
+      searchActions.facetsRemoveByTag.type,
+      searchActions.facetsRemoveById.type,
       searchActions.facetsUpdate.type,
+      searchActions.facetsUpdateById.type,
       searchActions.querySet.type
     ),
     mergeMap(() => {

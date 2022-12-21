@@ -1,9 +1,9 @@
 import {AnyAction, PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
-import {SearchFacetInputProps, SearchFacetOperatorType} from '@types'
+import {SearchFacetInputProps, SearchFacetOperatorType, WithId} from '@types'
 import {Epic} from 'redux-observable'
-import {Selector} from 'react-redux'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
+import {uuid} from '@sanity/uuid'
 
 import {RootReducerState} from '../types'
 import {tagsActions} from '../tags'
@@ -12,7 +12,7 @@ import {tagsActions} from '../tags'
 // (The main offender is `fieldModifier` which is currently a function)
 
 type SearchState = {
-  facets: SearchFacetInputProps[]
+  facets: WithId<SearchFacetInputProps>[]
   query: string
 }
 
@@ -27,15 +27,28 @@ const searchSlice = createSlice({
   reducers: {
     // Add search facet
     facetsAdd(state, action: PayloadAction<{facet: SearchFacetInputProps}>) {
-      state.facets.push(action.payload.facet)
+      state.facets.push({...action.payload.facet, id: uuid()})
     },
     // Clear all search facets
     facetsClear(state) {
       state.facets = []
     },
     // Remove search facet by name
-    facetsRemove(state, action: PayloadAction<{facetName: string}>) {
+    facetsRemoveByName(state, action: PayloadAction<{facetName: string}>) {
       state.facets = state.facets.filter(facet => facet.name !== action.payload.facetName)
+    },
+    // Remove search facet by name
+    facetsRemoveByTag(state, action: PayloadAction<{tagId: string}>) {
+      state.facets = state.facets.filter(facet => 
+        !(facet.name === 'tag'
+        && facet.type === 'searchable'
+        && (facet.operatorType === 'references' || facet.operatorType === 'doesNotReference')
+        && facet.value?.value === action.payload.tagId)
+      )
+    },
+    // Remove search facet by name
+    facetsRemoveById(state, action: PayloadAction<{facetId: string}>) {
+      state.facets = state.facets.filter(facet => facet.id !== action.payload.facetId)
     },
     // Update an existing search facet
     facetsUpdate(
@@ -49,8 +62,38 @@ const searchSlice = createSlice({
     ) {
       const {modifier, name, operatorType, value} = action.payload
 
+      const facet = state.facets.find((f) => f.name === name)
+
+      if(!facet){
+        return;
+      }
+
+      if (facet.type === 'number' && modifier) {
+        facet.modifier = modifier
+      }
+      if (operatorType) {
+        facet.operatorType = operatorType
+      }
+      if (typeof value !== 'undefined') {
+        facet.value = value
+      }
+
+      state.facets = state.facets.filter(f => f.name !== facet.name || f.id === facet.id)
+    },
+    // Update an existing search facet
+    facetsUpdateById(
+      state,
+      action: PayloadAction<{
+        modifier?: string
+        id: string
+        operatorType?: SearchFacetOperatorType
+        value?: any // TODO: type correctly
+      }>
+    ) {
+      const {modifier, id, operatorType, value} = action.payload
+
       state.facets.forEach((facet, index) => {
-        if (facet.name === name) {
+        if (facet.id === id) {
           if (facet.type === 'number' && modifier) {
             facet.modifier = modifier
           }
@@ -104,33 +147,18 @@ export const searchFacetTagUpdateEpic: MyEpic = (action$, state$) =>
   )
 
 // Selectors
-
-export const selectHasSearchFacetTag: Selector<RootReducerState, boolean> = createSelector(
-  (state: RootReducerState) => state.search.facets,
-  searchFacets => !!searchFacets?.find(facet => facet.name === 'tag')
-)
-
 export const selectIsSearchFacetTag = createSelector(
   [
-    (state: RootReducerState) => state.tags.byIds,
     (state: RootReducerState) => state.search.facets,
     (_state: RootReducerState, tagId: string) => tagId
   ],
-  (tagsByIds, searchFacets, tagId) => {
-    const searchFacet = searchFacets?.find(facet => facet.name === 'tag')
-
-    if (searchFacet?.type === 'searchable') {
-      const searchFacetTagId = searchFacet.value?.value
-      if (searchFacetTagId) {
-        return (
-          tagsByIds[searchFacetTagId]?.tag?._id === tagId &&
-          searchFacet?.operatorType === 'references'
-        )
-      }
-    }
-
-    return false
-  }
+  (searchFacets, tagId) =>
+    searchFacets.some(facet =>
+      facet.name === 'tag'
+      && facet.type === 'searchable'
+      && (facet.operatorType === 'references' || facet.operatorType === 'doesNotReference')
+      && facet.value?.value === tagId
+  )
 )
 
 export const searchActions = searchSlice.actions

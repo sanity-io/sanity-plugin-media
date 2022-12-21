@@ -25,20 +25,21 @@ const SearchFacets = (props: Props) => {
   const searchFacets = useTypedSelector(state => state.search.facets)
 
   const Items = searchFacets.map(facet => {
+    const key = facet.id;
     if (facet.type === 'number') {
-      return <SearchFacetNumber facet={facet} key={facet.name} />
+      return <SearchFacetNumber facet={facet} key={key} />
     }
 
     if (facet.type === 'searchable') {
-      return <SearchFacetTags facet={facet} key={facet.name} />
+      return <SearchFacetTags facet={facet} key={key} />
     }
 
     if (facet.type === 'select') {
-      return <SearchFacetSelect facet={facet} key={facet.name} />
+      return <SearchFacetSelect facet={facet} key={key} />
     }
 
     if (facet.type === 'string') {
-      return <SearchFacetString facet={facet} key={facet.name} />
+      return <SearchFacetString facet={facet} key={key} />
     }
 
     return null
