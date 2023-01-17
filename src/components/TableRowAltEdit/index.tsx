@@ -33,7 +33,7 @@ const TableRowAltEdit = (props: Props) => {
 
   const handleSave = () => {
     setEditAltText(false)
-    // return if alt text is unchanged or empty
+    // return if alt text is unchanged
     if (newAltText === asset?.altText) return
     dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
   }
@@ -48,15 +48,21 @@ const TableRowAltEdit = (props: Props) => {
     altTextInputRef.current?.blur()
   })
 
+  const commonTextStyles = {
+    lineHeight: '2em',
+    cursor: 'text',
+    paddingBlock: '0.5em'
+  }
+
   return (
     <>
       <Text
-        hidden={editAltText}
+        hidden={editAltText || !asset.altText}
         muted
         onClick={handleToggleEdit}
         ref={altTextRef}
         size={1}
-        style={{lineHeight: '2em', cursor: 'text', paddingBlock: '0.5em'}}
+        style={{...commonTextStyles}}
         textOverflow="ellipsis"
       >
         {asset.altText}
@@ -68,7 +74,7 @@ const TableRowAltEdit = (props: Props) => {
         onClick={handleToggleEdit}
         ref={altTextRef}
         size={1}
-        style={{lineHeight: '2em', cursor: 'text', paddingBlock: '0.5em', color: '#E84738'}}
+        style={{...commonTextStyles, color: '#E84738'}}
         textOverflow="ellipsis"
       >
         Missing ALT text. Click to add.
