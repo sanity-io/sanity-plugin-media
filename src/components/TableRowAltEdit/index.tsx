@@ -57,7 +57,7 @@ const TableRowAltEdit = (props: Props) => {
   }
 
   // If mime type is image, Just alt text
-  if (asset?.mimeType?.startsWith('image')) {
+  if (!asset?.mimeType?.startsWith('image')) {
     return (
       <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
         {asset.altText}
