@@ -34,7 +34,6 @@ const TableRowAltEdit = (props: Props) => {
     // return if alt text is unchanged or empty
     console.log('atempting to save', newAltText, asset?.altText)
     if (newAltText === asset?.altText) return
-    if (!newAltText) return
     console.log('saving', newAltText)
     dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
   }
