@@ -63,7 +63,7 @@ const TableRowAltEdit = (props: Props) => {
       </Text>
 
       <Text
-        hidden={editAltText || asset.altText !== ''}
+        hidden={editAltText || !asset.altText}
         muted
         onClick={handleToggleEdit}
         ref={altTextRef}
@@ -71,7 +71,7 @@ const TableRowAltEdit = (props: Props) => {
         style={{lineHeight: '2em', cursor: 'text', paddingBlock: '0.5em', color: '#E84738'}}
         textOverflow="ellipsis"
       >
-        Missing ALT text, click to add
+        Missing ALT text. Click to add.
       </Text>
 
       {editAltText && (
