@@ -94,6 +94,7 @@ const TableRowAsset = (props: Props) => {
   // Custom Alt Text editor
   const [editAltText, setEditAltText] = useState(false)
   const [newAltText, setNewAltText] = useState('')
+  const altTextRef = useRef<HTMLDivElement>(null)
   const altTextInputRef = useRef<HTMLInputElement>(null)
 
   const handleAltTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,6 +141,10 @@ const TableRowAsset = (props: Props) => {
 
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
+
+    if (e.target === altTextRef?.current || e.target === altTextInputRef?.current) {
+      return
+    }
 
     if (onSelect) {
       onSelect([
@@ -315,17 +320,21 @@ const TableRowAsset = (props: Props) => {
           textOverflow="ellipsis"
           onClick={handleAltClick}
           hidden={editAltText}
+          ref={altTextRef}
         >
           {asset.altText}
         </Text>
-        <TextInput
-          fontSize={1}
-          onChange={handleAltTextChange}
-          padding={1}
-          style={{lineHeight: '2em'}}
-          value={asset.altText}
-          hidden={!editAltText}
-        />
+        <Box hidden={!editAltText}>
+          <TextInput
+            fontSize={1}
+            onChange={handleAltTextChange}
+            padding={2}
+            style={{lineHeight: '2em'}}
+            value={asset.altText}
+            hidden={!editAltText}
+            ref={altTextInputRef}
+          />
+        </Box>
       </Box>
 
       {/* MIME type */}
