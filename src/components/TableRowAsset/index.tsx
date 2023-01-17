@@ -111,6 +111,7 @@ const TableRowAsset = (props: Props) => {
     // save alt text
     if (newAltText !== asset?.altText) {
       dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
+    }
   }
 
   useKeyPress('Escape', () => {
