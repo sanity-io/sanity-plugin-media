@@ -63,7 +63,7 @@ const TableRowAltEdit = (props: Props) => {
       </Text>
 
       <Text
-        hidden={editAltText && asset.altText === ''}
+        hidden={editAltText && asset.altText !== ''}
         muted
         onClick={handleToggleEdit}
         ref={altTextRef}
