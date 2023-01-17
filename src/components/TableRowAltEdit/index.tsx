@@ -23,32 +23,37 @@ const TableRowAltEdit = (props: Props) => {
   const altTextRef = useRef<HTMLDivElement>(null)
   const altTextInputRef = useRef<HTMLInputElement>(null)
 
-  const handleAltClick = (e: MouseEvent<HTMLDivElement>) => {
+  const handleToggleEdit = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
     setEditAltText(true)
     setNewAltText(asset?.altText || '')
     altTextInputRef.current?.focus()
   }
 
-  const handleClickOutsideAltText = () => {
+  const handleSave = () => {
     setEditAltText(false)
     if (newAltText !== asset?.altText && asset?.altText !== '') {
       dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
     }
   }
 
+  // Cancel Alt Text edit on Escape
   useKeyPress('Escape', () => {
     setEditAltText(false)
   })
 
-  useClickOutside(altTextInputRef, handleClickOutsideAltText)
+  // Save Alt Text on Enter
+  useKeyPress('Enter', () => {
+    setEditAltText(false)
+    handleSave()
+  })
 
   return (
     <>
       <Text
         hidden={editAltText}
         muted
-        onClick={handleAltClick}
+        onClick={handleToggleEdit}
         ref={altTextRef}
         size={1}
         style={{lineHeight: '2em', cursor: 'pointer'}}
@@ -60,7 +65,7 @@ const TableRowAltEdit = (props: Props) => {
       <Text
         hidden={editAltText && !asset.altText}
         muted
-        onClick={handleAltClick}
+        onClick={handleToggleEdit}
         ref={altTextRef}
         size={1}
         style={{lineHeight: '2em', cursor: 'pointer', color: '#E84738'}}
@@ -74,11 +79,12 @@ const TableRowAltEdit = (props: Props) => {
           fontSize={1}
           hidden={!editAltText}
           onChange={e => setNewAltText(e.currentTarget.value)}
+          onBlur={handleSave}
           onClick={e => e.stopPropagation()}
           padding={2}
           ref={altTextInputRef}
           style={{lineHeight: '2em'}}
-          value={asset.altText}
+          value={newAltText}
         />
       </Box>
     </>
