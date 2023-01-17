@@ -100,6 +100,12 @@ const TableRowAsset = (props: Props) => {
     setNewAltText(e.target.value)
   }
 
+  const handleAltClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+    setEditAltText(true)
+    setNewAltText(asset?.altText || '')
+  }
+
   const handleClickOutsideAltText = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
     setEditAltText(false)
@@ -308,7 +314,7 @@ const TableRowAsset = (props: Props) => {
           size={1}
           style={{lineHeight: '2em'}}
           textOverflow="ellipsis"
-          onClick={() => setEditAltText(true)}
+          onClick={handleAltClick}
           hidden={!editAltText}
         >
           {asset.altText}
