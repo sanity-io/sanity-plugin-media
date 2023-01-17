@@ -31,9 +31,11 @@ const TableRowAltEdit = (props: Props) => {
 
   const handleSave = () => {
     setEditAltText(false)
-    if (newAltText !== asset?.altText && asset?.altText !== '') {
-      dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
-    }
+    // return if alt text is unchanged or empty
+    if (newAltText === asset?.altText) return
+    if (!newAltText) return
+    console.log('Saving new alt text: ', newAltText)
+    dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
   }
 
   // Cancel Alt Text edit on Escape
