@@ -23,10 +23,6 @@ const TableRowAltEdit = (props: Props) => {
   const altTextRef = useRef<HTMLDivElement>(null)
   const altTextInputRef = useRef<HTMLInputElement>(null)
 
-  const handleAltTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewAltText(e.target.value)
-  }
-
   const handleAltClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
     setEditAltText(true)
@@ -77,7 +73,7 @@ const TableRowAltEdit = (props: Props) => {
         <TextInput
           fontSize={1}
           hidden={!editAltText}
-          onChange={handleAltTextChange}
+          onChange={e => setNewAltText(e.currentTarget.value)}
           onClick={e => e.stopPropagation()}
           padding={2}
           ref={altTextInputRef}
