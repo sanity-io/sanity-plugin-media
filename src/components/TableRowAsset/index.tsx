@@ -27,6 +27,7 @@ import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
+import TableRowAltEdit from '../TableRowAltEdit'
 
 type Props = {
   id: string
