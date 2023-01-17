@@ -28,7 +28,7 @@ const TableRowAltEdit = (props: Props) => {
     setNewAltText(asset?.altText || '')
     setTimeout(() => {
       altTextInputRef.current?.focus()
-    }, 10)
+    }, 0)
   }
 
   const handleSave = () => {
