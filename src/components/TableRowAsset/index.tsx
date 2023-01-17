@@ -9,18 +9,16 @@ import {
   Spinner,
   Text,
   Tooltip,
-  TextInput,
   useMediaIndex
 } from '@sanity/ui'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
-import React, {useState, useRef, memo, MouseEvent, RefObject} from 'react'
+import React, {memo, MouseEvent, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'
-import useClickOutside from '../../hooks/useClickOutside'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
@@ -91,36 +89,6 @@ const TableRowAsset = (props: Props) => {
 
   const {onSelect} = useAssetSourceActions()
 
-  // Custom Alt Text editor
-  const [editAltText, setEditAltText] = useState(false)
-  const [newAltText, setNewAltText] = useState('')
-  const altTextRef = useRef<HTMLDivElement>(null)
-  const altTextInputRef = useRef<HTMLInputElement>(null)
-
-  const handleAltTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewAltText(e.target.value)
-  }
-
-  const handleAltClick = (e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
-    setEditAltText(true)
-    setNewAltText(asset?.altText || '')
-  }
-
-  const handleClickOutsideAltText = () => {
-    setEditAltText(false)
-    // save alt text
-    if (newAltText !== asset?.altText) {
-      dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
-    }
-  }
-
-  useKeyPress('Escape', () => {
-    setEditAltText(false)
-  })
-
-  useClickOutside(altTextInputRef, handleClickOutsideAltText)
-
   // Short circuit if no asset is available
   if (!asset) {
     return null
@@ -141,10 +109,6 @@ const TableRowAsset = (props: Props) => {
 
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
-
-    if (e.target === altTextRef?.current || e.target === altTextInputRef?.current) {
-      return
-    }
 
     if (onSelect) {
       onSelect([
@@ -313,28 +277,7 @@ const TableRowAsset = (props: Props) => {
           opacity: opacityCell
         }}
       >
-        <Text
-          muted
-          size={1}
-          style={{lineHeight: '2em'}}
-          textOverflow="ellipsis"
-          onClick={handleAltClick}
-          hidden={editAltText}
-          ref={altTextRef}
-        >
-          {asset.altText}
-        </Text>
-        <Box hidden={!editAltText}>
-          <TextInput
-            fontSize={1}
-            onChange={handleAltTextChange}
-            padding={2}
-            style={{lineHeight: '2em'}}
-            value={asset.altText}
-            hidden={!editAltText}
-            ref={altTextInputRef}
-          />
-        </Box>
+        <TableRowAltEdit asset={asset} />
       </Box>
 
       {/* MIME type */}
