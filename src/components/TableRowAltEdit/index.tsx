@@ -26,29 +26,26 @@ const TableRowAltEdit = (props: Props) => {
     e.stopPropagation()
     setEditAltText(true)
     setNewAltText(asset?.altText || '')
-    altTextInputRef.current?.focus()
+    setTimeout(() => {
+      altTextInputRef.current?.focus()
+    }, 10)
   }
 
   const handleSave = () => {
     setEditAltText(false)
     // return if alt text is unchanged or empty
-    console.log('atempting to save', newAltText, asset?.altText)
     if (newAltText === asset?.altText) return
-    console.log('saving', newAltText)
     dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
   }
 
   // Cancel Alt Text edit on Escape
   useKeyPress('Escape', () => {
-    console.log('escape')
     setEditAltText(false)
   })
 
   // Save Alt Text on Enter
   useKeyPress('Enter', () => {
-    console.log('enter')
-    handleSave()
-    setEditAltText(false)
+    altTextInputRef.current?.blur()
   })
 
   return (
@@ -59,7 +56,7 @@ const TableRowAltEdit = (props: Props) => {
         onClick={handleToggleEdit}
         ref={altTextRef}
         size={1}
-        style={{lineHeight: '2em', cursor: 'pointer'}}
+        style={{lineHeight: '2em', cursor: 'text', paddingBlock: '0.5em'}}
         textOverflow="ellipsis"
       >
         {asset.altText}
@@ -71,16 +68,15 @@ const TableRowAltEdit = (props: Props) => {
         onClick={handleToggleEdit}
         ref={altTextRef}
         size={1}
-        style={{lineHeight: '2em', cursor: 'pointer', color: '#E84738'}}
+        style={{lineHeight: '2em', cursor: 'text', paddingBlock: '0.5em', color: '#E84738'}}
         textOverflow="ellipsis"
       >
-        No ALT text!
+        Missing ALT text, click to add
       </Text>
 
-      <Box hidden={!editAltText}>
+      {editAltText && (
         <TextInput
           fontSize={1}
-          hidden={!editAltText}
           onBlur={handleSave}
           onChange={e => setNewAltText(e.currentTarget.value)}
           onClick={e => e.stopPropagation()}
@@ -90,7 +86,7 @@ const TableRowAltEdit = (props: Props) => {
           style={{lineHeight: '2em'}}
           value={newAltText}
         />
-      </Box>
+      )}
     </>
   )
 }
