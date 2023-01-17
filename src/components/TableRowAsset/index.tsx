@@ -9,16 +9,18 @@ import {
   Spinner,
   Text,
   Tooltip,
+  TextInput,
   useMediaIndex
 } from '@sanity/ui'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
-import React, {memo, MouseEvent, RefObject} from 'react'
+import React, {useState, useRef, memo, MouseEvent, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'
+import useClickOutside from '../../hooks/useClickOutside'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
@@ -88,6 +90,30 @@ const TableRowAsset = (props: Props) => {
   const updating = item?.updating
 
   const {onSelect} = useAssetSourceActions()
+
+  // Custom Alt Text editor
+  const [editAltText, setEditAltText] = useState(false)
+  const [newAltText, setNewAltText] = useState('')
+  const altTextInputRef = useRef<HTMLInputElement>(null)
+
+  const handleAltTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewAltText(e.target.value)
+  }
+
+  const handleClickOutsideAltText = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+    setEditAltText(false)
+    // save alt text
+    if (newAltText !== asset?.altText) {
+      dispatch(assetsActions.updateAsset({assetId: asset?._id, patch: {altText: newAltText}}))
+    }
+  }
+
+  useKeyPress('Escape', () => {
+    setEditAltText(false)
+  })
+
+  useClickOutside(altTextInputRef, handleClickOutsideAltText)
 
   // Short circuit if no asset is available
   if (!asset) {
@@ -277,16 +303,31 @@ const TableRowAsset = (props: Props) => {
           opacity: opacityCell
         }}
       >
-        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+        <Text
+          muted
+          size={1}
+          style={{lineHeight: '2em'}}
+          textOverflow="ellipsis"
+          onClick={() => setEditAltText(true)}
+          hidden={!editAltText}
+        >
           {asset.altText}
         </Text>
+        <TextInput
+          fontSize={1}
+          onChange={handleAltTextChange}
+          padding={1}
+          style={{lineHeight: '2em'}}
+          value={asset.altText}
+          hidden={editAltText}
+        />
       </Box>
 
       {/* MIME type */}
       <Box
         style={{
           display: mediaIndex < 3 ? 'none' : 'block',
-          gridColumn: 5,
+          gridColumn: 6,
           gridRow: 'auto',
           opacity: opacityCell
         }}
@@ -300,7 +341,7 @@ const TableRowAsset = (props: Props) => {
       <Box
         style={{
           display: mediaIndex < 3 ? 'none' : 'block',
-          gridColumn: 6,
+          gridColumn: 7,
           gridRow: 'auto',
           opacity: opacityCell
         }}
@@ -314,7 +355,7 @@ const TableRowAsset = (props: Props) => {
       <Box
         marginLeft={mediaIndex < 3 ? 3 : 0}
         style={{
-          gridColumn: mediaIndex < 3 ? 3 : 7,
+          gridColumn: mediaIndex < 3 ? 3 : 8,
           gridRow: mediaIndex < 3 ? 4 : 'auto',
           opacity: opacityCell
         }}
@@ -329,7 +370,7 @@ const TableRowAsset = (props: Props) => {
         align="center"
         justify="center"
         style={{
-          gridColumn: mediaIndex < 3 ? 4 : 8,
+          gridColumn: mediaIndex < 3 ? 4 : 9,
           gridRowStart: '1',
           gridRowEnd: mediaIndex < 3 ? 'span 5' : 'auto',
           opacity: opacityCell
