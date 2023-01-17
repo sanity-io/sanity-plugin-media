@@ -1,4 +1,4 @@
-import {Box, Text, TextInput} from '@sanity/ui'
+import {Text, TextInput} from '@sanity/ui'
 import React, {useState, useRef, memo, MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import useKeyPress from '../../hooks/useKeyPress'
