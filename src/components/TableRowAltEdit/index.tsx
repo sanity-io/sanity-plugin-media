@@ -2,7 +2,6 @@ import {Box, Text, TextInput} from '@sanity/ui'
 import React, {useState, useRef, memo, MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import useKeyPress from '../../hooks/useKeyPress'
-import useClickOutside from '../../hooks/useClickOutside'
 import {assetsActions} from '../../modules/assets'
 import type {Asset} from '../../types'
 
