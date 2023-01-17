@@ -34,7 +34,6 @@ const TableRowAltEdit = (props: Props) => {
     // return if alt text is unchanged or empty
     if (newAltText === asset?.altText) return
     if (!newAltText) return
-    console.log('Saving new alt text: ', newAltText)
     dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
   }
 
@@ -64,7 +63,7 @@ const TableRowAltEdit = (props: Props) => {
       </Text>
 
       <Text
-        hidden={editAltText && !asset.altText}
+        hidden={editAltText && asset.altText === ''}
         muted
         onClick={handleToggleEdit}
         ref={altTextRef}
