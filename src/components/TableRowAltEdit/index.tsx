@@ -31,6 +31,7 @@ const TableRowAltEdit = (props: Props) => {
     e.stopPropagation()
     setEditAltText(true)
     setNewAltText(asset?.altText || '')
+    altTextInputRef.current?.focus()
   }
 
   const handleClickOutsideAltText = () => {
@@ -49,26 +50,25 @@ const TableRowAltEdit = (props: Props) => {
   return (
     <>
       <Text
+        hidden={editAltText}
         muted
+        onClick={handleAltClick}
+        ref={altTextRef}
         size={1}
         style={{lineHeight: '2em', cursor: 'pointer'}}
         textOverflow="ellipsis"
-        onClick={handleAltClick}
-        hidden={editAltText}
-        ref={altTextRef}
       >
         {asset.altText}
       </Text>
 
       <Text
-        muted
-        size={1}
-        style={{lineHeight: '2em', cursor: 'pointer'}}
-        color="red"
-        textOverflow="ellipsis"
-        onClick={handleAltClick}
         hidden={editAltText && !asset.altText}
+        muted
+        onClick={handleAltClick}
         ref={altTextRef}
+        size={1}
+        style={{lineHeight: '2em', cursor: 'pointer', color: '#E84738'}}
+        textOverflow="ellipsis"
       >
         No ALT text!
       </Text>
@@ -76,12 +76,13 @@ const TableRowAltEdit = (props: Props) => {
       <Box hidden={!editAltText}>
         <TextInput
           fontSize={1}
+          hidden={!editAltText}
           onChange={handleAltTextChange}
+          onClick={e => e.stopPropagation()}
           padding={2}
+          ref={altTextInputRef}
           style={{lineHeight: '2em'}}
           value={asset.altText}
-          hidden={!editAltText}
-          ref={altTextInputRef}
         />
       </Box>
     </>
