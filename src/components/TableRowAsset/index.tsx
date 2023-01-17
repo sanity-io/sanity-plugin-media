@@ -314,7 +314,7 @@ const TableRowAsset = (props: Props) => {
           style={{lineHeight: '2em'}}
           textOverflow="ellipsis"
           onClick={handleAltClick}
-          hidden={!editAltText}
+          hidden={editAltText}
         >
           {asset.altText}
         </Text>
@@ -324,7 +324,7 @@ const TableRowAsset = (props: Props) => {
           padding={1}
           style={{lineHeight: '2em'}}
           value={asset.altText}
-          hidden={editAltText}
+          hidden={!editAltText}
         />
       </Box>
 
