@@ -32,20 +32,24 @@ const TableRowAltEdit = (props: Props) => {
   const handleSave = () => {
     setEditAltText(false)
     // return if alt text is unchanged or empty
+    console.log('atempting to save', newAltText, asset?.altText)
     if (newAltText === asset?.altText) return
     if (!newAltText) return
+    console.log('saving', newAltText)
     dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
   }
 
   // Cancel Alt Text edit on Escape
   useKeyPress('Escape', () => {
+    console.log('escape')
     setEditAltText(false)
   })
 
   // Save Alt Text on Enter
   useKeyPress('Enter', () => {
-    setEditAltText(false)
+    console.log('enter')
     handleSave()
+    setEditAltText(false)
   })
 
   return (
@@ -78,10 +82,11 @@ const TableRowAltEdit = (props: Props) => {
         <TextInput
           fontSize={1}
           hidden={!editAltText}
-          onChange={e => setNewAltText(e.currentTarget.value)}
           onBlur={handleSave}
+          onChange={e => setNewAltText(e.currentTarget.value)}
           onClick={e => e.stopPropagation()}
           padding={2}
+          placeholder="Add ALT text"
           ref={altTextInputRef}
           style={{lineHeight: '2em'}}
           value={newAltText}
