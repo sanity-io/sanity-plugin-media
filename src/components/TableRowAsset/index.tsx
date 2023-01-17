@@ -106,13 +106,11 @@ const TableRowAsset = (props: Props) => {
     setNewAltText(asset?.altText || '')
   }
 
-  const handleClickOutsideAltText = (e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
+  const handleClickOutsideAltText = () => {
     setEditAltText(false)
     // save alt text
     if (newAltText !== asset?.altText) {
-      dispatch(assetsActions.updateAsset({assetId: asset?._id, patch: {altText: newAltText}}))
-    }
+      dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
   }
 
   useKeyPress('Escape', () => {
