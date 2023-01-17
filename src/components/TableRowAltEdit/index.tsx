@@ -35,6 +35,8 @@ const TableRowAltEdit = (props: Props) => {
     setEditAltText(false)
     // return if alt text is unchanged
     if (newAltText === asset?.altText) return
+    // Return if alt text was null and is now empty
+    if (!asset?.altText && !newAltText) return
     dispatch(assetsActions.updateRequest({asset, formData: {altText: newAltText}}))
   }
 
