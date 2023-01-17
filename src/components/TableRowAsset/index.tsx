@@ -268,6 +268,20 @@ const TableRowAsset = (props: Props) => {
         </Text>
       </Box>
 
+      {/* ALT text */}
+      <Box
+        style={{
+          display: mediaIndex < 3 ? 'none' : 'block',
+          gridColumn: 5,
+          gridRow: 'auto',
+          opacity: opacityCell
+        }}
+      >
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+          {asset.altText}
+        </Text>
+      </Box>
+
       {/* MIME type */}
       <Box
         style={{

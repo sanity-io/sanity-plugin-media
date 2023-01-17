@@ -90,6 +90,7 @@ const TableHeader = () => {
       <TableHeaderItem />
       <TableHeaderItem field="originalFilename" title="Filename" />
       <TableHeaderItem title="Resolution" />
+      <TableHeaderItem field="altText" title="ALT text" />
       <TableHeaderItem field="mimeType" title="MIME type" />
       <TableHeaderItem field="size" title="Size" />
       <TableHeaderItem field="_updatedAt" title="Last updated" />
