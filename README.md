@@ -50,13 +50,13 @@ _Individual asset view_
 In your Sanity project folder:
 
 ```sh
-npm install --save sanity-plugin-media@studio-v3
+npm install --save sanity-plugin-media
 ```
 
 or
 
 ```sh
-yarn add sanity-plugin-media@studio-v3
+yarn add sanity-plugin-media
 ```
 
 ## Usage
