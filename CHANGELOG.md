@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.3](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.2...v2.0.3) (2023-01-18)
+
+### Bug Fixes
+
+- **docs:** install version ([a00d64f](https://github.com/sanity-io/sanity-plugin-media/commit/a00d64fb08828e8222fce061cb47d6adf789d522))
+
 ## [2.0.2](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.1...v2.0.2) (2022-11-25)
 
 ### Bug Fixes
