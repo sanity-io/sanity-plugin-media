@@ -1,11 +1,11 @@
 # Sanity Media
 
->This is a **Sanity Studio v3** plugin.
+> This is a **Sanity Studio v3** plugin.
 > For the v2 version, please refer to the [v2-branch](https://github.com/sanity-io/sanity-plugin-media/tree/studio-v2).
 
 ## What is it?
 
-![npm-v](https://img.shields.io/npm/v/sanity-plugin-media/studio-v3?style=flat-square)
+![npm-v](https://img.shields.io/npm/v/sanity-plugin-media?style=flat-square)
 ![npm-dw](https://img.shields.io/npm/dw/sanity-plugin-media?style=flat-square)
 
 A convenient way to browse, manage and refine your [Sanity](https://www.sanity.io/) assets.

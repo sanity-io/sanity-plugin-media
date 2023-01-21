@@ -21,7 +21,7 @@
     "url": "git@github.com:sanity-io/sanity-plugin-media.git"
   },
   "license": "MIT",
-  "author": "Robin Pyon <robin@robinpyon.com>",
+  "author": "Sanity.io <hello@sanity.io>",
   "exports": {
     ".": {
       "types": "./lib/src/index.d.ts",
