@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.4](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.3...v2.0.4) (2023-01-21)
+
+### Bug Fixes
+
+- **deps:** upgrade sanity, rxjs and redux observable ([#113](https://github.com/sanity-io/sanity-plugin-media/issues/113)) ([3c10149](https://github.com/sanity-io/sanity-plugin-media/commit/3c101498c4145b94d41ed9bd54814b5a401258c5))
+
 ## [2.0.3](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.2...v2.0.3) (2023-01-18)
 
 ### Bug Fixes
