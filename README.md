@@ -1,6 +1,6 @@
-# Sanity Media
-> This is a **Sanity Studio v3** plugin.
-> For the v2 version, please refer to the [v2-branch](https://github.com/sanity-io/sanity-plugin-media).
+# Sanity Media (for Sanity Studio v2)
+> The Sanity Studio v2 version of this plugin is no longer maintained.   
+> Please check the [main branch](https://github.com/sanity-io/sanity-plugin-media/tree/main) for the latest version.
 
 ![npm-v](https://img.shields.io/npm/v/sanity-plugin-media?style=flat-square)
 ![npm-dw](https://img.shields.io/npm/dw/sanity-plugin-media?style=flat-square)
@@ -224,16 +224,6 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 - If you upload when using the plugin in a _file_ selection context, these be uploaded as `sanity.fileAsset` regardless of their MIME type. This is probably not what you want, since images uploaded as files won't have associated metadata nor will they work in Sanity's image pipeline.
 
 </details>
-
-## Roadmap
-
-- Jump to selected asset
-- Asset replacement
-- Total count displays
-- Further keyboard shortcuts
-- Shareable saved search facets
-- Routing
-- Storing browser options with local storage
 
 ## Contributing
 
