@@ -1,7 +1,7 @@
-# Sanity Media
+# Sanity Media (for Sanity Studio v3)
 
-> This is a **Sanity Studio v3** plugin.
-> For the v2 version, please refer to the [v2-branch](https://github.com/sanity-io/sanity-plugin-media/tree/studio-v2).
+> This plugin is for **Sanity Studio v3**.  
+> The Sanity Studio v2 version of this plugin is no longer maintained, but still accessible on the [v2 branch](https://github.com/sanity-io/sanity-plugin-media/tree/studio-v2).
 
 ## What is it?
 
@@ -45,7 +45,7 @@ _Individual asset view_
 - Built with the same [UI components Sanity uses](https://www.sanity.io/ui) under the hood
 - Fully responsive and mobile friendly
 
-## Install (V3 Studio only)
+## Install (Sanity Studio v3)
 
 In your Sanity project folder:
 
@@ -228,23 +228,13 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 
 </details>
 
-## Roadmap
-
-- Jump to selected asset
-- Asset replacement
-- Total count displays
-- Further keyboard shortcuts
-- Shareable saved search facets
-- Routing
-- Storing browser options with local storage
-
 ## Contributing
 
 Contributions, issues and feature requests are welcome!
 
 ## License
 
-[MIT](LICENSE) © Robin Pyon
+[MIT](LICENSE) © Sanity.io
 
 ## Develop & test
 
@@ -252,11 +242,10 @@ This plugin uses [@sanity/plugin-kit](https://github.com/sanity-io/plugin-kit)
 with default configuration for build & watch scripts.
 
 See [Testing a plugin in Sanity Studio](https://github.com/sanity-io/plugin-kit#testing-a-plugin-in-sanity-studio)
-on how to run this plugin with hotreload in the studio.
+on how to run this plugin with hot-reload in the studio.
 
 ### Release new version
 
-Run ["CI & Release" workflow](https://github.com/robinpyon/sanity-plugin-media/actions/workflows/main.yml).
-Make sure to select the main branch and check "Release new version".
+Run the ["CI & Release" workflow](https://github.com/robinpyon/sanity-plugin-media/actions/workflows/main.yml). Make sure to select the main branch and check "Release new version".
 
-Semantic release will only release on configured branches, so it is safe to run release on any branch.
+Semantic release will only release on configured branches, so it is safe to run the workflow on any branch.
