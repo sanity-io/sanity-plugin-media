@@ -39,8 +39,8 @@ const formSchema = yup.object().shape({
 })
 
 const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
-  const extensionIndex = asset?.originalFilename?.toLowerCase().lastIndexOf(`.${asset.extension}`)
-  return asset?.originalFilename?.slice(0, extensionIndex)
+  const extensionIndex = asset?.originalFilename?.lastIndexOf(`.${asset.extension}`)
+  return extensionIndex === -1 ? asset?.originalFilename : asset?.originalFilename?.slice(0, extensionIndex)
 }
 
 const DialogAssetEdit = (props: Props) => {
