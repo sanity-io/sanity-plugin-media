@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.5](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.4...v2.0.5) (2023-02-03)
+
+### Bug Fixes
+
+- prevent removal of last character on no filename extension ([#120](https://github.com/sanity-io/sanity-plugin-media/issues/120)) ([3c0db14](https://github.com/sanity-io/sanity-plugin-media/commit/3c0db1428d1995cd22daaf56d16dfdaaf989ab69))
+
 ## [2.0.4](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.3...v2.0.4) (2023-01-21)
 
 ### Bug Fixes
