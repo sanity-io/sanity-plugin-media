@@ -20,7 +20,6 @@ import AssetMetadata from '../AssetMetadata'
 import Dialog from '../Dialog'
 import DocumentList from '../DocumentList'
 import FileAssetPreview from '../FileAssetPreview'
-import FormFieldInputFilename from '../FormFieldInputFilename'
 import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
@@ -35,13 +34,8 @@ type Props = {
 type FormData = yup.InferType<typeof formSchema>
 
 const formSchema = yup.object().shape({
-  originalFilename: yup.string().required('Filename cannot be empty')
+  originalFilename: yup.string().trim().required('Filename cannot be empty')
 })
-
-const getFilenameWithoutExtension = (asset?: Asset): string | undefined => {
-  const extensionIndex = asset?.originalFilename?.lastIndexOf(`.${asset.extension}`)
-  return extensionIndex === -1 ? asset?.originalFilename : asset?.originalFilename?.slice(0, extensionIndex)
-}
 
 const DialogAssetEdit = (props: Props) => {
   const {
@@ -73,7 +67,7 @@ const DialogAssetEdit = (props: Props) => {
   const generateDefaultValues = (asset?: Asset) => ({
     altText: asset?.altText || '',
     description: asset?.description || '',
-    originalFilename: asset ? getFilenameWithoutExtension(asset) : undefined,
+    originalFilename: asset?.originalFilename || '',
     opt: {media: {tags: assetTagOptions}},
     title: asset?.title || ''
   })
@@ -165,9 +159,7 @@ const DialogAssetEdit = (props: Props) => {
                   _weak: true
                 })) || null
             }
-          },
-          // Append extension to filename
-          originalFilename: `${sanitizedFormData.originalFilename}.${assetItem?.asset.extension}`
+          }
         }
       })
     )
@@ -323,14 +315,13 @@ const DialogAssetEdit = (props: Props) => {
                   value={assetTagOptions}
                 />
                 {/* Filename */}
-                <FormFieldInputFilename
+                <FormFieldInputText
                   disabled={formUpdating}
                   error={errors?.originalFilename}
-                  extension={currentAsset?.extension || ''}
                   label="Filename"
                   name="originalFilename"
                   ref={register}
-                  value={getFilenameWithoutExtension(currentAsset)}
+                  value={currentAsset?.originalFilename}
                 />
                 {/* Title */}
                 <FormFieldInputText
