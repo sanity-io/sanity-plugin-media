@@ -75,7 +75,7 @@
     "redux": "^4.2.0",
     "redux-observable": "^2.0.0",
     "rxjs": "^7.0.0",
-    "yup": "^0.32.11"
+    "yup": "^1.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.2.0",
