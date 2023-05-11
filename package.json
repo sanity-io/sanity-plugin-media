@@ -85,7 +85,7 @@
     "@sanity/icons": "^2.0.0",
     "@sanity/pkg-utils": "^2.0.0",
     "@sanity/plugin-kit": "^2.1.16",
-    "@sanity/semantic-release-preset": "^2.0.2",
+    "@sanity/semantic-release-preset": "^4.0.0",
     "@types/is-hotkey": "^0.1.7",
     "@types/pluralize": "^0.0.29",
     "@types/react": "^18",
