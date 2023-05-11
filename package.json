@@ -84,7 +84,7 @@
     "@sanity/color": "^2.1.20",
     "@sanity/icons": "^2.0.0",
     "@sanity/pkg-utils": "^2.0.0",
-    "@sanity/plugin-kit": "^2.1.16",
+    "@sanity/plugin-kit": "^3.0.0",
     "@sanity/semantic-release-preset": "^2.0.2",
     "@types/is-hotkey": "^0.1.7",
     "@types/pluralize": "^0.0.29",
