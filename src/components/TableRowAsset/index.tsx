@@ -1,5 +1,5 @@
 import {hues} from '@sanity/color'
-import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
+import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon, SpinnerIcon} from '@sanity/icons'
 import {
   Box,
   Checkbox,
@@ -27,6 +27,7 @@ import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
+import {WithReferringDocuments} from 'sanity'
 
 type Props = {
   id: string
@@ -310,12 +311,34 @@ const TableRowAsset = (props: Props) => {
         </Text>
       </Box>
 
+      {/* References */}
+      <Box
+        style={{
+          display: mediaIndex < 3 ? 'none' : 'block',
+          gridColumn: 8,
+          gridRow: 'auto',
+          opacity: opacityCell
+        }}
+      >
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+          <WithReferringDocuments id={id}>
+            {({isLoading, referringDocuments}) =>
+              isLoading ? (
+                <SpinnerIcon />
+              ) : (
+                <>{Array.isArray(referringDocuments) ? referringDocuments.length : 0}</>
+              )
+            }
+          </WithReferringDocuments>
+        </Text>
+      </Box>
+
       {/* Error */}
       <Flex
         align="center"
         justify="center"
         style={{
-          gridColumn: mediaIndex < 3 ? 4 : 8,
+          gridColumn: mediaIndex < 3 ? 4 : 9,
           gridRowStart: '1',
           gridRowEnd: mediaIndex < 3 ? 'span 5' : 'auto',
           opacity: opacityCell
