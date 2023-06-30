@@ -4,6 +4,7 @@ import React from 'react'
 import {useDispatch} from 'react-redux'
 import {getOrderTitle} from '../../config/orders'
 import {ORDER_OPTIONS} from '../../constants'
+import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions} from '../../modules/assets'
 
@@ -11,6 +12,8 @@ const OrderSelect = () => {
   // Redux
   const dispatch = useDispatch()
   const order = useTypedSelector(state => state.assets.order)
+
+  const popoverProps = usePortalPopoverProps()
 
   return (
     <MenuButton
@@ -51,6 +54,7 @@ const OrderSelect = () => {
           })}
         </Menu>
       }
+      popover={popoverProps}
     />
   )
 }

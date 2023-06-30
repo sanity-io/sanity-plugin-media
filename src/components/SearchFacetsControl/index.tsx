@@ -4,6 +4,7 @@ import {SearchFacetDivider, SearchFacetGroup, SearchFacetInputProps} from '@type
 import React from 'react'
 import {useDispatch} from 'react-redux'
 import {FACETS} from '../../constants'
+import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
 
@@ -13,6 +14,8 @@ const SearchFacetsControl = () => {
   const assetTypes = useTypedSelector(state => state.assets.assetTypes)
   const searchFacets = useTypedSelector(state => state.search.facets)
   const selectedDocument = useTypedSelector(state => state.selected.document)
+
+  const popoverProps = usePortalPopoverProps()
 
   const isTool = !selectedDocument
 
@@ -108,8 +111,10 @@ const SearchFacetsControl = () => {
         }
         id="facets"
         menu={<Menu>{renderMenuFacets(filteredFacets)}</Menu>}
-        placement="right-start"
-        portal
+        popover={{
+          ...popoverProps,
+          placement: 'right-start'
+        }}
       />
 
       {/* Clear facets button */}

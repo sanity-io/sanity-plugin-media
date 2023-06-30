@@ -1,8 +1,8 @@
 import type {MutationEvent} from '@sanity/client'
-import {Card, Flex, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
+import {Card, Flex, PortalProvider, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
 import {Asset, Tag} from '@types'
 import groq from 'groq'
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import type {AssetSourceComponentProps, SanityDocument} from 'sanity'
 import {TAG_DOCUMENT_NAME} from '../../constants'
@@ -32,6 +32,8 @@ type Props = {
 
 const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose']}) => {
   const client = useVersionedClient()
+
+  const [portalElement, setPortalElement] = useState<HTMLDivElement | null>(null)
 
   // Redux
   const dispatch = useDispatch()
@@ -98,31 +100,33 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
   }, [])
 
   return (
-    <UploadDropzone>
-      <Dialogs />
-      <Notifications />
+    <PortalProvider element={portalElement}>
+      <UploadDropzone>
+        <Dialogs />
+        <Notifications />
 
-      <Card display="flex" height="fill">
-        <Flex direction="column" flex={1}>
-          {/* Header */}
-          <Header onClose={onClose} />
+        <Card display="flex" height="fill" ref={setPortalElement}>
+          <Flex direction="column" flex={1}>
+            {/* Header */}
+            <Header onClose={onClose} />
 
-          {/* Browser Controls */}
-          <Controls />
+            {/* Browser Controls */}
+            <Controls />
 
-          <Flex flex={1}>
-            <Flex align="flex-end" direction="column" flex={1} style={{position: 'relative'}}>
-              <PickedBar />
-              <Items />
+            <Flex flex={1}>
+              <Flex align="flex-end" direction="column" flex={1} style={{position: 'relative'}}>
+                <PickedBar />
+                <Items />
+              </Flex>
+              <TagsPanel />
             </Flex>
-            <TagsPanel />
-          </Flex>
 
-          {/* Debug */}
-          <DebugControls />
-        </Flex>
-      </Card>
-    </UploadDropzone>
+            {/* Debug */}
+            <DebugControls />
+          </Flex>
+        </Card>
+      </UploadDropzone>
+    </PortalProvider>
   )
 }
 

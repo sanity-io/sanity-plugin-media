@@ -62,7 +62,7 @@ const useRootPortalElement = () => {
     return () => {
       document.body.removeChild(container)
     }
-  }, [])
+  }, [container])
 
   return container
 }

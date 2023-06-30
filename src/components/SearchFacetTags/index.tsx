@@ -5,6 +5,7 @@ import React from 'react'
 import {useDispatch} from 'react-redux'
 import Select from 'react-select'
 import {operators} from '../../config/searchFacets'
+import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
 import {selectTags} from '../../modules/tags'
@@ -16,14 +17,14 @@ type Props = {
   facet: SearchFacetInputSearchableProps
 }
 
-const SearchFacetTags = (props: Props) => {
-  const {facet} = props
-
+const SearchFacetTags = ({facet}: Props) => {
   // Redux
   const dispatch = useDispatch()
   const tags = useTypedSelector(state => selectTags(state))
   const tagsFetching = useTypedSelector(state => state.tags.fetching)
   const allTagOptions = getTagSelectOptions(tags)
+
+  const popoverProps = usePortalPopoverProps()
 
   const handleChange = (option: ReactSelectOption) => {
     dispatch(
@@ -79,6 +80,7 @@ const SearchFacetTags = (props: Props) => {
               })}
             </Menu>
           }
+          popover={popoverProps}
         />
       )}
 

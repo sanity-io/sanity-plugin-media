@@ -57,7 +57,7 @@
     "@hookform/resolvers": "2.9.11",
     "@reduxjs/toolkit": "^1.9.0",
     "@sanity/incompatible-plugin": "^1.0.4",
-    "@sanity/ui": "^1.0.0",
+    "@sanity/ui": "^1.7.0",
     "@tanem/react-nprogress": "^5.0.0",
     "copy-to-clipboard": "^3.3.1",
     "date-fns": "^2.27.0",

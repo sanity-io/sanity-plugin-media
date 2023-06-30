@@ -11,16 +11,17 @@ import {useDispatch} from 'react-redux'
 import {operators} from '../../config/searchFacets'
 import {searchActions} from '../../modules/search'
 import SearchFacet from '../SearchFacet'
+import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 
 type Props = {
   facet: SearchFacetInputSelectProps
 }
 
-const SearchFacetSelect = (props: Props) => {
-  const {facet} = props
-
+const SearchFacetSelect = ({facet}: Props) => {
   // Redux
   const dispatch = useDispatch()
+
+  const popoverProps = usePortalPopoverProps()
 
   const options = facet?.options
 
@@ -73,6 +74,7 @@ const SearchFacetSelect = (props: Props) => {
               })}
             </Menu>
           }
+          popover={popoverProps}
         />
       )}
 
@@ -101,6 +103,7 @@ const SearchFacetSelect = (props: Props) => {
             ))}
           </Menu>
         }
+        popover={popoverProps}
       />
     </SearchFacet>
   )
