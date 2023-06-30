@@ -13,15 +13,11 @@ type Props = {
   title: string
 }
 
-const TagViewHeader = (props: Props) => {
-  const {allowCreate, light, title} = props
-
-  // Redux
+const TagViewHeader = ({allowCreate, light, title}: Props) => {
   const dispatch = useDispatch()
   const tagsCreating = useTypedSelector(state => state.tags.creating)
   const tagsFetching = useTypedSelector(state => state.tags.fetching)
 
-  // Callbacks
   const handleTagCreate = () => {
     dispatch(DIALOG_ACTIONS.showTagCreate())
   }
@@ -35,6 +31,7 @@ const TagViewHeader = (props: Props) => {
         style={{
           background: light ? hues.gray?.[900].hex : black.hex,
           borderBottom: `1px solid ${hues.gray?.[900].hex}`,
+          flexShrink: 0,
           height: `${PANEL_HEIGHT}px`
         }}
       >
