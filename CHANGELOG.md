@@ -5,6 +5,17 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.6](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.5...v2.0.6) (2023-07-03)
+
+### Bug Fixes
+
+- **deps:** update dependencies (non-major) ([#149](https://github.com/sanity-io/sanity-plugin-media/issues/149)) ([d7943e8](https://github.com/sanity-io/sanity-plugin-media/commit/d7943e821b1b987b5eda5165387af59461345558))
+- ensure popovers display correctly when the plugin is invoked via an image input ([0d92ab9](https://github.com/sanity-io/sanity-plugin-media/commit/0d92ab90f1e7231d8867234c2489aaa7533fdb07))
+- force overflow-y scroll to prevent grid offset on mount ([804e125](https://github.com/sanity-io/sanity-plugin-media/commit/804e12598d00688a99d4f8aa5e934a643008eaeb))
+- prevent tag panel title from collapsing on small viewports ([a415924](https://github.com/sanity-io/sanity-plugin-media/commit/a41592412754078dce14db23e0d33d9035c4b346))
+- suppress redux-toolkit $CombinedState errors ([b7c6fd1](https://github.com/sanity-io/sanity-plugin-media/commit/b7c6fd13536c60b848f01875650d7fe722a7b0ee))
+- use tooltip portals, remove cancel upload button tooltips until portal issues are fixed in ui ([ea549e1](https://github.com/sanity-io/sanity-plugin-media/commit/ea549e1b563566c1361e30fddc8e7c48275dcc15))
+
 ## [2.0.5](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.4...v2.0.5) (2023-02-03)
 
 ### Bug Fixes
