@@ -40,6 +40,7 @@ const FormSubmitButton = (props: Props) => {
       }
       disabled={'ontouchstart' in window}
       placement="top"
+      portal
     >
       <Box>
         <Button

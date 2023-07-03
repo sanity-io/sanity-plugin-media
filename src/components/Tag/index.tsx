@@ -44,6 +44,7 @@ type TagButtonProps = {
 
 const TagButton = (props: TagButtonProps) => {
   const {disabled, icon, onClick, tone, tooltip} = props
+
   return (
     <Tooltip
       content={
@@ -55,6 +56,7 @@ const TagButton = (props: TagButtonProps) => {
       }
       disabled={'ontouchstart' in window}
       placement="top"
+      portal
     >
       <Button
         disabled={disabled}

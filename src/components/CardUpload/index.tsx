@@ -1,6 +1,6 @@
 import {hues} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
-import {Box, Button, Flex, Text, Tooltip} from '@sanity/ui'
+import {Box, Button, Flex, Text} from '@sanity/ui'
 import filesize from 'filesize'
 import React from 'react'
 import {useDispatch} from 'react-redux'
@@ -102,10 +102,10 @@ const CardUpload = (props: Props) => {
             </div>
           )}
 
-          {/* 
+          {/*
           Cancel upload button.
           Assets will only have a `complete` status _after_ it has been created on your dataset.
-          As such, we also hide the cancel button when `percentLoaded === 100`, as cancelling when the asset 
+          As such, we also hide the cancel button when `percentLoaded === 100`, as cancelling when the asset
           has been fully uploaded (even with a status of `progress`) won't stop the asset from being created.
         */}
           {!isComplete && percentLoaded !== 100 && (
@@ -121,27 +121,15 @@ const CardUpload = (props: Props) => {
                 width: '100%'
               }}
             >
-              <Tooltip
-                content={
-                  <Box padding={2}>
-                    <Text muted size={1}>
-                      Cancel
-                    </Text>
-                  </Box>
-                }
-                disabled={'ontouchstart' in window}
-                placement="top"
-              >
-                <Button
-                  fontSize={4}
-                  icon={CloseIcon}
-                  mode="bleed"
-                  onClick={handleCancelUpload}
-                  padding={2}
-                  style={{background: 'none', boxShadow: 'none'}}
-                  tone="critical"
-                />
-              </Tooltip>
+              <Button
+                fontSize={4}
+                icon={CloseIcon}
+                mode="bleed"
+                onClick={handleCancelUpload}
+                padding={2}
+                style={{background: 'none', boxShadow: 'none'}}
+                tone="critical"
+              />
             </Flex>
           )}
         </Box>

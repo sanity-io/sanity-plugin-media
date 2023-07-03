@@ -60,6 +60,7 @@ const DebugControls = () => {
           }
           fallbackPlacements={['right', 'left']}
           placement="bottom"
+          portal
         >
           <Switch
             checked={badConnection}
