@@ -1,4 +1,9 @@
-import {combineReducers} from '@reduxjs/toolkit'
+import {
+  ActionFromReducersMapObject,
+  Reducer,
+  StateFromReducersMapObject,
+  combineReducers
+} from '@reduxjs/toolkit'
 import {combineEpics} from 'redux-observable'
 
 import assetsReducer, {
@@ -97,7 +102,7 @@ export const rootEpic = combineEpics(
   uploadsCompleteQueueEpic
 )
 
-const reducers = combineReducers({
+const reducers = {
   assets: assetsReducer,
   debug: debugReducer,
   dialog: dialogReducer,
@@ -106,5 +111,14 @@ const reducers = combineReducers({
   selected: selectedReducer,
   tags: tagsReducer,
   uploads: uploadsReducer
-})
-export const rootReducer = reducers
+}
+
+type ReducersMapObject = typeof reducers
+
+// Workaround to avoid `$CombinedState` ts errors
+// source: https://github.com/reduxjs/redux-toolkit/issues/2068#issuecomment-1130796500
+// TODO: remove once we use `redux-toolkit` v2
+export const rootReducer: Reducer<
+  StateFromReducersMapObject<ReducersMapObject>,
+  ActionFromReducersMapObject<ReducersMapObject>
+> = combineReducers(reducers)
