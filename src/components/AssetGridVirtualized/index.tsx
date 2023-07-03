@@ -36,6 +36,7 @@ const ItemContainer = styled.div`
 const ListContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, ${CARD_WIDTH}px);
+  grid-template-rows: repeat(auto-fill, ${CARD_HEIGHT}px);
   justify-content: center;
   margin: 0 auto;
 `
@@ -71,7 +72,7 @@ const AssetGridVirtualized = (props: Props) => {
         return <VirtualCell item={item} selected={selected} />
       }}
       overscan={48}
-      style={{overflowX: 'hidden'}}
+      style={{overflowX: 'hidden', overflowY: 'scroll'}}
       totalCount={totalCount}
     />
   )
