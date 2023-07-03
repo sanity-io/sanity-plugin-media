@@ -3,7 +3,8 @@ import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import {
   SearchFacetInputSelectListItemProps,
   SearchFacetInputSelectProps,
-  SearchFacetOperatorType
+  SearchFacetOperatorType,
+  WithId
 } from '@types'
 import React from 'react'
 import {useDispatch} from 'react-redux'
@@ -14,7 +15,7 @@ import SearchFacet from '../SearchFacet'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 
 type Props = {
-  facet: SearchFacetInputSelectProps
+  facet: WithId<SearchFacetInputSelectProps>
 }
 
 const SearchFacetSelect = ({facet}: Props) => {

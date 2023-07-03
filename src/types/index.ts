@@ -330,3 +330,7 @@ export type UploadItem = {
   size: number
   status: 'complete' | 'queued' | 'uploading'
 }
+
+export type WithId<T extends SearchFacetInputProps> = T & {
+  id: string
+}

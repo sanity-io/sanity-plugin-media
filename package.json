@@ -58,6 +58,7 @@
     "@reduxjs/toolkit": "^1.9.0",
     "@sanity/incompatible-plugin": "^1.0.4",
     "@sanity/ui": "^1.7.0",
+    "@sanity/uuid": "^3.0.1",
     "@tanem/react-nprogress": "^5.0.0",
     "copy-to-clipboard": "^3.3.1",
     "date-fns": "^2.27.0",

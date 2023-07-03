@@ -1,6 +1,11 @@
 import {SelectIcon} from '@sanity/icons'
 import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
-import {ReactSelectOption, SearchFacetInputSearchableProps, SearchFacetOperatorType} from '@types'
+import {
+  ReactSelectOption,
+  SearchFacetInputSearchableProps,
+  SearchFacetOperatorType,
+  WithId
+} from '@types'
 import React from 'react'
 import {useDispatch} from 'react-redux'
 import Select from 'react-select'
@@ -14,7 +19,7 @@ import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import SearchFacet from '../SearchFacet'
 
 type Props = {
-  facet: SearchFacetInputSearchableProps
+  facet: WithId<SearchFacetInputSearchableProps>
 }
 
 const SearchFacetTags = ({facet}: Props) => {
@@ -28,8 +33,8 @@ const SearchFacetTags = ({facet}: Props) => {
 
   const handleChange = (option: ReactSelectOption) => {
     dispatch(
-      searchActions.facetsUpdate({
-        name: facet.name,
+      searchActions.facetsUpdateById({
+        id: facet.id,
         value: option
       })
     )
@@ -37,8 +42,8 @@ const SearchFacetTags = ({facet}: Props) => {
 
   const handleOperatorItemClick = (operatorType: SearchFacetOperatorType) => {
     dispatch(
-      searchActions.facetsUpdate({
-        name: facet.name,
+      searchActions.facetsUpdateById({
+        id: facet.id,
         operatorType
       })
     )

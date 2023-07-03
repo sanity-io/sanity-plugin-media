@@ -11,7 +11,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
-import {searchActions, selectHasSearchFacetTag, selectIsSearchFacetTag} from '../../modules/search'
+import {searchActions, selectIsSearchFacetTag} from '../../modules/search'
 
 type Props = {
   actions?: TagActions[]
@@ -77,12 +77,11 @@ const Tag = (props: Props) => {
   // Redux
   const dispatch = useDispatch()
   const assetsPicked = useTypedSelector(selectAssetsPicked)
-  const hasSearchFacetTag = useTypedSelector(selectHasSearchFacetTag)
   const isSearchFacetTag = useTypedSelector(state => selectIsSearchFacetTag(state, tag?.tag?._id))
 
   // Callbacks
   const handleSearchFacetTagRemove = () => {
-    dispatch(searchActions.facetsRemove({facetName: 'tag'}))
+    dispatch(searchActions.facetsRemoveByTag({tagId: tag.tag._id}))
   }
 
   const handleShowAddTagToAssetsDialog = () => {
@@ -110,7 +109,7 @@ const Tag = (props: Props) => {
       }
     } as SearchFacetInputSearchableProps
 
-    if (hasSearchFacetTag) {
+    if (isSearchFacetTag) {
       dispatch(
         searchActions.facetsUpdate({
           name: 'tag',
