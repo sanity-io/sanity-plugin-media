@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.6...v2.1.0) (2023-07-03)
+
+### Features
+
+- add support for multiple tags ([5f5bea8](https://github.com/sanity-io/sanity-plugin-media/commit/5f5bea828abe2867c9273e57bbeca351825cec9f))
+
 ## [2.0.6](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.5...v2.0.6) (2023-07-03)
 
 ### Bug Fixes
