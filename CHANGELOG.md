@@ -5,6 +5,17 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.0-beta.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.1.1...v2.2.0-beta.1) (2023-07-05)
+
+### Features
+
+- add reference count to asset list ([1605a00](https://github.com/sanity-io/sanity-plugin-media/commit/1605a008c276081c73b5274450b1ae6c6bdc6c86))
+
+### Bug Fixes
+
+- artifically delay rendering of reference counts to reduce overfetching on scroll ([2d422d9](https://github.com/sanity-io/sanity-plugin-media/commit/2d422d98c00c39286f24aeaa91a4c08cca101728))
+- display unique count of referred documents in rows, eagerly display count in edit dialog tabs ([ac649ca](https://github.com/sanity-io/sanity-plugin-media/commit/ac649ca3ebe1937dd479a33916507edc5dc69813))
+
 ## [2.1.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.1.0...v2.1.1) (2023-07-05)
 
 ### Bug Fixes
