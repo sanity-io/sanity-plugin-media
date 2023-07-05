@@ -1,54 +1,37 @@
 import type {SanityDocument} from '@sanity/client'
 import {Box, Button, Card, Stack, Text} from '@sanity/ui'
 import React from 'react'
-import {Preview, SchemaType, useDocumentStore, useSchema, WithReferringDocuments} from 'sanity'
+import {Preview, SchemaType, useSchema} from 'sanity'
 import {useIntentLink} from 'sanity/router'
 
 type Props = {
-  assetId: string
+  documents: SanityDocument[]
+  isLoading: boolean
 }
 
-const DocumentList = (props: Props) => {
-  const {assetId} = props
-
-  const documentStore = useDocumentStore()
-
-  return (
-    <WithReferringDocuments documentStore={documentStore} id={assetId}>
-      {({isLoading, referringDocuments}) => (
-        <ReferringDocuments isLoading={isLoading} referringDocuments={referringDocuments} />
-      )}
-    </WithReferringDocuments>
-  )
-}
-
-const ReferringDocuments = (props: {isLoading: boolean; referringDocuments: SanityDocument[]}) => {
-  const {isLoading, referringDocuments} = props
-
+const DocumentList = ({documents, isLoading}: Props) => {
   const schema = useSchema()
 
-  const draftIds = referringDocuments.reduce(
-    (acc: string[], doc: SanityDocument) =>
-      doc._id.startsWith('drafts.') ? acc.concat(doc._id.slice(7)) : acc,
-    []
-  )
-
-  const filteredDocuments: SanityDocument[] = referringDocuments.filter(
-    (doc: SanityDocument) => !draftIds.includes(doc._id)
-  )
-
   if (isLoading) {
-    return <Text size={1}>Loading...</Text>
+    return (
+      <Text muted size={1}>
+        Loading...
+      </Text>
+    )
   }
 
-  if (filteredDocuments.length === 0) {
-    return <Text size={1}>No documents are referencing this asset</Text>
+  if (documents.length === 0) {
+    return (
+      <Text muted size={1}>
+        No documents are referencing this asset
+      </Text>
+    )
   }
 
   return (
     <Card flex={1} marginBottom={2} padding={2} radius={2} shadow={1}>
       <Stack space={2}>
-        {filteredDocuments?.map(doc => (
+        {documents?.map(doc => (
           <ReferringDocument doc={doc} key={doc._id} schemaType={schema.get(doc._type)} />
         ))}
       </Stack>

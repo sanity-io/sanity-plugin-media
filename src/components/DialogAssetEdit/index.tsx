@@ -6,6 +6,7 @@ import groq from 'groq'
 import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
+import {WithReferringDocuments, useDocumentStore} from 'sanity'
 import {assetFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
@@ -13,6 +14,7 @@ import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import {selectTags, selectTagSelectOptions, tagsActions} from '../../modules/tags'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
+import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
 import imageDprUrl from '../../utils/imageDprUrl'
 import sanitizeFormData from '../../utils/sanitizeFormData'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
@@ -38,6 +40,8 @@ const DialogAssetEdit = (props: Props) => {
   } = props
 
   const client = useVersionedClient()
+
+  const documentStore = useDocumentStore()
 
   const dispatch = useDispatch()
   const assetItem = useTypedSelector(state => selectAssetById(state, String(assetId))) // TODO: check casting
@@ -238,110 +242,128 @@ const DialogAssetEdit = (props: Props) => {
       */}
       <Flex direction={['column-reverse', 'column-reverse', 'row-reverse']}>
         <Box flex={1} marginTop={[5, 5, 0]} padding={4}>
-          {/* Tabs */}
-          <TabList space={2}>
-            <Tab
-              aria-controls="details-panel"
-              disabled={formUpdating}
-              id="details-tab"
-              label="Details"
-              onClick={() => setTabSection('details')}
-              selected={tabSection === 'details'}
-              size={2}
-            />
-            <Tab
-              aria-controls="references-panel"
-              disabled={formUpdating}
-              id="references-tab"
-              label="References"
-              onClick={() => setTabSection('references')}
-              selected={tabSection === 'references'}
-              size={2}
-            />
-          </TabList>
+          <WithReferringDocuments documentStore={documentStore} id={assetItem.asset._id}>
+            {({isLoading, referringDocuments}) => {
+              const uniqueReferringDocuments = getUniqueDocuments(referringDocuments)
+              return (
+                <>
+                  {/* Tabs */}
+                  <TabList space={2}>
+                    <Tab
+                      aria-controls="details-panel"
+                      disabled={formUpdating}
+                      id="details-tab"
+                      label="Details"
+                      onClick={() => setTabSection('details')}
+                      selected={tabSection === 'details'}
+                      size={2}
+                    />
+                    <Tab
+                      aria-controls="references-panel"
+                      disabled={formUpdating}
+                      id="references-tab"
+                      label={`References${
+                        !isLoading && Array.isArray(uniqueReferringDocuments)
+                          ? ` (${uniqueReferringDocuments.length})`
+                          : ''
+                      }`}
+                      onClick={() => setTabSection('references')}
+                      selected={tabSection === 'references'}
+                      size={2}
+                    />
+                  </TabList>
 
-          {/* Form fields */}
-          <Box as="form" marginTop={4} onSubmit={handleSubmit(onSubmit)}>
-            {/* Deleted notification */}
-            {!assetItem && (
-              <Card marginBottom={3} padding={3} radius={2} shadow={1} tone="critical">
-                <Text size={1}>This file cannot be found – it may have been deleted.</Text>
-              </Card>
-            )}
+                  {/* Form fields */}
+                  <Box as="form" marginTop={4} onSubmit={handleSubmit(onSubmit)}>
+                    {/* Deleted notification */}
+                    {!assetItem && (
+                      <Card marginBottom={3} padding={3} radius={2} shadow={1} tone="critical">
+                        <Text size={1}>This file cannot be found – it may have been deleted.</Text>
+                      </Card>
+                    )}
 
-            {/* Hidden button to enable enter key submissions */}
-            <button style={{display: 'none'}} tabIndex={-1} type="submit" />
+                    {/* Hidden button to enable enter key submissions */}
+                    <button style={{display: 'none'}} tabIndex={-1} type="submit" />
 
-            {/* Panel: details */}
-            <TabPanel
-              aria-labelledby="details"
-              hidden={tabSection !== 'details'}
-              id="details-panel"
-            >
-              <Stack space={3}>
-                {/* Tags */}
-                <FormFieldInputTags
-                  control={control}
-                  disabled={formUpdating}
-                  error={errors?.opt?.media?.tags?.message}
-                  label="Tags"
-                  name="opt.media.tags"
-                  onCreateTag={handleCreateTag}
-                  options={allTagOptions}
-                  placeholder="Select or create..."
-                  value={assetTagOptions}
-                />
-                {/* Filename */}
-                <FormFieldInputText
-                  {...register('originalFilename')}
-                  disabled={formUpdating}
-                  error={errors?.originalFilename?.message}
-                  label="Filename"
-                  name="originalFilename"
-                  value={currentAsset?.originalFilename}
-                />
-                {/* Title */}
-                <FormFieldInputText
-                  {...register('title')}
-                  disabled={formUpdating}
-                  error={errors?.title?.message}
-                  label="Title"
-                  name="title"
-                  value={currentAsset?.title}
-                />
-                {/* Alt text */}
-                <FormFieldInputText
-                  {...register('altText')}
-                  disabled={formUpdating}
-                  error={errors?.altText?.message}
-                  label="Alt Text"
-                  name="altText"
-                  value={currentAsset?.altText}
-                />
-                {/* Description */}
-                <FormFieldInputTextarea
-                  {...register('description')}
-                  disabled={formUpdating}
-                  error={errors?.description?.message}
-                  label="Description"
-                  name="description"
-                  rows={3}
-                  value={currentAsset?.description}
-                />
-              </Stack>
-            </TabPanel>
+                    {/* Panel: details */}
+                    <TabPanel
+                      aria-labelledby="details"
+                      hidden={tabSection !== 'details'}
+                      id="details-panel"
+                    >
+                      <Stack space={3}>
+                        {/* Tags */}
+                        <FormFieldInputTags
+                          control={control}
+                          disabled={formUpdating}
+                          error={errors?.opt?.media?.tags?.message}
+                          label="Tags"
+                          name="opt.media.tags"
+                          onCreateTag={handleCreateTag}
+                          options={allTagOptions}
+                          placeholder="Select or create..."
+                          value={assetTagOptions}
+                        />
+                        {/* Filename */}
+                        <FormFieldInputText
+                          {...register('originalFilename')}
+                          disabled={formUpdating}
+                          error={errors?.originalFilename?.message}
+                          label="Filename"
+                          name="originalFilename"
+                          value={currentAsset?.originalFilename}
+                        />
+                        {/* Title */}
+                        <FormFieldInputText
+                          {...register('title')}
+                          disabled={formUpdating}
+                          error={errors?.title?.message}
+                          label="Title"
+                          name="title"
+                          value={currentAsset?.title}
+                        />
+                        {/* Alt text */}
+                        <FormFieldInputText
+                          {...register('altText')}
+                          disabled={formUpdating}
+                          error={errors?.altText?.message}
+                          label="Alt Text"
+                          name="altText"
+                          value={currentAsset?.altText}
+                        />
+                        {/* Description */}
+                        <FormFieldInputTextarea
+                          {...register('description')}
+                          disabled={formUpdating}
+                          error={errors?.description?.message}
+                          label="Description"
+                          name="description"
+                          rows={3}
+                          value={currentAsset?.description}
+                        />
+                      </Stack>
+                    </TabPanel>
 
-            {/* Panel: References */}
-            <TabPanel
-              aria-labelledby="references"
-              hidden={tabSection !== 'references'}
-              id="references-panel"
-            >
-              <Box marginTop={5}>
-                {assetItem?.asset && <DocumentList assetId={assetItem?.asset._id} />}
-              </Box>
-            </TabPanel>
-          </Box>
+                    {/* Panel: References */}
+                    <TabPanel
+                      aria-labelledby="references"
+                      hidden={tabSection !== 'references'}
+                      id="references-panel"
+                    >
+                      <Box marginTop={5}>
+                        {assetItem?.asset && (
+                          <DocumentList
+                            documents={uniqueReferringDocuments}
+                            isLoading={isLoading}
+                          />
+                        )}
+                      </Box>
+                    </TabPanel>
+                  </Box>
+                </>
+              )
+            }}
+          </WithReferringDocuments>
         </Box>
 
         <Box flex={1} padding={4}>

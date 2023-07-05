@@ -15,6 +15,7 @@ import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {memo, MouseEvent, RefObject, useCallback, useEffect, useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
+import {WithReferringDocuments} from 'sanity'
 import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -27,7 +28,7 @@ import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
-import {WithReferringDocuments} from 'sanity'
+import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
 
 // Duration (ms) to wait before reference counts (and associated listeners) are rendered
 const REFERENCE_COUNT_VISIBILITY_DELAY = 750
@@ -341,13 +342,14 @@ const TableRowAsset = (props: Props) => {
         <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
           {referenceCountVisible ? (
             <WithReferringDocuments id={id}>
-              {({isLoading, referringDocuments}) =>
-                isLoading ? (
+              {({isLoading, referringDocuments}) => {
+                const uniqueDocuments = getUniqueDocuments(referringDocuments)
+                return isLoading ? (
                   <>-</>
                 ) : (
-                  <>{Array.isArray(referringDocuments) ? referringDocuments.length : 0}</>
+                  <>{Array.isArray(uniqueDocuments) ? uniqueDocuments.length : 0}</>
                 )
-              }
+              }}
             </WithReferringDocuments>
           ) : (
             <>-</>
