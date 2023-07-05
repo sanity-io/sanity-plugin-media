@@ -1,12 +1,12 @@
-import {yupResolver} from '@hookform/resolvers/yup'
+import {zodResolver} from '@hookform/resolvers/zod'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
-import {Asset, DialogAssetEditProps, ReactSelectOption} from '@types'
+import {Asset, AssetFormData, DialogAssetEditProps, TagSelectOption} from '@types'
 import groq from 'groq'
-import React, {ReactNode, useEffect, useRef, useState} from 'react'
-import {useForm} from 'react-hook-form'
+import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react'
+import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import * as yup from 'yup'
+import {assetFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions, selectAssetById} from '../../modules/assets'
@@ -31,12 +31,6 @@ type Props = {
   dialog: DialogAssetEditProps
 }
 
-type FormData = yup.InferType<typeof formSchema>
-
-const formSchema = yup.object().shape({
-  originalFilename: yup.string().trim().required('Filename cannot be empty')
-})
-
 const DialogAssetEdit = (props: Props) => {
   const {
     children,
@@ -45,38 +39,34 @@ const DialogAssetEdit = (props: Props) => {
 
   const client = useVersionedClient()
 
-  // Redux
   const dispatch = useDispatch()
   const assetItem = useTypedSelector(state => selectAssetById(state, String(assetId))) // TODO: check casting
   const tags = useTypedSelector(selectTags)
 
-  // Refs
-  const isMounted = useRef(false)
+  const assetUpdatedPrev = useRef<string | null>(null)
 
-  // State
-  // - Generate a snapshot of the current asset
+  // Generate a snapshot of the current asset
   const [assetSnapshot, setAssetSnapshot] = useState(assetItem?.asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
 
   const currentAsset = assetItem ? assetItem?.asset : assetSnapshot
   const allTagOptions = getTagSelectOptions(tags)
 
-  // Redux
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
 
-  const generateDefaultValues = (asset?: Asset) => ({
-    altText: asset?.altText || '',
-    description: asset?.description || '',
-    originalFilename: asset?.originalFilename || '',
-    opt: {media: {tags: assetTagOptions}},
-    title: asset?.title || ''
-  })
+  const generateDefaultValues = useCallback(
+    (asset?: Asset): AssetFormData => {
+      return {
+        altText: asset?.altText || '',
+        description: asset?.description || '',
+        originalFilename: asset?.originalFilename || '',
+        opt: {media: {tags: assetTagOptions}},
+        title: asset?.title || ''
+      }
+    },
+    [assetTagOptions]
+  )
 
-  // Generate a string from all current tag labels
-  // This is used purely to determine tag updates to then update the form in real time
-  const currentTagLabels = assetTagOptions?.map(tag => tag.label).join(',')
-
-  // react-hook-form
   const {
     control,
     // Read the formState before render to subscribe the form state through Proxy
@@ -86,20 +76,19 @@ const DialogAssetEdit = (props: Props) => {
     register,
     reset,
     setValue
-  } = useForm({
+  } = useForm<AssetFormData>({
     defaultValues: generateDefaultValues(assetItem?.asset),
     mode: 'onChange',
-    resolver: yupResolver(formSchema)
+    resolver: zodResolver(assetFormSchema)
   })
 
   const formUpdating = !assetItem || assetItem?.updating
 
-  // Callbacks
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     dispatch(dialogActions.remove({id}))
-  }
+  }, [dispatch, id])
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (!assetItem?.asset) {
       return
     }
@@ -110,63 +99,64 @@ const DialogAssetEdit = (props: Props) => {
         closeDialogId: assetItem?.asset._id
       })
     )
-  }
+  }, [assetItem, dispatch])
 
-  const handleAssetUpdate = (update: MutationEvent) => {
+  const handleAssetUpdate = useCallback((update: MutationEvent) => {
     const {result, transition} = update
-
     if (result && transition === 'update') {
       // Regenerate asset snapshot
       setAssetSnapshot(result as Asset)
-
-      // Reset react-hook-form
-      reset(generateDefaultValues(result as Asset))
     }
-  }
+  }, [])
 
-  const handleCreateTag = (tagName: string) => {
-    // Dispatch action to create new tag
-    dispatch(
-      tagsActions.createRequest({
-        assetId: currentAsset?._id,
-        name: tagName
-      })
-    )
-  }
+  const handleCreateTag = useCallback(
+    (tagName: string) => {
+      // Dispatch action to create new tag
+      dispatch(
+        tagsActions.createRequest({
+          assetId: currentAsset?._id,
+          name: tagName
+        })
+      )
+    },
+    [currentAsset?._id, dispatch]
+  )
 
-  // - submit react-hook-form
-  const onSubmit = async (formData: FormData) => {
-    if (!assetItem?.asset) {
-      return
-    }
+  // Submit react-hook-form
+  const onSubmit: SubmitHandler<AssetFormData> = useCallback(
+    formData => {
+      if (!assetItem?.asset) {
+        return
+      }
 
-    const sanitizedFormData = sanitizeFormData(formData)
+      const sanitizedFormData = sanitizeFormData(formData)
 
-    dispatch(
-      assetsActions.updateRequest({
-        asset: assetItem?.asset,
-        closeDialogId: assetItem?.asset._id,
-        formData: {
-          ...sanitizedFormData,
-          // Map tags to sanity references
-          opt: {
-            media: {
-              ...sanitizedFormData.opt.media,
-              tags:
-                sanitizedFormData.opt.media.tags?.map((tag: ReactSelectOption) => ({
-                  _ref: tag.value,
-                  _type: 'reference',
-                  _weak: true
-                })) || null
+      dispatch(
+        assetsActions.updateRequest({
+          asset: assetItem?.asset,
+          closeDialogId: assetItem?.asset._id,
+          formData: {
+            ...sanitizedFormData,
+            // Map tags to sanity references
+            opt: {
+              media: {
+                ...sanitizedFormData.opt.media,
+                tags:
+                  sanitizedFormData.opt.media.tags?.map((tag: TagSelectOption) => ({
+                    _ref: tag.value,
+                    _type: 'reference',
+                    _weak: true
+                  })) || null
+              }
             }
           }
-        }
-      })
-    )
-  }
+        })
+      )
+    },
+    [assetItem?.asset, dispatch]
+  )
 
-  // Effects
-  // - Listen for asset mutations and update snapshot
+  // Listen for asset mutations and update snapshot
   useEffect(() => {
     if (!assetItem?.asset) {
       return undefined
@@ -180,49 +170,36 @@ const DialogAssetEdit = (props: Props) => {
     return () => {
       subscriptionAsset?.unsubscribe()
     }
-  }, [])
+  }, [assetItem?.asset, client, handleAssetUpdate])
 
-  // - Partially reset form when current tags have changed (and after initial mount)
-  useEffect(() => {
-    if (isMounted.current) {
-      reset(
-        {
-          opt: {
-            media: {tags: assetTagOptions}
-          }
-        },
-        {
-          errors: true,
-          dirtyFields: true,
-          isDirty: true
-        }
-      )
-    }
-
-    // Mark as mounted
-    isMounted.current = true
-  }, [currentTagLabels])
-
-  // - Update tags form field (react-select) when a new _inline_ tag has been created
+  // Update tags form field (react-select) when a new _inline_ tag has been created
   useEffect(() => {
     if (lastCreatedTag) {
-      const existingTags = (getValues('opt.media.tags') as ReactSelectOption[]) || []
+      const existingTags = (getValues('opt.media.tags') as TagSelectOption[]) || []
       const updatedTags = existingTags.concat([lastCreatedTag])
       setValue('opt.media.tags', updatedTags, {shouldDirty: true})
     }
-  }, [lastCreatedTag])
+  }, [getValues, lastCreatedTag, setValue])
 
-  // - Update tags form field (react-select) when an _inline_ tag has been removed elsewhere
+  // Update tags form field (react-select) when an _inline_ tag has been removed elsewhere
   useEffect(() => {
     if (lastRemovedTagIds) {
-      const existingTags = (getValues('opt.media.tags') as ReactSelectOption[]) || []
+      const existingTags = (getValues('opt.media.tags') as TagSelectOption[]) || []
       const updatedTags = existingTags.filter(tag => {
         return !lastRemovedTagIds.includes(tag.value)
       })
 
       setValue('opt.media.tags', updatedTags, {shouldDirty: true})
     }
-  }, [lastRemovedTagIds])
+  }, [getValues, lastRemovedTagIds, setValue])
+
+  // Reset react-hook-form local state on mount and every time the asset has been updated elsewhere
+  useEffect(() => {
+    if (assetUpdatedPrev.current !== assetItem?.asset._updatedAt) {
+      reset(generateDefaultValues(assetItem?.asset))
+    }
+    assetUpdatedPrev.current = assetItem?.asset._updatedAt
+  }, [assetItem?.asset, generateDefaultValues, reset])
 
   const Footer = () => (
     <Box padding={3}>
@@ -306,7 +283,7 @@ const DialogAssetEdit = (props: Props) => {
                 <FormFieldInputTags
                   control={control}
                   disabled={formUpdating}
-                  error={errors?.opt?.media?.tags}
+                  error={errors?.opt?.media?.tags?.message}
                   label="Tags"
                   name="opt.media.tags"
                   onCreateTag={handleCreateTag}
@@ -316,38 +293,38 @@ const DialogAssetEdit = (props: Props) => {
                 />
                 {/* Filename */}
                 <FormFieldInputText
+                  {...register('originalFilename')}
                   disabled={formUpdating}
-                  error={errors?.originalFilename}
+                  error={errors?.originalFilename?.message}
                   label="Filename"
                   name="originalFilename"
-                  ref={register}
                   value={currentAsset?.originalFilename}
                 />
                 {/* Title */}
                 <FormFieldInputText
+                  {...register('title')}
                   disabled={formUpdating}
-                  error={errors?.title}
+                  error={errors?.title?.message}
                   label="Title"
                   name="title"
-                  ref={register}
                   value={currentAsset?.title}
                 />
                 {/* Alt text */}
                 <FormFieldInputText
+                  {...register('altText')}
                   disabled={formUpdating}
-                  error={errors?.altText}
+                  error={errors?.altText?.message}
                   label="Alt Text"
                   name="altText"
-                  ref={register}
                   value={currentAsset?.altText}
                 />
                 {/* Description */}
                 <FormFieldInputTextarea
+                  {...register('description')}
                   disabled={formUpdating}
-                  error={errors?.description}
+                  error={errors?.description?.message}
                   label="Description"
                   name="description"
-                  ref={register}
                   rows={3}
                   value={currentAsset?.description}
                 />

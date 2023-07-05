@@ -1,12 +1,12 @@
-import {yupResolver} from '@hookform/resolvers/yup'
+import {zodResolver} from '@hookform/resolvers/zod'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Text} from '@sanity/ui'
-import {DialogTagEditProps, Tag} from '@types'
+import {DialogTagEditProps, Tag, TagFormData} from '@types'
 import groq from 'groq'
-import React, {ReactNode, useEffect, useState} from 'react'
-import {useForm} from 'react-hook-form'
+import React, {ReactNode, useCallback, useEffect, useState} from 'react'
+import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import * as yup from 'yup'
+import {tagFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {dialogActions} from '../../modules/dialog'
@@ -21,12 +21,6 @@ type Props = {
   dialog: DialogTagEditProps
 }
 
-type FormData = yup.InferType<typeof formSchema>
-
-const formSchema = yup.object().shape({
-  name: yup.string().required('Name cannot be empty')
-})
-
 const DialogTagEdit = (props: Props) => {
   const {
     children,
@@ -35,11 +29,9 @@ const DialogTagEdit = (props: Props) => {
 
   const client = useVersionedClient()
 
-  // Redux
   const dispatch = useDispatch()
   const tagItem = useTypedSelector(state => selectTagById(state, String(tagId))) // TODO: double check string cast
 
-  // State
   // - Generate a snapshot of the current tag
   const [tagSnapshot, setTagSnapshot] = useState(tagItem?.tag)
 
@@ -48,7 +40,6 @@ const DialogTagEdit = (props: Props) => {
     name: tag?.name?.current || ''
   })
 
-  // react-hook-form
   const {
     // Read the formState before render to subscribe the form state through Proxy
     formState: {errors, isDirty, isValid},
@@ -56,30 +47,24 @@ const DialogTagEdit = (props: Props) => {
     register,
     reset,
     setError
-  } = useForm({
-    // defaultValues: {
-    //   name: currentTag?.tag?.name?.current
-    // },
+  } = useForm<TagFormData>({
     defaultValues: generateDefaultValues(tagItem?.tag),
     mode: 'onChange',
-    resolver: yupResolver(formSchema)
+    resolver: zodResolver(tagFormSchema)
   })
 
   const formUpdating = !tagItem || tagItem?.updating
 
-  // Callbacks
   const handleClose = () => {
     dispatch(dialogActions.remove({id}))
   }
 
-  // - submit react-hook-form
-  const onSubmit = async (formData: FormData) => {
+  // Submit react-hook-form
+  const onSubmit: SubmitHandler<TagFormData> = formData => {
     if (!tagItem?.tag) {
       return
     }
-
     const sanitizedFormData = sanitizeFormData(formData)
-
     dispatch(
       tagsActions.updateRequest({
         closeDialogId: tagItem?.tag?._id,
@@ -107,26 +92,26 @@ const DialogTagEdit = (props: Props) => {
     )
   }
 
-  const handleTagUpdate = (update: MutationEvent) => {
-    const {result, transition} = update
+  const handleTagUpdate = useCallback(
+    (update: MutationEvent) => {
+      const {result, transition} = update
+      if (result && transition === 'update') {
+        // Regenerate snapshot
+        setTagSnapshot(result as Tag)
+        // Reset react-hook-form
+        reset(generateDefaultValues(result as Tag))
+      }
+    },
+    [reset]
+  )
 
-    if (result && transition === 'update') {
-      // Regenerate snapshot
-      setTagSnapshot(result as Tag)
-
-      // Reset react-hook-form
-      reset(generateDefaultValues(result as Tag))
-    }
-  }
-
-  // Effects
   useEffect(() => {
     if (tagItem?.error) {
       setError('name', {
         message: tagItem.error?.message
       })
     }
-  }, [tagItem?.error])
+  }, [setError, tagItem.error])
 
   // - Listen for asset mutations and update snapshot
   useEffect(() => {
@@ -142,7 +127,7 @@ const DialogTagEdit = (props: Props) => {
     return () => {
       subscriptionAsset?.unsubscribe()
     }
-  }, [])
+  }, [client, handleTagUpdate, tagItem?.tag])
 
   const Footer = () => (
     <Box padding={3}>
@@ -188,11 +173,11 @@ const DialogTagEdit = (props: Props) => {
 
         {/* Title */}
         <FormFieldInputText
+          {...register('name')}
           disabled={formUpdating}
-          error={errors?.name}
+          error={errors?.name?.message}
           label="Name"
           name="name"
-          ref={register}
         />
       </Box>
 

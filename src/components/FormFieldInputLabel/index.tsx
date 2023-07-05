@@ -1,12 +1,11 @@
 import {ErrorOutlineIcon} from '@sanity/icons'
 import {Box, Inline, Text, Tooltip} from '@sanity/ui'
 import React from 'react'
-import {FieldError} from 'react-hook-form'
 import styled from 'styled-components'
 
 type Props = {
   description?: string
-  error?: FieldError
+  error?: string
   label: string
   name: string
 }
@@ -37,7 +36,7 @@ const FormFieldInputLabel = (props: Props) => {
                   <Box padding={2}>
                     <Text muted size={1}>
                       <StyledErrorOutlineIcon style={{marginRight: '0.1em'}} />
-                      {error.message}
+                      {error}
                     </Text>
                   </Box>
                 }

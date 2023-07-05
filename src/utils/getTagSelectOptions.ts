@@ -1,7 +1,7 @@
-import {ReactSelectOption, TagItem} from '@types'
+import {TagSelectOption, TagItem} from '@types'
 
-const getTagSelectOptions = (tags: TagItem[]): ReactSelectOption[] => {
-  return tags.reduce((acc: ReactSelectOption[], val) => {
+const getTagSelectOptions = (tags: TagItem[]): TagSelectOption[] => {
+  return tags.reduce((acc: TagSelectOption[], val) => {
     const tag = val?.tag
     if (tag) {
       acc.push({

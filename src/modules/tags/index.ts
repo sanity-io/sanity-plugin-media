@@ -1,6 +1,6 @@
 import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, Transaction} from '@sanity/client'
-import type {Asset, HttpError, MyEpic, ReactSelectOption, Tag, TagItem} from '@types'
+import type {Asset, HttpError, MyEpic, TagSelectOption, Tag, TagItem} from '@types'
 import groq from 'groq'
 import {Selector} from 'react-redux'
 import {ofType} from 'redux-observable'
@@ -523,7 +523,7 @@ export const selectTagById = createSelector(
 // Map tag references to react-select options, skipping over items with no linked tags
 export const selectTagSelectOptions =
   (asset?: Asset) =>
-  (state: RootReducerState): ReactSelectOption[] | null => {
+  (state: RootReducerState): TagSelectOption[] | null => {
     const tags = asset?.opt?.media?.tags?.reduce((acc: TagItem[], v) => {
       const tagItem = state.tags.byIds[v._ref]
       if (tagItem?.tag) {

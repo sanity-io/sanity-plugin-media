@@ -1,10 +1,10 @@
-import {yupResolver} from '@hookform/resolvers/yup'
+import {zodResolver} from '@hookform/resolvers/zod'
 import {Box, Flex} from '@sanity/ui'
-import {DialogTagCreateProps} from '@types'
+import {DialogTagCreateProps, TagFormData} from '@types'
 import React, {ReactNode, useEffect} from 'react'
-import {useForm} from 'react-hook-form'
+import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import * as yup from 'yup'
+import {tagFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
@@ -18,62 +18,51 @@ type Props = {
   dialog: DialogTagCreateProps
 }
 
-type FormData = yup.InferType<typeof formSchema>
-
-const formSchema = yup.object().shape({
-  name: yup.string().required('Name cannot be empty')
-})
-
 const DialogTagCreate = (props: Props) => {
   const {
     children,
     dialog: {id}
   } = props
 
-  // Redux
   const dispatch = useDispatch()
 
-  // State
   const creating = useTypedSelector(state => state.tags.creating)
   const creatingError = useTypedSelector(state => state.tags.creatingError)
 
-  // react-hook-form
   const {
     // Read the formState before render to subscribe the form state through Proxy
     formState: {errors, isDirty, isValid},
     handleSubmit,
     register,
     setError
-  } = useForm({
+  } = useForm<TagFormData>({
     defaultValues: {
       name: ''
     },
     mode: 'onChange',
-    resolver: yupResolver(formSchema)
+    resolver: zodResolver(tagFormSchema)
   })
 
   const formUpdating = creating
 
-  // Callbacks
   const handleClose = () => {
     dispatch(dialogActions.clear())
   }
 
   // - submit react-hook-form
-  const onSubmit = async (formData: FormData) => {
+  const onSubmit: SubmitHandler<TagFormData> = formData => {
     const sanitizedFormData = sanitizeFormData(formData)
 
     dispatch(tagsActions.createRequest({name: sanitizedFormData.name}))
   }
 
-  // Effects
   useEffect(() => {
     if (creatingError) {
       setError('name', {
         message: creatingError?.message
       })
     }
-  }, [creatingError])
+  }, [creatingError, setError])
 
   const Footer = () => (
     <Box padding={3}>
@@ -97,11 +86,11 @@ const DialogTagCreate = (props: Props) => {
 
         {/* Title */}
         <FormFieldInputText
+          {...register('name')}
           disabled={formUpdating}
-          error={errors?.name}
+          error={errors?.name?.message}
           label="Name"
           name="name"
-          ref={register}
         />
       </Box>
 

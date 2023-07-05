@@ -1,13 +1,12 @@
 import {Box, TextInput} from '@sanity/ui'
 import React, {forwardRef} from 'react'
-import {FieldError} from 'react-hook-form'
 
 import FormFieldInputLabel from '../FormFieldInputLabel'
 
 type Props = {
   description?: string
   disabled?: boolean
-  error?: FieldError
+  error?: string
   label: string
   name: string
   placeholder?: string
@@ -17,7 +16,7 @@ type Props = {
 type Ref = HTMLInputElement
 
 const FormFieldInputText = forwardRef<Ref, Props>((props: Props, ref) => {
-  const {description, disabled, error, label, name, placeholder, value} = props
+  const {description, disabled, error, label, name, placeholder, value, ...rest} = props
 
   return (
     <Box>
@@ -25,6 +24,7 @@ const FormFieldInputText = forwardRef<Ref, Props>((props: Props, ref) => {
       <FormFieldInputLabel description={description} error={error} label={label} name={name} />
       {/* Input */}
       <TextInput
+        {...rest}
         autoComplete="off"
         autoFocus
         defaultValue={value}

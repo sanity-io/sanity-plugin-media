@@ -54,7 +54,7 @@
     "watch": "pkg-utils watch"
   },
   "dependencies": {
-    "@hookform/resolvers": "2.9.11",
+    "@hookform/resolvers": "^3.1.1",
     "@reduxjs/toolkit": "^1.9.0",
     "@sanity/incompatible-plugin": "^1.0.4",
     "@sanity/ui": "^1.7.0",
@@ -69,14 +69,14 @@
     "pluralize": "^8.0.0",
     "react-dropzone": "^11.3.1",
     "react-file-icon": "^1.1.0",
-    "react-hook-form": "^6.15.1",
+    "react-hook-form": "^7.45.1",
     "react-redux": "^7.2.2",
     "react-select": "^5.3.2",
     "react-virtuoso": "^4.3.11",
     "redux": "^4.2.0",
     "redux-observable": "^2.0.0",
     "rxjs": "^7.0.0",
-    "yup": "^0.32.11"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.2.0",
@@ -94,7 +94,6 @@
     "@types/react-file-icon": "^1.0.1",
     "@types/react-redux": "^7.1.24",
     "@types/styled-components": "^5.1.7",
-    "@types/yup": "^0.29.14",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "conventional-changelog-conventionalcommits": "^5.0.0",

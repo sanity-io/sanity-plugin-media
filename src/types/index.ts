@@ -6,6 +6,8 @@ import type {
   SanityImageAssetDocument
 } from '@sanity/client'
 import type {Epic} from 'redux-observable'
+import * as z from 'zod'
+import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
 import {RootReducerState} from '../modules/types'
 
 type CustomFields = {
@@ -29,6 +31,8 @@ type SearchFacetInputCommon = {
 }
 
 export type Asset = FileAsset | ImageAsset
+
+export type AssetFormData = z.infer<typeof assetFormSchema>
 
 export type AssetItem = {
   _type: 'asset'
@@ -164,11 +168,6 @@ export type Order = {
 
 export type OrderDirection = 'asc' | 'desc'
 
-export type ReactSelectOption = {
-  label: string
-  value: string
-}
-
 export type SanityReference = {
   _ref: string
   _type: 'reference'
@@ -210,7 +209,7 @@ export type SearchFacetInputSearchableProps = SearchFacetInputCommon & {
   name: string
   options?: SearchFacetInputSelectListItemProps[]
   type: 'searchable'
-  value?: ReactSelectOption
+  value?: TagSelectOption
 }
 
 export type SearchFacetInputSelectProps = SearchFacetInputCommon & {
@@ -312,6 +311,8 @@ export type Tag = SanityDocument & {
 
 export type TagActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
 
+export type TagFormData = z.infer<typeof tagFormSchema>
+
 export type TagItem = {
   _type: 'tag'
   tag: Tag
@@ -319,6 +320,8 @@ export type TagItem = {
   picked: boolean
   updating: boolean
 }
+
+export type TagSelectOption = z.infer<typeof tagOptionSchema>
 
 export type UploadItem = {
   _type: 'upload'

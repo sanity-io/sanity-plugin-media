@@ -1,17 +1,17 @@
 import {Box} from '@sanity/ui'
 import React from 'react'
-import {Controller, FieldError} from 'react-hook-form'
+import {Controller} from 'react-hook-form'
 import CreatableSelect from 'react-select/creatable'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/creatable'
-import type {ReactSelectOption} from '../../types'
+import type {TagSelectOption} from '../../types'
 import FormFieldInputLabel from '../FormFieldInputLabel'
 
 type Props = {
   control: any
   description?: string
   disabled?: boolean
-  error?: FieldError
+  error?: string
   label: string
   name: string
   onCreateTag: (tagName: string) => void
@@ -20,7 +20,7 @@ type Props = {
     value: string
   }[]
   placeholder?: string
-  value?: ReactSelectOption[] | null
+  value?: TagSelectOption[] | null
 }
 
 const FormFieldInputTags = (props: Props) => {
@@ -54,7 +54,8 @@ const FormFieldInputTags = (props: Props) => {
         control={control}
         defaultValue={value}
         name={name}
-        render={({onBlur, onChange, value: controllerValue}) => {
+        render={({field}) => {
+          const {onBlur, onChange, value: controllerValue} = field
           // TODO: investigate overriding `onChange` and updating form state manually.
           // `opt.media.tags` is initialised with `null` as a defaultValue in react-hook-form
           // Ideally, we'd be able to set `opt.media.tags` as null when all items are cleared, rather than

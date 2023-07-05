@@ -1,13 +1,12 @@
 import {Box, TextArea} from '@sanity/ui'
 import React, {forwardRef} from 'react'
-import {FieldError} from 'react-hook-form'
 
 import FormFieldInputLabel from '../FormFieldInputLabel'
 
 type Props = {
   description?: string
   disabled?: boolean
-  error?: FieldError
+  error?: string
   label: string
   name: string
   placeholder?: string

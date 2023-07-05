@@ -1,7 +1,7 @@
 import {SelectIcon} from '@sanity/icons'
 import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import {
-  ReactSelectOption,
+  TagSelectOption,
   SearchFacetInputSearchableProps,
   SearchFacetOperatorType,
   WithId
@@ -31,7 +31,7 @@ const SearchFacetTags = ({facet}: Props) => {
 
   const popoverProps = usePortalPopoverProps()
 
-  const handleChange = (option: ReactSelectOption) => {
+  const handleChange = (option: TagSelectOption) => {
     dispatch(
       searchActions.facetsUpdateById({
         id: facet.id,
@@ -100,7 +100,7 @@ const SearchFacetTags = ({facet}: Props) => {
             isSearchable
             name="tags"
             noOptionsMessage={() => 'No tags'}
-            onChange={value => handleChange(value as ReactSelectOption)}
+            onChange={value => handleChange(value as TagSelectOption)}
             options={allTagOptions}
             placeholder={tagsFetching ? 'Loading...' : 'Select...'}
             styles={reactSelectStyles}
