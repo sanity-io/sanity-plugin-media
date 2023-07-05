@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1-beta.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.1.0...v2.1.1-beta.1) (2023-07-05)
+
+### Bug Fixes
+
+- update react-hook-form, use zod for schema validation, drop legacy-peer-deps npmrc ([cc982bb](https://github.com/sanity-io/sanity-plugin-media/commit/cc982bbd193b3436d60dd0d48a7411d9c865bf11))
+
 ## [2.1.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.0.6...v2.1.0) (2023-07-03)
 
 ### Features
