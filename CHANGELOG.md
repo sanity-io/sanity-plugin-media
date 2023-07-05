@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.1.1...v2.2.0) (2023-07-05)
+
+### Features
+
+- add reference count to asset list ([#148](https://github.com/sanity-io/sanity-plugin-media/issues/148)) ([c12d1e5](https://github.com/sanity-io/sanity-plugin-media/commit/c12d1e56758efab3d5722c70817753bccb1d5df0))
+
 ## [2.1.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.1.0...v2.1.1) (2023-07-05)
 
 ### Bug Fixes
