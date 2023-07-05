@@ -13,8 +13,9 @@ import {
 } from '@sanity/ui'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
-import React, {memo, MouseEvent, RefObject} from 'react'
+import React, {memo, MouseEvent, RefObject, useCallback, useEffect, useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
+import {WithReferringDocuments} from 'sanity'
 import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -27,6 +28,10 @@ import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
+import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
+
+// Duration (ms) to wait before reference counts (and associated listeners) are rendered
+const REFERENCE_COUNT_VISIBILITY_DELAY = 750
 
 type Props = {
   id: string
@@ -68,13 +73,15 @@ const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
   }
 })
 
+// eslint-disable-next-line complexity
 const TableRowAsset = (props: Props) => {
   const {id, selected} = props
 
-  // Refs
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
 
-  // Redux
+  const [referenceCountVisible, setReferenceCountVisible] = useState(false)
+  const refCountVisibleTimeout = useRef<ReturnType<typeof window.setTimeout>>()
+
   const dispatch = useDispatch()
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
   const item = useTypedSelector(state => selectAssetById(state, id))
@@ -89,47 +96,60 @@ const TableRowAsset = (props: Props) => {
 
   const {onSelect} = useAssetSourceActions()
 
+  const handleContextActionClick = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+
+      if (onSelect) {
+        dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
+      } else if (shiftPressed.current && !picked) {
+        dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
+      } else {
+        dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
+      }
+    },
+    [asset._id, dispatch, lastPicked, onSelect, picked, shiftPressed]
+  )
+
+  const handleClick = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+
+      if (onSelect) {
+        onSelect([{kind: 'assetDocumentId', value: asset._id}])
+      } else if (shiftPressed.current) {
+        if (picked) {
+          dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
+        } else {
+          dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
+        }
+      } else {
+        dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
+      }
+    },
+    [asset._id, dispatch, lastPicked, onSelect, picked, shiftPressed]
+  )
+
+  const opacityCell = updating ? 0.5 : 1
+  const opacityPreview = selected || updating ? 0.1 : 1
+
+  // Display reference count after an initial delay to prevent over-eager fetching
+  useEffect(() => {
+    refCountVisibleTimeout.current = setTimeout(
+      () => setReferenceCountVisible(true),
+      REFERENCE_COUNT_VISIBILITY_DELAY
+    )
+    return () => {
+      if (refCountVisibleTimeout.current) {
+        clearTimeout(refCountVisibleTimeout.current)
+      }
+    }
+  }, [])
+
   // Short circuit if no asset is available
   if (!asset) {
     return null
   }
-
-  // Callbacks
-  const handleContextActionClick = (e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
-
-    if (onSelect) {
-      dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
-    } else if (shiftPressed.current && !picked) {
-      dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
-    } else {
-      dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
-    }
-  }
-
-  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
-
-    if (onSelect) {
-      onSelect([
-        {
-          kind: 'assetDocumentId',
-          value: asset._id
-        }
-      ])
-    } else if (shiftPressed.current) {
-      if (picked) {
-        dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
-      } else {
-        dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
-      }
-    } else {
-      dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
-    }
-  }
-
-  const opacityCell = updating ? 0.5 : 1
-  const opacityPreview = selected || updating ? 0.1 : 1
 
   return (
     <ContainerGrid
@@ -310,12 +330,39 @@ const TableRowAsset = (props: Props) => {
         </Text>
       </Box>
 
+      {/* References */}
+      <Box
+        style={{
+          display: mediaIndex < 3 ? 'none' : 'block',
+          gridColumn: 8,
+          gridRow: 'auto',
+          opacity: opacityCell
+        }}
+      >
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+          {referenceCountVisible ? (
+            <WithReferringDocuments id={id}>
+              {({isLoading, referringDocuments}) => {
+                const uniqueDocuments = getUniqueDocuments(referringDocuments)
+                return isLoading ? (
+                  <>-</>
+                ) : (
+                  <>{Array.isArray(uniqueDocuments) ? uniqueDocuments.length : 0}</>
+                )
+              }}
+            </WithReferringDocuments>
+          ) : (
+            <>-</>
+          )}
+        </Text>
+      </Box>
+
       {/* Error */}
       <Flex
         align="center"
         justify="center"
         style={{
-          gridColumn: mediaIndex < 3 ? 4 : 8,
+          gridColumn: mediaIndex < 3 ? 4 : 9,
           gridRowStart: '1',
           gridRowEnd: mediaIndex < 3 ? 'span 5' : 'auto',
           opacity: opacityCell

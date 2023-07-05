@@ -93,6 +93,7 @@ const TableHeader = () => {
       <TableHeaderItem field="mimeType" title="MIME type" />
       <TableHeaderItem field="size" title="Size" />
       <TableHeaderItem field="_updatedAt" title="Last updated" />
+      <TableHeaderItem title="References" />
       <TableHeaderItem />
     </Grid>
   )
