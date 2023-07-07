@@ -5,6 +5,14 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.0...v2.2.1) (2023-07-07)
+
+### Bug Fixes
+
+- **deps:** update dependency filesize to v9 ([#160](https://github.com/sanity-io/sanity-plugin-media/issues/160)) ([476a413](https://github.com/sanity-io/sanity-plugin-media/commit/476a41388a0ed480074ef4d368cd3d6acf5178a3))
+- **deps:** update dependency groq to v3 ([#161](https://github.com/sanity-io/sanity-plugin-media/issues/161)) ([92e94c0](https://github.com/sanity-io/sanity-plugin-media/commit/92e94c001fa38dc33a1608c64759c5dcfc123b30))
+- ensure asset description textarea is connected to react-hook-form ([a5b69be](https://github.com/sanity-io/sanity-plugin-media/commit/a5b69bee94356b6600c5954a7051e594a1d39411))
+
 ## [2.2.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.1.1...v2.2.0) (2023-07-05)
 
 ### Features
