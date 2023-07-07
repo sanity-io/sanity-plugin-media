@@ -62,7 +62,7 @@
     "@tanem/react-nprogress": "^5.0.0",
     "copy-to-clipboard": "^3.3.1",
     "date-fns": "^2.27.0",
-    "filesize": "^9.0.0",
+    "filesize": "^10.0.0",
     "groq": "^3.0.0",
     "is-hotkey": "^0.2.0",
     "nanoid": "^3.3.3",
