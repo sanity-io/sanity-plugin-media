@@ -17,7 +17,7 @@ type Props = {
 type Ref = HTMLTextAreaElement
 
 const FormFieldInputTextarea = forwardRef<Ref, Props>((props: Props, ref) => {
-  const {description, disabled, error, label, name, placeholder, rows, value} = props
+  const {description, disabled, error, label, name, placeholder, rows, value, ...rest} = props
 
   return (
     <Box>
@@ -26,6 +26,7 @@ const FormFieldInputTextarea = forwardRef<Ref, Props>((props: Props, ref) => {
 
       {/* Input */}
       <TextArea
+        {...rest}
         autoComplete="off"
         defaultValue={value}
         disabled={disabled}
