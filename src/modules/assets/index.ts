@@ -86,7 +86,7 @@ export const initialState = {
     title: getOrderTitle(defaultOrder.field, defaultOrder.direction)
   },
   pageIndex: 0,
-  pageSize: 50,
+  pageSize: 100,
   // totalCount: -1,
   view: 'grid'
 } as AssetsReducerState
