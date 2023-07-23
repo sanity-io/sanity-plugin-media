@@ -791,7 +791,10 @@ export const selectAssetById = createSelector(
     (state: RootReducerState) => state.assets.byIds,
     (_state: RootReducerState, assetId: string) => assetId
   ],
-  (byIds, assetId) => byIds[assetId]
+  (byIds, assetId) => {
+    const asset = byIds[assetId]
+    return asset ? asset : undefined
+  }
 )
 
 export const selectAssets: Selector<RootReducerState, AssetItem[]> = createSelector(

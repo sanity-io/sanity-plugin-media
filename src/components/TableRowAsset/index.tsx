@@ -100,6 +100,7 @@ const TableRowAsset = (props: Props) => {
     (e: MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
 
+      if (!asset) return
       if (onSelect) {
         dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
       } else if (shiftPressed.current && !picked) {
@@ -108,13 +109,14 @@ const TableRowAsset = (props: Props) => {
         dispatch(assetsActions.pick({assetId: asset._id, picked: !picked}))
       }
     },
-    [asset._id, dispatch, lastPicked, onSelect, picked, shiftPressed]
+    [asset, dispatch, lastPicked, onSelect, picked, shiftPressed]
   )
 
   const handleClick = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
 
+      if (!asset) return
       if (onSelect) {
         onSelect([{kind: 'assetDocumentId', value: asset._id}])
       } else if (shiftPressed.current) {
@@ -127,7 +129,7 @@ const TableRowAsset = (props: Props) => {
         dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
       }
     },
-    [asset._id, dispatch, lastPicked, onSelect, picked, shiftPressed]
+    [asset, dispatch, lastPicked, onSelect, picked, shiftPressed]
   )
 
   const opacityCell = updating ? 0.5 : 1

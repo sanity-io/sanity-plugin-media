@@ -47,7 +47,7 @@ const DialogAssetEdit = (props: Props) => {
   const assetItem = useTypedSelector(state => selectAssetById(state, String(assetId))) // TODO: check casting
   const tags = useTypedSelector(selectTags)
 
-  const assetUpdatedPrev = useRef<string | null>(null)
+  const assetUpdatedPrev = useRef<string | undefined>(undefined)
 
   // Generate a snapshot of the current asset
   const [assetSnapshot, setAssetSnapshot] = useState(assetItem?.asset)
@@ -222,7 +222,7 @@ const DialogAssetEdit = (props: Props) => {
         <FormSubmitButton
           disabled={formUpdating || !isDirty || !isValid}
           isValid={isValid}
-          lastUpdated={currentAsset._updatedAt}
+          lastUpdated={currentAsset?._updatedAt}
           onClick={handleSubmit(onSubmit)}
         />
       </Flex>
@@ -242,7 +242,7 @@ const DialogAssetEdit = (props: Props) => {
       */}
       <Flex direction={['column-reverse', 'column-reverse', 'row-reverse']}>
         <Box flex={1} marginTop={[5, 5, 0]} padding={4}>
-          <WithReferringDocuments documentStore={documentStore} id={assetItem.asset._id}>
+          <WithReferringDocuments documentStore={documentStore} id={currentAsset._id}>
             {({isLoading, referringDocuments}) => {
               const uniqueReferringDocuments = getUniqueDocuments(referringDocuments)
               return (
