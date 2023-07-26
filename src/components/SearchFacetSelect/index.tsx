@@ -1,5 +1,5 @@
 import {SelectIcon} from '@sanity/icons'
-import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
+import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import {
   SearchFacetInputSelectListItemProps,
   SearchFacetInputSelectProps,
@@ -44,24 +44,24 @@ const SearchFacetSelect = ({facet}: Props) => {
       {facet?.operatorTypes && (
         <MenuButton
           button={
-            <Button
-              fontSize={1}
-              iconRight={SelectIcon}
-              padding={2} //
-              style={{
-                marginRight: '4px'
-              }}
-              text={operators[selectedOperatorType].label}
-            />
+            <Box marginRight={1}>
+              <Button
+                fontSize={1}
+                iconRight={SelectIcon}
+                padding={2}
+                text={operators[selectedOperatorType].label}
+              />
+            </Box>
           }
           id="operators"
           menu={
             <Menu>
               {facet.operatorTypes.map((operatorType, index) => {
                 if (operatorType) {
+                  const selected = operatorType === selectedOperatorType
                   return (
                     <MenuItem
-                      disabled={operatorType === selectedOperatorType}
+                      disabled={selected}
                       fontSize={1}
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
@@ -82,26 +82,24 @@ const SearchFacetSelect = ({facet}: Props) => {
       {/* List */}
       <MenuButton
         button={
-          <Button
-            fontSize={1}
-            iconRight={SelectIcon}
-            padding={2} //
-            text={selectedItem?.title}
-          />
+          <Button fontSize={1} iconRight={SelectIcon} padding={2} text={selectedItem?.title} />
         }
         id="list"
         menu={
           <Menu>
-            {options?.map((item, index) => (
-              <MenuItem
-                disabled={item.name === selectedItem?.name}
-                fontSize={1}
-                key={item.name}
-                onClick={() => handleListItemClick(options[index])}
-                padding={2}
-                text={item.title}
-              />
-            ))}
+            {options?.map((item, index) => {
+              const selected = item.name === selectedItem?.name
+              return (
+                <MenuItem
+                  disabled={selected}
+                  fontSize={1}
+                  key={item.name}
+                  onClick={() => handleListItemClick(options[index])}
+                  padding={2}
+                  text={item.title}
+                />
+              )
+            })}
           </Menu>
         }
         popover={popoverProps}

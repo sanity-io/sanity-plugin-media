@@ -1,14 +1,17 @@
-import {hues} from '@sanity/color'
 import {Box, Button, Flex, Label} from '@sanity/ui'
 import pluralize from 'pluralize'
 import React from 'react'
 import {useDispatch} from 'react-redux'
+import {useColorScheme} from 'sanity'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
 const PickedBar = () => {
+  const {scheme} = useColorScheme()
+
   // Redux
   const dispatch = useDispatch()
   const assetsPicked = useTypedSelector(selectAssetsPicked)
@@ -31,8 +34,8 @@ const PickedBar = () => {
       align="center"
       justify="flex-start"
       style={{
-        background: hues.gray?.[900].hex,
-        borderBottom: `1px solid ${hues.gray?.[900].hex}`,
+        background: getSchemeColor(scheme, 'bg'),
+        borderBottom: '1px solid var(--card-border-color)',
         height: `${PANEL_HEIGHT}px`,
         position: 'relative',
         width: '100%'

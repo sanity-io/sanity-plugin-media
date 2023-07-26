@@ -1,16 +1,19 @@
-import {hues} from '@sanity/color'
+import {ThemeColorSchemeKey} from '@sanity/ui'
 import {MouseEvent} from 'react'
 import styled, {css} from 'styled-components'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
 type Props = {
   onClick?: (e: MouseEvent) => void
   showCheckerboard?: boolean
+  scheme?: ThemeColorSchemeKey
   src: string
   style?: any
 }
 
 const Image = styled.img<Props>`
-  --checkerboard-color: ${hues.gray[900].hex};
+  --checkerboard-color: ${props =>
+    props.scheme ? getSchemeColor(props.scheme, 'bg2') : 'inherit'};
 
   display: block;
   width: 100%;

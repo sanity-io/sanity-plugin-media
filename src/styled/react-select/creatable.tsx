@@ -1,101 +1,98 @@
-import {black, hues, white} from '@sanity/color'
 import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
-import {Box, Card, Flex, studioTheme, Text} from '@sanity/ui'
+import {Box, Card, Flex, rem, studioTheme, Text, ThemeColorSchemeKey} from '@sanity/ui'
 import React from 'react'
 import {components, StylesConfig} from 'react-select'
 import {Virtuoso} from 'react-virtuoso'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
-const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
-const themeDarkPrimaryGray = studioTheme?.color?.dark?.primary?.spot?.gray
-const themeRadius = studioTheme?.radius
-const themeSpace = studioTheme?.space
+const {radius: themeRadius, space: themeSpace} = studioTheme
 
-export const reactSelectStyles: StylesConfig<
-  {
-    label: string
-    value: string
-  },
-  true
-> = {
-  control: (styles, {isDisabled, isFocused}) => {
-    let boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}`
-    if (isFocused) {
-      boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}, 0 0 0 1px var(--card-bg-color), 0 0 0 3px var(--card-focus-ring-color) !important`
-    }
-
-    return {
-      ...styles,
-      background: isDisabled
-        ? studioTheme.color.dark.default.input.default.disabled.bg
-        : 'transparent',
-      color: white.hex,
-      border: 'none',
-      borderRadius: themeRadius[1],
-      boxShadow,
-      minHeight: '35px',
-      outline: 'none',
-      transition: 'none',
-      '&:hover': {
-        boxShadow: `inset 0 0 0 1px ${studioTheme.color.dark.default.input.default.hovered.border}`
+export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => {
+  return {
+    control: (styles, {isFocused}) => {
+      let boxShadow = `inset 0 0 0 1px var(--card-border-color)`
+      if (isFocused) {
+        boxShadow = `inset 0 0 0 1px ${getSchemeColor(scheme, 'inputEnabledBorder')},
+        0 0 0 1px var(--card-bg-color),
+        0 0 0 3px var(--card-focus-ring-color) !important`
       }
-    }
-  },
-  indicatorsContainer: (styles, {isDisabled}) => ({
-    ...styles,
-    opacity: isDisabled ? 0.25 : 1
-  }),
-  input: styles => ({
-    ...styles,
-    color: white.hex,
-    fontFamily: studioTheme.fonts.text.family,
-    marginLeft: themeSpace[2]
-  }),
-  menuList: styles => ({
-    ...styles
-  }),
-  multiValue: (styles, {isDisabled}) => ({
-    ...styles,
-    backgroundColor: themeDarkPrimaryGray,
-    borderRadius: themeRadius[2],
-    opacity: isDisabled ? 0.5 : 1
-  }),
-  multiValueRemove: styles => ({
-    ...styles,
-    paddingLeft: 0,
-    '&:hover': {
-      background: 'transparent',
-      color: 'inherit'
-    }
-  }),
-  noOptionsMessage: styles => ({
-    ...styles,
-    fontFamily: studioTheme.fonts.text.family,
-    lineHeight: '1em'
-  }),
-  option: (styles, {isFocused}) => ({
-    ...styles,
-    backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
-    borderRadius: themeRadius[2],
-    color: isFocused ? black.hex : 'inherit',
-    fontFamily: studioTheme.fonts.text.family,
-    padding: '4px 8px', // TODO: use theme value
-    '&:hover': {
-      backgroundColor: themeDarkPrimaryBlue,
-      color: black.hex
-    }
-  }),
-  placeholder: styles => ({
-    ...styles,
-    fontFamily: studioTheme.fonts.text.family,
-    marginLeft: themeSpace[2]
-  }),
-  valueContainer: styles => ({
-    ...styles,
-    marginBottom: themeSpace[0],
-    marginLeft: themeSpace[1],
-    marginTop: themeSpace[0],
-    padding: 0
-  })
+
+      return {
+        ...styles,
+        backgroundColor: 'var(--card-bg-color)',
+        color: 'inherit',
+        border: 'none',
+        borderRadius: themeRadius[1],
+        boxShadow,
+        margin: 0,
+        minHeight: '35px',
+        outline: 'none',
+        padding: rem(themeSpace[1]),
+        transition: 'none',
+        '&:hover': {
+          boxShadow: `inset 0 0 0 1px ${getSchemeColor(scheme, 'inputHoveredBorder')}`
+        }
+      }
+    },
+    indicatorsContainer: (styles, {isDisabled}) => ({
+      ...styles,
+      opacity: isDisabled ? 0.25 : 1
+    }),
+    input: styles => ({
+      ...styles,
+      color: 'var(--card-fg-color)',
+      fontFamily: studioTheme.fonts.text.family,
+      marginLeft: rem(themeSpace[2])
+    }),
+    menuList: styles => ({
+      ...styles
+    }),
+    multiValue: (styles, {isDisabled}) => ({
+      ...styles,
+      backgroundColor: getSchemeColor(scheme, 'mutedHoveredBg'),
+      borderRadius: themeRadius[2],
+      opacity: isDisabled ? 0.5 : 1
+    }),
+    multiValueLabel: () => ({
+      color: getSchemeColor(scheme, 'mutedHoveredFg'),
+      fontSize: 'inherit',
+      padding: 0
+    }),
+    multiValueRemove: styles => ({
+      ...styles,
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+      svg: {color: getSchemeColor(scheme, 'mutedHoveredFg')},
+      '&:hover': {
+        backgroundColor: getSchemeColor(scheme, 'mutedSelectedBg')
+      }
+    }),
+    noOptionsMessage: styles => ({
+      ...styles,
+      fontFamily: studioTheme.fonts.text.family,
+      lineHeight: '1em'
+    }),
+    option: (styles, {isFocused}) => ({
+      ...styles,
+      backgroundColor: isFocused ? getSchemeColor(scheme, 'spotBlue') : 'transparent',
+      borderRadius: themeRadius[2],
+      color: isFocused ? getSchemeColor(scheme, 'bg') : 'inherit',
+      padding: `${rem(themeSpace[1])} ${rem(themeSpace[2])}`,
+      '&:hover': {
+        backgroundColor: getSchemeColor(scheme, 'spotBlue'),
+        color: getSchemeColor(scheme, 'bg')
+      }
+    }),
+    placeholder: styles => ({
+      ...styles,
+      marginLeft: rem(themeSpace[2])
+    }),
+    valueContainer: styles => ({
+      ...styles,
+      margin: 0,
+      padding: 0
+    })
+  }
 }
 
 const DropdownIndicator = (props: any) => {
@@ -147,8 +144,8 @@ const MenuList = (props: any) => {
 
 const MultiValueLabel = (props: any) => {
   return (
-    <Box paddingLeft={1} paddingRight={0} paddingY={1}>
-      <Text size={2} weight="medium">
+    <Box padding={2} paddingRight={1}>
+      <Text size={1} weight="medium">
         <components.MultiValueLabel {...props} />
       </Text>
     </Box>

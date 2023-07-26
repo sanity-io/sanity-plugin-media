@@ -1,4 +1,3 @@
-import {hues} from '@sanity/color'
 import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import React from 'react'
 import {useDispatch} from 'react-redux'
@@ -40,7 +39,7 @@ const Controls = () => {
     <Box
       paddingY={2}
       style={{
-        borderBottom: `1px solid ${hues.gray?.[900].hex}`,
+        borderBottom: '1px solid var(--card-border-color)',
         zIndex: 2
       }}
     >

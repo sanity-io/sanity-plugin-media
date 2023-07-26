@@ -9,6 +9,7 @@ import {
 import React from 'react'
 import {useDispatch} from 'react-redux'
 import Select from 'react-select'
+import {useColorScheme} from 'sanity'
 import {operators} from '../../config/searchFacets'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -23,6 +24,8 @@ type Props = {
 }
 
 const SearchFacetTags = ({facet}: Props) => {
+  const {scheme} = useColorScheme()
+
   // Redux
   const dispatch = useDispatch()
   const tags = useTypedSelector(state => selectTags(state))
@@ -60,7 +63,7 @@ const SearchFacetTags = ({facet}: Props) => {
             <Button
               fontSize={1}
               iconRight={SelectIcon}
-              padding={2} //
+              padding={2}
               text={operators[selectedOperatorType].label}
             />
           }
@@ -69,13 +72,16 @@ const SearchFacetTags = ({facet}: Props) => {
             <Menu>
               {facet.operatorTypes.map((operatorType, index) => {
                 if (operatorType) {
+                  const selected = operatorType === selectedOperatorType
                   return (
                     <MenuItem
-                      disabled={operatorType === selectedOperatorType}
+                      disabled={selected}
                       fontSize={1}
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
                       padding={2}
+                      space={4}
+                      style={{minWidth: '150px'}}
                       text={operators[operatorType].label}
                     />
                   )
@@ -103,7 +109,7 @@ const SearchFacetTags = ({facet}: Props) => {
             onChange={value => handleChange(value as TagSelectOption)}
             options={allTagOptions}
             placeholder={tagsFetching ? 'Loading...' : 'Select...'}
-            styles={reactSelectStyles}
+            styles={reactSelectStyles(scheme)}
             value={facet?.value}
           />
         </Box>

@@ -1,6 +1,6 @@
-import {Box, Flex, Inline} from '@sanity/ui'
+import {Box, Flex, Inline, rem, Theme} from '@sanity/ui'
 import React from 'react'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'
 import SearchFacetNumber from '../SearchFacetNumber'
@@ -12,11 +12,13 @@ type Props = {
   layout?: 'inline' | 'stack'
 }
 
-const StackContainer = styled(Flex)`
-  > * {
-    margin-bottom: ${props => props.theme.sanity.space[2]}px;
-  }
-`
+const StackContainer = styled(Flex)(({theme}: {theme: Theme}) => {
+  return css`
+    > * {
+      margin-bottom: ${rem(theme.sanity.space[2])};
+    }
+  `
+})
 
 const SearchFacets = (props: Props) => {
   const {layout = 'inline'} = props

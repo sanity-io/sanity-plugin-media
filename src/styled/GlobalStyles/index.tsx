@@ -1,4 +1,3 @@
-import {hues} from '@sanity/color'
 import {createGlobalStyle, css} from 'styled-components'
 
 const customScrollbar = css`
@@ -9,11 +8,11 @@ const customScrollbar = css`
   ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     border: 4px solid rgba(0, 0, 0, 0);
-    background: ${hues.gray?.[800].hex};
+    background: var(--card-border-color);
     background-clip: padding-box;
 
     &:hover {
-      background: ${hues.gray?.[400].hex};
+      background: var(--card-muted-fg-color);
       background-clip: padding-box;
     }
   }

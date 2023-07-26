@@ -63,32 +63,40 @@ const AssetMetadata = (props: Props) => {
         </Stack>
       </Box>
       {/* EXIF */}
-      {exif && (
-        <>
-          {/* Divider */}
-          <Box
-            marginY={4}
-            style={{
-              background: '#222',
-              height: '1px',
-              width: '100%'
-            }}
-          />
-          <Box>
-            <Stack space={3}>
-              {exif.ISO && <Row label="ISO" value={exif.ISO} />}
-              {exif.FNumber && <Row label="Aperture" value={`ƒ/${exif.FNumber}`} />}
-              {exif.FocalLength && <Row label="Focal length" value={`${exif.FocalLength}mm`} />}
-              {exif.ExposureTime && (
-                <Row label="Exposure time" value={`1/${1 / exif.ExposureTime}`} />
-              )}
-              {exif.DateTimeOriginal && (
-                <Row label="Original date" value={format(new Date(exif.DateTimeOriginal), 'PPp')} />
-              )}
-            </Stack>
-          </Box>
-        </>
-      )}
+      {exif &&
+        (exif.DateTimeOriginal ||
+          exif.FNumber ||
+          exif.FocalLength ||
+          exif.ExposureTime ||
+          exif.ISO) && (
+          <>
+            {/* Divider */}
+            <Box
+              marginY={4}
+              style={{
+                background: 'var(--card-border-color)',
+                height: '1px',
+                width: '100%'
+              }}
+            />
+            <Box>
+              <Stack space={3}>
+                {exif.ISO && <Row label="ISO" value={exif.ISO} />}
+                {exif.FNumber && <Row label="Aperture" value={`ƒ/${exif.FNumber}`} />}
+                {exif.FocalLength && <Row label="Focal length" value={`${exif.FocalLength}mm`} />}
+                {exif.ExposureTime && (
+                  <Row label="Exposure time" value={`1/${1 / exif.ExposureTime}`} />
+                )}
+                {exif.DateTimeOriginal && (
+                  <Row
+                    label="Original date"
+                    value={format(new Date(exif.DateTimeOriginal), 'PPp')}
+                  />
+                )}
+              </Stack>
+            </Box>
+          </>
+        )}
 
       {/* Asset actions */}
       <Box marginTop={5}>

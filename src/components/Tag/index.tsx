@@ -1,4 +1,3 @@
-import {hues} from '@sanity/color'
 import {ArrowDownIcon, ArrowUpIcon, CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Container, Flex, Text, Tooltip} from '@sanity/ui'
 import {SearchFacetInputSearchableProps, TagActions, TagItem} from '@types'
@@ -126,9 +125,10 @@ const Tag = (props: Props) => {
     <TagContainer align="center" flex={1} justify="space-between" paddingLeft={3}>
       <Box flex={1}>
         <Text
+          muted
           size={1}
           style={{
-            color: tag?.updating ? hues.gray[800].hex : hues.gray[500].hex,
+            opacity: tag?.updating ? 0.5 : 1.0,
             userSelect: 'none'
           }}
           textOverflow="ellipsis"

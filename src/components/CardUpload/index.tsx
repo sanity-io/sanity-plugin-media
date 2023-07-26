@@ -1,15 +1,16 @@
-import {hues} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text} from '@sanity/ui'
 import filesize from 'filesize'
 import React from 'react'
 import {useDispatch} from 'react-redux'
+import {useColorScheme} from 'sanity'
 import styled from 'styled-components'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectUploadById, uploadsActions} from '../../modules/uploads'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
 type Props = {
   id: string
@@ -19,13 +20,14 @@ const CardWrapper = styled(Flex)`
   box-sizing: border-box;
   height: 100%;
   overflow: hidden;
-  padding: 2px;
   position: relative;
   width: 100%;
 `
 
 const CardUpload = (props: Props) => {
   const {id} = props
+
+  const {scheme} = useColorScheme()
 
   // Redux
   const dispatch = useDispatch()
@@ -59,12 +61,12 @@ const CardUpload = (props: Props) => {
   }
 
   return (
-    <CardWrapper>
+    <CardWrapper padding={1}>
       <Flex
         direction="column"
         flex={1}
         style={{
-          background: hues.gray[950].hex,
+          background: getSchemeColor(scheme, 'bg'),
           border: '1px solid transparent',
           height: '100%',
           position: 'relative'
@@ -73,7 +75,7 @@ const CardUpload = (props: Props) => {
         {/* Progress bar */}
         <div
           style={{
-            background: hues.gray[600].hex,
+            background: 'var(--card-fg-color)',
             bottom: 0,
             height: '1px',
             left: 0,
@@ -89,6 +91,7 @@ const CardUpload = (props: Props) => {
           {item.assetType === 'image' && item?.objectUrl && (
             <Image
               draggable={false}
+              scheme={scheme}
               src={item.objectUrl}
               style={{
                 opacity: 0.4

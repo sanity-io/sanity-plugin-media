@@ -38,7 +38,7 @@ const SearchFacetString = ({facet}: Props) => {
             <Button
               fontSize={1}
               iconRight={SelectIcon}
-              padding={2} //
+              padding={2}
               text={operators[selectedOperatorType].label}
             />
           }
@@ -47,9 +47,10 @@ const SearchFacetString = ({facet}: Props) => {
             <Menu>
               {facet.operatorTypes.map((operatorType, index) => {
                 if (operatorType) {
+                  const selected = operatorType === selectedOperatorType
                   return (
                     <MenuItem
-                      disabled={operatorType === selectedOperatorType}
+                      disabled={selected}
                       fontSize={1}
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}

@@ -1,8 +1,18 @@
-import {hues} from '@sanity/color'
 import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
-import {Box, Checkbox, Container, Flex, Spinner, Text, Tooltip} from '@sanity/ui'
+import {
+  Box,
+  Checkbox,
+  Container,
+  Flex,
+  Spinner,
+  Text,
+  Theme,
+  ThemeColorSchemeKey,
+  Tooltip
+} from '@sanity/ui'
 import React, {memo, MouseEvent, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
+import {useColorScheme} from 'sanity'
 import styled, {css} from 'styled-components'
 import {PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -14,6 +24,7 @@ import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
 type Props = {
   id: string
@@ -24,47 +35,49 @@ const CardWrapper = styled(Flex)`
   box-sizing: border-box;
   height: 100%;
   overflow: hidden;
-  padding: 2px;
   position: relative;
   width: 100%;
 `
 
-const CardContainer = styled(Flex)<{picked?: boolean; updating?: boolean}>`
-  border: 1px solid transparent;
-  height: 100%;
-  pointer-events: ${props => (props.updating ? 'none' : 'auto')};
-  position: relative;
-  transition: all 300ms;
-  user-select: none;
-  width: 100%;
+const CardContainer = styled(Flex)<{picked?: boolean; theme: Theme; updating?: boolean}>(
+  ({picked, theme, updating}) => {
+    return css`
+      border: 1px solid transparent;
+      height: 100%;
+      pointer-events: ${updating ? 'none' : 'auto'};
+      position: relative;
+      transition: all 300ms;
+      user-select: none;
+      width: 100%;
 
-  border: ${props =>
-    props.picked
-      ? `1px solid ${props.theme.sanity.color.spot.orange} !important`
-      : '1px solid inherit'};
+      border: ${picked
+        ? `1px solid ${theme.sanity.color.spot.orange} !important`
+        : '1px solid inherit'};
 
-  ${props =>
-    !props.updating &&
-    css`
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          border: 1px solid ${hues.gray[500].hex};
+      ${!updating &&
+      css`
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            border: 1px solid var(--card-border-color);
+          }
         }
-      }
-    `}
-`
-
-const ContextActionContainer = styled(Flex)`
-  cursor: ${props => (props.selected ? 'default' : 'pointer')};
-  height: ${PANEL_HEIGHT}px;
-  transition: all 300ms;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: ${hues.gray[950].hex};
-    }
+      `}
+    `
   }
-`
+)
+
+const ContextActionContainer = styled(Flex)(({scheme}: {scheme: ThemeColorSchemeKey}) => {
+  return css`
+    cursor: pointer;
+    height: ${PANEL_HEIGHT}px;
+    transition: all 300ms;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: ${getSchemeColor(scheme, 'bg')};
+      }
+    }
+  `
+})
 
 const StyledWarningOutlineIcon = styled(WarningFilledIcon)(({theme}) => {
   return {
@@ -74,6 +87,8 @@ const StyledWarningOutlineIcon = styled(WarningFilledIcon)(({theme}) => {
 
 const CardAsset = (props: Props) => {
   const {id, selected} = props
+
+  const {scheme} = useColorScheme()
 
   // Refs
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
@@ -134,7 +149,7 @@ const CardAsset = (props: Props) => {
   const opacityPreview = selected || updating ? 0.25 : 1
 
   return (
-    <CardWrapper>
+    <CardWrapper padding={1}>
       <CardContainer direction="column" picked={picked} updating={item.updating}>
         {/* Image */}
         <Box
@@ -152,6 +167,7 @@ const CardAsset = (props: Props) => {
             {isImageAsset(asset) && (
               <Image
                 draggable={false}
+                scheme={scheme}
                 showCheckerboard={!isOpaque}
                 src={imageDprUrl(asset, {height: 250, width: 250})}
                 style={{
@@ -205,6 +221,7 @@ const CardAsset = (props: Props) => {
           align="center"
           onClick={handleContextActionClick}
           paddingX={1}
+          scheme={scheme}
           style={{opacity: opacityContainer}}
         >
           {onSelect ? (

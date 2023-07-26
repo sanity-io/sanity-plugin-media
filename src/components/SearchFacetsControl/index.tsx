@@ -1,4 +1,4 @@
-import {AddCircleIcon} from '@sanity/icons'
+import {AddIcon} from '@sanity/icons'
 import {Button, Flex, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem} from '@sanity/ui'
 import {SearchFacetDivider, SearchFacetGroup, SearchFacetInputProps} from '@types'
 import React from 'react'
@@ -100,8 +100,9 @@ const SearchFacetsControl = () => {
           <Button
             disabled={!hasSearchFacets}
             fontSize={1}
-            icon={AddCircleIcon}
+            icon={AddIcon}
             mode="bleed"
+            space={2}
             text="Add filter"
             tone="primary"
           />

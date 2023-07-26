@@ -1,12 +1,13 @@
-import {hues} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
 import {Box, Button, Flex, Grid, Stack, Text, useMediaIndex} from '@sanity/ui'
 import filesize from 'filesize'
 import React from 'react'
 import {useDispatch} from 'react-redux'
+import {useColorScheme} from 'sanity'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectUploadById, uploadsActions} from '../../modules/uploads'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
 
@@ -16,6 +17,8 @@ type Props = {
 
 const TableRowUpload = (props: Props) => {
   const {id} = props
+
+  const {scheme} = useColorScheme()
 
   // Redux
   const dispatch = useDispatch()
@@ -54,7 +57,7 @@ const TableRowUpload = (props: Props) => {
     <Grid
       style={{
         alignItems: 'center',
-        background: hues.gray[950].hex,
+        background: getSchemeColor(scheme, 'bg'),
         gridColumnGap: mediaIndex < 3 ? 0 : '16px',
         gridRowGap: 0,
         gridTemplateColumns:
@@ -67,7 +70,7 @@ const TableRowUpload = (props: Props) => {
       {/* Progress bar */}
       <div
         style={{
-          background: hues.gray[600].hex,
+          background: 'var(--card-fg-color)',
           bottom: 0,
           height: '1px',
           left: 0,
@@ -91,7 +94,7 @@ const TableRowUpload = (props: Props) => {
       >
         <Box style={{height: '100%', position: 'relative'}}>
           {item.assetType === 'image' && item?.objectUrl && (
-            <Image draggable={false} src={item.objectUrl} style={{opacity: 0.25}} />
+            <Image draggable={false} scheme={scheme} src={item.objectUrl} style={{opacity: 0.25}} />
           )}
 
           {item.assetType === 'file' && (

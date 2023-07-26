@@ -1,23 +1,29 @@
 import {CloseIcon} from '@sanity/icons'
-import {Box, Flex, Label, Text} from '@sanity/ui'
+import {Box, Flex, Label, rem, Text, Theme, ThemeColorSchemeKey} from '@sanity/ui'
 import {SearchFacetInputProps, WithId} from '@types'
 import React, {ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
-import styled from 'styled-components'
+import {useColorScheme} from 'sanity'
+import styled, {css} from 'styled-components'
 import {searchActions} from '../../modules/search'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
 type Props = {
   children: ReactNode
   facet: WithId<SearchFacetInputProps>
 }
 
-const Container = styled(Box)`
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: ${props => props.theme.sanity.radius[2]}px;
-`
+const Container = styled(Box)(({scheme, theme}: {scheme: ThemeColorSchemeKey; theme: Theme}) => {
+  return css`
+    background: ${getSchemeColor(scheme, 'bg')};
+    border-radius: ${rem(theme.sanity.radius[2])};
+  `
+})
 
 const SearchFacet = (props: Props) => {
   const {children, facet} = props
+
+  const {scheme} = useColorScheme()
 
   // Redux
   const dispatch = useDispatch()
@@ -27,7 +33,7 @@ const SearchFacet = (props: Props) => {
   }
 
   return (
-    <Container padding={[2, 2, 1]}>
+    <Container padding={[2, 2, 1]} scheme={scheme}>
       <Flex align={['flex-start', 'flex-start', 'center']} direction={['column', 'column', 'row']}>
         {/* Title */}
         <Box paddingBottom={[3, 3, 0]} paddingLeft={1} paddingRight={2} paddingTop={[1, 1, 0]}>

@@ -6,7 +6,7 @@ import groq from 'groq'
 import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import {WithReferringDocuments, useDocumentStore} from 'sanity'
+import {WithReferringDocuments, useColorScheme, useDocumentStore} from 'sanity'
 import {assetFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
@@ -40,6 +40,7 @@ const DialogAssetEdit = (props: Props) => {
   } = props
 
   const client = useVersionedClient()
+  const {scheme} = useColorScheme()
 
   const documentStore = useDocumentStore()
 
@@ -338,7 +339,7 @@ const DialogAssetEdit = (props: Props) => {
                           error={errors?.description?.message}
                           label="Description"
                           name="description"
-                          rows={3}
+                          rows={5}
                           value={currentAsset?.description}
                         />
                       </Stack>
@@ -375,6 +376,7 @@ const DialogAssetEdit = (props: Props) => {
             {isImageAsset(currentAsset) && (
               <Image
                 draggable={false}
+                scheme={scheme}
                 showCheckerboard={!currentAsset?.metadata?.isOpaque}
                 src={imageDprUrl(currentAsset, {height: 600, width: 600})}
               />

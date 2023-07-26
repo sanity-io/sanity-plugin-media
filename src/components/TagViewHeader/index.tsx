@@ -1,11 +1,12 @@
-import {black, hues} from '@sanity/color'
 import {ComposeIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Label} from '@sanity/ui'
 import React from 'react'
 import {useDispatch} from 'react-redux'
+import {useColorScheme} from 'sanity'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
 type Props = {
   allowCreate?: boolean
@@ -14,6 +15,8 @@ type Props = {
 }
 
 const TagViewHeader = ({allowCreate, light, title}: Props) => {
+  const {scheme} = useColorScheme()
+
   const dispatch = useDispatch()
   const tagsCreating = useTypedSelector(state => state.tags.creating)
   const tagsFetching = useTypedSelector(state => state.tags.fetching)
@@ -29,15 +32,14 @@ const TagViewHeader = ({allowCreate, light, title}: Props) => {
         justify="space-between"
         paddingLeft={3}
         style={{
-          background: light ? hues.gray?.[900].hex : black.hex,
-          borderBottom: `1px solid ${hues.gray?.[900].hex}`,
+          background: light ? getSchemeColor(scheme, 'bg') : 'inherit',
+          borderBottom: '1px solid var(--card-border-color)',
           flexShrink: 0,
           height: `${PANEL_HEIGHT}px`
         }}
       >
         <Inline space={2}>
           <Label size={0}>{title}</Label>
-
           {tagsFetching && (
             <Label size={0} style={{opacity: 0.3}}>
               Loading...

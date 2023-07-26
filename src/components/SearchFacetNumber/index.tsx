@@ -52,7 +52,7 @@ const SearchFacetNumber = ({facet}: Props) => {
             <Button
               fontSize={1}
               iconRight={SelectIcon}
-              padding={2} //
+              padding={2}
               text={operators[selectedOperatorType].label}
             />
           }
@@ -61,9 +61,10 @@ const SearchFacetNumber = ({facet}: Props) => {
             <Menu>
               {facet.operatorTypes.map((operatorType, index) => {
                 if (operatorType) {
+                  const selected = operatorType === selectedOperatorType
                   return (
                     <MenuItem
-                      disabled={operatorType === selectedOperatorType}
+                      disabled={selected}
                       fontSize={1}
                       key={operatorType}
                       onClick={() => handleOperatorItemClick(operatorType)}
@@ -100,23 +101,26 @@ const SearchFacetNumber = ({facet}: Props) => {
             <Button
               fontSize={1}
               iconRight={SelectIcon}
-              padding={2} //
+              padding={2}
               text={selectedModifier?.title}
             />
           }
           id="modifier"
           menu={
             <Menu>
-              {modifiers.map(modifier => (
-                <MenuItem
-                  disabled={modifier.name === facet.modifier}
-                  fontSize={1}
-                  key={modifier.name}
-                  onClick={() => handleModifierClick(modifier)}
-                  padding={2}
-                  text={modifier.title}
-                />
-              ))}
+              {modifiers.map(modifier => {
+                const selected = modifier.name === facet.modifier
+                return (
+                  <MenuItem
+                    disabled={selected}
+                    fontSize={1}
+                    key={modifier.name}
+                    onClick={() => handleModifierClick(modifier)}
+                    padding={2}
+                    text={modifier.title}
+                  />
+                )
+              })}
             </Menu>
           }
           popover={popoverProps}

@@ -1,4 +1,3 @@
-import {hues} from '@sanity/color'
 import {Box} from '@sanity/ui'
 import React from 'react'
 import {TAGS_PANEL_WIDTH} from '../../constants'
@@ -22,7 +21,7 @@ const TagsPanel = () => {
       <Box
         className="media__custom-scrollbar"
         style={{
-          borderLeft: `1px solid ${hues.gray?.[900].hex}`,
+          borderLeft: '1px solid var(--card-border-color)',
           height: '100%',
           overflowX: 'hidden',
           overflowY: 'auto',

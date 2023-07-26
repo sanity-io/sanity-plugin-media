@@ -1,92 +1,95 @@
-import {black, hues, white} from '@sanity/color'
 import {CloseIcon} from '@sanity/icons'
-import {Box, Card, studioTheme, Text} from '@sanity/ui'
+import {Box, Card, rem, studioTheme, Text, ThemeColorSchemeKey} from '@sanity/ui'
 import React from 'react'
 import {components, StylesConfig} from 'react-select'
 import {Virtuoso} from 'react-virtuoso'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
-const themeDarkPrimaryBlue = studioTheme?.color?.dark?.primary?.spot?.blue
-const themeDarkDefaultBaseBg = studioTheme?.color?.dark?.default?.base?.bg
-const themeRadius = studioTheme?.radius
-const themeSpace = studioTheme?.space
-const themeTextSizes = studioTheme?.fonts?.text?.sizes
-
-export const reactSelectStyles: StylesConfig<
-  {
-    label: string
-    value: string
+const {
+  fonts: {
+    text: {sizes: themeTextSizes}
   },
-  false
-> = {
-  control: (styles, {isDisabled, isFocused}) => {
-    let boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}`
-    if (isFocused) {
-      boxShadow = `inset 0 0 0 1px ${hues.gray[900].hex}, 0 0 0 1px var(--card-bg-color), 0 0 0 3px var(--card-focus-ring-color) !important`
-    }
+  radius: themeRadius,
+  space: themeSpace
+} = studioTheme
 
-    return {
-      ...styles,
-      backgroundColor: themeDarkDefaultBaseBg,
-      color: white.hex,
-      border: 'none',
-      borderRadius: themeRadius[2],
-      boxShadow,
-      fontSize: themeTextSizes[1].fontSize,
-      minHeight: '25px',
-      opacity: isDisabled ? 0.5 : 'inherit',
-      outline: 'none',
-      transition: 'none',
-      '&:hover': {
-        boxShadow: `inset 0 0 0 1px ${studioTheme.color.dark.default.input.default.hovered.border}`
+export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => {
+  return {
+    control: (styles, {isDisabled, isFocused}) => {
+      let boxShadow = `inset 0 0 0 1px var(--card-border-color)`
+      if (isFocused) {
+        boxShadow = `inset 0 0 0 1px ${getSchemeColor(scheme, 'inputEnabledBorder')},
+        0 0 0 1px ${getSchemeColor(scheme, 'bg2')},
+        0 0 0 3px var(--card-focus-ring-color) !important`
       }
-    }
-  },
-  input: styles => ({
-    ...styles,
-    color: white.hex,
-    fontFamily: studioTheme.fonts.text.family,
-    marginLeft: themeSpace[2]
-  }),
-  menuList: styles => ({
-    ...styles,
-    padding: 0
-  }),
-  noOptionsMessage: styles => ({
-    ...styles,
-    fontFamily: studioTheme.fonts.text.family,
-    fontSize: themeTextSizes[1].fontSize,
-    lineHeight: '1em'
-  }),
-  option: (styles, {isFocused}) => ({
-    ...styles,
-    backgroundColor: isFocused ? themeDarkPrimaryBlue : 'transparent',
-    borderRadius: themeRadius[2],
-    color: isFocused ? black.hex : 'inherit',
-    fontSize: themeTextSizes[1].fontSize,
-    lineHeight: '1em',
-    padding: '4px 6px', // TODO: use theme value
-    '&:hover': {
-      backgroundColor: themeDarkPrimaryBlue,
-      color: black.hex
-    }
-  }),
-  placeholder: styles => ({
-    ...styles,
-    fontFamily: studioTheme.fonts.text.family,
-    marginLeft: themeSpace[2],
-    paddingBottom: '2px'
-  }),
-  singleValue: styles => ({
-    ...styles,
-    color: white.hex,
-    lineHeight: '1em',
-    paddingBottom: '1px'
-  }),
-  valueContainer: styles => ({
-    ...styles,
-    margin: 0,
-    padding: 0
-  })
+
+      return {
+        ...styles,
+        backgroundColor: 'var(--card-bg-color)',
+        color: 'inherit',
+        border: 'none',
+        borderRadius: themeRadius[2],
+        boxShadow,
+        fontSize: themeTextSizes[1].fontSize,
+        minHeight: '25px',
+        opacity: isDisabled ? 0.5 : 'inherit',
+        outline: 'none',
+        transition: 'none',
+        '&:hover': {
+          boxShadow: `inset 0 0 0 1px ${getSchemeColor(scheme, 'inputHoveredBorder')}`
+        }
+      }
+    },
+    input: styles => ({
+      ...styles,
+      color: 'var(--card-fg-color)',
+      fontFamily: studioTheme.fonts.text.family,
+      fontSize: themeTextSizes[1].fontSize,
+      marginLeft: rem(themeSpace[2])
+    }),
+    menuList: styles => ({
+      ...styles,
+      padding: 0
+    }),
+    noOptionsMessage: styles => ({
+      ...styles,
+      fontFamily: studioTheme.fonts.text.family,
+      fontSize: themeTextSizes[1].fontSize,
+      lineHeight: '1em'
+    }),
+    option: (styles, {isFocused}) => ({
+      ...styles,
+      backgroundColor: isFocused ? getSchemeColor(scheme, 'spotBlue') : 'transparent',
+      borderRadius: themeRadius[2],
+      color: isFocused ? getSchemeColor(scheme, 'bg') : 'inherit',
+      fontSize: themeTextSizes[1].fontSize,
+      lineHeight: '1em',
+      margin: 0,
+      padding: rem(themeSpace[1]),
+      '&:hover': {
+        backgroundColor: getSchemeColor(scheme, 'spotBlue'),
+        color: getSchemeColor(scheme, 'bg')
+      }
+    }),
+    placeholder: styles => ({
+      ...styles,
+      fontSize: themeTextSizes[1].fontSize,
+      marginLeft: rem(themeSpace[2]),
+      paddingLeft: 0
+    }),
+    singleValue: styles => ({
+      ...styles,
+      alignItems: 'center',
+      display: 'inline-flex',
+      height: '100%',
+      marginLeft: rem(themeSpace[2])
+    }),
+    valueContainer: styles => ({
+      ...styles,
+      margin: 0,
+      padding: 0
+    })
+  }
 }
 
 const ClearIndicator = (props: any) => {
@@ -162,18 +165,9 @@ const Option = (props: any) => {
 const SingleValue = (props: any) => {
   return (
     <components.SingleValue {...props}>
-      <Box paddingLeft={2}>
-        <Text
-          size={1}
-          style={{
-            color: 'inherit',
-            lineHeight: '2em' // HACK: prevent text descenders from cropping
-          }}
-          textOverflow="ellipsis"
-        >
-          {props.children}
-        </Text>
-      </Box>
+      <Text size={1} textOverflow="ellipsis">
+        {props.children}
+      </Text>
     </components.SingleValue>
   )
 }

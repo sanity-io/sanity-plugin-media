@@ -1,4 +1,3 @@
-import {hues} from '@sanity/color'
 import {CheckmarkCircleIcon, EditIcon, WarningFilledIcon} from '@sanity/icons'
 import {
   Box,
@@ -8,6 +7,7 @@ import {
   Grid,
   Spinner,
   Text,
+  ThemeColorSchemeKey,
   Tooltip,
   useMediaIndex
 } from '@sanity/ui'
@@ -15,7 +15,7 @@ import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
 import React, {memo, MouseEvent, RefObject, useCallback, useEffect, useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {WithReferringDocuments} from 'sanity'
+import {WithReferringDocuments, useColorScheme} from 'sanity'
 import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -29,6 +29,7 @@ import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
 import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
 // Duration (ms) to wait before reference counts (and associated listeners) are rendered
 const REFERENCE_COUNT_VISIBILITY_DELAY = 750
@@ -38,34 +39,46 @@ type Props = {
   selected: boolean
 }
 
-const ContainerGrid = styled(Grid)<{selected?: boolean; updating?: boolean}>`
-  align-items: center;
-  cursor: ${props => (props.selected ? 'default' : 'pointer')};
-  height: 100%;
-  pointer-events: ${props => (props.updating ? 'none' : 'auto')};
-  user-select: none;
-  white-space: nowrap;
+const ContainerGrid = styled(Grid)(
+  ({
+    scheme,
+    selected,
+    updating
+  }: {
+    selected?: boolean
+    scheme: ThemeColorSchemeKey
+    updating?: boolean
+  }) => {
+    return css`
+      align-items: center;
+      cursor: ${selected ? 'default' : 'pointer'};
+      height: 100%;
+      pointer-events: ${updating ? 'none' : 'auto'};
+      user-select: none;
+      white-space: nowrap;
 
-  ${props =>
-    !props.updating &&
-    css`
-      @media (hover: hover) and (pointer: fine) {
-        &:hover {
-          background: ${hues.gray?.[950].hex};
+      ${!updating &&
+      css`
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            background: ${getSchemeColor(scheme, 'bg')};
+          }
         }
-      }
-    `}
-`
-
-const ContextActionContainer = styled(Flex)`
-  cursor: pointer;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: ${hues.gray?.[900].hex};
-    }
+      `}
+    `
   }
-`
+)
+
+const ContextActionContainer = styled(Flex)(({scheme}: {scheme: ThemeColorSchemeKey}) => {
+  return css`
+    cursor: pointer;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: ${getSchemeColor(scheme, 'bg2')};
+      }
+    }
+  `
+})
 
 const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
   return {
@@ -76,6 +89,8 @@ const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
 // eslint-disable-next-line complexity
 const TableRowAsset = (props: Props) => {
   const {id, selected} = props
+
+  const {scheme} = useColorScheme()
 
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
 
@@ -156,6 +171,7 @@ const TableRowAsset = (props: Props) => {
   return (
     <ContainerGrid
       onClick={selected ? undefined : handleClick}
+      scheme={scheme}
       selected={selected}
       style={{
         gridColumnGap: mediaIndex < 3 ? 0 : '16px',
@@ -169,6 +185,7 @@ const TableRowAsset = (props: Props) => {
       {/* Picked checkbox */}
       <ContextActionContainer
         onClick={handleContextActionClick}
+        scheme={scheme}
         style={{
           alignItems: 'center',
           gridColumn: 1,
@@ -218,6 +235,7 @@ const TableRowAsset = (props: Props) => {
             {isImageAsset(asset) && (
               <Image
                 draggable={false}
+                scheme={scheme}
                 showCheckerboard={!isOpaque}
                 src={imageDprUrl(asset, {height: 100, width: 100})}
               />

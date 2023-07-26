@@ -1,26 +1,30 @@
-import {black, hues} from '@sanity/color'
-import {Checkbox, Flex, Grid, useMediaIndex} from '@sanity/ui'
+import {Checkbox, Flex, Grid, ThemeColorSchemeKey, useMediaIndex} from '@sanity/ui'
 import React, {MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS, PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsLength, selectAssetsPickedLength} from '../../modules/assets'
 import TableHeaderItem from '../TableHeaderItem'
+import {useColorScheme} from 'sanity'
+import {getSchemeColor} from '../../utils/getSchemeColor'
 
 // TODO: DRY
-const ContextActionContainer = styled(Flex)`
-  cursor: pointer;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: ${hues.gray?.[900].hex};
+const ContextActionContainer = styled(Flex)(({scheme}: {scheme: ThemeColorSchemeKey}) => {
+  return css`
+    cursor: pointer;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: ${getSchemeColor(scheme, 'bg')};
+      }
     }
-  }
-`
+  `
+})
 
 const TableHeader = () => {
+  const {scheme} = useColorScheme()
+
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
@@ -50,8 +54,8 @@ const TableHeader = () => {
     <Grid
       style={{
         alignItems: 'center',
-        background: black.hex,
-        borderBottom: `1px solid ${hues.gray?.[900].hex}`,
+        background: 'var(--card-bg-color)',
+        borderBottom: '1px solid var(--card-border-color)',
         gridColumnGap: mediaIndex < 3 ? 0 : '16px',
         gridTemplateColumns: GRID_TEMPLATE_COLUMNS.LARGE,
         height: mediaIndex < 3 ? 0 : `${PANEL_HEIGHT}px`,
@@ -71,6 +75,7 @@ const TableHeader = () => {
           align="center"
           justify="center"
           onClick={handleContextActionClick}
+          scheme={scheme}
           style={{
             height: '100%',
             position: 'relative'
