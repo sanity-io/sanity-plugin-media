@@ -5,6 +5,14 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.2](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.1...v2.2.2) (2023-07-26)
+
+### Bug Fixes
+
+- display color scheme-specific styles ([f6e58fe](https://github.com/sanity-io/sanity-plugin-media/commit/f6e58fe609920c690d1e6211eeca1383195e7609))
+- increase default pageSize to 100 ([b7b08f3](https://github.com/sanity-io/sanity-plugin-media/commit/b7b08f38fbc7ce677f0e6e85c2ab4d306077150d))
+- prevent TypeError when deleting assets in table view ([a86764c](https://github.com/sanity-io/sanity-plugin-media/commit/a86764cd61d789713bf11cc6199ef6bc04e34ba8))
+
 ## [2.2.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.0...v2.2.1) (2023-07-07)
 
 ### Bug Fixes
