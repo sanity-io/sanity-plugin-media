@@ -27,6 +27,7 @@ import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
 import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
+import FormFieldSelect from '../FormFieldSelect'
 
 type Props = {
   children: ReactNode
@@ -62,6 +63,10 @@ const DialogAssetEdit = (props: Props) => {
   const generateDefaultValues = useCallback(
     (asset?: Asset): AssetFormData => {
       return {
+        name: asset?.name || '',
+        products: asset?.products || [],
+        season: asset?.season || '',
+        collaboration: asset?.collaboration || '',
         altText: asset?.altText || '',
         description: asset?.description || '',
         originalFilename: asset?.originalFilename || '',
@@ -305,14 +310,37 @@ const DialogAssetEdit = (props: Props) => {
                           placeholder="Select or create..."
                           value={assetTagOptions}
                         />
-                        {/* Filename */}
+                        {/* name */}
                         <FormFieldInputText
-                          {...register('originalFilename')}
+                          {...register('name')}
                           disabled={formUpdating}
-                          error={errors?.originalFilename?.message}
-                          label="Filename"
-                          name="originalFilename"
-                          value={currentAsset?.originalFilename}
+                          error={errors?.name?.message}
+                          label="name"
+                          name="name"
+                          value={currentAsset?.name}
+                        />
+                        {/* season */}
+                        <FormFieldSelect
+                          {...register('season')}
+                          onSelect={value => setValue('season', value)}
+                          options={['SS1', 'SS2']}
+                          disabled={formUpdating}
+                          error={errors?.name?.message}
+                          label="season"
+                          name="season"
+                          value={currentAsset?.season}
+                        />
+
+                        {/* collaboration */}
+                        <FormFieldSelect
+                          {...register('collaboration')}
+                          onSelect={value => setValue('collaboration', value)}
+                          options={['SS1', 'SS2']}
+                          disabled={formUpdating}
+                          error={errors?.name?.message}
+                          label="collaboration"
+                          name="collaboration"
+                          value={currentAsset?.collaboration}
                         />
                         {/* Title */}
                         <FormFieldInputText

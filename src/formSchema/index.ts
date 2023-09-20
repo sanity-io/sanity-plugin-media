@@ -6,6 +6,10 @@ export const tagOptionSchema = z.object({
 })
 
 export const assetFormSchema = z.object({
+  name: z.string().trim(),
+  season: z.string().trim(),
+  collaboration: z.string().trim().optional(),
+  products: z.array(z.string().trim()),
   altText: z.string().trim().optional(),
   description: z.string().trim().optional(),
   opt: z.object({
