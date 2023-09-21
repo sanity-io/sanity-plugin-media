@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {zodResolver} from '@hookform/resolvers/zod'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
@@ -28,6 +29,7 @@ import FormFieldInputTextarea from '../FormFieldInputTextarea'
 import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 import FormFieldSelect from '../FormFieldSelect'
+import ProductSelector from '../ProductsSelector'
 
 type Props = {
   children: ReactNode
@@ -341,6 +343,13 @@ const DialogAssetEdit = (props: Props) => {
                           label="collaboration"
                           name="collaboration"
                           value={currentAsset?.collaboration}
+                        />
+                        {/* products */}
+                        <ProductSelector
+                          onChange={selected => {
+                            console.log('selected', selected)
+                          }}
+                          value={currentAsset?.products}
                         />
                         {/* Title */}
                         <FormFieldInputText
