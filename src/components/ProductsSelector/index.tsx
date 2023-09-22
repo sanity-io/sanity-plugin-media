@@ -23,7 +23,7 @@ export interface ProductDataType {
 
 const search = async (searchTerm: string) => {
   const response = await fetch(
-    `https://b5ff-102-89-32-37.ngrok.io/sanity/products?search=${searchTerm}`
+    `https://6228-102-89-33-19.ngrok.io/sanity/products?search=${searchTerm}`
   )
   return response.json()
 }
