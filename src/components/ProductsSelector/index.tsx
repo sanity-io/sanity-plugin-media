@@ -24,7 +24,7 @@ export interface ProductDataType {
 const search = async (searchTerm: string) => {
   const response = await fetch(
     // eslint-disable-next-line no-undef, no-process-env
-    `${process.env.SANITY_PRODUCTS_BASE_URL}/sanity/products?search=${searchTerm}`
+    `https://sanity-ct-products-provider.fly.dev/sanity/products?search=${searchTerm}`
   )
   return response.json()
 }
