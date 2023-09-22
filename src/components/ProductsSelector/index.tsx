@@ -21,7 +21,9 @@ export interface ProductDataType {
 }
 
 const search = async (searchTerm: string) => {
-  const response = await fetch(`http://localhost:4000/sanity/products?search=${searchTerm}`)
+  const response = await fetch(
+    `https://b5ff-102-89-32-37.ngrok.io/sanity/products?search=${searchTerm}`
+  )
   return response.json()
 }
 
@@ -38,8 +40,11 @@ export default function ProductSelector<T extends ProductDataType>(
       return
     }
     ;(async () => {
-      await search(debouncedValue)
-      setResults([])
+      const searchResults = await search(debouncedValue)
+      const {
+        data: {published, unpublished}
+      } = searchResults
+      setResults([...published, unpublished])
     })()
   }, [debouncedValue])
 
