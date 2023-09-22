@@ -61,13 +61,13 @@ export default function ProductSelector<T extends ProductDataType>(
       results.map(result => ({
         payload: result,
         value: `${result?.name?.en} ${debouncedValue} ${
-          result.masterVariant.attributes?.find(attr => attr.name === 'iNumber')?.value || ''
+          result?.masterVariant?.attributes?.find(attr => attr?.name === 'iNumber')?.value || ''
         }`
       })),
     [debouncedValue, results]
   )
 
-  console.log('products', products)
+  console.log('products', products, results)
 
   const onSelect = useCallback(
     (matcher: string) => {
