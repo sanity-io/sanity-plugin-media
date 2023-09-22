@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {useDebounce} from 'usehooks-ts'
 import {set, unset, ArrayOfObjectsInputProps, InputProps} from 'sanity'
@@ -59,12 +60,15 @@ export default function ProductSelector<T extends ProductDataType>(
     () =>
       results.map(result => ({
         payload: result,
-        value: `${result.name.en} ${debouncedValue} ${
+        value: `${result?.name?.en} ${debouncedValue} ${
           result.masterVariant.attributes?.find(attr => attr.name === 'iNumber')?.value || ''
         }`
       })),
     [debouncedValue, results]
   )
+
+  console.log('products', products)
+
   const onSelect = useCallback(
     (matcher: string) => {
       const product = products.find(p => p.value === matcher)?.payload
