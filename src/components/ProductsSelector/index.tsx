@@ -23,7 +23,8 @@ export interface ProductDataType {
 
 const search = async (searchTerm: string) => {
   const response = await fetch(
-    `https://6228-102-89-33-19.ngrok.io/sanity/products?search=${searchTerm}`
+    // eslint-disable-next-line no-undef, no-process-env
+    `${process.env.SANITY_PRODUCTS_BASE_URL}/sanity/products?search=${searchTerm}`
   )
   return response.json()
 }
