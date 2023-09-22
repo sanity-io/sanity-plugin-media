@@ -120,29 +120,31 @@ export default function ProductSelector<T extends ProductDataType>(
         padding={[3, 3, 4]}
         placeholder="Type to find product …"
         renderOption={option => (
-          <Card as="button" border style={{opacity: option.payload.published ? 1 : 0.5}}>
+          <Card as="button" border style={{opacity: option?.payload?.published ? 1 : 0.5}}>
             <Flex align="center">
               <Box paddingLeft={3} paddingY={2} style={{height: '65px'}}>
                 <img
                   style={{width: '60px', height: '70px'}}
                   src={`${
-                    option.payload.masterVariant.images?.find(image => /STN-01$/.test(image.url))
+                    option?.payload?.masterVariant?.images?.find(image =>
+                      /STN-01$/.test(image?.url)
+                    )?.url ||
+                    option?.payload?.masterVariant?.images?.find(image => /ST-01$/.test(image?.url))
                       ?.url ||
-                    option.payload.masterVariant.images?.find(image => /ST-01$/.test(image.url))
-                      ?.url ||
-                    option.payload.masterVariant.images?.[0]?.url
+                    option?.payload?.masterVariant?.images?.[0]?.url
                   }.JPEG?h=180&$sanity_product_thumb$`}
                   alt={'img'}
                 />
               </Box>
               <Box padding={2}>
                 <Box padding={2}>
-                  <Text size={[2, 2, 3]}>{option.payload.name.en}</Text>
+                  <Text size={[2, 2, 3]}>{option?.payload?.name?.en}</Text>
                 </Box>
                 <Box padding={2}>
                   <Text size={[2, 2, 3]}>
-                    {option.payload.masterVariant.attributes?.find(attr => attr.name === 'iNumber')
-                      ?.value || ''}
+                    {option?.payload?.masterVariant?.attributes?.find(
+                      attr => attr?.name === 'iNumber'
+                    )?.value || ''}
                   </Text>
                 </Box>
               </Box>
