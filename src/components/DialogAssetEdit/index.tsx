@@ -30,6 +30,7 @@ import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
+import ProductPreview from '../ProductPreview'
 
 type Props = {
   children: ReactNode
@@ -348,6 +349,25 @@ const DialogAssetEdit = (props: Props) => {
                         <ProductSelector
                           onChange={selected => {
                             console.log('selected', selected)
+                            setValue('products', [
+                              ...currentAsset?.products,
+                              //@ts-expect-error
+                              ...(selected.value ?? [])
+                            ])
+                          }}
+                          renderDefault={() => {
+                            return (
+                              <Card border padding={3}>
+                                <Text>Products</Text>
+
+                                {
+                                  //@ts-expect-error
+                                  currentAsset?.products?.map(product => {
+                                    return <ProductPreview key={product.id} value={product} />
+                                  })
+                                }
+                              </Card>
+                            )
                           }}
                           value={currentAsset?.products}
                         />

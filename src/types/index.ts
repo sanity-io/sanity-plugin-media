@@ -21,6 +21,21 @@ type CustomFields = {
   title?: string
 }
 
+type ImageCustomFields = {
+  name: string
+  season: string
+  collaboration?: string
+  products: string[]
+  altText?: string
+  description?: string
+  opt?: {
+    media?: {
+      tags?: SanityReference[]
+    }
+  }
+  title?: string
+}
+
 type SearchFacetInputCommon = {
   assetTypes: AssetType[]
   name: string
@@ -146,7 +161,7 @@ export type FileAsset = SanityAssetDocument &
   }
 
 export type ImageAsset = SanityImageAssetDocument &
-  CustomFields & {
+  ImageCustomFields & {
     _type: 'sanity.imageAsset'
   }
 
