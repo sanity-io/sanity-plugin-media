@@ -354,6 +354,7 @@ const DialogAssetEdit = (props: Props) => {
                               //@ts-expect-error
                               ...(selected.value ?? [])
                             ])
+                            console.log('products', currentAsset?.products)
                           }}
                           renderDefault={() => {
                             return (
