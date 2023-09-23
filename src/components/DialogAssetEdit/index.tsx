@@ -70,7 +70,7 @@ const DialogAssetEdit = (props: Props) => {
     (asset?: Asset): AssetFormData => {
       return {
         name: asset?.name || '',
-        products: asset?.products || ['first product'],
+        products: asset?.products || [],
         season: asset?.season || '',
         collaboration: asset?.collaboration || '',
         altText: asset?.altText || '',
