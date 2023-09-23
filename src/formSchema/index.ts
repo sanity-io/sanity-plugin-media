@@ -9,7 +9,18 @@ export const assetFormSchema = z.object({
   name: z.string().trim(),
   season: z.string().trim(),
   collaboration: z.string().trim().optional(),
-  products: z.array(z.string().trim()),
+  products: z
+    .array(
+      z.object({
+        _key: z.string(),
+        id: z.string(),
+        imageUrl: z.string(),
+        name: z.string(),
+        inumber: z.string(),
+        published: z.boolean()
+      })
+    )
+    .optional(),
   altText: z.string().trim().optional(),
   description: z.string().trim().optional(),
   opt: z.object({

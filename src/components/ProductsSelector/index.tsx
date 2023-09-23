@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {useDebounce} from 'usehooks-ts'
-import {set, unset, ArrayOfObjectsInputProps, InputProps} from 'sanity'
 import {Flex, Card, Text, Autocomplete, Box, Button} from '@sanity/ui'
 import {SearchIcon, CloseIcon} from '@sanity/icons'
 import {ProductProjection} from '@commercetools/platform-sdk'
@@ -29,10 +28,11 @@ const search = async (searchTerm: string) => {
   return response.json()
 }
 
-export default function ProductSelector<T extends ProductDataType>(
-  props: Partial<ArrayOfObjectsInputProps<T>>
-) {
-  const {value = [], onChange, renderDefault, ...rest} = props
+export default function ProductSelector(props: {
+  value: ProductDataType[]
+  onChange?: (updatedValue: ProductDataType[]) => void
+}) {
+  const {value = [], onChange} = props
   const [searchValue, setSearchValue] = useState<string>('')
   const [results, setResults] = useState<ProductProjection[]>([])
 
@@ -79,33 +79,21 @@ export default function ProductSelector<T extends ProductDataType>(
           images?.find(image => /STN-01$/.test(image.url))?.url ||
           images?.find(image => /ST-01$/.test(image.url))?.url ||
           images?.[0]?.url
-        onChange?.(
-          set([
-            ...value,
-            {
-              id: product?.id,
-              imageUrl,
-              name: product?.name.en || '',
-              published: !!product?.published,
-              inumber:
-                product?.masterVariant.attributes?.find(attr => attr.name === 'iNumber')?.value ||
-                '',
-              _key: product?.key || product?.id || ''
-            }
-          ])
-        )
+        onChange?.([
+          ...value,
+          {
+            id: product?.id!,
+            imageUrl: imageUrl!,
+            name: product?.name.en || '',
+            published: !!product?.published,
+            inumber:
+              product?.masterVariant.attributes?.find(attr => attr.name === 'iNumber')?.value || '',
+            _key: product?.key || product?.id || ''
+          }
+        ])
       }
     },
     [products, onChange, value]
-  )
-
-  const dafault = useMemo(
-    () =>
-      renderDefault?.({
-        ...rest,
-        readOnly: true
-      } as unknown as InputProps),
-    [renderDefault, rest]
   )
 
   return (
@@ -151,24 +139,18 @@ export default function ProductSelector<T extends ProductDataType>(
             </Flex>
           </Card>
         )}
-        renderValue={() => {
-          return ''
-        }}
       />
       <Box paddingTop={3}>
         <Button
           disabled={!value?.length}
           fontSize={[1, 1, 1]}
           icon={CloseIcon}
-          onClick={() => onChange?.(unset())}
+          onClick={() => onChange?.([])}
           tone="critical"
           mode="ghost"
           padding={[3, 3, 4]}
           text="Clear all"
         />
-      </Box>
-      <Box flex={1} paddingY={3}>
-        {dafault}
       </Box>
     </Card>
   )

@@ -350,26 +350,10 @@ const DialogAssetEdit = (props: Props) => {
                         />
                         {/* products */}
                         <ProductSelector
-                          onChange={selected => {
-                            console.log('selected', selected)
-                            setValue('products', [
-                              ...(currentAsset?.products ?? []),
-                              //@ts-expect-error
-                              ...(selected.value ?? [])
-                            ])
+                          onChange={updatedValue => {
+                            console.log('selected', updatedValue)
+                            setValue('products', updatedValue)
                             console.log('products after adding', currentAsset?.products)
-                          }}
-                          renderDefault={() => {
-                            return (
-                              <Card border padding={3}>
-                                {/* {
-                                  //@ts-expect-error
-                                  currentAsset?.products?.map(product => {
-                                    return <ProductPreview key={product.id} value={product} />
-                                  })
-                                } */}
-                              </Card>
-                            )
                           }}
                           value={currentAsset?.products}
                         />
