@@ -350,7 +350,7 @@ const DialogAssetEdit = (props: Props) => {
                           onChange={selected => {
                             console.log('selected', selected)
                             setValue('products', [
-                              ...currentAsset?.products,
+                              ...(currentAsset?.products ?? []),
                               //@ts-expect-error
                               ...(selected.value ?? [])
                             ])
@@ -358,8 +358,6 @@ const DialogAssetEdit = (props: Props) => {
                           renderDefault={() => {
                             return (
                               <Card border padding={3}>
-                                <Text>Products</Text>
-
                                 {
                                   //@ts-expect-error
                                   currentAsset?.products?.map(product => {
