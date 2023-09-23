@@ -59,6 +59,9 @@ const DialogAssetEdit = (props: Props) => {
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
 
   const currentAsset = assetItem ? assetItem?.asset : assetSnapshot
+
+  console.log(JSON.stringify(currentAsset, null, 2))
+
   const allTagOptions = getTagSelectOptions(tags)
 
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
@@ -354,7 +357,7 @@ const DialogAssetEdit = (props: Props) => {
                               //@ts-expect-error
                               ...(selected.value ?? [])
                             ])
-                            console.log('products', currentAsset?.products)
+                            console.log('products after adding', currentAsset?.products)
                           }}
                           renderDefault={() => {
                             return (
