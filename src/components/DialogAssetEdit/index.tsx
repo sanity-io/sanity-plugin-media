@@ -30,7 +30,7 @@ import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
-import ProductPreview from '../ProductPreview'
+// import ProductPreview from '../ProductPreview'
 
 type Props = {
   children: ReactNode
@@ -70,7 +70,7 @@ const DialogAssetEdit = (props: Props) => {
     (asset?: Asset): AssetFormData => {
       return {
         name: asset?.name || '',
-        products: asset?.products || [],
+        products: asset?.products || ['first product'],
         season: asset?.season || '',
         collaboration: asset?.collaboration || '',
         altText: asset?.altText || '',
@@ -362,12 +362,12 @@ const DialogAssetEdit = (props: Props) => {
                           renderDefault={() => {
                             return (
                               <Card border padding={3}>
-                                {
+                                {/* {
                                   //@ts-expect-error
                                   currentAsset?.products?.map(product => {
                                     return <ProductPreview key={product.id} value={product} />
                                   })
-                                }
+                                } */}
                               </Card>
                             )
                           }}
