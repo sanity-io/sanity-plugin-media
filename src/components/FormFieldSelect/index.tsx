@@ -30,7 +30,7 @@ const FormFieldSelect = forwardRef<Ref, Props>((props: Props, ref) => {
           fontSize={[2, 2, 3, 4]}
           padding={[3, 3, 4]}
           space={[3, 3, 4]}
-          value={value}
+          value={options.find(option => option.id === value)?.name || ''}
           ref={ref}
         >
           {options.map(option => (
