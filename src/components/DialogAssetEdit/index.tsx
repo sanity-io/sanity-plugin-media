@@ -98,6 +98,8 @@ const DialogAssetEdit = (props: Props) => {
     resolver: zodResolver(assetFormSchema)
   })
 
+  const currentValues = getValues()
+
   const formUpdating = !assetItem || assetItem?.updating
 
   const handleClose = useCallback(() => {
@@ -328,7 +330,11 @@ const DialogAssetEdit = (props: Props) => {
                         {/* season */}
                         <FormFieldSelect
                           {...register('season')}
-                          onSelect={value => setValue('season', value)}
+                          onSelect={value => {
+                            console.log('season select', value)
+                            setValue('season', value)
+                            console.log('after season select', currentValues?.season)
+                          }}
                           options={['SS1', 'SS2']}
                           disabled={formUpdating}
                           error={errors?.name?.message}
