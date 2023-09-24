@@ -119,7 +119,6 @@ export default function ProductSelector(props: {
         onQueryChange={handleQueryChange}
         onSelect={onSelect}
         options={products}
-        value={searchValue}
         padding={[3, 3, 4]}
         placeholder="Type to find product …"
         renderOption={option => (
