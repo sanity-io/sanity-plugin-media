@@ -37,6 +37,7 @@ export default function ProductSelector(props: {
   console.log('value', value)
   const [searchValue, setSearchValue] = useState<string>('')
   const [results, setResults] = useState<ProductProjection[]>([])
+  const [localValue, setLocalValue] = useState<ProductDataType[]>(value)
 
   const debouncedValue = useDebounce<string>(searchValue, 700)
   useEffect(() => {
@@ -81,21 +82,30 @@ export default function ProductSelector(props: {
           images?.find(image => /STN-01$/.test(image.url))?.url ||
           images?.find(image => /ST-01$/.test(image.url))?.url ||
           images?.[0]?.url
-        onChange?.([
-          ...value,
-          {
-            id: product?.id!,
-            imageUrl: imageUrl!,
-            name: product?.name.en || '',
-            published: !!product?.published,
-            inumber:
-              product?.masterVariant.attributes?.find(attr => attr.name === 'iNumber')?.value || '',
-            _key: product?.key || product?.id || ''
-          }
-        ])
+        const productToAdd = {
+          id: product?.id!,
+          imageUrl: imageUrl!,
+          name: product?.name.en || '',
+          published: !!product?.published,
+          inumber:
+            product?.masterVariant.attributes?.find(attr => attr.name === 'iNumber')?.value || '',
+          _key: product?.key || product?.id || ''
+        }
+        const updatedValue = [...localValue, productToAdd]
+        setLocalValue(updatedValue)
+        onChange?.(updatedValue)
       }
     },
     [products, onChange, value]
+  )
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      const updatedValue = localValue.filter(product => product.id !== id)
+      setLocalValue(updatedValue)
+      onChange?.(updatedValue)
+    },
+    [localValue, onChange]
   )
 
   return (
@@ -153,8 +163,8 @@ export default function ProductSelector(props: {
           padding={[3, 3, 4]}
           text="Clear all"
         />
-        {value?.map(product => (
-          <ProductPreview key={product._key} value={product} />
+        {localValue?.map(product => (
+          <ProductPreview onDelete={handleDelete} key={product._key} value={product} />
         ))}
       </Box>
     </Card>

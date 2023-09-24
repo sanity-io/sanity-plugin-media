@@ -1,9 +1,11 @@
 import React from 'react'
-import {Flex, Text, Box} from '@sanity/ui'
+import {Flex, Text, Box, Button} from '@sanity/ui'
+import {TrashIcon} from '@sanity/icons'
 import {ProductDataType} from '../ProductsSelector'
 
-const ProductPreview = (props: {value: ProductDataType}) => {
-  const {value} = props
+const ProductPreview = (props: {value: ProductDataType; onDelete: (id: string) => void}) => {
+  // eslint-disable-next-line no-empty-function
+  const {value, onDelete = () => {}} = props
   const {imageUrl, name, inumber, published} = value
 
   return (
@@ -20,6 +22,16 @@ const ProductPreview = (props: {value: ProductDataType}) => {
         <Box padding={2}>
           <Text size={2}>{inumber}</Text>
         </Box>
+      </Box>
+      <Box padding={2}>
+        <Button
+          fontSize={[2, 2, 3]}
+          icon={TrashIcon}
+          onClick={() => onDelete(value.id)}
+          padding={[3, 3, 4]}
+          text="Remove"
+          tone="critical"
+        />
       </Box>
     </Flex>
   )

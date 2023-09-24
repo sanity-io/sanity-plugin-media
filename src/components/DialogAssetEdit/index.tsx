@@ -30,6 +30,7 @@ import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
+import FormFieldInputLabel from '../FormFieldInputLabel'
 // import ProductPreview from '../ProductPreview'
 
 type Props = {
@@ -355,11 +356,15 @@ const DialogAssetEdit = (props: Props) => {
                           value={currentAsset?.collaboration}
                         />
                         {/* products */}
+                        <FormFieldInputLabel
+                          description="Add products to image"
+                          error={errors.products?.message}
+                          label="Products"
+                          name="products"
+                        />
                         <ProductSelector
                           onChange={updatedValue => {
-                            console.log('selected', updatedValue)
                             setValue('products', updatedValue)
-                            console.log('products after adding', currentAsset?.products)
                           }}
                           value={currentValues?.products ?? []}
                         />
