@@ -361,7 +361,7 @@ const DialogAssetEdit = (props: Props) => {
                             setValue('products', updatedValue)
                             console.log('products after adding', currentAsset?.products)
                           }}
-                          value={currentAsset?.products}
+                          value={currentValues?.products ?? []}
                         />
                         {/* Title */}
                         <FormFieldInputText
