@@ -253,6 +253,10 @@ const assetsSlice = createSlice({
               originalFilename,
               size,
               title,
+              products,
+              collaboration, 
+              season,
+              name,
               url
             } ${pipe} ${sort} ${selector},
           }
