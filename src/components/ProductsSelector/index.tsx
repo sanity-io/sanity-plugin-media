@@ -4,6 +4,7 @@ import {useDebounce} from 'usehooks-ts'
 import {Flex, Card, Text, Autocomplete, Box, Button} from '@sanity/ui'
 import {SearchIcon, CloseIcon} from '@sanity/icons'
 import {ProductProjection} from '@commercetools/platform-sdk'
+import ProductPreview from '../ProductPreview'
 // import {ByProjectKeyProductProjectionsSearchRequestBuilder} from '@commercetools/platform-sdk/dist/declarations/src/generated/client/search/by-project-key-product-projections-search-request-builder'
 
 const AutocompleteWithPayload = Autocomplete<{
@@ -33,6 +34,7 @@ export default function ProductSelector(props: {
   onChange?: (updatedValue: ProductDataType[]) => void
 }) {
   const {value = [], onChange} = props
+  console.log('value', value)
   const [searchValue, setSearchValue] = useState<string>('')
   const [results, setResults] = useState<ProductProjection[]>([])
 
@@ -151,6 +153,9 @@ export default function ProductSelector(props: {
           padding={[3, 3, 4]}
           text="Clear all"
         />
+        {value?.map(product => (
+          <ProductPreview key={product._key} value={product} />
+        ))}
       </Box>
     </Card>
   )
