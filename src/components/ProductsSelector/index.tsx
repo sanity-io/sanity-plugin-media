@@ -91,7 +91,6 @@ export default function ProductSelector(props: {
         const updatedValue = [...localValue, productToAdd]
         setLocalValue(updatedValue)
         onChange?.(updatedValue)
-        setSearchValue('')
       }
     },
     [products, value, localValue, onChange]
