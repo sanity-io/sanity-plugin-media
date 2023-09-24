@@ -94,9 +94,10 @@ export default function ProductSelector(props: {
         const updatedValue = [...localValue, productToAdd]
         setLocalValue(updatedValue)
         onChange?.(updatedValue)
+        setSearchValue('');
       }
     },
-    [products, onChange, value]
+    [products, value, localValue, onChange]
   )
 
   const handleDelete = useCallback(
@@ -108,6 +109,11 @@ export default function ProductSelector(props: {
     [localValue, onChange]
   )
 
+  const handleClearAll = useCallback(() => {
+    setLocalValue([])
+    onChange?.([])
+  }, [onChange])
+
   return (
     <Card border padding={3}>
       <AutocompleteWithPayload
@@ -117,6 +123,7 @@ export default function ProductSelector(props: {
         onQueryChange={handleQueryChange}
         onSelect={onSelect}
         options={products}
+        value={searchValue}
         padding={[3, 3, 4]}
         placeholder="Type to find product …"
         renderOption={option => (
@@ -152,12 +159,12 @@ export default function ProductSelector(props: {
           </Card>
         )}
       />
-      <Box paddingTop={3}>
+      <Box paddingTop={3} marginBottom={3}>
         <Button
           disabled={!value?.length}
           fontSize={[1, 1, 1]}
           icon={CloseIcon}
-          onClick={() => onChange?.([])}
+          onClick={handleClearAll}
           tone="critical"
           mode="ghost"
           padding={[3, 3, 4]}
