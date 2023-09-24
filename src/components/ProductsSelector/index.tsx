@@ -34,7 +34,6 @@ export default function ProductSelector(props: {
   onChange?: (updatedValue: ProductDataType[]) => void
 }) {
   const {value = [], onChange} = props
-  console.log('value', value)
   const [searchValue, setSearchValue] = useState<string>('')
   const [results, setResults] = useState<ProductProjection[]>([])
   const [localValue, setLocalValue] = useState<ProductDataType[]>(value)
@@ -70,8 +69,6 @@ export default function ProductSelector(props: {
       })),
     [debouncedValue, results]
   )
-
-  console.log('products', products, results)
 
   const onSelect = useCallback(
     (matcher: string) => {

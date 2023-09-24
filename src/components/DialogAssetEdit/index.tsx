@@ -31,6 +31,7 @@ import Image from '../Image'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
 import FormFieldInputLabel from '../FormFieldInputLabel'
+import {loadCollaborations} from '../../utils/loadCollaborations'
 // import ProductPreview from '../ProductPreview'
 
 type Props = {
@@ -58,10 +59,9 @@ const DialogAssetEdit = (props: Props) => {
   // Generate a snapshot of the current asset
   const [assetSnapshot, setAssetSnapshot] = useState(assetItem?.asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
+  const [collaborationOptions, setCollaborationOptions] = useState<{id: string; name: string}[]>([])
 
   const currentAsset = assetItem ? assetItem?.asset : assetSnapshot
-
-  console.log(JSON.stringify(currentAsset, null, 2))
 
   const allTagOptions = getTagSelectOptions(tags)
 
@@ -174,6 +174,14 @@ const DialogAssetEdit = (props: Props) => {
     },
     [assetItem?.asset, dispatch]
   )
+
+  useEffect(() => {
+    const setCollaboration = async () => {
+      const collabs = await loadCollaborations()
+      setCollaborationOptions(collabs)
+    }
+    setCollaboration()
+  }, [])
 
   // Listen for asset mutations and update snapshot
   useEffect(() => {
@@ -332,11 +340,9 @@ const DialogAssetEdit = (props: Props) => {
                         <FormFieldSelect
                           {...register('season')}
                           onSelect={value => {
-                            console.log('season select', value)
                             setValue('season', value)
-                            console.log('after season select', currentValues?.season)
                           }}
-                          options={['SS1', 'SS2']}
+                          options={collaborationOptions}
                           disabled={formUpdating}
                           error={errors?.name?.message}
                           label="season"
@@ -348,7 +354,7 @@ const DialogAssetEdit = (props: Props) => {
                         <FormFieldSelect
                           {...register('collaboration')}
                           onSelect={value => setValue('collaboration', value)}
-                          options={['SS1', 'SS2']}
+                          options={collaborationOptions}
                           disabled={formUpdating}
                           error={errors?.name?.message}
                           label="collaboration"

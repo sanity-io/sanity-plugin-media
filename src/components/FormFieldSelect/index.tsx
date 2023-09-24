@@ -3,7 +3,7 @@ import FormFieldInputLabel from '../FormFieldInputLabel'
 import React, {forwardRef} from 'react'
 
 interface Props {
-  options: Array<string>
+  options: Array<{id: string; name: string}>
   onSelect: (value: string) => void
   description?: string
   disabled?: boolean
@@ -34,7 +34,9 @@ const FormFieldSelect = forwardRef<Ref, Props>((props: Props, ref) => {
           ref={ref}
         >
           {options.map(option => (
-            <option key={option}>{option}</option>
+            <option value={option?.id} key={option?.id}>
+              {option?.name}
+            </option>
           ))}
         </Select>
       </Stack>
