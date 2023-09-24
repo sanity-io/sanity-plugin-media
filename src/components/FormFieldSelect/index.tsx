@@ -26,6 +26,7 @@ const FormFieldSelect = forwardRef<Ref, Props>((props: Props, ref) => {
           {...rest}
           disabled={disabled}
           onSelect={e => onSelect(e.currentTarget.value)}
+          onChange={e => onSelect(e.currentTarget.value)}
           fontSize={[2, 2, 3, 4]}
           padding={[3, 3, 4]}
           space={[3, 3, 4]}
