@@ -12,12 +12,15 @@ interface Props {
   value?: string
   label: string
   name: string
+  initialValue?: string
 }
 
 type Ref = HTMLSelectElement
 
 const FormFieldSelect = forwardRef<Ref, Props>((props: Props, ref) => {
-  const {description, disabled, error, label, options, value, onSelect, name, ...rest} = props
+  const {description, disabled, error, label, options, onSelect, name, initialValue, ...rest} =
+    props
+  const firstOption = options.find(option => option.id === initialValue)?.name || 'Select an option'
   return (
     <Box>
       <FormFieldInputLabel description={description} error={error} label={label} name={name} />
@@ -30,9 +33,9 @@ const FormFieldSelect = forwardRef<Ref, Props>((props: Props, ref) => {
           fontSize={[2, 2, 3, 4]}
           padding={[3, 3, 4]}
           space={[3, 3, 4]}
-          value={options.find(option => option.id === value)?.name || ''}
           ref={ref}
         >
+          {initialValue && <option>{firstOption}</option>}
           {options.map(option => (
             <option value={option?.id} key={option?.id}>
               {option?.name}

@@ -5,6 +5,7 @@ import {Flex, Card, Text, Autocomplete, Box, Button} from '@sanity/ui'
 import {SearchIcon, CloseIcon} from '@sanity/icons'
 import {ProductProjection} from '@commercetools/platform-sdk'
 import ProductPreview from '../ProductPreview'
+import FormFieldInputLabel from '../FormFieldInputLabel'
 // import {ByProjectKeyProductProjectionsSearchRequestBuilder} from '@commercetools/platform-sdk/dist/declarations/src/generated/client/search/by-project-key-product-projections-search-request-builder'
 
 const AutocompleteWithPayload = Autocomplete<{
@@ -32,8 +33,9 @@ const search = async (searchTerm: string) => {
 export default function ProductSelector(props: {
   value: ProductDataType[]
   onChange?: (updatedValue: ProductDataType[]) => void
+  error?: string
 }) {
-  const {value = [], onChange} = props
+  const {value = [], onChange, error} = props
   const [searchValue, setSearchValue] = useState<string>('')
   const [results, setResults] = useState<ProductProjection[]>([])
   const [localValue, setLocalValue] = useState<ProductDataType[]>(value)
@@ -113,6 +115,12 @@ export default function ProductSelector(props: {
 
   return (
     <Card border padding={3}>
+      <FormFieldInputLabel
+        error={error}
+        description="Add products to image"
+        label="Products"
+        name="products"
+      />
       <AutocompleteWithPayload
         fontSize={[2, 2, 3]}
         id="product-selector"

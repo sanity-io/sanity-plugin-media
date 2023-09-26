@@ -30,7 +30,6 @@ import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
-import FormFieldInputLabel from '../FormFieldInputLabel'
 import {loadCollaborations} from '../../utils/loadCollaborations'
 // import ProductPreview from '../ProductPreview'
 
@@ -347,7 +346,7 @@ const DialogAssetEdit = (props: Props) => {
                           error={errors?.name?.message}
                           label="season"
                           name="season"
-                          value={currentAsset?.season}
+                          initialValue={currentAsset?.season}
                         />
 
                         {/* collaboration */}
@@ -359,19 +358,14 @@ const DialogAssetEdit = (props: Props) => {
                           error={errors?.name?.message}
                           label="collaboration"
                           name="collaboration"
-                          value={currentAsset?.collaboration}
+                          initialValue={currentAsset?.collaboration}
                         />
                         {/* products */}
-                        <FormFieldInputLabel
-                          description="Add products to image"
-                          error={errors.products?.message}
-                          label="Products"
-                          name="products"
-                        />
                         <ProductSelector
                           onChange={updatedValue => {
                             setValue('products', updatedValue)
                           }}
+                          error={errors.products?.message}
                           value={currentValues?.products ?? []}
                         />
                         {/* Title */}
