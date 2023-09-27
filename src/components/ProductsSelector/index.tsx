@@ -24,7 +24,6 @@ export interface ProductDataType {
 
 const search = async (searchTerm: string) => {
   const response = await fetch(
-    // eslint-disable-next-line no-undef, no-process-env
     `https://sanity-ct-products-provider.fly.dev/sanity/products?search=${searchTerm}`
   )
   return response.json()
@@ -121,61 +120,68 @@ export default function ProductSelector(props: {
         label="Products"
         name="products"
       />
-      <AutocompleteWithPayload
-        fontSize={[2, 2, 3]}
-        id="product-selector"
-        icon={SearchIcon}
-        onQueryChange={handleQueryChange}
-        onSelect={onSelect}
-        options={products}
-        padding={[3, 3, 4]}
-        placeholder="Type to find product …"
-        renderOption={option => (
-          <Card as="button" border style={{opacity: option?.payload?.published ? 1 : 0.5}}>
-            <Flex align="center">
-              <Box paddingLeft={3} paddingY={2} style={{height: '65px'}}>
-                <img
-                  style={{width: '60px', height: '70px'}}
-                  src={`${
-                    option?.payload?.masterVariant?.images?.find(image =>
-                      /STN-01$/.test(image?.url)
-                    )?.url ||
-                    option?.payload?.masterVariant?.images?.find(image => /ST-01$/.test(image?.url))
-                      ?.url ||
-                    option?.payload?.masterVariant?.images?.[0]?.url
-                  }.JPEG?h=180&$sanity_product_thumb$`}
-                  alt={'img'}
-                />
-              </Box>
-              <Box padding={2}>
-                <Box padding={2}>
-                  <Text size={[2, 2, 3]}>{option?.payload?.name?.en}</Text>
-                </Box>
-                <Box padding={2}>
-                  <Text size={[2, 2, 3]}>
-                    {option?.payload?.masterVariant?.attributes?.find(
-                      attr => attr?.name === 'iNumber'
-                    )?.value || ''}
-                  </Text>
-                </Box>
-              </Box>
-            </Flex>
-          </Card>
-        )}
-      />
-      <Box paddingTop={3} marginBottom={3}>
-        <Button
-          disabled={!value?.length}
-          fontSize={[1, 1, 1]}
-          icon={CloseIcon}
-          onClick={handleClearAll}
-          tone="critical"
-          mode="ghost"
+      <Card marginY={2}>
+        <AutocompleteWithPayload
+          fontSize={[2, 2, 3]}
+          id="product-selector"
+          icon={SearchIcon}
+          onQueryChange={handleQueryChange}
+          onSelect={onSelect}
+          options={products}
           padding={[3, 3, 4]}
-          text="Clear all"
+          placeholder="Type to find product …"
+          renderOption={option => (
+            <Card as="button" border style={{opacity: option?.payload?.published ? 1 : 0.5}}>
+              <Flex align="center">
+                <Box paddingLeft={3} paddingY={2} style={{height: '65px'}}>
+                  <img
+                    style={{width: '60px', height: '70px'}}
+                    src={`${
+                      option?.payload?.masterVariant?.images?.find(image =>
+                        /STN-01$/.test(image?.url)
+                      )?.url ||
+                      option?.payload?.masterVariant?.images?.find(image =>
+                        /ST-01$/.test(image?.url)
+                      )?.url ||
+                      option?.payload?.masterVariant?.images?.[0]?.url
+                    }.JPEG?h=180&$sanity_product_thumb$`}
+                    alt={'img'}
+                  />
+                </Box>
+                <Box padding={2}>
+                  <Box padding={2}>
+                    <Text size={[2, 2, 3]}>{option?.payload?.name?.en}</Text>
+                  </Box>
+                  <Box padding={2}>
+                    <Text size={[2, 2, 3]}>
+                      {option?.payload?.masterVariant?.attributes?.find(
+                        attr => attr?.name === 'iNumber'
+                      )?.value || ''}
+                    </Text>
+                  </Box>
+                </Box>
+              </Flex>
+            </Card>
+          )}
         />
+      </Card>
+
+      <Box paddingTop={3} marginBottom={3}>
+        {localValue.length && (
+          <Button
+            disabled={!value?.length}
+            icon={CloseIcon}
+            onClick={handleClearAll}
+            tone="critical"
+            mode="ghost"
+            padding={[2, 2, 3]}
+            text="Clear all"
+          />
+        )}
         {localValue?.map(product => (
-          <ProductPreview onDelete={handleDelete} key={product._key} value={product} />
+          <Card marginY={2} key={product._key}>
+            <ProductPreview onDelete={handleDelete} value={product} />
+          </Card>
         ))}
       </Box>
     </Card>

@@ -30,8 +30,7 @@ import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
-import {loadCollaborations} from '../../utils/loadCollaborations'
-// import ProductPreview from '../ProductPreview'
+import {loadCollaborations, loadSeasons} from '../../utils/loadCollaborations'
 
 type Props = {
   children: ReactNode
@@ -59,7 +58,7 @@ const DialogAssetEdit = (props: Props) => {
   const [assetSnapshot, setAssetSnapshot] = useState(assetItem?.asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
   const [collaborationOptions, setCollaborationOptions] = useState<{id: string; name: string}[]>([])
-
+  const [seasons, setSeasons] = useState<{id: string; name: string}[]>([])
   const currentAsset = assetItem ? assetItem?.asset : assetSnapshot
 
   const allTagOptions = getTagSelectOptions(tags)
@@ -176,8 +175,9 @@ const DialogAssetEdit = (props: Props) => {
 
   useEffect(() => {
     const setCollaboration = async () => {
-      const collabs = await loadCollaborations()
+      const [collabs, seasonOptions] = await Promise.all([loadCollaborations(), loadSeasons()])
       setCollaborationOptions(collabs)
+      setSeasons(seasonOptions)
     }
     setCollaboration()
   }, [])
@@ -341,7 +341,7 @@ const DialogAssetEdit = (props: Props) => {
                           onSelect={value => {
                             setValue('season', value)
                           }}
-                          options={collaborationOptions}
+                          options={seasons}
                           disabled={formUpdating}
                           error={errors?.name?.message}
                           label="season"
