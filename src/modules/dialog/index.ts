@@ -27,6 +27,12 @@ const dialogSlice = createSlice({
         type: 'tagCreate'
       })
     })
+    builder.addCase(DIALOG_ACTIONS.showMassEdit, state => {
+      state.items.push({
+        id: 'massEdit',
+        type: 'massEdit'
+      })
+    })
     builder.addCase(DIALOG_ACTIONS.showTagEdit, (state, action) => {
       const {tagId} = action.payload
       state.items.push({
@@ -163,6 +169,12 @@ const dialogSlice = createSlice({
         assetId,
         id: assetId,
         type: 'assetEdit'
+      })
+    },
+    showMassAssetEdit(state) {
+      state.items.push({
+        id: 'massEdit',
+        type: 'massEdit'
       })
     },
     showSearchFacets(state) {

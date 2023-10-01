@@ -8,6 +8,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import {getSchemeColor} from '../../utils/getSchemeColor'
+import {EditIcon} from '@sanity/icons'
 
 const PickedBar = () => {
   const {scheme} = useColorScheme()
@@ -19,6 +20,10 @@ const PickedBar = () => {
   // Callbacks
   const handlePickClear = () => {
     dispatch(assetsActions.pickClear())
+  }
+
+  const handleMassEdit = () => {
+    dispatch(dialogActions.showMassAssetEdit())
   }
 
   const handleDeletePicked = () => {
@@ -57,6 +62,17 @@ const PickedBar = () => {
           tone="default"
         >
           <Label size={0}>Deselect</Label>
+        </Button>
+
+        {/* Mass Edit button */}
+        <Button
+          icon={EditIcon}
+          onClick={handleMassEdit}
+          padding={2}
+          style={{background: 'none', boxShadow: 'none'}}
+          tone="default"
+        >
+          <Label size={0}>Edit</Label>
         </Button>
 
         {/* Delete button */}

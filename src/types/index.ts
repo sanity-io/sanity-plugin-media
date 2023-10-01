@@ -88,6 +88,7 @@ export type Dialog =
   | DialogTagCreateProps
   | DialogTagEditProps
   | DialogTagsProps
+  | DialogMassAssetEditProps
 
 export type DialogAction = 'deleteAsset' | 'deleteTag'
 
@@ -101,6 +102,17 @@ export type DialogAssetEditProps = {
   }
   lastRemovedTagIds?: string[]
   type: 'assetEdit'
+}
+export type DialogMassAssetEditProps = {
+  assetId?: string
+  closeDialogId?: string
+  id: string
+  lastCreatedTag?: {
+    label: string
+    value: string
+  }
+  lastRemovedTagIds?: string[]
+  type: 'massEdit'
 }
 
 export type DialogConfirmProps = {

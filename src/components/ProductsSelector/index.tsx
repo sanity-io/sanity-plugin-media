@@ -167,7 +167,7 @@ export default function ProductSelector(props: {
       </Card>
 
       <Box paddingTop={3} marginBottom={3}>
-        {localValue.length && (
+        {localValue.length > 0 && (
           <Button
             disabled={!value?.length}
             icon={CloseIcon}

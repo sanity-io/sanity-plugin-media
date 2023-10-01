@@ -7,6 +7,7 @@ import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'
 import DialogTags from '../DialogTags'
+import DialogMassAssetEdit from '../DialogMassAssetEdit'
 
 const Dialogs = () => {
   // Redux
@@ -25,6 +26,14 @@ const Dialogs = () => {
         <DialogAssetEdit dialog={dialog} key={index}>
           {childDialogs}
         </DialogAssetEdit>
+      )
+    }
+
+    if (dialog.type === 'massEdit') {
+      return (
+        <DialogMassAssetEdit dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogMassAssetEdit>
       )
     }
 
