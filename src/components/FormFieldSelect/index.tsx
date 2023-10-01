@@ -18,8 +18,17 @@ interface Props {
 type Ref = HTMLSelectElement
 
 const FormFieldSelect = forwardRef<Ref, Props>((props: Props, ref) => {
-  const {description, disabled, error, label, options, onSelect, name, initialValue, ...rest} =
-    props
+  const {
+    description,
+    disabled,
+    error,
+    label,
+    options = [],
+    onSelect,
+    name,
+    initialValue,
+    ...rest
+  } = props
   const firstOption = options.find(option => option.id === initialValue)?.name || 'Select an option'
   return (
     <Box>

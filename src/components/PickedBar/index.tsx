@@ -53,6 +53,19 @@ const PickedBar = () => {
           </Label>
         </Box>
 
+        {/* Mass Edit button */}
+        <Button
+          icon={EditIcon}
+          onClick={handleMassEdit}
+          padding={2}
+          style={{background: 'none', boxShadow: 'none'}}
+          tone="default"
+        >
+          <Label size={0} style={{color: 'inherit'}}>
+            Edit
+          </Label>
+        </Button>
+
         {/* Deselect button */}
         <Button
           mode="bleed"
@@ -62,17 +75,6 @@ const PickedBar = () => {
           tone="default"
         >
           <Label size={0}>Deselect</Label>
-        </Button>
-
-        {/* Mass Edit button */}
-        <Button
-          icon={EditIcon}
-          onClick={handleMassEdit}
-          padding={2}
-          style={{background: 'none', boxShadow: 'none'}}
-          tone="default"
-        >
-          <Label size={0}>Edit</Label>
         </Button>
 
         {/* Delete button */}
