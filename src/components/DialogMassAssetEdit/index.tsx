@@ -5,7 +5,7 @@ import {AssetFormData, DialogMassAssetEditProps, TagSelectOption} from '@types'
 import React, {ReactNode, useCallback, useEffect, useState} from 'react'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import {assetFormSchema} from '../../formSchema'
+import {massEditAssetsFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 // import {assetsActions} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
@@ -69,7 +69,7 @@ const DialogMassAssetEdit = (props: Props) => {
   } = useForm<AssetFormData>({
     defaultValues: defaultValues,
     mode: 'onChange',
-    resolver: zodResolver(assetFormSchema)
+    resolver: zodResolver(massEditAssetsFormSchema)
   })
 
   const currentValues = getValues()
@@ -162,7 +162,13 @@ const DialogMassAssetEdit = (props: Props) => {
   )
 
   return (
-    <Dialog footer={<Footer />} header="Asset details" id={id} onClose={handleClose} width={3}>
+    <Dialog
+      footer={<Footer />}
+      header="Edit Selected Assets"
+      id={id}
+      onClose={handleClose}
+      width={3}
+    >
       {/*
         We reverse direction to ensure the download button doesn't appear (in the DOM) before other tabbable items.
         This ensures that the dialog doesn't scroll down to the download button (which on smaller screens, can sometimes
@@ -186,8 +192,7 @@ const DialogMassAssetEdit = (props: Props) => {
                 aria-controls="references-panel"
                 disabled={false}
                 id="references-tab"
-                label={`References`}
-                onClick={() => {}}
+                label={``}
                 selected={tabSection === 'references'}
                 size={2}
               />
