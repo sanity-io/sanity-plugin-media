@@ -804,8 +804,6 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
     withLatestFrom(state$),
     mergeMap(([action]) => {
       const {assets, formData} = action.payload
-      // eslint-disable-next-line no-console
-      console.log('ran at all', assets)
       // Create an observable for each asset and merge them into a single observable
       const updateObservables = assets.map(asset => {
         return from(

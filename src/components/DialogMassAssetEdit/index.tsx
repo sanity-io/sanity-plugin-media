@@ -94,8 +94,6 @@ const DialogMassAssetEdit = (props: Props) => {
   // Submit react-hook-form
   const onSubmit: SubmitHandler<AssetFormData> = useCallback(
     formData => {
-      console.log(formData)
-
       const sanitizedFormData = sanitizeFormData(formData)
 
       dispatch(
