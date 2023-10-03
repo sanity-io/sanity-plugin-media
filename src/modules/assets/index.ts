@@ -811,7 +811,7 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
             .patch(asset._id)
             .setIfMissing({opt: {}})
             .setIfMissing({'opt.media': {}})
-            .set(formData)
+            .set({...asset, ...formData})
             .commit()
         ).pipe(
           mergeMap((updatedAsset: any) =>
