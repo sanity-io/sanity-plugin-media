@@ -99,6 +99,7 @@ const DialogMassAssetEdit = (props: Props) => {
       dispatch(
         assetsActions.massUpdateRequest({
           assets: selectedAssets.map(each => each.asset),
+          closeDialogId: 'massEdit',
           formData: {
             ...sanitizedFormData,
             // Map tags to sanity references

@@ -174,7 +174,8 @@ const dialogSlice = createSlice({
     showMassAssetEdit(state) {
       state.items.push({
         id: 'massEdit',
-        type: 'massEdit'
+        type: 'massEdit',
+        closeDialogId: 'massEdit'
       })
     },
     showSearchFacets(state) {
