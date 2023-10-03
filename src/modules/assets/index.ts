@@ -803,7 +803,7 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
     filter(assetsActions.massUpdateRequest.match),
     withLatestFrom(state$),
     mergeMap(([action]) => {
-      const {assets, closeDialogId, formData} = action.payload
+      const {assets, formData} = action.payload
       // eslint-disable-next-line no-console
       console.log('ran at all', assets)
       // Create an observable for each asset and merge them into a single observable
@@ -819,8 +819,7 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
           mergeMap((updatedAsset: any) =>
             of(
               assetsActions.updateComplete({
-                asset: updatedAsset,
-                closeDialogId
+                asset: updatedAsset
               })
             )
           ),
