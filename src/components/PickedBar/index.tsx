@@ -61,7 +61,7 @@ const PickedBar = () => {
           style={{background: 'none', boxShadow: 'none'}}
           tone="default"
         >
-          <Label size={0} style={{color: 'inherit'}}>
+          <Label size={0} style={{color: 'white'}}>
             Edit
           </Label>
         </Button>

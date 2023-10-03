@@ -19,7 +19,9 @@ import FormFieldInputTextarea from '../FormFieldInputTextarea'
 import FormSubmitButton from '../FormSubmitButton'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
+import sanitizeFormData from '../../utils/sanitizeFormData'
 import {loadCollaborations, loadSeasons} from '../../utils/loadCollaborations'
+import {selectAssetsPicked, assetsActions} from '../../modules/assets'
 
 type Props = {
   children: ReactNode
@@ -34,6 +36,7 @@ const DialogMassAssetEdit = (props: Props) => {
 
   const dispatch = useDispatch()
   const tags = useTypedSelector(selectTags)
+  const selectedAssets = useTypedSelector(selectAssetsPicked)
 
   // Generate a snapshot of the current asset
 
@@ -93,31 +96,30 @@ const DialogMassAssetEdit = (props: Props) => {
     formData => {
       console.log(formData)
 
-      // const sanitizedFormData = sanitizeFormData(formData)
+      const sanitizedFormData = sanitizeFormData(formData)
 
-      // dispatch(
-      //   assetsActions.updateRequest({
-      //     asset: assetItem?.asset,
-      //     closeDialogId: assetItem?.asset._id,
-      //     formData: {
-      //       ...sanitizedFormData,
-      //       // Map tags to sanity references
-      //       opt: {
-      //         media: {
-      //           ...sanitizedFormData.opt.media,
-      //           tags:
-      //             sanitizedFormData.opt.media.tags?.map((tag: TagSelectOption) => ({
-      //               _ref: tag.value,
-      //               _type: 'reference',
-      //               _weak: true
-      //             })) || null
-      //         }
-      //       }
-      //     }
-      //   })
-      // )
+      dispatch(
+        assetsActions.massUpdateRequest({
+          assets: selectedAssets.map(each => each.asset),
+          formData: {
+            ...sanitizedFormData,
+            // Map tags to sanity references
+            opt: {
+              media: {
+                ...sanitizedFormData.opt.media,
+                tags:
+                  sanitizedFormData.opt.media.tags?.map((tag: TagSelectOption) => ({
+                    _ref: tag.value,
+                    _type: 'reference',
+                    _weak: true
+                  })) || null
+              }
+            }
+          }
+        })
+      )
     },
-    [dispatch]
+    [dispatch, selectedAssets]
   )
 
   useEffect(() => {
@@ -297,15 +299,6 @@ const DialogMassAssetEdit = (props: Props) => {
               />
             </Box>
           </>
-        </Box>
-
-        <Box flex={1} padding={4}>
-          {/* Metadata */}
-          {/* {currentValues && (
-            <Box marginTop={4}>
-              <AssetMetadata asset={currentValues} item={assetItem} />
-            </Box>
-          )} */}
         </Box>
       </Flex>
 

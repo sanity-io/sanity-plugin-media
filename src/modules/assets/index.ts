@@ -21,6 +21,7 @@ import {
   catchError,
   debounceTime,
   filter,
+  mergeWith,
   mergeMap,
   switchMap,
   withLatestFrom
@@ -380,6 +381,19 @@ const assetsSlice = createSlice({
     ) {
       const assetId = action.payload?.asset?._id
       state.byIds[assetId].updating = true
+    },
+    massUpdateRequest(
+      state,
+      action: PayloadAction<{
+        assets: Asset[]
+        closeDialogId?: string
+        formData: Record<string, any>
+      }>
+    ) {
+      const assetIds = action.payload?.assets?.map(asset => asset._id)
+      for (const assetId of assetIds) {
+        state.byIds[assetId].updating = true
+      }
     },
     viewSet(state, action: PayloadAction<{view: BrowserView}>) {
       state.view = action.payload?.view
@@ -781,6 +795,51 @@ export const assetsUpdateEpic: MyEpic = (action$, state$, {client}) =>
           )
         )
       )
+    })
+  )
+
+export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
+  action$.pipe(
+    filter(assetsActions.massUpdateRequest.match),
+    withLatestFrom(state$),
+    //@ts-expect-error
+    mergeMap(([action]) => {
+      const {assets, closeDialogId, formData} = action.payload
+
+      // Create an observable for each asset and merge them into a single observable
+      const updateObservables = assets.map(asset => {
+        return from(
+          client
+            .patch(asset._id)
+            .setIfMissing({opt: {}})
+            .setIfMissing({'opt.media': {}})
+            .set(formData)
+            .commit()
+        ).pipe(
+          mergeMap((updatedAsset: any) =>
+            of(
+              assetsActions.updateComplete({
+                asset: updatedAsset,
+                closeDialogId
+              })
+            )
+          ),
+          catchError((error: ClientError) =>
+            of(
+              assetsActions.updateError({
+                asset,
+                error: {
+                  message: error?.message || 'Internal error',
+                  statusCode: error?.statusCode || 500
+                }
+              })
+            )
+          )
+        )
+      })
+
+      // Merge all the update observables into a single observable
+      return mergeWith(...updateObservables) // Specify the type explicitly here
     })
   )
 
