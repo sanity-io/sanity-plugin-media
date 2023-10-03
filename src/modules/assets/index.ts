@@ -21,11 +21,11 @@ import {
   catchError,
   debounceTime,
   filter,
-  mergeWith,
   mergeMap,
   switchMap,
   withLatestFrom
 } from 'rxjs/operators'
+import {merge} from 'rxjs'
 import {getOrderTitle} from '../../config/orders'
 import {ORDER_OPTIONS} from '../../constants'
 import debugThrottle from '../../operators/debugThrottle'
@@ -802,7 +802,6 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(assetsActions.massUpdateRequest.match),
     withLatestFrom(state$),
-    //@ts-expect-error
     mergeMap(([action]) => {
       const {assets, closeDialogId, formData} = action.payload
       // eslint-disable-next-line no-console
@@ -840,7 +839,7 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
       })
 
       // Merge all the update observables into a single observable
-      return mergeWith(...updateObservables) // Specify the type explicitly here
+      return merge(...updateObservables) // Specify the type explicitly here
     })
   )
 
