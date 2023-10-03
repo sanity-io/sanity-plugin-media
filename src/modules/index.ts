@@ -21,7 +21,8 @@ import assetsReducer, {
   assetsTagsAddEpic,
   assetsTagsRemoveEpic,
   assetsUnpickEpic,
-  assetsUpdateEpic
+  assetsUpdateEpic,
+  assetsMassUpdateEpic
 } from './assets'
 import debugReducer from './debug'
 import dialogReducer, {
@@ -75,6 +76,7 @@ export const rootEpic = combineEpics(
   assetsTagsRemoveEpic,
   assetsUnpickEpic,
   assetsUpdateEpic,
+  assetsMassUpdateEpic,
   dialogClearOnAssetUpdateEpic,
   dialogTagCreateEpic,
   dialogTagDeleteEpic,
