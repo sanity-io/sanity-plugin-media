@@ -174,12 +174,12 @@ const DialogAssetEdit = (props: Props) => {
   )
 
   useEffect(() => {
-    const setCollaboration = async () => {
+    const setCollaborationAndSeasons = async () => {
       const [collabs, seasonOptions] = await Promise.all([loadCollaborations(), loadSeasons()])
       setCollaborationOptions(collabs)
       setSeasons(seasonOptions)
     }
-    setCollaboration()
+    setCollaborationAndSeasons()
   }, [])
 
   // Listen for asset mutations and update snapshot

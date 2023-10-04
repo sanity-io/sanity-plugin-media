@@ -16,7 +16,6 @@ export const assetFormSchema = z.object({
         id: z.string(),
         imageUrl: z.string(),
         name: z.string(),
-        inumber: z.string(),
         published: z.boolean()
       })
     )
@@ -43,7 +42,6 @@ export const massEditAssetsFormSchema = z.object({
         id: z.string(),
         imageUrl: z.string(),
         name: z.string(),
-        inumber: z.string(),
         published: z.boolean()
       })
     )

@@ -6,7 +6,6 @@ import {SearchIcon, CloseIcon} from '@sanity/icons'
 import {ProductProjection} from '@commercetools/platform-sdk'
 import ProductPreview from '../ProductPreview'
 import FormFieldInputLabel from '../FormFieldInputLabel'
-// import {ByProjectKeyProductProjectionsSearchRequestBuilder} from '@commercetools/platform-sdk/dist/declarations/src/generated/client/search/by-project-key-product-projections-search-request-builder'
 
 const AutocompleteWithPayload = Autocomplete<{
   payload: ProductProjection
@@ -18,13 +17,14 @@ export interface ProductDataType {
   id: string
   imageUrl: string
   name: string
-  inumber: string
   published: boolean
 }
 
 const search = async (searchTerm: string) => {
   const response = await fetch(
-    `https://sanity-ct-products-provider.fly.dev/sanity/products?search=${searchTerm}`
+    // eslint-disable-next-line no-undef, no-process-env
+    `${process?.env?.SANITY_STUDIO_PRODUCTS_URL}?search=${searchTerm}` ??
+      `https://sanity-ct-products-provider.fly.dev/sanity/products?search=${searchTerm}`
   )
   return response.json()
 }
@@ -85,9 +85,7 @@ export default function ProductSelector(props: {
           imageUrl: imageUrl!,
           name: product?.name.en || '',
           published: !!product?.published,
-          inumber:
-            product?.masterVariant.attributes?.find(attr => attr.name === 'iNumber')?.value || '',
-          _key: product?.key || product?.id || ''
+          _key: product?.key || ''
         }
         const updatedValue = [...localValue, productToAdd]
         setLocalValue(updatedValue)
@@ -153,11 +151,7 @@ export default function ProductSelector(props: {
                     <Text size={[2, 2, 3]}>{option?.payload?.name?.en}</Text>
                   </Box>
                   <Box padding={2}>
-                    <Text size={[2, 2, 3]}>
-                      {option?.payload?.masterVariant?.attributes?.find(
-                        attr => attr?.name === 'iNumber'
-                      )?.value || ''}
-                    </Text>
+                    <Text size={[2, 2, 3]}>{option?.payload?.masterVariant?.id}</Text>
                   </Box>
                 </Box>
               </Flex>

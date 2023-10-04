@@ -6,7 +6,7 @@ import {ProductDataType} from '../ProductsSelector'
 const ProductPreview = (props: {value: ProductDataType; onDelete: (id: string) => void}) => {
   // eslint-disable-next-line no-empty-function
   const {value, onDelete = () => {}} = props
-  const {imageUrl, name, inumber, published} = value
+  const {imageUrl, name, id, published} = value
 
   return (
     <Flex justify={'space-between'} padding={1} style={{opacity: published ? 1 : 0.5}}>
@@ -21,7 +21,7 @@ const ProductPreview = (props: {value: ProductDataType; onDelete: (id: string) =
             <Text size={2}>{name}</Text>
           </Box>
           <Box padding={2}>
-            <Text size={2}>{inumber}</Text>
+            <Text size={2}>{id}</Text>
           </Box>
         </Box>
       </Flex>
