@@ -245,7 +245,7 @@ const CardAsset = (props: Props) => {
 
           <Box marginLeft={2}>
             <Text muted size={0} textOverflow="ellipsis">
-              {asset.originalFilename}
+              {asset?.title ?? asset.originalFilename}
             </Text>
           </Box>
         </ContextActionContainer>
