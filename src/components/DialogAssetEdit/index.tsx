@@ -314,6 +314,25 @@ const DialogAssetEdit = (props: Props) => {
                       id="details-panel"
                     >
                       <Stack space={3}>
+                        {/* Title */}
+                        <FormFieldInputText
+                          {...register('title')}
+                          disabled={formUpdating}
+                          error={errors?.title?.message}
+                          label="Title"
+                          name="title"
+                          value={currentAsset?.title}
+                        />
+                        {/* Description */}
+                        <FormFieldInputTextarea
+                          {...register('description')}
+                          disabled={formUpdating}
+                          error={errors?.description?.message}
+                          label="Description"
+                          name="description"
+                          rows={5}
+                          value={currentAsset?.description}
+                        />
                         {/* Tags */}
                         <FormFieldInputTags
                           control={control}
@@ -368,15 +387,6 @@ const DialogAssetEdit = (props: Props) => {
                           error={errors.products?.message}
                           value={currentValues?.products ?? []}
                         />
-                        {/* Title */}
-                        <FormFieldInputText
-                          {...register('title')}
-                          disabled={formUpdating}
-                          error={errors?.title?.message}
-                          label="Title"
-                          name="title"
-                          value={currentAsset?.title}
-                        />
                         {/* Alt text */}
                         <FormFieldInputText
                           {...register('altText')}
@@ -385,16 +395,6 @@ const DialogAssetEdit = (props: Props) => {
                           label="Alt Text"
                           name="altText"
                           value={currentAsset?.altText}
-                        />
-                        {/* Description */}
-                        <FormFieldInputTextarea
-                          {...register('description')}
-                          disabled={formUpdating}
-                          error={errors?.description?.message}
-                          label="Description"
-                          name="description"
-                          rows={5}
-                          value={currentAsset?.description}
                         />
                       </Stack>
                     </TabPanel>
