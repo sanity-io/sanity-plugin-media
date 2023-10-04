@@ -117,6 +117,7 @@ const DialogMassAssetEdit = (props: Props) => {
           }
         })
       )
+      dispatch(dialogActions.remove({id: 'massEdit'}))
     },
     [dispatch, selectedAssets]
   )
