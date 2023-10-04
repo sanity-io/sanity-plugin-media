@@ -20,7 +20,7 @@ import FormSubmitButton from '../FormSubmitButton'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
 import sanitizeFormData from '../../utils/sanitizeFormData'
-import {loadCollaborations, loadSeasons} from '../../utils/loadCollaborations'
+import {loadCollaborations, loadSeasons} from '../../utils/loadSanityOptions'
 import {selectAssetsPicked, assetsActions} from '../../modules/assets'
 
 type Props = {

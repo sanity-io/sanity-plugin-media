@@ -21,11 +21,12 @@ export interface ProductDataType {
 }
 
 const search = async (searchTerm: string) => {
-  const response = await fetch(
-    // eslint-disable-next-line no-undef, no-process-env
-    `${process?.env?.SANITY_STUDIO_PRODUCTS_URL}?search=${searchTerm}` ??
-      `https://sanity-ct-products-provider.fly.dev/sanity/products?search=${searchTerm}`
-  )
+  // eslint-disable-next-line no-undef, no-process-env
+  const baseUrl = process?.env?.SANITY_STUDIO_PROVIDER_BASEURL
+  const urlToUse = baseUrl
+    ? `${baseUrl}/products?search=${searchTerm}`
+    : `https://sanity-ct-products-provider.fly.dev/sanity/products?search=${searchTerm}`
+  const response = await fetch(urlToUse)
   return response.json()
 }
 

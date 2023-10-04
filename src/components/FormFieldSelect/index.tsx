@@ -41,7 +41,7 @@ const FormFieldSelect = forwardRef<Ref, Props>((props: Props, ref) => {
           onChange={e => onSelect(e.currentTarget.value)}
           ref={ref}
         >
-          {initialValue && <option>{firstOption}</option>}
+          <option>{firstOption}</option>
           {options.map(option => (
             <option value={option?.id} key={option?.id}>
               {option?.name}

@@ -30,7 +30,7 @@ import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
-import {loadCollaborations, loadSeasons} from '../../utils/loadCollaborations'
+import {loadCollaborations, loadSeasons} from '../../utils/loadSanityOptions'
 
 type Props = {
   children: ReactNode

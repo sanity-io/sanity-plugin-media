@@ -806,12 +806,17 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
       const {assets, formData} = action.payload
       // Create an observable for each asset and merge them into a single observable
       const updateObservables = assets.map(asset => {
+        // allow updating single fields without overwriting the rest of the document
+        const formDataWithoutEmptyValues = Object.entries(formData).reduce(
+          (acc, [key, value]) => (value ? {...acc, [key]: value} : acc),
+          {}
+        )
         return from(
           client
             .patch(asset._id)
             .setIfMissing({opt: {}})
             .setIfMissing({'opt.media': {}})
-            .set({...asset, ...formData})
+            .set({formDataWithoutEmptyValues})
             .commit()
         ).pipe(
           mergeMap((updatedAsset: any) =>
