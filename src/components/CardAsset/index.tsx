@@ -244,7 +244,7 @@ const CardAsset = (props: Props) => {
           )}
 
           <Box marginLeft={2}>
-            <Text muted size={0} textOverflow="ellipsis">
+            <Text muted style={{textTransform: 'capitalize'}} size={0} textOverflow="ellipsis">
               {asset?.title ?? asset.originalFilename}
             </Text>
           </Box>
