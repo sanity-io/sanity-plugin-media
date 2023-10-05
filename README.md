@@ -1,7 +1,16 @@
-# Sanity Media (for Sanity Studio v3)
+# Sanity Media Fork(for Sanity Studio v3)
 
 > This plugin is for **Sanity Studio v3**.  
 > The Sanity Studio v2 version of this plugin is no longer maintained, but still accessible on the [v2 branch](https://github.com/sanity-io/sanity-plugin-media/tree/studio-v2).
+## Why is it needed?
+it is needed to add custom fields to the asset browser edit, the plugin does not support configuring the fields and has no intention to according to https://github.com/sanity-io/sanity-plugin-media/issues/15
+
+## Files changed?
+see [PR](https://github.com/Carhartt-Work-in-Progress/sanity-plugin-media/pull/1/files) for the details of the files changed. However the summary is this
+- a product select component was added and used for product field
+- collaborations and seasons field was added, the data is setup in sanity and fetched via the sanity data provider [app](https://github.com/Carhartt-Work-in-Progress/sanity-ct-products-provider/pull/1)
+- a new modal for mass editing images was added
+- Edit functionality was added for when multiple assets are selected.
 
 ## What is it?
 
