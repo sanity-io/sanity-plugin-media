@@ -7,11 +7,9 @@ import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {massEditAssetsFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
-// import {assetsActions} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import {selectTags, tagsActions} from '../../modules/tags'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
-// import sanitizeFormData from '../../utils/sanitizeFormData'
 import Dialog from '../Dialog'
 import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
@@ -53,7 +51,6 @@ const DialogMassAssetEdit = (props: Props) => {
     collaboration: '',
     altText: '',
     description: '',
-    originalFilename: '',
     title: '',
     opt: {media: {tags: []}}
   }
@@ -95,7 +92,7 @@ const DialogMassAssetEdit = (props: Props) => {
   const onSubmit: SubmitHandler<AssetFormData> = useCallback(
     formData => {
       const sanitizedFormData = sanitizeFormData(formData)
-
+      console.log('sanitizedFormData', sanitizedFormData)
       dispatch(
         assetsActions.massUpdateRequest({
           assets: selectedAssets.map(each => each.asset),

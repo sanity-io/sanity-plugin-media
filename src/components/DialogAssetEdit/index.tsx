@@ -68,13 +68,12 @@ const DialogAssetEdit = (props: Props) => {
   const generateDefaultValues = useCallback(
     (asset?: Asset): AssetFormData => {
       return {
-        name: asset?.name || '',
+        name: asset?.name || asset?.originalFilename || '',
         products: asset?.products || [],
         season: asset?.season || '',
         collaboration: asset?.collaboration || '',
         altText: asset?.altText || '',
         description: asset?.description || '',
-        originalFilename: asset?.originalFilename || '',
         opt: {media: {tags: assetTagOptions}},
         title: asset?.title || ''
       }
@@ -98,6 +97,8 @@ const DialogAssetEdit = (props: Props) => {
   })
 
   const currentValues = getValues()
+
+  console.log('isDirty', isDirty)
 
   const formUpdating = !assetItem || assetItem?.updating
 

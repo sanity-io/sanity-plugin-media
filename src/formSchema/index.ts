@@ -27,7 +27,6 @@ export const assetFormSchema = z.object({
       tags: z.array(tagOptionSchema).nullable()
     })
   }),
-  originalFilename: z.string().trim().min(1, {message: 'Filename cannot be empty'}),
   title: z.string().trim().optional()
 })
 
