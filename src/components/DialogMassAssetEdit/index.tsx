@@ -253,7 +253,7 @@ const DialogMassAssetEdit = (props: Props) => {
                   <FormFieldSelect
                     {...register('season')}
                     onSelect={value => {
-                      setValue('season', value)
+                      setValue('season', value, {shouldDirty: true})
                     }}
                     options={seasons}
                     disabled={formUpdating}
@@ -266,7 +266,7 @@ const DialogMassAssetEdit = (props: Props) => {
                   {/* collaboration */}
                   <FormFieldSelect
                     {...register('collaboration')}
-                    onSelect={value => setValue('collaboration', value)}
+                    onSelect={value => setValue('collaboration', value, {shouldDirty: true})}
                     options={collaborationOptions}
                     disabled={formUpdating}
                     error={errors?.name?.message}
@@ -276,7 +276,7 @@ const DialogMassAssetEdit = (props: Props) => {
                   {/* products */}
                   <ProductSelector
                     onChange={updatedValue => {
-                      setValue('products', updatedValue)
+                      setValue('products', updatedValue, {shouldDirty: true})
                     }}
                     error={errors.products?.message}
                     value={currentValues?.products ?? []}
