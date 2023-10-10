@@ -60,6 +60,12 @@ import uploadsReducer, {
   uploadsCompleteQueueEpic
 } from './uploads'
 
+import seasonsReducer, {seasonsCreateEpic, seasonsFetchEpic} from './seasons'
+import collaborationsReducer, {
+  collaborationFetchEpic,
+  collaborationsCreateEpic
+} from './collaborations'
+
 export const rootEpic = combineEpics(
   assetsDeleteEpic,
   assetsFetchEpic,
@@ -101,11 +107,17 @@ export const rootEpic = combineEpics(
   uploadsAssetStartEpic,
   uploadsAssetUploadEpic,
   uploadsCheckRequestEpic,
-  uploadsCompleteQueueEpic
+  uploadsCompleteQueueEpic,
+  seasonsCreateEpic,
+  seasonsFetchEpic,
+  collaborationFetchEpic,
+  collaborationsCreateEpic
 )
 
 const reducers = {
   assets: assetsReducer,
+  seasons: seasonsReducer,
+  collaborations: collaborationsReducer,
   debug: debugReducer,
   dialog: dialogReducer,
   notifications: notificationsReducer,

@@ -28,9 +28,13 @@ import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
 import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
-import FormFieldSelect from '../FormFieldSelect'
+import FormFieldInputSeasons from '../FormFieldInputSeasons'
 import ProductSelector from '../ProductsSelector'
-import {loadCollaborations, loadSeasons} from '../../utils/loadSanityOptions'
+import getSeasonSelectOptions from '../../utils/getSeasonSelectOptions'
+import {seasonActions, selectSeasons} from '../../modules/seasons'
+import FormFieldInputCollaborations from '../FormFieldInputCollaborations'
+import {collaborationActions, selectCollaborations} from '../../modules/collaborations'
+import getSeasonCollaborationOptions from '../../utils/getCollaborationSelectOptions'
 
 type Props = {
   children: ReactNode
@@ -51,17 +55,19 @@ const DialogAssetEdit = (props: Props) => {
   const dispatch = useDispatch()
   const assetItem = useTypedSelector(state => selectAssetById(state, String(assetId))) // TODO: check casting
   const tags = useTypedSelector(selectTags)
+  const seasons = useTypedSelector(selectSeasons)
+  const collaboration = useTypedSelector(selectCollaborations)
 
   const assetUpdatedPrev = useRef<string | undefined>(undefined)
 
   // Generate a snapshot of the current asset
   const [assetSnapshot, setAssetSnapshot] = useState(assetItem?.asset)
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
-  const [collaborationOptions, setCollaborationOptions] = useState<{id: string; name: string}[]>([])
-  const [seasons, setSeasons] = useState<{id: string; name: string}[]>([])
   const currentAsset = assetItem ? assetItem?.asset : assetSnapshot
 
   const allTagOptions = getTagSelectOptions(tags)
+  const allSeasonOptions = getSeasonSelectOptions(seasons)
+  const allCollaborationOptions = getSeasonCollaborationOptions(collaboration)
 
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
 
@@ -140,6 +146,30 @@ const DialogAssetEdit = (props: Props) => {
     [currentAsset?._id, dispatch]
   )
 
+  const handleCreateSeason = useCallback(
+    (seasonName: string) => {
+      // Dispatch action to create new tag
+      dispatch(
+        seasonActions.createRequest({
+          name: seasonName
+        })
+      )
+    },
+    [dispatch]
+  )
+
+  const handleCreateCollaboration = useCallback(
+    (collaborationName: string) => {
+      // Dispatch action to create new tag
+      dispatch(
+        collaborationActions.createRequest({
+          name: collaborationName
+        })
+      )
+    },
+    [dispatch]
+  )
+
   // Submit react-hook-form
   const onSubmit: SubmitHandler<AssetFormData> = useCallback(
     formData => {
@@ -173,15 +203,6 @@ const DialogAssetEdit = (props: Props) => {
     },
     [assetItem?.asset, dispatch]
   )
-
-  useEffect(() => {
-    const setCollaborationAndSeasons = async () => {
-      const [collabs, seasonOptions] = await Promise.all([loadCollaborations(), loadSeasons()])
-      setCollaborationOptions(collabs)
-      setSeasons(seasonOptions)
-    }
-    setCollaborationAndSeasons()
-  }, [])
 
   // Listen for asset mutations and update snapshot
   useEffect(() => {
@@ -346,6 +367,19 @@ const DialogAssetEdit = (props: Props) => {
                           placeholder="Select or create..."
                           value={assetTagOptions}
                         />
+                        {/* Seasons */}
+                        <FormFieldInputSeasons
+                          control={control}
+                          disabled={formUpdating}
+                          error={errors?.season?.message}
+                          label="Seasons"
+                          name="season"
+                          onCreateSeason={handleCreateSeason}
+                          options={allSeasonOptions}
+                          placeholder="Select or create..."
+                          value={currentValues?.season ?? null}
+                        />
+
                         {/* name */}
                         <FormFieldInputText
                           {...register('name')}
@@ -355,31 +389,20 @@ const DialogAssetEdit = (props: Props) => {
                           name="name"
                           value={currentAsset?.name}
                         />
-                        {/* season */}
-                        <FormFieldSelect
-                          {...register('season')}
-                          onSelect={value => {
-                            setValue('season', value, {shouldDirty: true})
-                          }}
-                          options={seasons}
+
+                        {/* Collaborations */}
+                        <FormFieldInputCollaborations
+                          control={control}
                           disabled={formUpdating}
-                          error={errors?.name?.message}
-                          label="season"
-                          name="season"
-                          initialValue={currentAsset?.season}
+                          error={errors?.season?.message}
+                          label="Collaborations"
+                          name="collaboration"
+                          onCreateSeason={handleCreateCollaboration}
+                          options={allCollaborationOptions}
+                          placeholder="Select or create..."
+                          value={currentValues?.collaboration ?? null}
                         />
 
-                        {/* collaboration */}
-                        <FormFieldSelect
-                          {...register('collaboration')}
-                          onSelect={value => setValue('collaboration', value, {shouldDirty: true})}
-                          options={collaborationOptions}
-                          disabled={formUpdating}
-                          error={errors?.name?.message}
-                          label="collaboration"
-                          name="collaboration"
-                          initialValue={currentAsset?.collaboration}
-                        />
                         {/* products */}
                         <ProductSelector
                           onChange={updatedValue => {

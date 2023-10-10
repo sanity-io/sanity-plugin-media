@@ -15,11 +15,15 @@ import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
 import FormSubmitButton from '../FormSubmitButton'
-import FormFieldSelect from '../FormFieldSelect'
 import ProductSelector from '../ProductsSelector'
 import sanitizeFormData from '../../utils/sanitizeFormData'
-import {loadCollaborations, loadSeasons} from '../../utils/loadSanityOptions'
 import {selectAssetsPicked, assetsActions} from '../../modules/assets'
+import FormFieldInputSeasons from '../FormFieldInputSeasons'
+import {seasonActions, selectSeasons} from '../../modules/seasons'
+import getSeasonSelectOptions from '../../utils/getSeasonSelectOptions'
+import getSeasonCollaborationOptions from '../../utils/getCollaborationSelectOptions'
+import {collaborationActions, selectCollaborations} from '../../modules/collaborations'
+import FormFieldInputCollaborations from '../FormFieldInputCollaborations'
 
 type Props = {
   children: ReactNode
@@ -39,16 +43,18 @@ const DialogMassAssetEdit = (props: Props) => {
   // Generate a snapshot of the current asset
 
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
-  const [collaborationOptions, setCollaborationOptions] = useState<{id: string; name: string}[]>([])
-  const [seasons, setSeasons] = useState<{id: string; name: string}[]>([])
+  const seasons = useTypedSelector(selectSeasons)
+  const collaborations = useTypedSelector(selectCollaborations)
 
   const allTagOptions = getTagSelectOptions(tags)
+  const allSeasonOptions = getSeasonSelectOptions(seasons)
+  const allCollaborationOptions = getSeasonCollaborationOptions(collaborations)
 
   const defaultValues = {
     name: '',
     products: [],
-    season: '',
-    collaboration: '',
+    season: null,
+    collaboration: null,
     altText: '',
     description: '',
     title: '',
@@ -119,14 +125,29 @@ const DialogMassAssetEdit = (props: Props) => {
     [dispatch, selectedAssets]
   )
 
-  useEffect(() => {
-    const setCollaboration = async () => {
-      const [collabs, seasonOptions] = await Promise.all([loadCollaborations(), loadSeasons()])
-      setCollaborationOptions(collabs)
-      setSeasons(seasonOptions)
-    }
-    setCollaboration()
-  }, [])
+  const handleCreateSeason = useCallback(
+    (seasonName: string) => {
+      // Dispatch action to create new tag
+      dispatch(
+        seasonActions.createRequest({
+          name: seasonName
+        })
+      )
+    },
+    [dispatch]
+  )
+
+  const handleCreateCollaboration = useCallback(
+    (collaborationName: string) => {
+      // Dispatch action to create new tag
+      dispatch(
+        collaborationActions.createRequest({
+          name: collaborationName
+        })
+      )
+    },
+    [dispatch]
+  )
 
   // Update tags form field (react-select) when a new _inline_ tag has been created
   useEffect(() => {
@@ -240,6 +261,20 @@ const DialogMassAssetEdit = (props: Props) => {
                     placeholder="Select or create..."
                     value={[]}
                   />
+
+                  {/* Seasons */}
+                  <FormFieldInputSeasons
+                    control={control}
+                    disabled={formUpdating}
+                    error={errors?.season?.message}
+                    label="Seasons"
+                    name="season"
+                    onCreateSeason={handleCreateSeason}
+                    options={allSeasonOptions}
+                    placeholder="Select or create..."
+                    value={currentValues?.season ?? null}
+                  />
+
                   {/* name */}
                   <FormFieldInputText
                     {...register('name')}
@@ -249,29 +284,18 @@ const DialogMassAssetEdit = (props: Props) => {
                     name="name"
                     value={''}
                   />
-                  {/* season */}
-                  <FormFieldSelect
-                    {...register('season')}
-                    onSelect={value => {
-                      setValue('season', value, {shouldDirty: true})
-                    }}
-                    options={seasons}
-                    disabled={formUpdating}
-                    error={errors?.name?.message}
-                    label="season"
-                    name="season"
-                    initialValue={currentValues?.season}
-                  />
 
-                  {/* collaboration */}
-                  <FormFieldSelect
-                    {...register('collaboration')}
-                    onSelect={value => setValue('collaboration', value, {shouldDirty: true})}
-                    options={collaborationOptions}
+                  {/* Collaborations */}
+                  <FormFieldInputCollaborations
+                    control={control}
                     disabled={formUpdating}
-                    error={errors?.name?.message}
-                    label="collaboration"
+                    error={errors?.season?.message}
+                    label="Collaborations"
                     name="collaboration"
+                    onCreateSeason={handleCreateCollaboration}
+                    options={allCollaborationOptions}
+                    placeholder="Select or create..."
+                    value={currentValues?.collaboration ?? null}
                   />
                   {/* products */}
                   <ProductSelector

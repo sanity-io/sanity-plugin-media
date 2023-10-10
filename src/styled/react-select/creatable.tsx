@@ -45,13 +45,18 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
       marginLeft: rem(themeSpace[2])
     }),
     menuList: styles => ({
-      ...styles
+      ...styles,
+      position: 'relative'
     }),
     multiValue: (styles, {isDisabled}) => ({
       ...styles,
       backgroundColor: getSchemeColor(scheme, 'mutedHoveredBg'),
       borderRadius: themeRadius[2],
       opacity: isDisabled ? 0.5 : 1
+    }),
+    singleValue: styles => ({
+      ...styles,
+      color: 'white'
     }),
     multiValueLabel: () => ({
       color: getSchemeColor(scheme, 'mutedHoveredFg'),

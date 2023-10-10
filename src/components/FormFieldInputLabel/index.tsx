@@ -12,7 +12,7 @@ type Props = {
 
 const StyledErrorOutlineIcon = styled(ErrorOutlineIcon)(({theme}) => {
   return {
-    color: theme.sanity.color.spot.red
+    color: theme?.sanity?.color?.spot?.red ?? 'red'
   }
 })
 

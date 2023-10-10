@@ -21,6 +21,8 @@ import PickedBar from '../PickedBar'
 import ReduxProvider from '../ReduxProvider'
 import TagsPanel from '../TagsPanel'
 import UploadDropzone from '../UploadDropzone'
+import {seasonActions} from '../../modules/seasons'
+import {collaborationActions} from '../../modules/collaborations'
 
 type Props = {
   assetType?: AssetSourceComponentProps['assetType']
@@ -78,6 +80,8 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
 
     // Fetch all tags
     dispatch(tagsActions.fetchRequest())
+    dispatch(seasonActions.fetchRequest())
+    dispatch(collaborationActions.fetchRequest())
 
     // Listen for asset and tag changes in published documents.
     // Remember that Sanity listeners ignore joins, order clauses and projections!

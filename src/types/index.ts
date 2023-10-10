@@ -7,7 +7,7 @@ import type {
 } from '@sanity/client'
 import type {Epic} from 'redux-observable'
 import * as z from 'zod'
-import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
+import {assetFormSchema, generalOptionSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
 import {RootReducerState} from '../modules/types'
 
 type CustomFields = {
@@ -349,6 +349,8 @@ export type TagItem = {
 }
 
 export type TagSelectOption = z.infer<typeof tagOptionSchema>
+
+export type SeasonSelectOption = z.infer<typeof generalOptionSchema>
 
 export type UploadItem = {
   _type: 'upload'

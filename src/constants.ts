@@ -72,3 +72,5 @@ export const GRID_TEMPLATE_COLUMNS = {
 export const PANEL_HEIGHT = 32 // px
 export const TAG_DOCUMENT_NAME = 'media.tag'
 export const TAGS_PANEL_WIDTH = 250 // px
+export const SEASONS_DOCUMENT_NAME = 'seasons'
+export const COLLABORATION_DOCUMENT_NAME = 'collaborations'
