@@ -8,7 +8,7 @@ it is needed to add custom fields to the asset browser edit, the plugin does not
 ## Files changed?
 see [PR](https://github.com/Carhartt-Work-in-Progress/sanity-plugin-media/pull/1/files) for the details of the files changed. However the summary is this
 - a product select component was added and used for product field
-- collaborations and seasons field was added, the data is setup in sanity and fetched via the sanity data provider [app](https://github.com/Carhartt-Work-in-Progress/sanity-ct-products-provider/pull/1)
+- the collaborations and seasons field are added to the file edit form, seasons and collaborations are dynamically created and saved just like tags
 - a new modal for mass editing images was added
 - Edit functionality was added for when multiple assets are selected.
 
