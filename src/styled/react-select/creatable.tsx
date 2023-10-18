@@ -79,6 +79,7 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
     }),
     option: (styles, {isFocused}) => ({
       ...styles,
+      zIndex: 13,
       backgroundColor: isFocused ? getSchemeColor(scheme, 'spotBlue') : 'transparent',
       borderRadius: themeRadius[2],
       color: isFocused ? getSchemeColor(scheme, 'bg') : 'inherit',
