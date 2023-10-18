@@ -381,14 +381,14 @@ const DialogAssetEdit = (props: Props) => {
                         />
 
                         {/* name */}
-                        <FormFieldInputText
+                        {/* <FormFieldInputText
                           {...register('name')}
                           disabled={formUpdating}
                           error={errors?.name?.message}
                           label="name"
                           name="name"
                           value={currentAsset?.name}
-                        />
+                        /> */}
 
                         {/* Collaborations */}
                         <FormFieldInputCollaborations

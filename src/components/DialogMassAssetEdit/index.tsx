@@ -276,14 +276,14 @@ const DialogMassAssetEdit = (props: Props) => {
                   />
 
                   {/* name */}
-                  <FormFieldInputText
+                  {/* <FormFieldInputText
                     {...register('name')}
                     disabled={formUpdating}
                     error={errors?.name?.message}
                     label="name"
                     name="name"
                     value={''}
-                  />
+                  /> */}
 
                   {/* Collaborations */}
                   <FormFieldInputCollaborations

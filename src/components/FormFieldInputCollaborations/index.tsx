@@ -47,7 +47,7 @@ const FormFieldInputCollaborations = (props: Props) => {
   return (
     <Box
       // HACK: force stacking context to ensure react-select dropdown sits above other fields
-      style={{zIndex: 2}}
+      style={{zIndex: 12}}
     >
       {/* Label */}
       <FormFieldInputLabel description={description} error={error} label={label} name={name} />
