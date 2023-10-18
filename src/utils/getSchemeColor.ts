@@ -10,6 +10,10 @@ const SCHEME_COLORS = {
     dark: hues.gray[900].hex,
     light: hues.gray[100].hex
   },
+  text: {
+    dark: '#fff',
+    light: '#000'
+  },
   inputEnabledBorder: {
     dark: studioTheme.color.dark.default.input.default.enabled.border,
     light: studioTheme.color.light.default.input.default.enabled.border

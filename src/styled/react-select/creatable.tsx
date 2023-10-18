@@ -56,7 +56,7 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
     }),
     singleValue: styles => ({
       ...styles,
-      color: 'white'
+      color: getSchemeColor(scheme, 'text')
     }),
     multiValueLabel: () => ({
       color: getSchemeColor(scheme, 'mutedHoveredFg'),

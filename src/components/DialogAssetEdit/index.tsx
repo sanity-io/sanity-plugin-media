@@ -104,8 +104,6 @@ const DialogAssetEdit = (props: Props) => {
 
   const currentValues = getValues()
 
-  console.log('isDirty', isDirty)
-
   const formUpdating = !assetItem || assetItem?.updating
 
   const handleClose = useCallback(() => {
@@ -395,7 +393,7 @@ const DialogAssetEdit = (props: Props) => {
                           control={control}
                           disabled={formUpdating}
                           error={errors?.season?.message}
-                          label="Collaborations"
+                          label="Drops"
                           name="collaboration"
                           onCreateSeason={handleCreateCollaboration}
                           options={allCollaborationOptions}

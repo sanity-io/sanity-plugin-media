@@ -8,7 +8,6 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
 import {getSchemeColor} from '../../utils/getSchemeColor'
-import {EditIcon} from '@sanity/icons'
 
 const PickedBar = () => {
   const {scheme} = useColorScheme()
@@ -55,15 +54,13 @@ const PickedBar = () => {
 
         {/* Mass Edit button */}
         <Button
-          icon={EditIcon}
+          mode="bleed"
           onClick={handleMassEdit}
           padding={2}
           style={{background: 'none', boxShadow: 'none'}}
           tone="default"
         >
-          <Label size={0} style={{color: 'white'}}>
-            Edit
-          </Label>
+          <Label size={0}>Edit</Label>
         </Button>
 
         {/* Deselect button */}

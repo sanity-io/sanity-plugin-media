@@ -98,7 +98,7 @@ const DialogMassAssetEdit = (props: Props) => {
   const onSubmit: SubmitHandler<AssetFormData> = useCallback(
     formData => {
       const sanitizedFormData = sanitizeFormData(formData)
-      console.log('sanitizedFormData', sanitizedFormData)
+
       dispatch(
         assetsActions.massUpdateRequest({
           assets: selectedAssets.map(each => each.asset),
@@ -290,7 +290,7 @@ const DialogMassAssetEdit = (props: Props) => {
                     control={control}
                     disabled={formUpdating}
                     error={errors?.season?.message}
-                    label="Collaborations"
+                    label="Drops"
                     name="collaboration"
                     onCreateSeason={handleCreateCollaboration}
                     options={allCollaborationOptions}

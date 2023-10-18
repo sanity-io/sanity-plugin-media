@@ -2,7 +2,7 @@ import {Box} from '@sanity/ui'
 import React from 'react'
 import {Controller} from 'react-hook-form'
 import CreatableSelect from 'react-select/creatable'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/creatable'
 import type {TagSelectOption} from '../../types'
@@ -38,7 +38,7 @@ const FormFieldInputCollaborations = (props: Props) => {
     value
   } = props
 
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Redux
   const creating = useTypedSelector(state => state.collaborations.creating)
@@ -59,22 +59,11 @@ const FormFieldInputCollaborations = (props: Props) => {
         name={name}
         render={({field}) => {
           const {onBlur, onChange, value: controllerValue} = field
-          // TODO: investigate overriding `onChange` and updating form state manually.
-          // `opt.media.tags` is initialised with `null` as a defaultValue in react-hook-form
-          // Ideally, we'd be able to set `opt.media.tags` as null when all items are cleared, rather than
-          // setting it to an empty array (which is currently causing false positives in denoting whether the form is dirty)
-          //
-          // To illustrate this issue:
-          // - Edit an asset with no tags
-          // - Add a new tag (either an existing one, or create one inline)
-          // - Remove the tag you've just created
-          //
-          // At this point, the form will still be marked as dirty when it shouldnt be
           return (
             <CreatableSelect
               components={reactSelectComponents}
               instanceId="seasons"
-              isClearable // TODO: re-enable when we're able to correctly (manually) re-validate on clear
+              isClearable
               isDisabled={creating || disabled || collaborationsFetching}
               isLoading={creating}
               isMulti={false}
