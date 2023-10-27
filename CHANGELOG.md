@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.3](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.2...v2.2.3) (2023-10-27)
+
+### Bug Fixes
+
+- update pkg-utils and export config ([#192](https://github.com/sanity-io/sanity-plugin-media/issues/192)) ([cdc8b2c](https://github.com/sanity-io/sanity-plugin-media/commit/cdc8b2cd8995b6c2e115912ecf7aca7da5ee9fc5))
+
 ## [2.2.2](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.1...v2.2.2) (2023-07-26)
 
 ### Bug Fixes
