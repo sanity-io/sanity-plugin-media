@@ -1,28 +1,9 @@
 {
+  "extends": "./tsconfig.settings",
+  "include": ["./src", "./package.config.ts"],
   "compilerOptions": {
-    "jsx": "preserve",
-    "moduleResolution": "node",
-    "target": "esnext",
-    "module": "esnext",
-    "esModuleInterop": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "strict": true,
-    "sourceMap": false,
-    "inlineSourceMap": false,
-    "downlevelIteration": true,
-    "declaration": true,
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "outDir": "lib",
-    "paths": {
-      "@types": ["./src/types"]
-    },
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "checkJs": false,
-    "rootDir": "src"
-  },
-  "include": [".d.ts", "src/**/*"]
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "noEmit": true
+  }
 }
