@@ -41,10 +41,10 @@
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
   "files": [
+    "dist",
+    "sanity.json",
     "src",
-    "lib",
-    "v2-incompatible.js",
-    "sanity.json"
+    "v2-incompatible.js"
   ],
   "scripts": {
     "build": "run-s clean && plugin-kit verify-package --silent && pkg-utils build --strict && pkg-utils --strict",
