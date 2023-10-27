@@ -47,8 +47,18 @@ export const assetFormSchema = z.object({
 
 export const massEditAssetsFormSchema = z.object({
   name: z.string().trim(),
-  season: z.string().trim(),
-  collaboration: z.string().trim().optional(),
+  season: z
+    .object({
+      label: z.string().trim().min(1, {message: 'Label cannot be empty'}),
+      value: z.string().trim().min(1, {message: 'Value cannot be empty'})
+    })
+    .nullable(),
+  collaboration: z
+    .object({
+      label: z.string().trim().min(1, {message: 'Label cannot be empty'}),
+      value: z.string().trim().min(1, {message: 'Value cannot be empty'})
+    })
+    .nullable(),
   products: z
     .array(
       z.object({
