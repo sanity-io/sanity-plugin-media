@@ -816,7 +816,7 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
             .patch(asset._id)
             .setIfMissing({opt: {}})
             .setIfMissing({'opt.media': {}})
-            .set({formDataWithoutEmptyValues})
+            .set({...formDataWithoutEmptyValues})
             .commit()
         ).pipe(
           mergeMap((updatedAsset: any) =>
@@ -826,8 +826,8 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
               })
             )
           ),
-          catchError((error: ClientError) =>
-            of(
+          catchError((error: ClientError) => {
+            return of(
               assetsActions.updateError({
                 asset,
                 error: {
@@ -836,7 +836,7 @@ export const assetsMassUpdateEpic: MyEpic = (action$, state$, {client}) =>
                 }
               })
             )
-          )
+          })
         )
       })
 
