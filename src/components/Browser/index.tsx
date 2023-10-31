@@ -19,10 +19,10 @@ import Items from '../Items'
 import Notifications from '../Notifications'
 import PickedBar from '../PickedBar'
 import ReduxProvider from '../ReduxProvider'
-import TagsPanel from '../TagsPanel'
 import UploadDropzone from '../UploadDropzone'
 import {seasonActions} from '../../modules/seasons'
 import {collaborationActions} from '../../modules/collaborations'
+import SeasonsPanel from '../SeasonsPanel'
 
 type Props = {
   assetType?: AssetSourceComponentProps['assetType']
@@ -122,7 +122,7 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
                 <PickedBar />
                 <Items />
               </Flex>
-              <TagsPanel />
+              <SeasonsPanel />
             </Flex>
 
             {/* Debug */}

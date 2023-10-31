@@ -8,6 +8,7 @@ import {assetsActions} from '../assets'
 import {ASSETS_ACTIONS} from '../assets/actions'
 import {tagsActions} from '../tags'
 import {DIALOG_ACTIONS} from './actions'
+import {Season, seasonActions} from '../seasons'
 
 type DialogReducerState = {
   items: Dialog[]
@@ -39,6 +40,14 @@ const dialogSlice = createSlice({
         id: tagId,
         tagId,
         type: 'tagEdit'
+      })
+    })
+    builder.addCase(DIALOG_ACTIONS.showSeasonEdit, (state, action) => {
+      const {seasonId} = action.payload
+      state.items.push({
+        id: seasonId,
+        seasonId,
+        type: 'seasonEdit'
       })
     })
   },
@@ -101,6 +110,32 @@ const dialogSlice = createSlice({
         type: 'confirm'
       })
     },
+    showConfirmAssetsSeasonAdd(
+      state,
+      action: PayloadAction<{
+        assetsPicked: AssetItem[]
+        closeDialogId?: string
+        season: Season
+      }>
+    ) {
+      const {assetsPicked, closeDialogId, season} = action.payload
+
+      const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: ASSETS_ACTIONS.seasonsAddRequest({
+          assets: assetsPicked,
+          season
+        }),
+        confirmText: `Yes, add season to ${suffix}`,
+        title: `Add tag ${season.name.current} to ${suffix}?`,
+        id: 'confirm',
+        headerTitle: 'Confirm season addition',
+        tone: 'primary',
+        type: 'confirm'
+      })
+    },
     showConfirmAssetsTagRemove(
       state,
       action: PayloadAction<{
@@ -120,6 +155,29 @@ const dialogSlice = createSlice({
         headerTitle: 'Confirm tag removal',
         id: 'confirm',
         title: `Remove tag ${tag.name.current} from ${suffix}?`,
+        tone: 'critical',
+        type: 'confirm'
+      })
+    },
+    showConfirmAssetsSeasonRemove(
+      state,
+      action: PayloadAction<{
+        assetsPicked: AssetItem[]
+        closeDialogId?: string
+        season: Season
+      }>
+    ) {
+      const {assetsPicked, closeDialogId, season} = action.payload
+
+      const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: ASSETS_ACTIONS.seasonsRemoveRequest({assets: assetsPicked, season}),
+        confirmText: `Yes, remove season from ${suffix}`,
+        headerTitle: 'Confirm season removal',
+        id: 'confirm',
+        title: `Remove season ${season.name.current} from ${suffix}?`,
         tone: 'critical',
         type: 'confirm'
       })
@@ -163,6 +221,26 @@ const dialogSlice = createSlice({
         type: 'confirm'
       })
     },
+    showConfirmDeleteSeason(
+      state,
+      action: PayloadAction<{closeDialogId?: string; season: Season}>
+    ) {
+      const {closeDialogId, season} = action.payload
+
+      const suffix = 'tag'
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: seasonActions.deleteRequest({season}),
+        confirmText: `Yes, delete ${suffix}`,
+        description: 'This operation cannot be reversed. Are you sure you want to continue?',
+        title: `Permanently delete ${suffix}?`,
+        id: 'confirm',
+        headerTitle: 'Confirm deletion',
+        tone: 'critical',
+        type: 'confirm'
+      })
+    },
     showAssetEdit(state, action: PayloadAction<{assetId: string}>) {
       const {assetId} = action.payload
       state.items.push({
@@ -188,6 +266,12 @@ const dialogSlice = createSlice({
       state.items.push({
         id: 'tags',
         type: 'tags'
+      })
+    },
+    showSeasons(state) {
+      state.items.push({
+        id: 'seasons',
+        type: 'seasons'
       })
     }
   }

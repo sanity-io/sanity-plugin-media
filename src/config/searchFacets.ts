@@ -183,6 +183,15 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     title: 'Tags',
     type: 'searchable'
   },
+  season: {
+    assetTypes: ['file', 'image'],
+    field: 'season',
+    name: 'season',
+    operatorType: 'references',
+    operatorTypes: ['references', 'doesNotReference', null, 'empty', 'notEmpty'],
+    title: 'Seasons',
+    type: 'searchable'
+  },
   title: {
     assetTypes: ['file', 'image'],
     field: 'title',

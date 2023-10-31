@@ -14,6 +14,9 @@ type SeasonReducerState = {
   fetching: boolean
   fetchingError?: HttpError
   byIds: Record<string, SeasonItem>
+  panelVisible: boolean
+  fetchCount: number
+  allIds: string[]
 }
 
 export type Season = SanityDocument & {
@@ -36,7 +39,10 @@ const initialState: SeasonReducerState = {
   fetching: false,
   fetchingError: undefined,
   creatingError: undefined,
-  byIds: {}
+  byIds: {},
+  panelVisible: true,
+  fetchCount: -1,
+  allIds: []
 }
 
 const seasonsSlice = createSlice({
@@ -97,7 +103,7 @@ const seasonsSlice = createSlice({
     fetchComplete(state, action) {
       state.fetching = false
       state.fetchingError = undefined
-
+      const seasons = action.payload.seasons
       state.byIds = action.payload.seasons.reduce((acc: Season, season: Season) => {
         acc[season._id] = {
           _type: 'seasonItem',
@@ -108,6 +114,20 @@ const seasonsSlice = createSlice({
         }
         return acc
       }, {} as Record<string, SeasonItem>)
+
+      seasons?.forEach((season: Season) => {
+        state.allIds.push(season._id)
+        state.byIds[season._id] = {
+          _type: 'seasonItem',
+          picked: false,
+          season,
+          updating: false
+        }
+      })
+
+      state.fetching = false
+      state.fetchCount = seasons.length || 0
+      delete state.fetchingError
     },
     fetchError(state, action: PayloadAction<{error: HttpError}>) {
       const {error} = action.payload
@@ -131,6 +151,18 @@ const seasonsSlice = createSlice({
       const {season} = action.payload
       state.byIds[season._id].updating = true
     },
+
+    updateSeasonItemRequest(
+      state,
+      action: PayloadAction<{
+        closeDialogId?: string
+        formData: Record<string, any>
+        season: Season
+      }>
+    ) {
+      const {season} = action.payload
+      state.byIds[season?._id].updating = true
+    },
     updateComplete(state, action: PayloadAction<{season: Season}>) {
       const {season} = action.payload
       state.byIds[season._id].updating = false
@@ -141,6 +173,21 @@ const seasonsSlice = createSlice({
       const seasonId = season?._id
       state.byIds[seasonId].error = error
       state.byIds[seasonId].updating = false
+    },
+
+    deleteRequest(state, action: PayloadAction<{season: Season}>) {
+      const seasonId = action.payload?.season?._id
+      state.byIds[seasonId].picked = false
+      state.byIds[seasonId].updating = true
+
+      Object.keys(state.byIds).forEach(key => {
+        delete state.byIds[key].error
+      })
+    },
+    // Set tag panel visibility
+    panelVisibleSet(state, action: PayloadAction<{panelVisible: boolean}>) {
+      const {panelVisible} = action.payload
+      state.panelVisible = panelVisible
     }
   }
 })
@@ -229,11 +276,16 @@ export const seasonsListenerCreateQueueEpic: MyEpic = action$ =>
   )
 
 // Selectors
-const selectTagsByIds = (state: RootReducerState) => state.seasons.byIds
+const selectSeasonsByIds = (state: RootReducerState) => state.seasons.byIds
 
-export const selectSeasons = createSelector(selectTagsByIds, byIds => Object.values(byIds))
+export const selectSeasonById = createSelector(
+  [selectSeasonsByIds, (_state: RootReducerState, seasonId: string) => seasonId],
+  (byIds, seasonId) => byIds[seasonId]
+)
 
-export const selectSeasonsById = createSelector(selectTagsByIds, byIds => byIds)
+export const selectSeasons = createSelector(selectSeasonsByIds, byIds => Object.values(byIds))
+
+export const selectSeasonsById = createSelector(selectSeasonsByIds, byIds => byIds)
 
 export const seasonActions = seasonsSlice.actions
 

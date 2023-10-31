@@ -89,6 +89,8 @@ export type Dialog =
   | DialogTagEditProps
   | DialogTagsProps
   | DialogMassAssetEditProps
+  | DialogSeasonsProps
+  | DialogSeasonEditProps
 
 export type DialogAction = 'deleteAsset' | 'deleteTag'
 
@@ -139,6 +141,12 @@ export type DialogTagsProps = {
   type: 'tags'
 }
 
+export type DialogSeasonsProps = {
+  closeDialogId?: string
+  id: string
+  type: 'seasons'
+}
+
 export type DialogTagCreateProps = {
   closeDialogId?: string
   id: string
@@ -150,6 +158,13 @@ export type DialogTagEditProps = {
   id: string
   tagId?: string
   type: 'tagEdit'
+}
+
+export type DialogSeasonEditProps = {
+  closeDialogId?: string
+  id: string
+  seasonId?: string
+  type: 'seasonEdit'
 }
 
 export type Document = {
@@ -273,6 +288,7 @@ export type SearchFacetName =
   | 'title'
   | 'type'
   | 'width'
+  | 'season'
 
 export type SearchFacetOperatorType =
   | 'doesNotInclude'
@@ -337,6 +353,7 @@ export type Tag = SanityDocument & {
 }
 
 export type TagActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
+export type SeasonActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
 
 export type TagFormData = z.infer<typeof tagFormSchema>
 

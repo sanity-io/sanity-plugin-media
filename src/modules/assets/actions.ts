@@ -1,5 +1,6 @@
 import {createAction} from '@reduxjs/toolkit'
 import {AssetItem, HttpError, Tag} from '../../types'
+import {Season} from '../seasons'
 
 export const ASSETS_ACTIONS = {
   tagsAddComplete: createAction(
@@ -20,6 +21,12 @@ export const ASSETS_ACTIONS = {
       return {payload: {assets, tag}}
     }
   ),
+  seasonsAddRequest: createAction(
+    'actions/seasonsAddRequest',
+    function prepare({assets, season}: {assets: AssetItem[]; season: Season}) {
+      return {payload: {assets, season}}
+    }
+  ),
   tagsRemoveComplete: createAction(
     'actions/tagsRemoveComplete',
     function prepare({assets, tag}: {assets: AssetItem[]; tag: Tag}) {
@@ -36,6 +43,12 @@ export const ASSETS_ACTIONS = {
     'actions/tagsRemoveRequest',
     function prepare({assets, tag}: {assets: AssetItem[]; tag: Tag}) {
       return {payload: {assets, tag}}
+    }
+  ),
+  seasonsRemoveRequest: createAction(
+    'actions/seasonsRemoveRequest',
+    function prepare({assets, season}: {assets: AssetItem[]; season: Season}) {
+      return {payload: {assets, season}}
     }
   )
 }

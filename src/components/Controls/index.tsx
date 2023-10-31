@@ -3,7 +3,7 @@ import React from 'react'
 import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
-import {tagsActions} from '../../modules/tags'
+import {seasonActions} from '../../modules/seasons'
 import ButtonViewGroup from '../ButtonViewGroup'
 import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
@@ -18,7 +18,7 @@ const Controls = () => {
   const fetching = useTypedSelector(state => state.assets.fetching)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.search.facets)
-  const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
+  const seasonsPanelVisible = useTypedSelector(state => state.seasons.panelVisible)
 
   const mediaIndex = useMediaIndex()
 
@@ -27,12 +27,12 @@ const Controls = () => {
     dispatch(dialogActions.showSearchFacets())
   }
 
-  const handleShowTagsDialog = () => {
-    dispatch(dialogActions.showTags())
+  const handleShowSeasonsDialog = () => {
+    dispatch(dialogActions.showSeasons())
   }
 
   const toggleTagsPanelToggle = () => {
-    dispatch(tagsActions.panelVisibleSet({panelVisible: !tagsPanelVisible}))
+    dispatch(seasonActions.panelVisibleSet({panelVisible: !seasonsPanelVisible}))
   }
 
   return (
@@ -89,8 +89,8 @@ const Controls = () => {
                 <Button
                   fontSize={1}
                   mode="ghost"
-                  onClick={handleShowTagsDialog}
-                  text={`Tags`}
+                  onClick={handleShowSeasonsDialog}
+                  text={`Seasons`}
                   tone="primary"
                 />
               </Inline>
@@ -119,8 +119,8 @@ const Controls = () => {
                   </Box>
                 }
                 onClick={toggleTagsPanelToggle}
-                mode={tagsPanelVisible ? 'default' : 'ghost'}
-                text={tagsPanelVisible ? 'Tags' : ''}
+                mode={seasonsPanelVisible ? 'default' : 'ghost'}
+                text={seasonsPanelVisible ? 'Seasons' : ''}
               />
             </Box>
           </Flex>

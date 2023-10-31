@@ -7,5 +7,13 @@ export const DIALOG_ACTIONS = {
     return {
       payload: {tagId}
     }
-  })
+  }),
+  showSeasonEdit: createAction(
+    'dialog/showSeasonEdit',
+    function prepare({seasonId}: {seasonId: string}) {
+      return {
+        payload: {seasonId}
+      }
+    }
+  )
 }

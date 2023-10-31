@@ -48,6 +48,17 @@ const searchSlice = createSlice({
           )
       )
     },
+    facetsRemoveBySeason(state, action: PayloadAction<{seasonId: string}>) {
+      state.facets = state.facets.filter(
+        facet =>
+          !(
+            facet.name === 'season' &&
+            facet.type === 'searchable' &&
+            (facet.operatorType === 'references' || facet.operatorType === 'doesNotReference') &&
+            facet.value?.value === action.payload.seasonId
+          )
+      )
+    },
     // Remove search facet by name
     facetsRemoveById(state, action: PayloadAction<{facetId: string}>) {
       state.facets = state.facets.filter(facet => facet.id !== action.payload.facetId)

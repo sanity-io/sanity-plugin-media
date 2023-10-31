@@ -83,3 +83,11 @@ export const massEditAssetsFormSchema = z.object({
 export const tagFormSchema = z.object({
   name: z.string().min(1, {message: 'Name cannot be empty'})
 })
+
+export const seasonFormSchema = z.object({
+  name: z.string().min(1, {message: 'Name cannot be empty'})
+})
+
+export const collaborationFormSchema = z.object({
+  name: z.string().min(1, {message: 'Name cannot be empty'})
+})

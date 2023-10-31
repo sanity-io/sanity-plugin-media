@@ -3955,12 +3955,12 @@ const useKeyPress = (hotkey, onPress) => {
   }, [downHandler, upHandler]);
   return keyPressed;
 };
-var __freeze$m = Object.freeze;
-var __defProp$n = Object.defineProperty;
-var __template$m = (cooked, raw) => __freeze$m(__defProp$n(cooked, "raw", {
-  value: __freeze$m(raw || cooked.slice())
+var __freeze$o = Object.freeze;
+var __defProp$p = Object.defineProperty;
+var __template$o = (cooked, raw) => __freeze$o(__defProp$p(cooked, "raw", {
+  value: __freeze$o(raw || cooked.slice())
 }));
-var _a$m, _b$b, _c$3, _d$2;
+var _a$o, _b$c, _c$3, _d$2;
 const divider = {
   type: "divider"
 };
@@ -4012,11 +4012,11 @@ const inputs = {
     options: [{
       name: "true",
       title: "True",
-      value: groq(_a$m || (_a$m = __template$m(["_id in $documentAssetIds"])))
+      value: groq(_a$o || (_a$o = __template$o(["_id in $documentAssetIds"])))
     }, {
       name: "false",
       title: "False",
-      value: groq(_b$b || (_b$b = __template$m(["!(_id in $documentAssetIds)"])))
+      value: groq(_b$c || (_b$c = __template$o(["!(_id in $documentAssetIds)"])))
     }],
     selectOnly: true,
     title: "In use in current document",
@@ -4030,11 +4030,11 @@ const inputs = {
     options: [{
       name: "true",
       title: "True",
-      value: groq(_c$3 || (_c$3 = __template$m(["count(*[references(^._id)]) > 0"])))
+      value: groq(_c$3 || (_c$3 = __template$o(["count(*[references(^._id)]) > 0"])))
     }, {
       name: "false",
       title: "False",
-      value: groq(_d$2 || (_d$2 = __template$m(["count(*[references(^._id)]) == 0"])))
+      value: groq(_d$2 || (_d$2 = __template$o(["count(*[references(^._id)]) == 0"])))
     }],
     title: "In use",
     type: "select",
@@ -4107,6 +4107,15 @@ const inputs = {
     operatorType: "references",
     operatorTypes: ["references", "doesNotReference", null, "empty", "notEmpty"],
     title: "Tags",
+    type: "searchable"
+  },
+  season: {
+    assetTypes: ["file", "image"],
+    field: "season",
+    name: "season",
+    operatorType: "references",
+    operatorTypes: ["references", "doesNotReference", null, "empty", "notEmpty"],
+    title: "Seasons",
     type: "searchable"
   },
   title: {
@@ -4315,12 +4324,12 @@ const debugThrottle = throttled => {
     })), source);
   };
 };
-var __freeze$l = Object.freeze;
-var __defProp$m = Object.defineProperty;
-var __template$l = (cooked, raw) => __freeze$l(__defProp$m(cooked, "raw", {
-  value: __freeze$l(raw || cooked.slice())
+var __freeze$n = Object.freeze;
+var __defProp$o = Object.defineProperty;
+var __template$n = (cooked, raw) => __freeze$n(__defProp$o(cooked, "raw", {
+  value: __freeze$n(raw || cooked.slice())
 }));
-var _a$l, _b$a;
+var _a$n, _b$b;
 const constructFilter = _ref => {
   let {
     assetTypes,
@@ -4328,7 +4337,7 @@ const constructFilter = _ref => {
     searchQuery
   } = _ref;
   const documentAssetTypes = assetTypes.map(type => "sanity.".concat(type, "Asset"));
-  const baseFilter = groq(_a$l || (_a$l = __template$l(["\n    _type in ", ' && !(_id in path("drafts.**"))\n  '])), JSON.stringify(documentAssetTypes));
+  const baseFilter = groq(_a$n || (_a$n = __template$n(["\n    _type in ", ' && !(_id in path("drafts.**"))\n  '])), JSON.stringify(documentAssetTypes));
   const searchFacetFragments = searchFacets.reduce((acc, facet) => {
     var _a2;
     if (facet.type === "number") {
@@ -4394,21 +4403,21 @@ const constructFilter = _ref => {
   // NOTE: Currently this only searches direct fields on sanity.fileAsset/sanity.imageAsset and NOT referenced tags
   // It's possible to add this by adding the following line to the searchQuery, but it's quite slow
   // references(*[_type == "media.tag" && name.current == "${searchQuery.trim()}"]._id)
-  ...(searchQuery ? [groq(_b$a || (_b$a = __template$l(["[_id, altText, assetId, description, originalFilename, title, url] match '*", "*'"])), searchQuery.trim())] : []),
+  ...(searchQuery ? [groq(_b$b || (_b$b = __template$n(["[_id, altText, assetId, description, originalFilename, title, url] match '*", "*'"])), searchQuery.trim())] : []),
   // Search facets
   ...searchFacetFragments].join(" && ");
   return constructedQuery;
 };
-var __freeze$k = Object.freeze;
-var __defProp$l = Object.defineProperty;
-var __template$k = (cooked, raw) => __freeze$k(__defProp$l(cooked, "raw", {
-  value: __freeze$k(raw || cooked.slice())
+var __freeze$m = Object.freeze;
+var __defProp$n = Object.defineProperty;
+var __template$m = (cooked, raw) => __freeze$m(__defProp$n(cooked, "raw", {
+  value: __freeze$m(raw || cooked.slice())
 }));
-var _a$k;
+var _a$m;
 const checkTagName = (client, name) => {
   return function (source) {
     return source.pipe(mergeMap(() => {
-      return from(client.fetch(groq(_a$k || (_a$k = __template$k(['count(*[_type == "', '" && name.current == $name])'])), TAG_DOCUMENT_NAME), {
+      return from(client.fetch(groq(_a$m || (_a$m = __template$m(['count(*[_type == "', '" && name.current == $name])'])), TAG_DOCUMENT_NAME), {
         name
       }));
     }), mergeMap(existingTagCount => {
@@ -4474,11 +4483,23 @@ const ASSETS_ACTIONS = {
       }
     };
   }),
-  tagsRemoveComplete: createAction("actions/tagsRemoveComplete", function prepare4(_ref5) {
+  seasonsAddRequest: createAction("actions/seasonsAddRequest", function prepare4(_ref5) {
+    let {
+      assets,
+      season
+    } = _ref5;
+    return {
+      payload: {
+        assets,
+        season
+      }
+    };
+  }),
+  tagsRemoveComplete: createAction("actions/tagsRemoveComplete", function prepare5(_ref6) {
     let {
       assets,
       tag
-    } = _ref5;
+    } = _ref6;
     return {
       payload: {
         assets,
@@ -4486,12 +4507,12 @@ const ASSETS_ACTIONS = {
       }
     };
   }),
-  tagsRemoveError: createAction("actions/tagsRemoveError", function prepare5(_ref6) {
+  tagsRemoveError: createAction("actions/tagsRemoveError", function prepare6(_ref7) {
     let {
       assets,
       error,
       tag
-    } = _ref6;
+    } = _ref7;
     return {
       payload: {
         assets,
@@ -4500,15 +4521,27 @@ const ASSETS_ACTIONS = {
       }
     };
   }),
-  tagsRemoveRequest: createAction("actions/tagsRemoveRequest", function prepare6(_ref7) {
+  tagsRemoveRequest: createAction("actions/tagsRemoveRequest", function prepare7(_ref8) {
     let {
       assets,
       tag
-    } = _ref7;
+    } = _ref8;
     return {
       payload: {
         assets,
         tag
+      }
+    };
+  }),
+  seasonsRemoveRequest: createAction("actions/seasonsRemoveRequest", function prepare8(_ref9) {
+    let {
+      assets,
+      season
+    } = _ref9;
+    return {
+      payload: {
+        assets,
+        season
       }
     };
   })
@@ -4516,23 +4549,33 @@ const ASSETS_ACTIONS = {
 const DIALOG_ACTIONS = {
   showTagCreate: createAction("dialog/showTagCreate"),
   showMassEdit: createAction("dialog/showMassEdit"),
-  showTagEdit: createAction("dialog/showTagEdit", function prepare(_ref8) {
+  showTagEdit: createAction("dialog/showTagEdit", function prepare(_ref10) {
     let {
       tagId
-    } = _ref8;
+    } = _ref10;
     return {
       payload: {
         tagId
       }
     };
+  }),
+  showSeasonEdit: createAction("dialog/showSeasonEdit", function prepare2(_ref11) {
+    let {
+      seasonId
+    } = _ref11;
+    return {
+      payload: {
+        seasonId
+      }
+    };
   })
 };
-var __freeze$j = Object.freeze;
-var __defProp$k = Object.defineProperty;
-var __template$j = (cooked, raw) => __freeze$j(__defProp$k(cooked, "raw", {
-  value: __freeze$j(raw || cooked.slice())
+var __freeze$l = Object.freeze;
+var __defProp$m = Object.defineProperty;
+var __template$l = (cooked, raw) => __freeze$l(__defProp$m(cooked, "raw", {
+  value: __freeze$l(raw || cooked.slice())
 }));
-var _a$j, _b$9;
+var _a$l, _b$a;
 const initialState$9 = {
   allIds: [],
   byIds: {},
@@ -4650,7 +4693,7 @@ const tagsSlice = createSlice({
         delete state.fetchingError;
       },
       prepare: () => {
-        const query = groq(_a$j || (_a$j = __template$j(['\n          {\n            "items": *[\n              _type == "', '"\n              && !(_id in path("drafts.**"))\n            ] {\n              _createdAt,\n              _updatedAt,\n              _id,\n              _rev,\n              _type,\n              name\n            } | order(name.current asc),\n          }\n        '])), TAG_DOCUMENT_NAME);
+        const query = groq(_a$l || (_a$l = __template$l(['\n          {\n            "items": *[\n              _type == "', '"\n              && !(_id in path("drafts.**"))\n            ] {\n              _createdAt,\n              _updatedAt,\n              _id,\n              _rev,\n              _type,\n              name\n            } | order(name.current asc),\n          }\n        '])), TAG_DOCUMENT_NAME);
         return {
           payload: {
             query
@@ -4749,12 +4792,12 @@ const tagsSlice = createSlice({
     }
   }
 });
-const tagsCreateEpic = (action$, state$, _ref9) => {
+const tagsCreateEpic = (action$, state$, _ref12) => {
   let {
     client
-  } = _ref9;
-  return action$.pipe(filter(tagsSlice.actions.createRequest.match), withLatestFrom(state$), mergeMap(_ref10 => {
-    let [action, state] = _ref10;
+  } = _ref12;
+  return action$.pipe(filter(tagsSlice.actions.createRequest.match), withLatestFrom(state$), mergeMap(_ref13 => {
+    let [action, state] = _ref13;
     const {
       assetId,
       name
@@ -4777,12 +4820,12 @@ const tagsCreateEpic = (action$, state$, _ref9) => {
     }))));
   }));
 };
-const tagsDeleteEpic = (action$, state$, _ref11) => {
+const tagsDeleteEpic = (action$, state$, _ref14) => {
   let {
     client
-  } = _ref11;
-  return action$.pipe(filter(tagsSlice.actions.deleteRequest.match), withLatestFrom(state$), mergeMap(_ref12 => {
-    let [action, state] = _ref12;
+  } = _ref14;
+  return action$.pipe(filter(tagsSlice.actions.deleteRequest.match), withLatestFrom(state$), mergeMap(_ref15 => {
+    let [action, state] = _ref15;
     const {
       tag
     } = action.payload;
@@ -4790,7 +4833,7 @@ const tagsDeleteEpic = (action$, state$, _ref11) => {
     // Optionally throttle
     debugThrottle(state.debug.badConnection),
     // Fetch assets which reference this tag
-    mergeMap(() => client.observable.fetch(groq(_b$9 || (_b$9 = __template$j(['*[\n              _type in ["sanity.fileAsset", "sanity.imageAsset"]\n              && references(*[_type == "media.tag" && name.current == $tagName]._id)\n            ] {\n              _id,\n              _rev,\n              opt\n            }']))), {
+    mergeMap(() => client.observable.fetch(groq(_b$a || (_b$a = __template$l(['*[\n              _type in ["sanity.fileAsset", "sanity.imageAsset"]\n              && references(*[_type == "media.tag" && name.current == $tagName]._id)\n            ] {\n              _id,\n              _rev,\n              opt\n            }']))), {
       tagName: tag.name.current
     })),
     // Create transaction which remove tag references from all matched assets and delete tag
@@ -4819,12 +4862,12 @@ const tagsDeleteEpic = (action$, state$, _ref11) => {
     }))));
   }));
 };
-const tagsFetchEpic = (action$, state$, _ref13) => {
+const tagsFetchEpic = (action$, state$, _ref16) => {
   let {
     client
-  } = _ref13;
-  return action$.pipe(filter(tagsSlice.actions.fetchRequest.match), withLatestFrom(state$), switchMap(_ref14 => {
-    let [action, state] = _ref14;
+  } = _ref16;
+  return action$.pipe(filter(tagsSlice.actions.fetchRequest.match), withLatestFrom(state$), switchMap(_ref17 => {
+    let [action, state] = _ref17;
     const {
       query
     } = action.payload;
@@ -4868,12 +4911,12 @@ const tagsListenerUpdateQueueEpic = action$ => action$.pipe(filter(tagsSlice.act
   }));
 }));
 const tagsSortEpic = action$ => action$.pipe(ofType(tagsSlice.actions.listenerCreateQueueComplete.type, tagsSlice.actions.listenerUpdateQueueComplete.type), bufferTime(1e3), filter(actions => actions.length > 0), mergeMap(() => of(tagsSlice.actions.sort())));
-const tagsUpdateEpic = (action$, state$, _ref15) => {
+const tagsUpdateEpic = (action$, state$, _ref18) => {
   let {
     client
-  } = _ref15;
-  return action$.pipe(filter(tagsSlice.actions.updateRequest.match), withLatestFrom(state$), mergeMap(_ref16 => {
-    let [action, state] = _ref16;
+  } = _ref18;
+  return action$.pipe(filter(tagsSlice.actions.updateRequest.match), withLatestFrom(state$), mergeMap(_ref19 => {
+    let [action, state] = _ref19;
     var _a2;
     const {
       closeDialogId,
@@ -4907,10 +4950,10 @@ const tagsUpdateEpic = (action$, state$, _ref15) => {
     }))));
   }));
 };
-const selectTagsByIds$1 = state => state.tags.byIds;
+const selectTagsByIds = state => state.tags.byIds;
 const selectTagsAllIds = state => state.tags.allIds;
-const selectTags = createSelector([selectTagsByIds$1, selectTagsAllIds], (byIds, allIds) => allIds.map(id => byIds[id]));
-const selectTagById = createSelector([selectTagsByIds$1, (_state, tagId) => tagId], (byIds, tagId) => byIds[tagId]);
+const selectTags = createSelector([selectTagsByIds, selectTagsAllIds], (byIds, allIds) => allIds.map(id => byIds[id]));
+const selectTagById = createSelector([selectTagsByIds, (_state, tagId) => tagId], (byIds, tagId) => byIds[tagId]);
 const selectTagSelectOptions = asset => state => {
   var _a2, _b2, _c;
   const tags = (_c = (_b2 = (_a2 = asset == null ? void 0 : asset.opt) == null ? void 0 : _a2.media) == null ? void 0 : _b2.tags) == null ? void 0 : _c.reduce((acc, v) => {
@@ -4955,6 +4998,12 @@ const searchSlice = createSlice({
       state.facets = state.facets.filter(facet => {
         var _a;
         return !(facet.name === "tag" && facet.type === "searchable" && (facet.operatorType === "references" || facet.operatorType === "doesNotReference") && ((_a = facet.value) == null ? void 0 : _a.value) === action.payload.tagId);
+      });
+    },
+    facetsRemoveBySeason(state, action) {
+      state.facets = state.facets.filter(facet => {
+        var _a;
+        return !(facet.name === "season" && facet.type === "searchable" && (facet.operatorType === "references" || facet.operatorType === "doesNotReference") && ((_a = facet.value) == null ? void 0 : _a.value) === action.payload.seasonId);
       });
     },
     // Remove search facet by name
@@ -5013,8 +5062,8 @@ const searchSlice = createSlice({
     }
   }
 });
-const searchFacetTagUpdateEpic = (action$, state$) => action$.pipe(filter(tagsActions.updateComplete.match), withLatestFrom(state$), mergeMap(_ref17 => {
-  let [action, state] = _ref17;
+const searchFacetTagUpdateEpic = (action$, state$) => action$.pipe(filter(tagsActions.updateComplete.match), withLatestFrom(state$), mergeMap(_ref20 => {
+  let [action, state] = _ref20;
   var _a, _b, _c, _d, _e;
   const {
     tag
@@ -5041,10 +5090,10 @@ const selectIsSearchFacetTag = createSelector([state => state.search.facets, (_s
 const searchActions = searchSlice.actions;
 var searchReducer = searchSlice.reducer;
 const UPLOADS_ACTIONS = {
-  uploadComplete: createAction("uploads/uploadComplete", function prepare(_ref18) {
+  uploadComplete: createAction("uploads/uploadComplete", function prepare(_ref21) {
     let {
       asset
-    } = _ref18;
+    } = _ref21;
     return {
       payload: {
         asset
@@ -5052,12 +5101,12 @@ const UPLOADS_ACTIONS = {
     };
   })
 };
-var __freeze$i = Object.freeze;
-var __defProp$j = Object.defineProperty;
-var __template$i = (cooked, raw) => __freeze$i(__defProp$j(cooked, "raw", {
-  value: __freeze$i(raw || cooked.slice())
+var __freeze$k = Object.freeze;
+var __defProp$l = Object.defineProperty;
+var __template$k = (cooked, raw) => __freeze$k(__defProp$l(cooked, "raw", {
+  value: __freeze$k(raw || cooked.slice())
 }));
-var _a$i, _b$8, _c$2, _d$1, _e;
+var _a$k, _b$9, _c$2, _d$1, _e;
 const defaultOrder = ORDER_OPTIONS[0];
 const initialState$7 = {
   allIds: [],
@@ -5209,15 +5258,15 @@ const assetsSlice = createSlice({
         state.fetching = true;
         delete state.fetchingError;
       },
-      prepare: _ref19 => {
+      prepare: _ref22 => {
         let {
           params = {},
           queryFilter,
           selector = "",
-          sort = groq(_a$i || (_a$i = __template$i(["order(_updatedAt desc)"])))
-        } = _ref19;
+          sort = groq(_a$k || (_a$k = __template$k(["order(_updatedAt desc)"])))
+        } = _ref22;
         const pipe = sort || selector ? "|" : "";
-        const query = groq(_b$8 || (_b$8 = __template$i(['\n          {\n            "items": *[', "] {\n              _id,\n              _type,\n              _createdAt,\n              _updatedAt,\n              altText,\n              description,\n              extension,\n              metadata {\n                dimensions,\n                exif,\n                isOpaque,\n              },\n              mimeType,\n              opt {\n                media\n              },\n              originalFilename,\n              size,\n              title,\n              products,\n              collaboration, \n              season,\n              name,\n              url\n            } ", " ", " ", ",\n          }\n        "])), queryFilter, pipe, sort, selector);
+        const query = groq(_b$9 || (_b$9 = __template$k(['\n          {\n            "items": *[', "] {\n              _id,\n              _type,\n              _createdAt,\n              _updatedAt,\n              altText,\n              description,\n              extension,\n              metadata {\n                dimensions,\n                exif,\n                isOpaque,\n              },\n              mimeType,\n              opt {\n                media\n              },\n              originalFilename,\n              size,\n              title,\n              products,\n              collaboration, \n              season,\n              name,\n              url\n            } ", " ", " ", ",\n          }\n        "])), queryFilter, pipe, sort, selector);
         return {
           payload: {
             params,
@@ -5230,8 +5279,8 @@ const assetsSlice = createSlice({
       const {
         results
       } = action.payload;
-      Object.entries(results).forEach(_ref20 => {
-        let [hash, assetId] = _ref20;
+      Object.entries(results).forEach(_ref23 => {
+        let [hash, assetId] = _ref23;
         if (assetId && !state.allIds.includes(hash)) {
           state.allIds.push(assetId);
         }
@@ -5357,17 +5406,17 @@ const assetsSlice = createSlice({
     }
   }
 });
-const assetsDeleteEpic = (action$, _state$, _ref21) => {
+const assetsDeleteEpic = (action$, _state$, _ref24) => {
   let {
     client
-  } = _ref21;
+  } = _ref24;
   return action$.pipe(filter(assetsActions.deleteRequest.match), mergeMap(action => {
     const {
       assets
     } = action.payload;
     const assetIds = assets.map(asset => asset._id);
     return of(assets).pipe(mergeMap(() => client.observable.delete({
-      query: groq(_c$2 || (_c$2 = __template$i(["*[_id in ", "]"])), JSON.stringify(assetIds))
+      query: groq(_c$2 || (_c$2 = __template$k(["*[_id in ", "]"])), JSON.stringify(assetIds))
     })), mergeMap(() => of(assetsActions.deleteComplete({
       assetIds
     }))), catchError(error => {
@@ -5378,12 +5427,12 @@ const assetsDeleteEpic = (action$, _state$, _ref21) => {
     }));
   }));
 };
-const assetsFetchEpic = (action$, state$, _ref22) => {
+const assetsFetchEpic = (action$, state$, _ref25) => {
   let {
     client
-  } = _ref22;
-  return action$.pipe(filter(assetsActions.fetchRequest.match), withLatestFrom(state$), switchMap(_ref23 => {
-    let [action, state] = _ref23;
+  } = _ref25;
+  return action$.pipe(filter(assetsActions.fetchRequest.match), withLatestFrom(state$), switchMap(_ref26 => {
+    let [action, state] = _ref26;
     var _a2, _b2;
     const params = (_a2 = action.payload) == null ? void 0 : _a2.params;
     const query = (_b2 = action.payload) == null ? void 0 : _b2.query;
@@ -5401,8 +5450,8 @@ const assetsFetchEpic = (action$, state$, _ref22) => {
     }))));
   }));
 };
-const assetsFetchPageIndexEpic = (action$, state$) => action$.pipe(filter(assetsActions.loadPageIndex.match), withLatestFrom(state$), switchMap(_ref24 => {
-  let [action, state] = _ref24;
+const assetsFetchPageIndexEpic = (action$, state$) => action$.pipe(filter(assetsActions.loadPageIndex.match), withLatestFrom(state$), switchMap(_ref27 => {
+  let [action, state] = _ref27;
   var _a2, _b2, _c2, _d2, _e2, _f;
   const pageSize = state.assets.pageSize;
   const start = action.payload.pageIndex * pageSize;
@@ -5423,18 +5472,18 @@ const assetsFetchPageIndexEpic = (action$, state$) => action$.pipe(filter(assets
   return of(assetsActions.fetchRequest({
     params,
     queryFilter: constructedFilter,
-    selector: groq(_d$1 || (_d$1 = __template$i(["[", "...", "]"])), start, end),
-    sort: groq(_e || (_e = __template$i(["order(", " ", ")"])), (_d2 = (_c2 = state.assets) == null ? void 0 : _c2.order) == null ? void 0 : _d2.field, (_f = (_e2 = state.assets) == null ? void 0 : _e2.order) == null ? void 0 : _f.direction)
+    selector: groq(_d$1 || (_d$1 = __template$k(["[", "...", "]"])), start, end),
+    sort: groq(_e || (_e = __template$k(["order(", " ", ")"])), (_d2 = (_c2 = state.assets) == null ? void 0 : _c2.order) == null ? void 0 : _d2.field, (_f = (_e2 = state.assets) == null ? void 0 : _e2.order) == null ? void 0 : _f.direction)
   }));
 }));
-const assetsFetchNextPageEpic = (action$, state$) => action$.pipe(filter(assetsActions.loadNextPage.match), withLatestFrom(state$), switchMap(_ref25 => {
-  let [_action, state] = _ref25;
+const assetsFetchNextPageEpic = (action$, state$) => action$.pipe(filter(assetsActions.loadNextPage.match), withLatestFrom(state$), switchMap(_ref28 => {
+  let [_action, state] = _ref28;
   return of(assetsActions.loadPageIndex({
     pageIndex: state.assets.pageIndex + 1
   }));
 }));
-const assetsFetchAfterDeleteAllEpic = (action$, state$) => action$.pipe(filter(assetsActions.deleteComplete.match), withLatestFrom(state$), switchMap(_ref26 => {
-  let [_action, state] = _ref26;
+const assetsFetchAfterDeleteAllEpic = (action$, state$) => action$.pipe(filter(assetsActions.deleteComplete.match), withLatestFrom(state$), switchMap(_ref29 => {
+  let [_action, state] = _ref29;
   if (state.assets.allIds.length === 0) {
     const nextPageIndex = Math.floor(state.assets.allIds.length / state.assets.pageSize);
     return of(assetsActions.loadPageIndex({
@@ -5448,10 +5497,10 @@ const filterAssetWithoutTag = tag => asset => {
   const tagIndex = (_e2 = (_d2 = (_c2 = (_b2 = (_a2 = asset == null ? void 0 : asset.asset) == null ? void 0 : _a2.opt) == null ? void 0 : _b2.media) == null ? void 0 : _c2.tags) == null ? void 0 : _d2.findIndex(t => t._ref === (tag == null ? void 0 : tag._id))) != null ? _e2 : -1;
   return tagIndex < 0;
 };
-const patchOperationTagAppend = _ref27 => {
+const patchOperationTagAppend = _ref30 => {
   let {
     tag
-  } = _ref27;
+  } = _ref30;
   return patch => patch.setIfMissing({
     opt: {}
   }).setIfMissing({
@@ -5465,11 +5514,11 @@ const patchOperationTagAppend = _ref27 => {
     _weak: true
   }]);
 };
-const patchOperationTagUnset = _ref28 => {
+const patchOperationTagUnset = _ref31 => {
   let {
     asset,
     tag
-  } = _ref28;
+  } = _ref31;
   return patch => {
     var _a2;
     return patch.ifRevisionId((_a2 = asset == null ? void 0 : asset.asset) == null ? void 0 : _a2._rev).unset(['opt.media.tags[_ref == "'.concat(tag._id, '"]')]);
@@ -5508,12 +5557,12 @@ const assetsListenerUpdateQueueEpic = action$ => action$.pipe(filter(assetsActio
   }));
 }));
 const assetsSortEpic = action$ => action$.pipe(ofType(assetsActions.insertUploads.type, assetsActions.listenerUpdateQueueComplete.type, assetsActions.updateComplete.type), mergeMap(() => of(assetsActions.sort())));
-const assetsTagsAddEpic = (action$, state$, _ref29) => {
+const assetsTagsAddEpic = (action$, state$, _ref32) => {
   let {
     client
-  } = _ref29;
-  return action$.pipe(filter(ASSETS_ACTIONS.tagsAddRequest.match), withLatestFrom(state$), mergeMap(_ref30 => {
-    let [action, state] = _ref30;
+  } = _ref32;
+  return action$.pipe(filter(ASSETS_ACTIONS.tagsAddRequest.match), withLatestFrom(state$), mergeMap(_ref33 => {
+    let [action, state] = _ref33;
     const {
       assets,
       tag
@@ -5547,12 +5596,12 @@ const assetsTagsAddEpic = (action$, state$, _ref29) => {
     }))));
   }));
 };
-const assetsTagsRemoveEpic = (action$, state$, _ref31) => {
+const assetsTagsRemoveEpic = (action$, state$, _ref34) => {
   let {
     client
-  } = _ref31;
-  return action$.pipe(filter(ASSETS_ACTIONS.tagsRemoveRequest.match), withLatestFrom(state$), mergeMap(_ref32 => {
-    let [action, state] = _ref32;
+  } = _ref34;
+  return action$.pipe(filter(ASSETS_ACTIONS.tagsRemoveRequest.match), withLatestFrom(state$), mergeMap(_ref35 => {
+    let [action, state] = _ref35;
     const {
       assets,
       tag
@@ -5589,12 +5638,12 @@ const assetsTagsRemoveEpic = (action$, state$, _ref31) => {
 const assetsUnpickEpic = action$ => action$.pipe(ofType(assetsActions.orderSet.type, assetsActions.viewSet.type, searchActions.facetsAdd.type, searchActions.facetsClear.type, searchActions.facetsRemoveById.type, searchActions.facetsRemoveByName.type, searchActions.facetsRemoveByTag.type, searchActions.facetsUpdate.type, searchActions.facetsUpdateById.type, searchActions.querySet.type), mergeMap(() => {
   return of(assetsActions.pickClear());
 }));
-const assetsUpdateEpic = (action$, state$, _ref33) => {
+const assetsUpdateEpic = (action$, state$, _ref36) => {
   let {
     client
-  } = _ref33;
-  return action$.pipe(filter(assetsActions.updateRequest.match), withLatestFrom(state$), mergeMap(_ref34 => {
-    let [action, state] = _ref34;
+  } = _ref36;
+  return action$.pipe(filter(assetsActions.updateRequest.match), withLatestFrom(state$), mergeMap(_ref37 => {
+    let [action, state] = _ref37;
     const {
       asset,
       closeDialogId,
@@ -5616,19 +5665,19 @@ const assetsUpdateEpic = (action$, state$, _ref33) => {
     }))));
   }));
 };
-const assetsMassUpdateEpic = (action$, state$, _ref35) => {
+const assetsMassUpdateEpic = (action$, state$, _ref38) => {
   let {
     client
-  } = _ref35;
-  return action$.pipe(filter(assetsActions.massUpdateRequest.match), withLatestFrom(state$), mergeMap(_ref36 => {
-    let [action] = _ref36;
+  } = _ref38;
+  return action$.pipe(filter(assetsActions.massUpdateRequest.match), withLatestFrom(state$), mergeMap(_ref39 => {
+    let [action] = _ref39;
     const {
       assets,
       formData
     } = action.payload;
     const updateObservables = assets.map(asset => {
-      const formDataWithoutEmptyValues = Object.entries(formData).reduce((acc, _ref37) => {
-        let [key, value] = _ref37;
+      const formDataWithoutEmptyValues = Object.entries(formData).reduce((acc, _ref40) => {
+        let [key, value] = _ref40;
         return value ? {
           ...acc,
           [key]: value
@@ -5667,21 +5716,236 @@ const selectAssetsPicked = createSelector([selectAssets], assets => assets.filte
 const selectAssetsPickedLength = createSelector([selectAssetsPicked], assetsPicked => assetsPicked.length);
 const assetsActions = assetsSlice.actions;
 var assetsReducer = assetsSlice.reducer;
-var __freeze$h = Object.freeze;
-var __defProp$i = Object.defineProperty;
-var __template$h = (cooked, raw) => __freeze$h(__defProp$i(cooked, "raw", {
-  value: __freeze$h(raw || cooked.slice())
+var __freeze$j = Object.freeze;
+var __defProp$k = Object.defineProperty;
+var __template$j = (cooked, raw) => __freeze$j(__defProp$k(cooked, "raw", {
+  value: __freeze$j(raw || cooked.slice())
 }));
-var _a$h, _b$7;
-const customScrollbar = css(_a$h || (_a$h = __template$h(["\n  ::-webkit-scrollbar {\n    width: 14px;\n  }\n\n  ::-webkit-scrollbar-thumb {\n    border-radius: 10px;\n    border: 4px solid rgba(0, 0, 0, 0);\n    background: var(--card-border-color);\n    background-clip: padding-box;\n\n    &:hover {\n      background: var(--card-muted-fg-color);\n      background-clip: padding-box;\n    }\n  }\n"])));
-const GlobalStyle = createGlobalStyle(_b$7 || (_b$7 = __template$h(["\n  .media__custom-scrollbar {\n    ", '\n  }\n\n  // @sanity/ui overrides\n\n  // Custom scrollbar on Box (used in Dialogs)\n  div[data-ui="Box"] {\n    ', '\n  }\n\n  // Dialog background color\n  div[data-ui="Dialog"] {\n    background-color: rgba(15, 17, 18, 0.9);\n  }\n\n'])), customScrollbar, customScrollbar);
+var _a$j, _b$8;
+const customScrollbar = css(_a$j || (_a$j = __template$j(["\n  ::-webkit-scrollbar {\n    width: 14px;\n  }\n\n  ::-webkit-scrollbar-thumb {\n    border-radius: 10px;\n    border: 4px solid rgba(0, 0, 0, 0);\n    background: var(--card-border-color);\n    background-clip: padding-box;\n\n    &:hover {\n      background: var(--card-muted-fg-color);\n      background-clip: padding-box;\n    }\n  }\n"])));
+const GlobalStyle = createGlobalStyle(_b$8 || (_b$8 = __template$j(["\n  .media__custom-scrollbar {\n    ", '\n  }\n\n  // @sanity/ui overrides\n\n  // Custom scrollbar on Box (used in Dialogs)\n  div[data-ui="Box"] {\n    ', '\n  }\n\n  // Dialog background color\n  div[data-ui="Dialog"] {\n    background-color: rgba(15, 17, 18, 0.9);\n  }\n\n'])), customScrollbar, customScrollbar);
 const useTypedSelector = useSelector;
+var __freeze$i = Object.freeze;
+var __defProp$j = Object.defineProperty;
+var __template$i = (cooked, raw) => __freeze$i(__defProp$j(cooked, "raw", {
+  value: __freeze$i(raw || cooked.slice())
+}));
+var _a$i;
 const initialState$6 = {
+  creating: false,
+  fetching: false,
+  fetchingError: void 0,
+  creatingError: void 0,
+  byIds: {},
+  panelVisible: true,
+  fetchCount: -1,
+  allIds: []
+};
+const seasonsSlice = createSlice({
+  name: "seasons",
+  initialState: initialState$6,
+  reducers: {
+    // Create season
+    createRequest(state, _action) {
+      state.creating = true;
+      delete state.creatingError;
+    },
+    createComplete(state, action) {
+      const {
+        season
+      } = action.payload;
+      state.creating = false;
+      state.byIds[season._id] = {
+        _type: "seasonItem",
+        error: void 0,
+        picked: false,
+        season,
+        updating: false
+      };
+    },
+    createError(state, action) {
+      state.creating = false;
+      state.creatingError = action.payload.error;
+    },
+    // Queue batch tag creation
+    listenerCreateQueue(_state, _action) {},
+    // Fetch seasons
+    fetchRequest: {
+      reducer: (state, _action) => {
+        state.fetching = true;
+        delete state.fetchingError;
+      },
+      prepare: () => {
+        const query = groq(_a$i || (_a$i = __template$i(['\n          {\n            "items": *[\n              _type == "', '"\n              && !(_id in path("drafts.**"))\n            ] {\n              _createdAt,\n              _updatedAt,\n              _id,\n              _rev,\n              _type,\n              name\n            } | order(name.current asc),\n          }\n        '])), SEASONS_DOCUMENT_NAME);
+        return {
+          payload: {
+            query
+          }
+        };
+      }
+    },
+    fetchComplete(state, action) {
+      state.fetching = false;
+      state.fetchingError = void 0;
+      const seasons = action.payload.seasons;
+      state.byIds = action.payload.seasons.reduce((acc, season) => {
+        acc[season._id] = {
+          _type: "seasonItem",
+          error: void 0,
+          picked: false,
+          season,
+          updating: false
+        };
+        return acc;
+      }, {});
+      seasons == null ? void 0 : seasons.forEach(season => {
+        state.allIds.push(season._id);
+        state.byIds[season._id] = {
+          _type: "seasonItem",
+          picked: false,
+          season,
+          updating: false
+        };
+      });
+      state.fetching = false;
+      state.fetchCount = seasons.length || 0;
+      delete state.fetchingError;
+    },
+    fetchError(state, action) {
+      const {
+        error
+      } = action.payload;
+      state.fetching = false;
+      state.fetchingError = error;
+    },
+    listenerCreateQueueComplete(state, action) {
+      const {
+        seasons
+      } = action.payload;
+      seasons == null ? void 0 : seasons.forEach(season => {
+        state.byIds[season._id] = {
+          _type: "seasonItem",
+          picked: false,
+          season,
+          updating: false
+        };
+      });
+    },
+    // Update season
+    updateRequest(state, action) {
+      const {
+        season
+      } = action.payload;
+      state.byIds[season._id].updating = true;
+    },
+    updateSeasonItemRequest(state, action) {
+      const {
+        season
+      } = action.payload;
+      state.byIds[season == null ? void 0 : season._id].updating = true;
+    },
+    updateComplete(state, action) {
+      const {
+        season
+      } = action.payload;
+      state.byIds[season._id].updating = false;
+      state.byIds[season._id].season = season;
+    },
+    updateError(state, action) {
+      const {
+        error,
+        season
+      } = action.payload;
+      const seasonId = season == null ? void 0 : season._id;
+      state.byIds[seasonId].error = error;
+      state.byIds[seasonId].updating = false;
+    },
+    deleteRequest(state, action) {
+      var _a2, _b;
+      const seasonId = (_b = (_a2 = action.payload) == null ? void 0 : _a2.season) == null ? void 0 : _b._id;
+      state.byIds[seasonId].picked = false;
+      state.byIds[seasonId].updating = true;
+      Object.keys(state.byIds).forEach(key => {
+        delete state.byIds[key].error;
+      });
+    },
+    // Set tag panel visibility
+    panelVisibleSet(state, action) {
+      const {
+        panelVisible
+      } = action.payload;
+      state.panelVisible = panelVisible;
+    }
+  }
+});
+const seasonsFetchEpic = (action$, state$, _ref41) => {
+  let {
+    client
+  } = _ref41;
+  return action$.pipe(filter(seasonsSlice.actions.fetchRequest.match), withLatestFrom(state$), switchMap(_ref42 => {
+    let [action, state] = _ref42;
+    const {
+      query
+    } = action.payload;
+    return of(action).pipe(
+    // Optionally throttle
+    debugThrottle(state.debug.badConnection),
+    // Fetch seasons
+    mergeMap(() => client.observable.fetch(query)),
+    // Dispatch complete action
+    mergeMap(result => {
+      const {
+        items
+      } = result;
+      return of(seasonsSlice.actions.fetchComplete({
+        seasons: items
+      }));
+    }), catchError(error => of(seasonsSlice.actions.fetchError({
+      error: {
+        message: (error == null ? void 0 : error.message) || "Internal error",
+        statusCode: (error == null ? void 0 : error.statusCode) || 500
+      }
+    }))));
+  }));
+};
+const seasonsCreateEpic = (action$, state$, _ref43) => {
+  let {
+    client
+  } = _ref43;
+  return action$.pipe(filter(seasonsSlice.actions.createRequest.match), withLatestFrom(state$), mergeMap(_ref44 => {
+    let [action, state] = _ref44;
+    const {
+      name
+    } = action.payload;
+    return of(action).pipe(debugThrottle(state.debug.badConnection), mergeMap(() => client.observable.create({
+      _type: SEASONS_DOCUMENT_NAME,
+      name: {
+        _type: "slug",
+        current: name
+      }
+    })), mergeMap(result => of(seasonsSlice.actions.createComplete({
+      season: result
+    }))), catchError(error => of(seasonsSlice.actions.createError({
+      error: {
+        message: (error == null ? void 0 : error.message) || "Internal error",
+        statusCode: (error == null ? void 0 : error.statusCode) || 500
+      },
+      name
+    }))));
+  }));
+};
+const selectSeasonsByIds = state => state.seasons.byIds;
+const selectSeasonById = createSelector([selectSeasonsByIds, (_state, seasonId) => seasonId], (byIds, seasonId) => byIds[seasonId]);
+const selectSeasons = createSelector(selectSeasonsByIds, byIds => Object.values(byIds));
+createSelector(selectSeasonsByIds, byIds => byIds);
+const seasonActions = seasonsSlice.actions;
+var seasonsReducer = seasonsSlice.reducer;
+const initialState$5 = {
   items: []
 };
 const dialogSlice = createSlice({
   name: "dialog",
-  initialState: initialState$6,
+  initialState: initialState$5,
   extraReducers: builder => {
     builder.addCase(DIALOG_ACTIONS.showTagCreate, state => {
       state.items.push({
@@ -5703,6 +5967,16 @@ const dialogSlice = createSlice({
         id: tagId,
         tagId,
         type: "tagEdit"
+      });
+    });
+    builder.addCase(DIALOG_ACTIONS.showSeasonEdit, (state, action) => {
+      const {
+        seasonId
+      } = action.payload;
+      state.items.push({
+        id: seasonId,
+        seasonId,
+        type: "seasonEdit"
       });
     });
   },
@@ -5764,6 +6038,27 @@ const dialogSlice = createSlice({
         type: "confirm"
       });
     },
+    showConfirmAssetsSeasonAdd(state, action) {
+      const {
+        assetsPicked,
+        closeDialogId,
+        season
+      } = action.payload;
+      const suffix = "".concat(assetsPicked.length, " ").concat(pluralize("asset", assetsPicked.length));
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: ASSETS_ACTIONS.seasonsAddRequest({
+          assets: assetsPicked,
+          season
+        }),
+        confirmText: "Yes, add season to ".concat(suffix),
+        title: "Add tag ".concat(season.name.current, " to ").concat(suffix, "?"),
+        id: "confirm",
+        headerTitle: "Confirm season addition",
+        tone: "primary",
+        type: "confirm"
+      });
+    },
     showConfirmAssetsTagRemove(state, action) {
       const {
         assetsPicked,
@@ -5781,6 +6076,27 @@ const dialogSlice = createSlice({
         headerTitle: "Confirm tag removal",
         id: "confirm",
         title: "Remove tag ".concat(tag.name.current, " from ").concat(suffix, "?"),
+        tone: "critical",
+        type: "confirm"
+      });
+    },
+    showConfirmAssetsSeasonRemove(state, action) {
+      const {
+        assetsPicked,
+        closeDialogId,
+        season
+      } = action.payload;
+      const suffix = "".concat(assetsPicked.length, " ").concat(pluralize("asset", assetsPicked.length));
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: ASSETS_ACTIONS.seasonsRemoveRequest({
+          assets: assetsPicked,
+          season
+        }),
+        confirmText: "Yes, remove season from ".concat(suffix),
+        headerTitle: "Confirm season removal",
+        id: "confirm",
+        title: "Remove season ".concat(season.name.current, " from ").concat(suffix, "?"),
         tone: "critical",
         type: "confirm"
       });
@@ -5825,6 +6141,26 @@ const dialogSlice = createSlice({
         type: "confirm"
       });
     },
+    showConfirmDeleteSeason(state, action) {
+      const {
+        closeDialogId,
+        season
+      } = action.payload;
+      const suffix = "tag";
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: seasonActions.deleteRequest({
+          season
+        }),
+        confirmText: "Yes, delete ".concat(suffix),
+        description: "This operation cannot be reversed. Are you sure you want to continue?",
+        title: "Permanently delete ".concat(suffix, "?"),
+        id: "confirm",
+        headerTitle: "Confirm deletion",
+        tone: "critical",
+        type: "confirm"
+      });
+    },
     showAssetEdit(state, action) {
       const {
         assetId
@@ -5852,6 +6188,12 @@ const dialogSlice = createSlice({
       state.items.push({
         id: "tags",
         type: "tags"
+      });
+    },
+    showSeasons(state) {
+      state.items.push({
+        id: "seasons",
+        type: "seasons"
       });
     }
   }
@@ -6484,18 +6826,18 @@ function getSchemeColor(scheme, colorKey) {
   var _a;
   return (_a = SCHEME_COLORS[colorKey]) == null ? void 0 : _a[scheme];
 }
-var __freeze$g = Object.freeze;
-var __defProp$h = Object.defineProperty;
-var __template$g = (cooked, raw) => __freeze$g(__defProp$h(cooked, "raw", {
-  value: __freeze$g(raw || cooked.slice())
+var __freeze$h = Object.freeze;
+var __defProp$i = Object.defineProperty;
+var __template$h = (cooked, raw) => __freeze$h(__defProp$i(cooked, "raw", {
+  value: __freeze$h(raw || cooked.slice())
 }));
-var _a$g;
-const Container$1 = styled(Box)(_ref38 => {
+var _a$h;
+const Container$1 = styled(Box)(_ref45 => {
   let {
     scheme,
     theme
-  } = _ref38;
-  return css(_a$g || (_a$g = __template$g(["\n    background: ", ";\n    border-radius: ", ";\n  "])), getSchemeColor(scheme, "bg"), rem(theme.sanity.radius[2]));
+  } = _ref45;
+  return css(_a$h || (_a$h = __template$h(["\n    background: ", ";\n    border-radius: ", ";\n  "])), getSchemeColor(scheme, "bg"), rem(theme.sanity.radius[2]));
 });
 const SearchFacet = props => {
   const {
@@ -6565,10 +6907,10 @@ const TextInputNumber = props => {
     value: value != null ? value : ""
   });
 };
-const SearchFacetNumber = _ref39 => {
+const SearchFacetNumber = _ref46 => {
   let {
     facet
-  } = _ref39;
+  } = _ref46;
   var _a;
   const dispatch = useDispatch();
   const popoverProps = usePortalPopoverProps();
@@ -6656,10 +6998,10 @@ const SearchFacetNumber = _ref39 => {
     })]
   });
 };
-const SearchFacetSelect = _ref40 => {
+const SearchFacetSelect = _ref47 => {
   let {
     facet
-  } = _ref40;
+  } = _ref47;
   var _a;
   const dispatch = useDispatch();
   const popoverProps = usePortalPopoverProps();
@@ -6731,10 +7073,10 @@ const SearchFacetSelect = _ref40 => {
     })]
   });
 };
-const SearchFacetString = _ref41 => {
+const SearchFacetString = _ref48 => {
   let {
     facet
-  } = _ref41;
+  } = _ref48;
   const dispatch = useDispatch();
   const popoverProps = usePortalPopoverProps();
   const handleOperatorItemClick = operatorType => {
@@ -6803,11 +7145,11 @@ const {
 } = studioTheme;
 const reactSelectStyles$1 = scheme => {
   return {
-    control: (styles, _ref42) => {
+    control: (styles, _ref49) => {
       let {
         isDisabled,
         isFocused
-      } = _ref42;
+      } = _ref49;
       let boxShadow = "inset 0 0 0 1px var(--card-border-color)";
       if (isFocused) {
         boxShadow = "inset 0 0 0 1px ".concat(getSchemeColor(scheme, "inputEnabledBorder"), ",\n        0 0 0 1px ").concat(getSchemeColor(scheme, "bg2"), ",\n        0 0 0 3px var(--card-focus-ring-color) !important");
@@ -6846,10 +7188,10 @@ const reactSelectStyles$1 = scheme => {
       fontSize: themeTextSizes[1].fontSize,
       lineHeight: "1em"
     }),
-    option: (styles, _ref43) => {
+    option: (styles, _ref50) => {
       let {
         isFocused
-      } = _ref43;
+      } = _ref50;
       return {
         ...styles,
         backgroundColor: isFocused ? getSchemeColor(scheme, "spotBlue") : "transparent",
@@ -6983,10 +7325,10 @@ const reactSelectComponents$1 = {
   Option: Option$1,
   SingleValue
 };
-const SearchFacetTags = _ref44 => {
+const SearchFacetTags = _ref51 => {
   let {
     facet
-  } = _ref44;
+  } = _ref51;
   const {
     scheme
   } = useColorScheme();
@@ -7060,17 +7402,17 @@ const SearchFacetTags = _ref44 => {
     })]
   });
 };
-var __freeze$f = Object.freeze;
-var __defProp$g = Object.defineProperty;
-var __template$f = (cooked, raw) => __freeze$f(__defProp$g(cooked, "raw", {
-  value: __freeze$f(raw || cooked.slice())
+var __freeze$g = Object.freeze;
+var __defProp$h = Object.defineProperty;
+var __template$g = (cooked, raw) => __freeze$g(__defProp$h(cooked, "raw", {
+  value: __freeze$g(raw || cooked.slice())
 }));
-var _a$f;
-const StackContainer = styled(Flex)(_ref45 => {
+var _a$g;
+const StackContainer = styled(Flex)(_ref52 => {
   let {
     theme
-  } = _ref45;
-  return css(_a$f || (_a$f = __template$f(["\n    > * {\n      margin-bottom: ", ";\n    }\n  "])), rem(theme.sanity.space[2]));
+  } = _ref52;
+  return css(_a$g || (_a$g = __template$g(["\n    > * {\n      margin-bottom: ", ";\n    }\n  "])), rem(theme.sanity.space[2]));
 });
 const SearchFacets = props => {
   const {
@@ -7273,17 +7615,17 @@ const Controls = () => {
   const fetching = useTypedSelector(state => state.assets.fetching);
   const pageIndex = useTypedSelector(state => state.assets.pageIndex);
   const searchFacets = useTypedSelector(state => state.search.facets);
-  const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible);
+  const seasonsPanelVisible = useTypedSelector(state => state.seasons.panelVisible);
   const mediaIndex = useMediaIndex();
   const handleShowSearchFacetDialog = () => {
     dispatch(dialogActions.showSearchFacets());
   };
-  const handleShowTagsDialog = () => {
-    dispatch(dialogActions.showTags());
+  const handleShowSeasonsDialog = () => {
+    dispatch(dialogActions.showSeasons());
   };
   const toggleTagsPanelToggle = () => {
-    dispatch(tagsActions.panelVisibleSet({
-      panelVisible: !tagsPanelVisible
+    dispatch(seasonActions.panelVisibleSet({
+      panelVisible: !seasonsPanelVisible
     }));
   };
   return /* @__PURE__ */jsxs(Box, {
@@ -7334,8 +7676,8 @@ const Controls = () => {
               }), /* @__PURE__ */jsx(Button, {
                 fontSize: 1,
                 mode: "ghost",
-                onClick: handleShowTagsDialog,
-                text: "Tags",
+                onClick: handleShowSeasonsDialog,
+                text: "Seasons",
                 tone: "primary"
               })]
             })
@@ -7363,8 +7705,8 @@ const Controls = () => {
                 children: /* @__PURE__ */jsx(TagIcon, {})
               }),
               onClick: toggleTagsPanelToggle,
-              mode: tagsPanelVisible ? "default" : "ghost",
-              text: tagsPanelVisible ? "Tags" : ""
+              mode: seasonsPanelVisible ? "default" : "ghost",
+              text: seasonsPanelVisible ? "Seasons" : ""
             })
           })]
         })]
@@ -7374,13 +7716,13 @@ const Controls = () => {
     }, pageIndex)]
   });
 };
-const initialState$5 = {
+const initialState$4 = {
   badConnection: false,
   enabled: false
 };
 const debugSlice = createSlice({
   name: "debug",
-  initialState: initialState$5,
+  initialState: initialState$4,
   reducers: {
     setBadConnection(state, action) {
       state.badConnection = action.payload;
@@ -7537,6 +7879,16 @@ const tagFormSchema = z.object({
     message: "Name cannot be empty"
   })
 });
+z.object({
+  name: z.string().min(1, {
+    message: "Name cannot be empty"
+  })
+});
+z.object({
+  name: z.string().min(1, {
+    message: "Name cannot be empty"
+  })
+});
 function getUniqueDocuments(documents) {
   const draftIds = documents.reduce((acc, doc) => doc._id.startsWith("drafts.") ? acc.concat(doc._id.slice(7)) : acc, []);
   const filteredDocuments = documents.filter(doc => !draftIds.includes(doc._id));
@@ -7578,11 +7930,11 @@ const isImageAsset = asset => {
 const getAssetResolution = asset => {
   return "".concat(asset.metadata.dimensions.width, "x").concat(asset.metadata.dimensions.height, "px");
 };
-const ButtonAssetCopy = _ref46 => {
+const ButtonAssetCopy = _ref53 => {
   let {
     disabled,
     url
-  } = _ref46;
+  } = _ref53;
   const popoverProps = usePortalPopoverProps();
   const refPopoverTimeout = useRef();
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -7624,11 +7976,11 @@ const ButtonAssetCopy = _ref46 => {
     })
   });
 };
-const Row = _ref47 => {
+const Row = _ref54 => {
   let {
     label,
     value
-  } = _ref47;
+  } = _ref54;
   return /* @__PURE__ */jsxs(Flex, {
     justify: "space-between",
     children: [/* @__PURE__ */jsx(Text, {
@@ -7739,11 +8091,11 @@ const Dialog = props => {
     }
   });
 };
-const DocumentList = _ref48 => {
+const DocumentList = _ref55 => {
   let {
     documents,
     isLoading
-  } = _ref48;
+  } = _ref55;
   const schema = useSchema();
   if (isLoading) {
     return /* @__PURE__ */jsx(Text, {
@@ -7809,18 +8161,18 @@ const ReferringDocument = props => {
     })
   });
 };
-var __freeze$e = Object.freeze;
-var __defProp$f = Object.defineProperty;
-var __template$e = (cooked, raw) => __freeze$e(__defProp$f(cooked, "raw", {
-  value: __freeze$e(raw || cooked.slice())
+var __freeze$f = Object.freeze;
+var __defProp$g = Object.defineProperty;
+var __template$f = (cooked, raw) => __freeze$f(__defProp$g(cooked, "raw", {
+  value: __freeze$f(raw || cooked.slice())
 }));
-var _a$e;
-const Container = styled(Box)(_ref49 => {
+var _a$f;
+const Container = styled(Box)(_ref56 => {
   let {
     theme
-  } = _ref49;
+  } = _ref56;
   var _a2, _b, _c;
-  return css(_a$e || (_a$e = __template$e(["\n    text {\n      font-family: ", " !important;\n      font-size: 8px !important;\n      font-weight: 500 !important;\n    }\n  "])), (_c = (_b = (_a2 = theme == null ? void 0 : theme.sanity) == null ? void 0 : _a2.fonts) == null ? void 0 : _b.text) == null ? void 0 : _c.family);
+  return css(_a$f || (_a$f = __template$f(["\n    text {\n      font-family: ", " !important;\n      font-size: 8px !important;\n      font-weight: 500 !important;\n    }\n  "])), (_c = (_b = (_a2 = theme == null ? void 0 : theme.sanity) == null ? void 0 : _a2.fonts) == null ? void 0 : _b.text) == null ? void 0 : _c.family);
 });
 const FileIcon = props => {
   const {
@@ -7887,10 +8239,10 @@ const {
 } = studioTheme;
 const reactSelectStyles = scheme => {
   return {
-    control: (styles, _ref50) => {
+    control: (styles, _ref57) => {
       let {
         isFocused
-      } = _ref50;
+      } = _ref57;
       let boxShadow = "inset 0 0 0 1px var(--card-border-color)";
       if (isFocused) {
         boxShadow = "inset 0 0 0 1px ".concat(getSchemeColor(scheme, "inputEnabledBorder"), ",\n        0 0 0 1px var(--card-bg-color),\n        0 0 0 3px var(--card-focus-ring-color) !important");
@@ -7912,10 +8264,10 @@ const reactSelectStyles = scheme => {
         }
       };
     },
-    indicatorsContainer: (styles, _ref51) => {
+    indicatorsContainer: (styles, _ref58) => {
       let {
         isDisabled
-      } = _ref51;
+      } = _ref58;
       return {
         ...styles,
         opacity: isDisabled ? 0.25 : 1
@@ -7931,10 +8283,10 @@ const reactSelectStyles = scheme => {
       ...styles,
       position: "relative"
     }),
-    multiValue: (styles, _ref52) => {
+    multiValue: (styles, _ref59) => {
       let {
         isDisabled
-      } = _ref52;
+      } = _ref59;
       return {
         ...styles,
         backgroundColor: getSchemeColor(scheme, "mutedHoveredBg"),
@@ -7967,10 +8319,10 @@ const reactSelectStyles = scheme => {
       fontFamily: studioTheme.fonts.text.family,
       lineHeight: "1em"
     }),
-    option: (styles, _ref53) => {
+    option: (styles, _ref60) => {
       let {
         isFocused
-      } = _ref53;
+      } = _ref60;
       return {
         ...styles,
         zIndex: 13,
@@ -8091,10 +8443,10 @@ const reactSelectComponents = {
   MultiValueRemove,
   Option
 };
-const StyledErrorOutlineIcon = styled(ErrorOutlineIcon)(_ref54 => {
+const StyledErrorOutlineIcon = styled(ErrorOutlineIcon)(_ref61 => {
   let {
     theme
-  } = _ref54;
+  } = _ref61;
   var _a, _b, _c, _d;
   return {
     color: (_d = (_c = (_b = (_a = theme == null ? void 0 : theme.sanity) == null ? void 0 : _a.color) == null ? void 0 : _b.spot) == null ? void 0 : _c.red) != null ? _d : "red"
@@ -8182,10 +8534,10 @@ const FormFieldInputTags = props => {
       control,
       defaultValue: value,
       name,
-      render: _ref55 => {
+      render: _ref62 => {
         let {
           field
-        } = _ref55;
+        } = _ref62;
         const {
           onBlur,
           onChange,
@@ -8318,13 +8670,13 @@ const FormSubmitButton = props => {
     })
   });
 };
-var __freeze$d = Object.freeze;
-var __defProp$e = Object.defineProperty;
-var __template$d = (cooked, raw) => __freeze$d(__defProp$e(cooked, "raw", {
-  value: __freeze$d(raw || cooked.slice())
+var __freeze$e = Object.freeze;
+var __defProp$f = Object.defineProperty;
+var __template$e = (cooked, raw) => __freeze$e(__defProp$f(cooked, "raw", {
+  value: __freeze$e(raw || cooked.slice())
 }));
-var _a$d, _b$6;
-const Image$1 = styled.img(_b$6 || (_b$6 = __template$d(["\n  --checkerboard-color: ", ";\n\n  display: block;\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n\n  ", "\n"])), props => props.scheme ? getSchemeColor(props.scheme, "bg2") : "inherit", props => props.showCheckerboard && css(_a$d || (_a$d = __template$d(["\n      background-image: linear-gradient(45deg, var(--checkerboard-color) 25%, transparent 25%),\n        linear-gradient(-45deg, var(--checkerboard-color) 25%, transparent 25%),\n        linear-gradient(45deg, transparent 75%, var(--checkerboard-color) 75%),\n        linear-gradient(-45deg, transparent 75%, var(--checkerboard-color) 75%);\n      background-size: 20px 20px;\n      background-position: 0 0, 0 10px, 10px -10px, -10px 0;\n    "]))));
+var _a$e, _b$7;
+const Image$1 = styled.img(_b$7 || (_b$7 = __template$e(["\n  --checkerboard-color: ", ";\n\n  display: block;\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n\n  ", "\n"])), props => props.scheme ? getSchemeColor(props.scheme, "bg2") : "inherit", props => props.showCheckerboard && css(_a$e || (_a$e = __template$e(["\n      background-image: linear-gradient(45deg, var(--checkerboard-color) 25%, transparent 25%),\n        linear-gradient(-45deg, var(--checkerboard-color) 25%, transparent 25%),\n        linear-gradient(45deg, transparent 75%, var(--checkerboard-color) 75%),\n        linear-gradient(-45deg, transparent 75%, var(--checkerboard-color) 75%);\n      background-size: 20px 20px;\n      background-position: 0 0, 0 10px, 10px -10px, -10px 0;\n    "]))));
 const FormFieldInputSeasons = props => {
   const {
     control,
@@ -8356,10 +8708,10 @@ const FormFieldInputSeasons = props => {
       control,
       defaultValue: value,
       name,
-      render: _ref56 => {
+      render: _ref63 => {
         let {
           field
-        } = _ref56;
+        } = _ref63;
         const {
           onBlur,
           onChange,
@@ -8607,182 +8959,6 @@ const getSeasonSelectOptions = tags => {
     return acc;
   }, []);
 };
-var __freeze$c = Object.freeze;
-var __defProp$d = Object.defineProperty;
-var __template$c = (cooked, raw) => __freeze$c(__defProp$d(cooked, "raw", {
-  value: __freeze$c(raw || cooked.slice())
-}));
-var _a$c;
-const initialState$4 = {
-  creating: false,
-  fetching: false,
-  fetchingError: void 0,
-  creatingError: void 0,
-  byIds: {}
-};
-const seasonsSlice = createSlice({
-  name: "seasons",
-  initialState: initialState$4,
-  reducers: {
-    // Create season
-    createRequest(state, _action) {
-      state.creating = true;
-      delete state.creatingError;
-    },
-    createComplete(state, action) {
-      const {
-        season
-      } = action.payload;
-      state.creating = false;
-      state.byIds[season._id] = {
-        _type: "seasonItem",
-        error: void 0,
-        picked: false,
-        season,
-        updating: false
-      };
-    },
-    createError(state, action) {
-      state.creating = false;
-      state.creatingError = action.payload.error;
-    },
-    // Queue batch tag creation
-    listenerCreateQueue(_state, _action) {},
-    // Fetch seasons
-    fetchRequest: {
-      reducer: (state, _action) => {
-        state.fetching = true;
-        delete state.fetchingError;
-      },
-      prepare: () => {
-        const query = groq(_a$c || (_a$c = __template$c(['\n          {\n            "items": *[\n              _type == "', '"\n              && !(_id in path("drafts.**"))\n            ] {\n              _createdAt,\n              _updatedAt,\n              _id,\n              _rev,\n              _type,\n              name\n            } | order(name.current asc),\n          }\n        '])), SEASONS_DOCUMENT_NAME);
-        return {
-          payload: {
-            query
-          }
-        };
-      }
-    },
-    fetchComplete(state, action) {
-      state.fetching = false;
-      state.fetchingError = void 0;
-      state.byIds = action.payload.seasons.reduce((acc, season) => {
-        acc[season._id] = {
-          _type: "seasonItem",
-          error: void 0,
-          picked: false,
-          season,
-          updating: false
-        };
-        return acc;
-      }, {});
-    },
-    fetchError(state, action) {
-      const {
-        error
-      } = action.payload;
-      state.fetching = false;
-      state.fetchingError = error;
-    },
-    listenerCreateQueueComplete(state, action) {
-      const {
-        seasons
-      } = action.payload;
-      seasons == null ? void 0 : seasons.forEach(season => {
-        state.byIds[season._id] = {
-          _type: "seasonItem",
-          picked: false,
-          season,
-          updating: false
-        };
-      });
-    },
-    // Update season
-    updateRequest(state, action) {
-      const {
-        season
-      } = action.payload;
-      state.byIds[season._id].updating = true;
-    },
-    updateComplete(state, action) {
-      const {
-        season
-      } = action.payload;
-      state.byIds[season._id].updating = false;
-      state.byIds[season._id].season = season;
-    },
-    updateError(state, action) {
-      const {
-        error,
-        season
-      } = action.payload;
-      const seasonId = season == null ? void 0 : season._id;
-      state.byIds[seasonId].error = error;
-      state.byIds[seasonId].updating = false;
-    }
-  }
-});
-const seasonsFetchEpic = (action$, state$, _ref57) => {
-  let {
-    client
-  } = _ref57;
-  return action$.pipe(filter(seasonsSlice.actions.fetchRequest.match), withLatestFrom(state$), switchMap(_ref58 => {
-    let [action, state] = _ref58;
-    const {
-      query
-    } = action.payload;
-    return of(action).pipe(
-    // Optionally throttle
-    debugThrottle(state.debug.badConnection),
-    // Fetch seasons
-    mergeMap(() => client.observable.fetch(query)),
-    // Dispatch complete action
-    mergeMap(result => {
-      const {
-        items
-      } = result;
-      return of(seasonsSlice.actions.fetchComplete({
-        seasons: items
-      }));
-    }), catchError(error => of(seasonsSlice.actions.fetchError({
-      error: {
-        message: (error == null ? void 0 : error.message) || "Internal error",
-        statusCode: (error == null ? void 0 : error.statusCode) || 500
-      }
-    }))));
-  }));
-};
-const seasonsCreateEpic = (action$, state$, _ref59) => {
-  let {
-    client
-  } = _ref59;
-  return action$.pipe(filter(seasonsSlice.actions.createRequest.match), withLatestFrom(state$), mergeMap(_ref60 => {
-    let [action, state] = _ref60;
-    const {
-      name
-    } = action.payload;
-    return of(action).pipe(debugThrottle(state.debug.badConnection), mergeMap(() => client.observable.create({
-      _type: SEASONS_DOCUMENT_NAME,
-      name: {
-        _type: "slug",
-        current: name
-      }
-    })), mergeMap(result => of(seasonsSlice.actions.createComplete({
-      season: result
-    }))), catchError(error => of(seasonsSlice.actions.createError({
-      error: {
-        message: (error == null ? void 0 : error.message) || "Internal error",
-        statusCode: (error == null ? void 0 : error.statusCode) || 500
-      },
-      name
-    }))));
-  }));
-};
-const selectTagsByIds = state => state.seasons.byIds;
-const selectSeasons = createSelector(selectTagsByIds, byIds => Object.values(byIds));
-createSelector(selectTagsByIds, byIds => byIds);
-const seasonActions = seasonsSlice.actions;
-var seasonsReducer = seasonsSlice.reducer;
 const FormFieldInputCollaborations = props => {
   const {
     control,
@@ -8812,10 +8988,10 @@ const FormFieldInputCollaborations = props => {
       control,
       defaultValue: value,
       name,
-      render: _ref61 => {
+      render: _ref64 => {
         let {
           field
-        } = _ref61;
+        } = _ref64;
         const {
           onBlur,
           onChange,
@@ -8842,12 +9018,12 @@ const FormFieldInputCollaborations = props => {
     })]
   });
 };
-var __freeze$b = Object.freeze;
-var __defProp$c = Object.defineProperty;
-var __template$b = (cooked, raw) => __freeze$b(__defProp$c(cooked, "raw", {
-  value: __freeze$b(raw || cooked.slice())
+var __freeze$d = Object.freeze;
+var __defProp$e = Object.defineProperty;
+var __template$d = (cooked, raw) => __freeze$d(__defProp$e(cooked, "raw", {
+  value: __freeze$d(raw || cooked.slice())
 }));
-var _a$b;
+var _a$d;
 const initialState$3 = {
   creating: false,
   fetching: false,
@@ -8890,7 +9066,7 @@ const collaborationSlice = createSlice({
         delete state.fetchingError;
       },
       prepare: () => {
-        const query = groq(_a$b || (_a$b = __template$b(['\n          {\n            "items": *[\n              _type == "', '"\n              && !(_id in path("drafts.**"))\n            ] {\n              _createdAt,\n              _updatedAt,\n              _id,\n              _rev,\n              _type,\n              name\n            } | order(name.current asc),\n          }\n        '])), COLLABORATION_DOCUMENT_NAME);
+        const query = groq(_a$d || (_a$d = __template$d(['\n          {\n            "items": *[\n              _type == "', '"\n              && !(_id in path("drafts.**"))\n            ] {\n              _createdAt,\n              _updatedAt,\n              _id,\n              _rev,\n              _type,\n              name\n            } | order(name.current asc),\n          }\n        '])), COLLABORATION_DOCUMENT_NAME);
         return {
           payload: {
             query
@@ -8957,12 +9133,12 @@ const collaborationSlice = createSlice({
     }
   }
 });
-const collaborationFetchEpic = (action$, state$, _ref62) => {
+const collaborationFetchEpic = (action$, state$, _ref65) => {
   let {
     client
-  } = _ref62;
-  return action$.pipe(filter(collaborationSlice.actions.fetchRequest.match), withLatestFrom(state$), switchMap(_ref63 => {
-    let [action, state] = _ref63;
+  } = _ref65;
+  return action$.pipe(filter(collaborationSlice.actions.fetchRequest.match), withLatestFrom(state$), switchMap(_ref66 => {
+    let [action, state] = _ref66;
     const {
       query
     } = action.payload;
@@ -8987,12 +9163,12 @@ const collaborationFetchEpic = (action$, state$, _ref62) => {
     }))));
   }));
 };
-const collaborationsCreateEpic = (action$, state$, _ref64) => {
+const collaborationsCreateEpic = (action$, state$, _ref67) => {
   let {
     client
-  } = _ref64;
-  return action$.pipe(filter(collaborationSlice.actions.createRequest.match), withLatestFrom(state$), mergeMap(_ref65 => {
-    let [action, state] = _ref65;
+  } = _ref67;
+  return action$.pipe(filter(collaborationSlice.actions.createRequest.match), withLatestFrom(state$), mergeMap(_ref68 => {
+    let [action, state] = _ref68;
     const {
       name
     } = action.payload;
@@ -9031,12 +9207,12 @@ const getSeasonCollaborationOptions = tags => {
     return acc;
   }, []);
 };
-var __freeze$a = Object.freeze;
-var __defProp$b = Object.defineProperty;
-var __template$a = (cooked, raw) => __freeze$a(__defProp$b(cooked, "raw", {
-  value: __freeze$a(raw || cooked.slice())
+var __freeze$c = Object.freeze;
+var __defProp$d = Object.defineProperty;
+var __template$c = (cooked, raw) => __freeze$c(__defProp$d(cooked, "raw", {
+  value: __freeze$c(raw || cooked.slice())
 }));
-var _a$a;
+var _a$c;
 const DialogAssetEdit = props => {
   var _a2;
   const {
@@ -9170,7 +9346,7 @@ const DialogAssetEdit = props => {
     if (!(assetItem == null ? void 0 : assetItem.asset)) {
       return void 0;
     }
-    const subscriptionAsset = client.listen(groq(_a$a || (_a$a = __template$a(["*[_id == $id]"]))), {
+    const subscriptionAsset = client.listen(groq(_a$c || (_a$c = __template$c(["*[_id == $id]"]))), {
       id: assetItem == null ? void 0 : assetItem.asset._id
     }).subscribe(handleAssetUpdate);
     return () => {
@@ -9240,11 +9416,11 @@ const DialogAssetEdit = props => {
         children: /* @__PURE__ */jsx(WithReferringDocuments, {
           documentStore,
           id: currentAsset._id,
-          children: _ref66 => {
+          children: _ref69 => {
             let {
               isLoading,
               referringDocuments
-            } = _ref66;
+            } = _ref69;
             var _a3, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
             const uniqueReferringDocuments = getUniqueDocuments(referringDocuments);
             return /* @__PURE__ */jsxs(Fragment, {
@@ -9580,12 +9756,12 @@ const DialogTagCreate = props => {
     }), children]
   });
 };
-var __freeze$9 = Object.freeze;
-var __defProp$a = Object.defineProperty;
-var __template$9 = (cooked, raw) => __freeze$9(__defProp$a(cooked, "raw", {
-  value: __freeze$9(raw || cooked.slice())
+var __freeze$b = Object.freeze;
+var __defProp$c = Object.defineProperty;
+var __template$b = (cooked, raw) => __freeze$b(__defProp$c(cooked, "raw", {
+  value: __freeze$b(raw || cooked.slice())
 }));
-var _a$9;
+var _a$b;
 const DialogTagEdit = props => {
   var _a2;
   const {
@@ -9677,7 +9853,7 @@ const DialogTagEdit = props => {
     if (!(tagItem == null ? void 0 : tagItem.tag)) {
       return void 0;
     }
-    const subscriptionAsset = client.listen(groq(_a$9 || (_a$9 = __template$9(["*[_id == $id]"]))), {
+    const subscriptionAsset = client.listen(groq(_a$b || (_a$b = __template$b(["*[_id == $id]"]))), {
       id: tagItem == null ? void 0 : tagItem.tag._id
     }).subscribe(handleTagUpdate);
     return () => {
@@ -9711,7 +9887,7 @@ const DialogTagEdit = props => {
   }
   return /* @__PURE__ */jsxs(Dialog, {
     footer: /* @__PURE__ */jsx(Footer, {}),
-    header: "Edit Tag",
+    header: "Edit Season",
     id,
     onClose: handleClose,
     width: 1,
@@ -9745,14 +9921,14 @@ const DialogTagEdit = props => {
     }), children]
   });
 };
-var __freeze$8 = Object.freeze;
-var __defProp$9 = Object.defineProperty;
-var __template$8 = (cooked, raw) => __freeze$8(__defProp$9(cooked, "raw", {
-  value: __freeze$8(raw || cooked.slice())
+var __freeze$a = Object.freeze;
+var __defProp$b = Object.defineProperty;
+var __template$a = (cooked, raw) => __freeze$a(__defProp$b(cooked, "raw", {
+  value: __freeze$a(raw || cooked.slice())
 }));
-var _a$8, _b$5;
-const TagContainer = styled(Flex)(_a$8 || (_a$8 = __template$8(["\n  height: ", "px;\n"])), PANEL_HEIGHT);
-const ButtonContainer = styled(Flex)(_b$5 || (_b$5 = __template$8(["\n  @media (pointer: fine) {\n    visibility: hidden;\n  }\n\n  @media (hover: hover) and (pointer: fine) {\n    ", ":hover & {\n      visibility: visible;\n    }\n  }\n"])), TagContainer);
+var _a$a, _b$6;
+const TagContainer = styled(Flex)(_a$a || (_a$a = __template$a(["\n  height: ", "px;\n"])), PANEL_HEIGHT);
+const ButtonContainer$1 = styled(Flex)(_b$6 || (_b$6 = __template$a(["\n  @media (pointer: fine) {\n    visibility: hidden;\n  }\n\n  @media (hover: hover) and (pointer: fine) {\n    ", ":hover & {\n      visibility: visible;\n    }\n  }\n"])), TagContainer);
 const TagButton = props => {
   const {
     disabled,
@@ -9863,7 +10039,7 @@ const Tag = props => {
         textOverflow: "ellipsis",
         children: (_b2 = (_a2 = tag == null ? void 0 : tag.tag) == null ? void 0 : _a2.name) == null ? void 0 : _b2.current
       })
-    }), /* @__PURE__ */jsxs(ButtonContainer, {
+    }), /* @__PURE__ */jsxs(ButtonContainer$1, {
       align: "center",
       style: {
         flexShrink: 0
@@ -9901,11 +10077,11 @@ const Tag = props => {
     })]
   });
 };
-const VirtualRow$1 = memo(_ref67 => {
+const VirtualRow$2 = memo(_ref70 => {
   let {
     isScrolling,
     item
-  } = _ref67;
+  } = _ref70;
   var _a;
   if (typeof item === "string") {
     return /* @__PURE__ */jsx(Flex, {
@@ -9999,7 +10175,7 @@ const TagsVirtualized = () => {
     },
     isScrolling: setIsScrolling,
     itemContent: index => {
-      return /* @__PURE__ */jsx(VirtualRow$1, {
+      return /* @__PURE__ */jsx(VirtualRow$2, {
         isScrolling,
         item: items[index]
       });
@@ -10011,12 +10187,12 @@ const TagsVirtualized = () => {
     totalCount: items.length
   });
 };
-const TagViewHeader = _ref68 => {
+const TagViewHeader = _ref71 => {
   let {
     allowCreate,
     light,
     title
-  } = _ref68;
+  } = _ref71;
   const {
     scheme
   } = useColorScheme();
@@ -10369,6 +10545,171 @@ const DialogMassAssetEdit = props => {
     }), children]
   });
 };
+var __freeze$9 = Object.freeze;
+var __defProp$a = Object.defineProperty;
+var __template$9 = (cooked, raw) => __freeze$9(__defProp$a(cooked, "raw", {
+  value: __freeze$9(raw || cooked.slice())
+}));
+var _a$9;
+const DialogSeasonEdit = props => {
+  var _a2;
+  const {
+    children,
+    dialog: {
+      id,
+      seasonId
+    }
+  } = props;
+  const client = useVersionedClient();
+  const dispatch = useDispatch();
+  const seasonItem = useTypedSelector(state => selectSeasonById(state, String(seasonId)));
+  const [seasonSnapshot, setSeasonSnapshot] = useState(seasonItem == null ? void 0 : seasonItem.season);
+  const currentTag = seasonItem ? seasonItem == null ? void 0 : seasonItem.season : seasonSnapshot;
+  const generateDefaultValues = season => {
+    var _a3;
+    return {
+      name: ((_a3 = season == null ? void 0 : season.name) == null ? void 0 : _a3.current) || ""
+    };
+  };
+  const {
+    // Read the formState before render to subscribe the form state through Proxy
+    formState: {
+      errors,
+      isDirty,
+      isValid
+    },
+    handleSubmit,
+    register,
+    reset,
+    setError
+  } = useForm({
+    defaultValues: generateDefaultValues(seasonItem == null ? void 0 : seasonItem.season),
+    mode: "onChange",
+    resolver: zodResolver(tagFormSchema)
+  });
+  const formUpdating = !seasonItem || (seasonItem == null ? void 0 : seasonItem.updating);
+  const handleClose = () => {
+    dispatch(dialogActions.remove({
+      id
+    }));
+  };
+  const onSubmit = formData => {
+    var _a3;
+    if (!(seasonItem == null ? void 0 : seasonItem.season)) {
+      return;
+    }
+    const sanitizedFormData = sanitizeFormData(formData);
+    dispatch(seasonActions.updateSeasonItemRequest({
+      closeDialogId: (_a3 = seasonItem == null ? void 0 : seasonItem.season) == null ? void 0 : _a3._id,
+      formData: {
+        name: {
+          _type: "slug",
+          current: sanitizedFormData.name
+        }
+      },
+      season: seasonItem == null ? void 0 : seasonItem.season
+    }));
+  };
+  const handleDelete = () => {
+    var _a3;
+    if (!(seasonItem == null ? void 0 : seasonItem.season)) {
+      return;
+    }
+    dispatch(dialogActions.showConfirmDeleteTag({
+      closeDialogId: (_a3 = seasonItem == null ? void 0 : seasonItem.season) == null ? void 0 : _a3._id,
+      tag: seasonItem == null ? void 0 : seasonItem.season
+    }));
+  };
+  const handleTagUpdate = useCallback(update => {
+    const {
+      result,
+      transition
+    } = update;
+    if (result && transition === "update") {
+      setSeasonSnapshot(result);
+      reset(generateDefaultValues(result));
+    }
+  }, [reset]);
+  useEffect(() => {
+    var _a3;
+    if (seasonItem == null ? void 0 : seasonItem.error) {
+      setError("name", {
+        message: (_a3 = seasonItem.error) == null ? void 0 : _a3.message
+      });
+    }
+  }, [setError, seasonItem.error]);
+  useEffect(() => {
+    if (!(seasonItem == null ? void 0 : seasonItem.season)) {
+      return void 0;
+    }
+    const subscriptionAsset = client.listen(groq(_a$9 || (_a$9 = __template$9(["*[_id == $id]"]))), {
+      id: seasonItem == null ? void 0 : seasonItem.season._id
+    }).subscribe(handleTagUpdate);
+    return () => {
+      subscriptionAsset == null ? void 0 : subscriptionAsset.unsubscribe();
+    };
+  }, [client, handleTagUpdate, seasonItem == null ? void 0 : seasonItem.season]);
+  const Footer = () => {
+    var _a3;
+    return /* @__PURE__ */jsx(Box, {
+      padding: 3,
+      children: /* @__PURE__ */jsxs(Flex, {
+        justify: "space-between",
+        children: [/* @__PURE__ */jsx(Button, {
+          disabled: formUpdating,
+          fontSize: 1,
+          mode: "bleed",
+          onClick: handleDelete,
+          text: "Delete",
+          tone: "critical"
+        }), /* @__PURE__ */jsx(FormSubmitButton, {
+          disabled: formUpdating || !isDirty || !isValid,
+          isValid,
+          lastUpdated: (_a3 = seasonItem == null ? void 0 : seasonItem.season) == null ? void 0 : _a3._updatedAt,
+          onClick: handleSubmit(onSubmit)
+        })]
+      })
+    });
+  };
+  if (!currentTag) {
+    return null;
+  }
+  return /* @__PURE__ */jsxs(Dialog, {
+    footer: /* @__PURE__ */jsx(Footer, {}),
+    header: "Edit Tag",
+    id,
+    onClose: handleClose,
+    width: 1,
+    children: [/* @__PURE__ */jsxs(Box, {
+      as: "form",
+      padding: 4,
+      onSubmit: handleSubmit(onSubmit),
+      children: [!seasonItem && /* @__PURE__ */jsx(Card, {
+        marginBottom: 3,
+        padding: 3,
+        radius: 2,
+        shadow: 1,
+        tone: "critical",
+        children: /* @__PURE__ */jsx(Text, {
+          size: 1,
+          children: "This tag cannot be found \u2013 it may have been deleted."
+        })
+      }), /* @__PURE__ */jsx("button", {
+        style: {
+          display: "none"
+        },
+        tabIndex: -1,
+        type: "submit"
+      }), /* @__PURE__ */jsx(FormFieldInputText, {
+        ...register("name"),
+        disabled: formUpdating,
+        error: (_a2 = errors == null ? void 0 : errors.name) == null ? void 0 : _a2.message,
+        label: "Name",
+        name: "name"
+      })]
+    }), children]
+  });
+};
 const Dialogs = () => {
   const currentDialogs = useTypedSelector(state => state.dialog.items);
   const renderDialogs = (dialogs, index) => {
@@ -10409,6 +10750,12 @@ const Dialogs = () => {
     }
     if (dialog.type === "tagEdit") {
       return /* @__PURE__ */jsx(DialogTagEdit, {
+        dialog,
+        children: childDialogs
+      }, index);
+    }
+    if (dialog.type === "seasonEdit") {
+      return /* @__PURE__ */jsx(DialogSeasonEdit, {
         dialog,
         children: childDialogs
       }, index);
@@ -10560,32 +10907,32 @@ const selectCombinedItems = createSelector([state => state.assets.allIds, state 
   const combinedItems = [...uploadItems, ...assetItems];
   return combinedItems;
 });
-var __freeze$7 = Object.freeze;
-var __defProp$8 = Object.defineProperty;
-var __template$7 = (cooked, raw) => __freeze$7(__defProp$8(cooked, "raw", {
-  value: __freeze$7(raw || cooked.slice())
+var __freeze$8 = Object.freeze;
+var __defProp$9 = Object.defineProperty;
+var __template$8 = (cooked, raw) => __freeze$8(__defProp$9(cooked, "raw", {
+  value: __freeze$8(raw || cooked.slice())
 }));
-var _a$7, _b$4, _c$1, _d;
-const CardWrapper$1 = styled(Flex)(_a$7 || (_a$7 = __template$7(["\n  box-sizing: border-box;\n  height: 100%;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n"])));
-const CardContainer = styled(Flex)(_ref69 => {
+var _a$8, _b$5, _c$1, _d;
+const CardWrapper$1 = styled(Flex)(_a$8 || (_a$8 = __template$8(["\n  box-sizing: border-box;\n  height: 100%;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n"])));
+const CardContainer = styled(Flex)(_ref72 => {
   let {
     picked,
     theme,
     updating
-  } = _ref69;
+  } = _ref72;
   var _a2, _b2, _c2, _d2;
-  return css(_c$1 || (_c$1 = __template$7(["\n      border: 1px solid transparent;\n      height: 100%;\n      pointer-events: ", ";\n      position: relative;\n      transition: all 300ms;\n      user-select: none;\n      width: 100%;\n\n      border: ", ";\n\n      ", "\n    "])), updating ? "none" : "auto", picked ? "1px solid ".concat((_d2 = (_c2 = (_b2 = (_a2 = theme == null ? void 0 : theme.sanity) == null ? void 0 : _a2.color) == null ? void 0 : _b2.spot) == null ? void 0 : _c2.orange) != null ? _d2 : "orange", " !important") : "1px solid inherit", !updating && css(_b$4 || (_b$4 = __template$7(["\n        @media (hover: hover) and (pointer: fine) {\n          &:hover {\n            border: 1px solid var(--card-border-color);\n          }\n        }\n      "]))));
+  return css(_c$1 || (_c$1 = __template$8(["\n      border: 1px solid transparent;\n      height: 100%;\n      pointer-events: ", ";\n      position: relative;\n      transition: all 300ms;\n      user-select: none;\n      width: 100%;\n\n      border: ", ";\n\n      ", "\n    "])), updating ? "none" : "auto", picked ? "1px solid ".concat((_d2 = (_c2 = (_b2 = (_a2 = theme == null ? void 0 : theme.sanity) == null ? void 0 : _a2.color) == null ? void 0 : _b2.spot) == null ? void 0 : _c2.orange) != null ? _d2 : "orange", " !important") : "1px solid inherit", !updating && css(_b$5 || (_b$5 = __template$8(["\n        @media (hover: hover) and (pointer: fine) {\n          &:hover {\n            border: 1px solid var(--card-border-color);\n          }\n        }\n      "]))));
 });
-const ContextActionContainer$2 = styled(Flex)(_ref70 => {
+const ContextActionContainer$2 = styled(Flex)(_ref73 => {
   let {
     scheme
-  } = _ref70;
-  return css(_d || (_d = __template$7(["\n    cursor: pointer;\n    height: ", "px;\n    transition: all 300ms;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), PANEL_HEIGHT, getSchemeColor(scheme, "bg"));
+  } = _ref73;
+  return css(_d || (_d = __template$8(["\n    cursor: pointer;\n    height: ", "px;\n    transition: all 300ms;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), PANEL_HEIGHT, getSchemeColor(scheme, "bg"));
 });
-const StyledWarningOutlineIcon = styled(WarningFilledIcon)(_ref71 => {
+const StyledWarningOutlineIcon = styled(WarningFilledIcon)(_ref74 => {
   let {
     theme
-  } = _ref71;
+  } = _ref74;
   return {
     color: theme.sanity.color.spot.red
   };
@@ -10924,12 +11271,12 @@ const uploadSanityAsset$ = (client, assetType, file, hash) => {
   }));
 };
 const uploadAsset$ = withMaxConcurrency(uploadSanityAsset$);
-var __freeze$6 = Object.freeze;
-var __defProp$7 = Object.defineProperty;
-var __template$6 = (cooked, raw) => __freeze$6(__defProp$7(cooked, "raw", {
-  value: __freeze$6(raw || cooked.slice())
+var __freeze$7 = Object.freeze;
+var __defProp$8 = Object.defineProperty;
+var __template$7 = (cooked, raw) => __freeze$7(__defProp$8(cooked, "raw", {
+  value: __freeze$7(raw || cooked.slice())
 }));
-var _a$6;
+var _a$7;
 const initialState$2 = {
   allIds: [],
   byIds: {}
@@ -11019,10 +11366,10 @@ const uploadsSlice = createSlice({
     }
   }
 });
-const uploadsAssetStartEpic = (action$, _state$, _ref72) => {
+const uploadsAssetStartEpic = (action$, _state$, _ref75) => {
   let {
     client
-  } = _ref72;
+  } = _ref75;
   return action$.pipe(filter(uploadsActions.uploadStart.match), mergeMap(action => {
     const {
       file,
@@ -11061,8 +11408,8 @@ const uploadsAssetStartEpic = (action$, _state$, _ref72) => {
     })))));
   }));
 };
-const uploadsAssetUploadEpic = (action$, state$) => action$.pipe(filter(uploadsActions.uploadRequest.match), withLatestFrom(state$), mergeMap(_ref73 => {
-  let [action, state] = _ref73;
+const uploadsAssetUploadEpic = (action$, state$) => action$.pipe(filter(uploadsActions.uploadRequest.match), withLatestFrom(state$), mergeMap(_ref76 => {
+  let [action, state] = _ref76;
   const {
     file,
     forceAsAssetType
@@ -11098,12 +11445,12 @@ const uploadsCompleteQueueEpic = action$ => action$.pipe(filter(UPLOADS_ACTIONS.
     assets: [action.payload.asset]
   }));
 }));
-const uploadsCheckRequestEpic = (action$, state$, _ref74) => {
+const uploadsCheckRequestEpic = (action$, state$, _ref77) => {
   let {
     client
-  } = _ref74;
-  return action$.pipe(filter(uploadsActions.checkRequest.match), withLatestFrom(state$), mergeMap(_ref75 => {
-    let [action, state] = _ref75;
+  } = _ref77;
+  return action$.pipe(filter(uploadsActions.checkRequest.match), withLatestFrom(state$), mergeMap(_ref78 => {
+    let [action, state] = _ref78;
     const {
       assets
     } = action.payload;
@@ -11113,7 +11460,7 @@ const uploadsCheckRequestEpic = (action$, state$, _ref74) => {
       searchFacets: state.search.facets,
       searchQuery: state.search.query
     });
-    const query = groq(_a$6 || (_a$6 = __template$6(["\n        *[", " && _id in $documentIds].sha1hash\n      "])), constructedFilter);
+    const query = groq(_a$7 || (_a$7 = __template$7(["\n        *[", " && _id in $documentIds].sha1hash\n      "])), constructedFilter);
     return of(action).pipe(delay(1e3),
     // give Sanity some time to register the recently uploaded asset
     mergeMap(() => client.observable.fetch(query, {
@@ -11139,13 +11486,13 @@ const selectUploadById = createSelector([state => state.uploads.byIds, (_state, 
 createSelector([selectUploadsByIds, selectUploadsAllIds], (byIds, allIds) => allIds.map(id => byIds[id]));
 const uploadsActions = uploadsSlice.actions;
 var uploadsReducer = uploadsSlice.reducer;
-var __freeze$5 = Object.freeze;
-var __defProp$6 = Object.defineProperty;
-var __template$5 = (cooked, raw) => __freeze$5(__defProp$6(cooked, "raw", {
-  value: __freeze$5(raw || cooked.slice())
+var __freeze$6 = Object.freeze;
+var __defProp$7 = Object.defineProperty;
+var __template$6 = (cooked, raw) => __freeze$6(__defProp$7(cooked, "raw", {
+  value: __freeze$6(raw || cooked.slice())
 }));
-var _a$5;
-const CardWrapper = styled(Flex)(_a$5 || (_a$5 = __template$5(["\n  box-sizing: border-box;\n  height: 100%;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n"])));
+var _a$6;
+const CardWrapper = styled(Flex)(_a$6 || (_a$6 = __template$6(["\n  box-sizing: border-box;\n  height: 100%;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n"])));
 const CardUpload = props => {
   const {
     id
@@ -11275,19 +11622,19 @@ const CardUpload = props => {
     })
   });
 };
-var __freeze$4 = Object.freeze;
-var __defProp$5 = Object.defineProperty;
-var __template$4 = (cooked, raw) => __freeze$4(__defProp$5(cooked, "raw", {
-  value: __freeze$4(raw || cooked.slice())
+var __freeze$5 = Object.freeze;
+var __defProp$6 = Object.defineProperty;
+var __template$5 = (cooked, raw) => __freeze$5(__defProp$6(cooked, "raw", {
+  value: __freeze$5(raw || cooked.slice())
 }));
-var _a$4, _b$3;
+var _a$5, _b$4;
 const CARD_HEIGHT = 220;
 const CARD_WIDTH = 240;
-const VirtualCell = memo(_ref76 => {
+const VirtualCell = memo(_ref79 => {
   let {
     item,
     selected
-  } = _ref76;
+  } = _ref79;
   if ((item == null ? void 0 : item.type) === "asset") {
     return /* @__PURE__ */jsx(CardAsset$1, {
       id: item.id,
@@ -11301,8 +11648,8 @@ const VirtualCell = memo(_ref76 => {
   }
   return null;
 });
-const ItemContainer = styled.div(_a$4 || (_a$4 = __template$4(["\n  height: ", "px;\n  width: ", "px;\n"])), CARD_HEIGHT, CARD_WIDTH);
-const ListContainer = styled.div(_b$3 || (_b$3 = __template$4(["\n  display: grid;\n  grid-template-columns: repeat(auto-fill, ", "px);\n  grid-template-rows: repeat(auto-fill, ", "px);\n  justify-content: center;\n  margin: 0 auto;\n"])), CARD_WIDTH, CARD_HEIGHT);
+const ItemContainer = styled.div(_a$5 || (_a$5 = __template$5(["\n  height: ", "px;\n  width: ", "px;\n"])), CARD_HEIGHT, CARD_WIDTH);
+const ListContainer = styled.div(_b$4 || (_b$4 = __template$5(["\n  display: grid;\n  grid-template-columns: repeat(auto-fill, ", "px);\n  grid-template-rows: repeat(auto-fill, ", "px);\n  justify-content: center;\n  margin: 0 auto;\n"])), CARD_WIDTH, CARD_HEIGHT);
 const AssetGridVirtualized = props => {
   const {
     items,
@@ -11389,17 +11736,17 @@ const TableHeaderItem = props => {
     })
   });
 };
-var __freeze$3 = Object.freeze;
-var __defProp$4 = Object.defineProperty;
-var __template$3 = (cooked, raw) => __freeze$3(__defProp$4(cooked, "raw", {
-  value: __freeze$3(raw || cooked.slice())
+var __freeze$4 = Object.freeze;
+var __defProp$5 = Object.defineProperty;
+var __template$4 = (cooked, raw) => __freeze$4(__defProp$5(cooked, "raw", {
+  value: __freeze$4(raw || cooked.slice())
 }));
-var _a$3;
-const ContextActionContainer$1 = styled(Flex)(_ref77 => {
+var _a$4;
+const ContextActionContainer$1 = styled(Flex)(_ref80 => {
   let {
     scheme
-  } = _ref77;
-  return css(_a$3 || (_a$3 = __template$3(["\n    cursor: pointer;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), getSchemeColor(scheme, "bg"));
+  } = _ref80;
+  return css(_a$4 || (_a$4 = __template$4(["\n    cursor: pointer;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), getSchemeColor(scheme, "bg"));
 });
 const TableHeader = () => {
   const {
@@ -11477,31 +11824,31 @@ const TableHeader = () => {
     }), /* @__PURE__ */jsx(TableHeaderItem, {})]
   });
 };
-var __freeze$2 = Object.freeze;
-var __defProp$3 = Object.defineProperty;
-var __template$2 = (cooked, raw) => __freeze$2(__defProp$3(cooked, "raw", {
-  value: __freeze$2(raw || cooked.slice())
+var __freeze$3 = Object.freeze;
+var __defProp$4 = Object.defineProperty;
+var __template$3 = (cooked, raw) => __freeze$3(__defProp$4(cooked, "raw", {
+  value: __freeze$3(raw || cooked.slice())
 }));
-var _a$2, _b$2, _c;
+var _a$3, _b$3, _c;
 const REFERENCE_COUNT_VISIBILITY_DELAY = 750;
-const ContainerGrid = styled(Grid)(_ref78 => {
+const ContainerGrid = styled(Grid)(_ref81 => {
   let {
     scheme,
     selected,
     updating
-  } = _ref78;
-  return css(_b$2 || (_b$2 = __template$2(["\n      align-items: center;\n      cursor: ", ";\n      height: 100%;\n      pointer-events: ", ";\n      user-select: none;\n      white-space: nowrap;\n\n      ", "\n    "])), selected ? "default" : "pointer", updating ? "none" : "auto", !updating && css(_a$2 || (_a$2 = __template$2(["\n        @media (hover: hover) and (pointer: fine) {\n          &:hover {\n            background: ", ";\n          }\n        }\n      "])), getSchemeColor(scheme, "bg")));
+  } = _ref81;
+  return css(_b$3 || (_b$3 = __template$3(["\n      align-items: center;\n      cursor: ", ";\n      height: 100%;\n      pointer-events: ", ";\n      user-select: none;\n      white-space: nowrap;\n\n      ", "\n    "])), selected ? "default" : "pointer", updating ? "none" : "auto", !updating && css(_a$3 || (_a$3 = __template$3(["\n        @media (hover: hover) and (pointer: fine) {\n          &:hover {\n            background: ", ";\n          }\n        }\n      "])), getSchemeColor(scheme, "bg")));
 });
-const ContextActionContainer = styled(Flex)(_ref79 => {
+const ContextActionContainer = styled(Flex)(_ref82 => {
   let {
     scheme
-  } = _ref79;
-  return css(_c || (_c = __template$2(["\n    cursor: pointer;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), getSchemeColor(scheme, "bg2"));
+  } = _ref82;
+  return css(_c || (_c = __template$3(["\n    cursor: pointer;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), getSchemeColor(scheme, "bg2"));
 });
-const StyledWarningIcon = styled(WarningFilledIcon)(_ref80 => {
+const StyledWarningIcon = styled(WarningFilledIcon)(_ref83 => {
   let {
     theme
-  } = _ref80;
+  } = _ref83;
   return {
     color: theme.sanity.color.spot.red
   };
@@ -11785,11 +12132,11 @@ const TableRowAsset = props => {
         textOverflow: "ellipsis",
         children: referenceCountVisible ? /* @__PURE__ */jsx(WithReferringDocuments, {
           id,
-          children: _ref81 => {
+          children: _ref84 => {
             let {
               isLoading,
               referringDocuments
-            } = _ref81;
+            } = _ref84;
             const uniqueDocuments = getUniqueDocuments(referringDocuments);
             return isLoading ? /* @__PURE__ */jsx(Fragment, {
               children: "-"
@@ -11969,11 +12316,11 @@ const TableRowUpload = props => {
     })]
   });
 };
-const VirtualRow = memo(_ref82 => {
+const VirtualRow$1 = memo(_ref85 => {
   let {
     item,
     selected
-  } = _ref82;
+  } = _ref85;
   if ((item == null ? void 0 : item.type) === "asset") {
     return /* @__PURE__ */jsx(Box, {
       style: {
@@ -12022,7 +12369,7 @@ const AssetTableVirtualized = props => {
     itemContent: index => {
       const item = items[index];
       const selected = selectedIds.includes(item == null ? void 0 : item.id);
-      return /* @__PURE__ */jsx(VirtualRow, {
+      return /* @__PURE__ */jsx(VirtualRow$1, {
         item,
         selected
       });
@@ -12312,8 +12659,8 @@ const getDocumentAssetIds = document => {
   const assetIds = getAssetIds(document);
   return [...new Set(assetIds.sort())];
 };
-var __defProp$2 = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp$2(obj, key, {
+var __defProp$3 = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp$3(obj, key, {
   enumerable: true,
   configurable: true,
   writable: true,
@@ -12372,40 +12719,14 @@ class ReduxProvider extends Component {
     });
   }
 }
-const TagsPanel = () => {
-  const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible);
-  if (!tagsPanelVisible) {
-    return null;
-  }
-  return /* @__PURE__ */jsx(Box, {
-    style: {
-      position: "relative",
-      width: TAGS_PANEL_WIDTH
-    },
-    children: /* @__PURE__ */jsx(Box, {
-      className: "media__custom-scrollbar",
-      style: {
-        borderLeft: "1px solid var(--card-border-color)",
-        height: "100%",
-        overflowX: "hidden",
-        overflowY: "auto",
-        position: "absolute",
-        right: 0,
-        top: 0,
-        width: "100%"
-      },
-      children: /* @__PURE__ */jsx(TagView, {})
-    })
-  });
-};
-var __freeze$1 = Object.freeze;
-var __defProp$1 = Object.defineProperty;
-var __template$1 = (cooked, raw) => __freeze$1(__defProp$1(cooked, "raw", {
-  value: __freeze$1(raw || cooked.slice())
+var __freeze$2 = Object.freeze;
+var __defProp$2 = Object.defineProperty;
+var __template$2 = (cooked, raw) => __freeze$2(__defProp$2(cooked, "raw", {
+  value: __freeze$2(raw || cooked.slice())
 }));
-var _a$1, _b$1;
-const UploadContainer = styled.div(_a$1 || (_a$1 = __template$1(["\n  color: white;\n  height: 100%;\n  min-height: 100%;\n  right: 0;\n  top: 0;\n  width: 100%;\n\n  &:focus {\n    outline: none;\n  }\n"])));
-const DragActiveContainer = styled.div(_b$1 || (_b$1 = __template$1(["\n  align-items: center;\n  background: rgba(0, 0, 0, 0.75);\n  display: flex;\n  height: 100%;\n  justify-content: center;\n  position: absolute;\n  right: 0;\n  top: 0;\n  width: 100%;\n  z-index: 3;\n"])));
+var _a$2, _b$2;
+const UploadContainer = styled.div(_a$2 || (_a$2 = __template$2(["\n  color: white;\n  height: 100%;\n  min-height: 100%;\n  right: 0;\n  top: 0;\n  width: 100%;\n\n  &:focus {\n    outline: none;\n  }\n"])));
+const DragActiveContainer = styled.div(_b$2 || (_b$2 = __template$2(["\n  align-items: center;\n  background: rgba(0, 0, 0, 0.75);\n  display: flex;\n  height: 100%;\n  justify-content: center;\n  position: absolute;\n  right: 0;\n  top: 0;\n  width: 100%;\n  z-index: 3;\n"])));
 async function filterFiles(fileList) {
   const files = Array.from(fileList);
   const filteredFiles = [];
@@ -12496,16 +12817,335 @@ const UploadDropzone = props => {
     })
   });
 };
+var __freeze$1 = Object.freeze;
+var __defProp$1 = Object.defineProperty;
+var __template$1 = (cooked, raw) => __freeze$1(__defProp$1(cooked, "raw", {
+  value: __freeze$1(raw || cooked.slice())
+}));
+var _a$1, _b$1;
+const SeasonContainer = styled(Flex)(_a$1 || (_a$1 = __template$1(["\n  height: ", "px;\n"])), PANEL_HEIGHT);
+const ButtonContainer = styled(Flex)(_b$1 || (_b$1 = __template$1(["\n  @media (pointer: fine) {\n    visibility: hidden;\n  }\n\n  @media (hover: hover) and (pointer: fine) {\n    ", ":hover & {\n      visibility: visible;\n    }\n  }\n"])), SeasonContainer);
+const SeasonButton = props => {
+  const {
+    disabled,
+    icon,
+    onClick,
+    tone,
+    tooltip
+  } = props;
+  return /* @__PURE__ */jsx(Tooltip, {
+    content: /* @__PURE__ */jsx(Container$2, {
+      padding: 2,
+      width: 0,
+      children: /* @__PURE__ */jsx(Text, {
+        muted: true,
+        size: 1,
+        children: tooltip
+      })
+    }),
+    disabled: "ontouchstart" in window,
+    placement: "top",
+    portal: true,
+    children: /* @__PURE__ */jsx(Button, {
+      disabled,
+      fontSize: 1,
+      icon,
+      mode: "bleed",
+      onClick,
+      padding: 2,
+      tone
+    })
+  });
+};
+const Season = props => {
+  var _a2, _b2;
+  const {
+    actions,
+    season
+  } = props;
+  const dispatch = useDispatch();
+  const assetsPicked = useTypedSelector(selectAssetsPicked);
+  const isSearchFacetTag = useTypedSelector(state => {
+    var _a3;
+    return selectIsSearchFacetTag(state, (_a3 = season == null ? void 0 : season.season) == null ? void 0 : _a3._id);
+  });
+  const handleSearchFacetTagRemove = () => {
+    dispatch(searchActions.facetsRemoveBySeason({
+      seasonId: season.season._id
+    }));
+  };
+  const handleShowAddSeasonToAssetsDialog = () => {
+    dispatch(dialogActions.showConfirmAssetsSeasonAdd({
+      assetsPicked,
+      season: season.season
+    }));
+  };
+  const handleShowRemoveSeasonFromAssetsDialog = () => {
+    dispatch(dialogActions.showConfirmAssetsSeasonRemove({
+      assetsPicked,
+      season: season.season
+    }));
+  };
+  const handleShowSeasonDeleteDialog = () => {
+    dispatch(dialogActions.showConfirmDeleteSeason({
+      season: season.season
+    }));
+  };
+  const handleShowSeasonEditDialog = () => {
+    var _a3;
+    dispatch(DIALOG_ACTIONS.showSeasonEdit({
+      seasonId: (_a3 = season == null ? void 0 : season.season) == null ? void 0 : _a3._id
+    }));
+  };
+  const handleSearchFacetTagAddOrUpdate = () => {
+    var _a3, _b3, _c;
+    const searchFacet = {
+      //@ts-ignore
+      ...inputs.season,
+      value: {
+        label: (_b3 = (_a3 = season == null ? void 0 : season.season) == null ? void 0 : _a3.name) == null ? void 0 : _b3.current,
+        value: (_c = season == null ? void 0 : season.season) == null ? void 0 : _c._id
+      }
+    };
+    if (isSearchFacetTag) {
+      dispatch(searchActions.facetsUpdate({
+        name: "tag",
+        operatorType: "references",
+        value: searchFacet.value
+      }));
+    } else {
+      dispatch(searchActions.facetsAdd({
+        facet: searchFacet
+      }));
+    }
+  };
+  return /* @__PURE__ */jsxs(SeasonContainer, {
+    align: "center",
+    flex: 1,
+    justify: "space-between",
+    paddingLeft: 3,
+    children: [/* @__PURE__ */jsx(Box, {
+      flex: 1,
+      children: /* @__PURE__ */jsx(Text, {
+        muted: true,
+        size: 1,
+        style: {
+          opacity: (season == null ? void 0 : season.updating) ? 0.5 : 1,
+          userSelect: "none"
+        },
+        textOverflow: "ellipsis",
+        children: (_b2 = (_a2 = season == null ? void 0 : season.season) == null ? void 0 : _a2.name) == null ? void 0 : _b2.current
+      })
+    }), /* @__PURE__ */jsxs(ButtonContainer, {
+      align: "center",
+      style: {
+        flexShrink: 0
+      },
+      children: [(actions == null ? void 0 : actions.includes("search")) && /* @__PURE__ */jsx(SeasonButton, {
+        disabled: season == null ? void 0 : season.updating,
+        icon: isSearchFacetTag ? /* @__PURE__ */jsx(CloseIcon, {}) : /* @__PURE__ */jsx(SearchIcon, {}),
+        onClick: isSearchFacetTag ? handleSearchFacetTagRemove : handleSearchFacetTagAddOrUpdate,
+        tooltip: isSearchFacetTag ? "Remove filter" : "Filter by tag"
+      }), (actions == null ? void 0 : actions.includes("edit")) && /* @__PURE__ */jsx(SeasonButton, {
+        disabled: season == null ? void 0 : season.updating,
+        icon: /* @__PURE__ */jsx(EditIcon, {}),
+        onClick: handleShowSeasonEditDialog,
+        tone: "primary",
+        tooltip: "Edit Season"
+      }), (actions == null ? void 0 : actions.includes("applyAll")) && /* @__PURE__ */jsx(SeasonButton, {
+        disabled: season == null ? void 0 : season.updating,
+        icon: /* @__PURE__ */jsx(ArrowUpIcon, {}),
+        onClick: handleShowAddSeasonToAssetsDialog,
+        tone: "primary",
+        tooltip: "Add Season to selected assets"
+      }), (actions == null ? void 0 : actions.includes("removeAll")) && /* @__PURE__ */jsx(SeasonButton, {
+        disabled: season == null ? void 0 : season.updating,
+        icon: /* @__PURE__ */jsx(ArrowDownIcon, {}),
+        onClick: handleShowRemoveSeasonFromAssetsDialog,
+        tone: "critical",
+        tooltip: "Remove Season from selected assets"
+      }), (actions == null ? void 0 : actions.includes("delete")) && /* @__PURE__ */jsx(SeasonButton, {
+        disabled: season == null ? void 0 : season.updating,
+        icon: /* @__PURE__ */jsx(TrashIcon, {}),
+        onClick: handleShowSeasonDeleteDialog,
+        tone: "critical",
+        tooltip: "Delete tag"
+      })]
+    })]
+  });
+};
+const VirtualRow = memo(_ref86 => {
+  let {
+    isScrolling,
+    item
+  } = _ref86;
+  var _a;
+  if (typeof item === "string") {
+    return /* @__PURE__ */jsx(Flex, {
+      align: "center",
+      justify: "space-between",
+      paddingX: 3,
+      style: {
+        height: "".concat(PANEL_HEIGHT, "px")
+      },
+      children: /* @__PURE__ */jsx(Label, {
+        size: 0,
+        children: item
+      })
+    }, item);
+  }
+  return /* @__PURE__ */jsx(Season, {
+    actions: isScrolling ? void 0 : item.actions,
+    season: item
+  }, (_a = item.season) == null ? void 0 : _a._id);
+});
+const SeasonsVirtualized = () => {
+  const assetsPicked = useTypedSelector(selectAssetsPicked);
+  const seasons = useTypedSelector(selectSeasons);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const pickedSeasonsIds = assetsPicked == null ? void 0 : assetsPicked.reduce((acc, val) => {
+    var _a, _b;
+    const assetTagIds = ((_b = (_a = val == null ? void 0 : val.asset) == null ? void 0 : _a.seasons) == null ? void 0 : _b.map(each => each.season._id)) || [];
+    acc = acc.concat(assetTagIds);
+    return acc;
+  }, []);
+  const pickedSeasonIdsUnique = [...new Set(pickedSeasonsIds)];
+  const seasonIdsSegmented = pickedSeasonIdsUnique.reduce((acc, seasonId) => {
+    const seasonIsInEveryAsset = assetsPicked.every(assetItem => {
+      return assetItem.asset.season === seasonId;
+    });
+    if (seasonIsInEveryAsset) {
+      acc.appliedToAll.push(seasonId);
+    } else {
+      acc.appliedToSome.push(seasonId);
+    }
+    return acc;
+  }, {
+    appliedToAll: [],
+    appliedToSome: []
+  });
+  const seasonsAppliedToAll = seasons.filter(season => seasonIdsSegmented.appliedToAll.includes(season.season._id)).map(seasonItem => ({
+    ...seasonItem,
+    actions: ["delete", "edit"]
+  }));
+  const seasonsAppliedToSome = seasons.filter(season => seasonIdsSegmented.appliedToSome.includes(season.season._id)).map(seasonItem => ({
+    ...seasonItem,
+    actions: ["delete", "edit"]
+  }));
+  const tagsUnused = seasons.filter(season => !pickedSeasonIdsUnique.includes(season.season._id)).map(seasonItem => ({
+    ...seasonItem,
+    actions: ["delete", "edit"]
+  }));
+  let items = [];
+  if (assetsPicked.length === 0) {
+    items = seasons.map(seasonItem => ({
+      ...seasonItem,
+      actions: ["delete", "edit"]
+    }));
+  } else {
+    if ((seasonsAppliedToAll == null ? void 0 : seasonsAppliedToAll.length) > 0) {
+      items = [...items,
+      //
+      assetsPicked.length === 1 ? "Used" : "Used by all", ...seasonsAppliedToAll];
+    }
+    if ((seasonsAppliedToSome == null ? void 0 : seasonsAppliedToSome.length) > 0) {
+      items = [...items,
+      //
+      "Used by some", ...seasonsAppliedToSome];
+    }
+    if ((tagsUnused == null ? void 0 : tagsUnused.length) > 0) {
+      items = [...items,
+      //
+      "Unused", ...tagsUnused];
+    }
+  }
+  return /* @__PURE__ */jsx(Virtuoso, {
+    className: "media__custom-scrollbar",
+    computeItemKey: index => {
+      const item = items[index];
+      if (typeof item === "string") {
+        return item;
+      }
+      return item.season._id;
+    },
+    isScrolling: setIsScrolling,
+    itemContent: index => {
+      return /* @__PURE__ */jsx(VirtualRow, {
+        isScrolling,
+        item: items[index]
+      });
+    },
+    style: {
+      flex: 1,
+      overflowX: "hidden"
+    },
+    totalCount: items.length
+  });
+};
+const SeasonView = () => {
+  const numPickedAssets = useTypedSelector(selectAssetsPickedLength);
+  const seasons = useTypedSelector(selectSeasons);
+  const fetching = useTypedSelector(state => state.seasons.fetching);
+  const fetchCount = useTypedSelector(state => state.seasons.fetchCount);
+  const fetchComplete = fetchCount !== -1;
+  const hasTags = !fetching && (seasons == null ? void 0 : seasons.length) > 0;
+  const hasPicked = !!(numPickedAssets > 0);
+  return /* @__PURE__ */jsxs(Flex, {
+    direction: "column",
+    flex: 1,
+    height: "fill",
+    children: [/* @__PURE__ */jsx(TagViewHeader, {
+      allowCreate: true,
+      light: hasPicked,
+      title: hasPicked ? "Seasons (in selection)" : "Seasons"
+    }), fetchComplete && !hasTags && /* @__PURE__ */jsx(Box, {
+      padding: 3,
+      children: /* @__PURE__ */jsx(Text, {
+        muted: true,
+        size: 1,
+        children: /* @__PURE__ */jsx("em", {
+          children: "No Seasons"
+        })
+      })
+    }), hasTags && /* @__PURE__ */jsx(SeasonsVirtualized, {})]
+  });
+};
+const SeasonsPanel = () => {
+  const seasonsPanelVisible = useTypedSelector(state => state.seasons.panelVisible);
+  if (!seasonsPanelVisible) {
+    return null;
+  }
+  return /* @__PURE__ */jsx(Box, {
+    style: {
+      position: "relative",
+      width: TAGS_PANEL_WIDTH
+    },
+    children: /* @__PURE__ */jsx(Box, {
+      className: "media__custom-scrollbar",
+      style: {
+        borderLeft: "1px solid var(--card-border-color)",
+        height: "100%",
+        overflowX: "hidden",
+        overflowY: "auto",
+        position: "absolute",
+        right: 0,
+        top: 0,
+        width: "100%"
+      },
+      children: /* @__PURE__ */jsx(SeasonView, {})
+    })
+  });
+};
 var __freeze = Object.freeze;
 var __defProp = Object.defineProperty;
 var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", {
   value: __freeze(raw || cooked.slice())
 }));
 var _a, _b;
-const BrowserContent = _ref83 => {
+const BrowserContent = _ref87 => {
   let {
     onClose
-  } = _ref83;
+  } = _ref87;
   const client = useVersionedClient();
   const [portalElement, setPortalElement] = useState(null);
   const dispatch = useDispatch();
@@ -12589,7 +13229,7 @@ const BrowserContent = _ref83 => {
                 position: "relative"
               },
               children: [/* @__PURE__ */jsx(PickedBar, {}), /* @__PURE__ */jsx(Items, {})]
-            }), /* @__PURE__ */jsx(TagsPanel, {})]
+            }), /* @__PURE__ */jsx(SeasonsPanel, {})]
           }), /* @__PURE__ */jsx(DebugControls, {})]
         })
       })]

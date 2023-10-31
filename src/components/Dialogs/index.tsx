@@ -8,6 +8,7 @@ import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'
 import DialogTags from '../DialogTags'
 import DialogMassAssetEdit from '../DialogMassAssetEdit'
+import DialogSeasonEdit from '../DialogSeasonEdit'
 
 const Dialogs = () => {
   // Redux
@@ -66,6 +67,14 @@ const Dialogs = () => {
         <DialogTagEdit dialog={dialog} key={index}>
           {childDialogs}
         </DialogTagEdit>
+      )
+    }
+
+    if (dialog.type === 'seasonEdit') {
+      return (
+        <DialogSeasonEdit dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogSeasonEdit>
       )
     }
 
