@@ -1,6 +1,6 @@
 {
   "name": "sanity-plugin-media-carhartt",
-  "version": "2.2.2",
+  "version": "2.2.4",
   "description": "This version of `sanity-plugin-media` is for Sanity Studio V3.",
   "keywords": [
     "sanity",
@@ -24,34 +24,38 @@
   "author": "Sanity.io <hello@sanity.io>",
   "exports": {
     ".": {
-      "types": "./lib/src/index.d.ts",
+      "types": "./dist/index.d.ts",
       "source": "./src/index.ts",
-      "import": "./lib/index.esm.js",
-      "require": "./lib/index.js",
-      "default": "./lib/index.esm.js"
+      "require": "./dist/index.js",
+      "node": {
+        "module": "./dist/index.esm.js",
+        "import": "./dist/index.cjs.mjs"
+      },
+      "import": "./dist/index.esm.js",
+      "default": "./dist/index.esm.js"
     },
     "./package.json": "./package.json"
   },
-  "main": "./lib/index.js",
-  "module": "./lib/index.esm.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
   "source": "./src/index.ts",
-  "types": "./lib/src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "files": [
+    "dist",
+    "sanity.json",
     "src",
-    "lib",
-    "v2-incompatible.js",
-    "sanity.json"
+    "v2-incompatible.js"
   ],
   "scripts": {
-    "prebuild": "npm run clean && plugin-kit verify-package --silent && pkg-utils",
-    "build": "pkg-utils build",
-    "clean": "rimraf lib",
+    "build": "run-s clean && plugin-kit verify-package --silent && pkg-utils build --strict && pkg-utils --strict",
+    "clean": "rimraf dist",
     "dev": "npm run watch",
+    "format": "prettier --write --cache --ignore-unknown .",
     "link-watch": "plugin-kit link-watch",
     "lint": "eslint .",
     "prepare": "husky install",
-    "prepublishOnly": "npm run build",
-    "watch": "pkg-utils watch"
+    "prepublishOnly": "run-s build",
+    "watch": "pkg-utils watch --strict"
   },
   "dependencies": {
     "@commercetools/platform-sdk": "^6.0.0",
@@ -67,6 +71,7 @@
     "groq": "^3.0.0",
     "is-hotkey": "^0.2.0",
     "nanoid": "^3.3.3",
+    "npm-run-all": "^4.1.5",
     "pluralize": "^8.0.0",
     "react-dropzone": "^11.3.1",
     "react-file-icon": "^1.1.0",
@@ -83,11 +88,11 @@
   "devDependencies": {
     "@commitlint/cli": "^17.2.0",
     "@commitlint/config-conventional": "^17.2.0",
-    "@sanity/client": "^4.0.1",
+    "@sanity/client": "^6.7.0",
     "@sanity/color": "^2.1.20",
     "@sanity/icons": "^2.0.0",
-    "@sanity/pkg-utils": "^2.0.0",
-    "@sanity/plugin-kit": "^2.1.16",
+    "@sanity/pkg-utils": "^2.4.8",
+    "@sanity/plugin-kit": "^3.1.10",
     "@sanity/semantic-release-preset": "^2.0.2",
     "@types/is-hotkey": "^0.1.7",
     "@types/pluralize": "^0.0.29",

@@ -56,5 +56,5 @@ yalc.lock
 ##npm package zips
 *.tgz
 
-
-
+# Compiled plugin
+lib
