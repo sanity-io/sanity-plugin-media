@@ -1,7 +1,7 @@
 import {zodResolver} from '@hookform/resolvers/zod'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Text} from '@sanity/ui'
-import {Tag, TagFormData} from '@types'
+import {TagFormData} from '@types'
 import groq from 'groq'
 import React, {ReactNode, useCallback, useEffect, useState} from 'react'
 import {SubmitHandler, useForm} from 'react-hook-form'
@@ -93,14 +93,15 @@ const DialogSeasonEdit = (props: Props) => {
     )
   }
 
-  const handleTagUpdate = useCallback(
+  const handleSeasonUpdate = useCallback(
     (update: MutationEvent) => {
       const {result, transition} = update
       if (result && transition === 'update') {
         // Regenerate snapshot
-        setSeasonSnapshot(result as Tag)
+        setSeasonSnapshot(result as Season)
         // Reset react-hook-form
-        reset(generateDefaultValues(result as Tag))
+        reset(generateDefaultValues(result as Season))
+        dispatch(dialogActions.remove({id: seasonItem?.season?._id}))
       }
     },
     [reset]
@@ -123,12 +124,12 @@ const DialogSeasonEdit = (props: Props) => {
     // Remember that Sanity listeners ignore joins, order clauses and projections
     const subscriptionAsset = client
       .listen(groq`*[_id == $id]`, {id: seasonItem?.season._id})
-      .subscribe(handleTagUpdate)
+      .subscribe(handleSeasonUpdate)
 
     return () => {
       subscriptionAsset?.unsubscribe()
     }
-  }, [client, handleTagUpdate, seasonItem?.season])
+  }, [client, handleSeasonUpdate, seasonItem?.season])
 
   const Footer = () => (
     <Box padding={3}>

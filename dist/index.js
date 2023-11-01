@@ -4000,7 +4000,7 @@ var __defProp$p = Object.defineProperty;
 var __template$o = (cooked, raw) => __freeze$o(__defProp$p(cooked, "raw", {
   value: __freeze$o(raw || cooked.slice())
 }));
-var _a$o, _b$c, _c$3, _d$2;
+var _a$o, _b$e, _c$3, _d$2;
 const divider = {
   type: "divider"
 };
@@ -4056,7 +4056,7 @@ const inputs = {
     }, {
       name: "false",
       title: "False",
-      value: groq__default.default(_b$c || (_b$c = __template$o(["!(_id in $documentAssetIds)"])))
+      value: groq__default.default(_b$e || (_b$e = __template$o(["!(_id in $documentAssetIds)"])))
     }],
     selectOnly: true,
     title: "In use in current document",
@@ -4369,7 +4369,7 @@ var __defProp$o = Object.defineProperty;
 var __template$n = (cooked, raw) => __freeze$n(__defProp$o(cooked, "raw", {
   value: __freeze$n(raw || cooked.slice())
 }));
-var _a$n, _b$b;
+var _a$n, _b$d;
 const constructFilter = _ref => {
   let {
     assetTypes,
@@ -4443,7 +4443,7 @@ const constructFilter = _ref => {
   // NOTE: Currently this only searches direct fields on sanity.fileAsset/sanity.imageAsset and NOT referenced tags
   // It's possible to add this by adding the following line to the searchQuery, but it's quite slow
   // references(*[_type == "media.tag" && name.current == "${searchQuery.trim()}"]._id)
-  ...(searchQuery ? [groq__default.default(_b$b || (_b$b = __template$n(["[_id, altText, assetId, description, originalFilename, title, url] match '*", "*'"])), searchQuery.trim())] : []),
+  ...(searchQuery ? [groq__default.default(_b$d || (_b$d = __template$n(["[_id, altText, assetId, description, originalFilename, title, url] match '*", "*'"])), searchQuery.trim())] : []),
   // Search facets
   ...searchFacetFragments].join(" && ");
   return constructedQuery;
@@ -4453,7 +4453,7 @@ var __defProp$n = Object.defineProperty;
 var __template$m = (cooked, raw) => __freeze$m(__defProp$n(cooked, "raw", {
   value: __freeze$m(raw || cooked.slice())
 }));
-var _a$m;
+var _a$m, _b$c;
 const checkTagName = (client, name) => {
   return function (source) {
     return source.pipe(operators$1.mergeMap(() => {
@@ -4464,6 +4464,23 @@ const checkTagName = (client, name) => {
       if (existingTagCount > 0) {
         return rxjs.throwError({
           message: "Tag already exists",
+          statusCode: 409
+        });
+      }
+      return rxjs.of(true);
+    }));
+  };
+};
+const checkSeasonName = (client, name) => {
+  return function (source) {
+    return source.pipe(operators$1.mergeMap(() => {
+      return rxjs.from(client.fetch(groq__default.default(_b$c || (_b$c = __template$m(['count(*[_type == "', '" && name.current == $name])'])), SEASONS_DOCUMENT_NAME), {
+        name
+      }));
+    }), operators$1.mergeMap(existingSeasonCount => {
+      if (existingSeasonCount > 0) {
+        return rxjs.throwError({
+          message: "Season already exists",
           statusCode: 409
         });
       }
@@ -4588,6 +4605,7 @@ const ASSETS_ACTIONS = {
 };
 const DIALOG_ACTIONS = {
   showTagCreate: toolkit.createAction("dialog/showTagCreate"),
+  showSeasonCreate: toolkit.createAction("dialog/showSeasonCreate"),
   showMassEdit: toolkit.createAction("dialog/showMassEdit"),
   showTagEdit: toolkit.createAction("dialog/showTagEdit", function prepare(_ref10) {
     let {
@@ -4615,7 +4633,7 @@ var __defProp$m = Object.defineProperty;
 var __template$l = (cooked, raw) => __freeze$l(__defProp$m(cooked, "raw", {
   value: __freeze$l(raw || cooked.slice())
 }));
-var _a$l, _b$a;
+var _a$l, _b$b;
 const initialState$9 = {
   allIds: [],
   byIds: {},
@@ -4873,7 +4891,7 @@ const tagsDeleteEpic = (action$, state$, _ref14) => {
     // Optionally throttle
     debugThrottle(state.debug.badConnection),
     // Fetch assets which reference this tag
-    operators$1.mergeMap(() => client.observable.fetch(groq__default.default(_b$a || (_b$a = __template$l(['*[\n              _type in ["sanity.fileAsset", "sanity.imageAsset"]\n              && references(*[_type == "media.tag" && name.current == $tagName]._id)\n            ] {\n              _id,\n              _rev,\n              opt\n            }']))), {
+    operators$1.mergeMap(() => client.observable.fetch(groq__default.default(_b$b || (_b$b = __template$l(['*[\n              _type in ["sanity.fileAsset", "sanity.imageAsset"]\n              && references(*[_type == "media.tag" && name.current == $tagName]._id)\n            ] {\n              _id,\n              _rev,\n              opt\n            }']))), {
       tagName: tag.name.current
     })),
     // Create transaction which remove tag references from all matched assets and delete tag
@@ -5146,7 +5164,7 @@ var __defProp$l = Object.defineProperty;
 var __template$k = (cooked, raw) => __freeze$k(__defProp$l(cooked, "raw", {
   value: __freeze$k(raw || cooked.slice())
 }));
-var _a$k, _b$9, _c$2, _d$1, _e;
+var _a$k, _b$a, _c$2, _d$1, _e;
 const defaultOrder = ORDER_OPTIONS[0];
 const initialState$7 = {
   allIds: [],
@@ -5306,7 +5324,7 @@ const assetsSlice = toolkit.createSlice({
           sort = groq__default.default(_a$k || (_a$k = __template$k(["order(_updatedAt desc)"])))
         } = _ref22;
         const pipe = sort || selector ? "|" : "";
-        const query = groq__default.default(_b$9 || (_b$9 = __template$k(['\n          {\n            "items": *[', "] {\n              _id,\n              _type,\n              _createdAt,\n              _updatedAt,\n              altText,\n              description,\n              extension,\n              metadata {\n                dimensions,\n                exif,\n                isOpaque,\n              },\n              mimeType,\n              opt {\n                media\n              },\n              originalFilename,\n              size,\n              title,\n              products,\n              collaboration, \n              season,\n              name,\n              url\n            } ", " ", " ", ",\n          }\n        "])), queryFilter, pipe, sort, selector);
+        const query = groq__default.default(_b$a || (_b$a = __template$k(['\n          {\n            "items": *[', "] {\n              _id,\n              _type,\n              _createdAt,\n              _updatedAt,\n              altText,\n              description,\n              extension,\n              metadata {\n                dimensions,\n                exif,\n                isOpaque,\n              },\n              mimeType,\n              opt {\n                media\n              },\n              originalFilename,\n              size,\n              title,\n              products,\n              collaboration, \n              season,\n              name,\n              url\n            } ", " ", " ", ",\n          }\n        "])), queryFilter, pipe, sort, selector);
         return {
           payload: {
             params,
@@ -5761,16 +5779,16 @@ var __defProp$k = Object.defineProperty;
 var __template$j = (cooked, raw) => __freeze$j(__defProp$k(cooked, "raw", {
   value: __freeze$j(raw || cooked.slice())
 }));
-var _a$j, _b$8;
+var _a$j, _b$9;
 const customScrollbar = styled.css(_a$j || (_a$j = __template$j(["\n  ::-webkit-scrollbar {\n    width: 14px;\n  }\n\n  ::-webkit-scrollbar-thumb {\n    border-radius: 10px;\n    border: 4px solid rgba(0, 0, 0, 0);\n    background: var(--card-border-color);\n    background-clip: padding-box;\n\n    &:hover {\n      background: var(--card-muted-fg-color);\n      background-clip: padding-box;\n    }\n  }\n"])));
-const GlobalStyle = styled.createGlobalStyle(_b$8 || (_b$8 = __template$j(["\n  .media__custom-scrollbar {\n    ", '\n  }\n\n  // @sanity/ui overrides\n\n  // Custom scrollbar on Box (used in Dialogs)\n  div[data-ui="Box"] {\n    ', '\n  }\n\n  // Dialog background color\n  div[data-ui="Dialog"] {\n    background-color: rgba(15, 17, 18, 0.9);\n  }\n\n'])), customScrollbar, customScrollbar);
+const GlobalStyle = styled.createGlobalStyle(_b$9 || (_b$9 = __template$j(["\n  .media__custom-scrollbar {\n    ", '\n  }\n\n  // @sanity/ui overrides\n\n  // Custom scrollbar on Box (used in Dialogs)\n  div[data-ui="Box"] {\n    ', '\n  }\n\n  // Dialog background color\n  div[data-ui="Dialog"] {\n    background-color: rgba(15, 17, 18, 0.9);\n  }\n\n'])), customScrollbar, customScrollbar);
 const useTypedSelector = reactRedux.useSelector;
 var __freeze$i = Object.freeze;
 var __defProp$j = Object.defineProperty;
 var __template$i = (cooked, raw) => __freeze$i(__defProp$j(cooked, "raw", {
   value: __freeze$i(raw || cooked.slice())
 }));
-var _a$i;
+var _a$i, _b$8;
 const initialState$6 = {
   creating: false,
   fetching: false,
@@ -5901,13 +5919,32 @@ const seasonsSlice = toolkit.createSlice({
       state.byIds[seasonId].updating = false;
     },
     deleteRequest(state, action) {
-      var _a2, _b;
-      const seasonId = (_b = (_a2 = action.payload) == null ? void 0 : _a2.season) == null ? void 0 : _b._id;
+      var _a2, _b2;
+      const seasonId = (_b2 = (_a2 = action.payload) == null ? void 0 : _a2.season) == null ? void 0 : _b2._id;
       state.byIds[seasonId].picked = false;
       state.byIds[seasonId].updating = true;
       Object.keys(state.byIds).forEach(key => {
         delete state.byIds[key].error;
       });
+    },
+    deleteComplete(state, action) {
+      const {
+        seasonId
+      } = action.payload;
+      const deleteIndex = state.allIds.indexOf(seasonId);
+      if (deleteIndex >= 0) {
+        state.allIds.splice(deleteIndex, 1);
+      }
+      delete state.byIds[seasonId];
+    },
+    deleteError(state, action) {
+      const {
+        error,
+        season
+      } = action.payload;
+      const seasonId = season == null ? void 0 : season._id;
+      state.byIds[seasonId].error = error;
+      state.byIds[seasonId].updating = false;
     },
     // Set tag panel visibility
     panelVisibleSet(state, action) {
@@ -5974,6 +6011,87 @@ const seasonsCreateEpic = (action$, state$, _ref43) => {
     }))));
   }));
 };
+const seasonsUpdateEpic = (action$, state$, _ref45) => {
+  let {
+    client
+  } = _ref45;
+  return action$.pipe(operators$1.filter(seasonsSlice.actions.updateSeasonItemRequest.match), operators$1.withLatestFrom(state$), operators$1.mergeMap(_ref46 => {
+    let [action, state] = _ref46;
+    var _a2;
+    const {
+      closeDialogId,
+      formData,
+      season
+    } = action.payload;
+    return rxjs.of(action).pipe(
+    // Optionally throttle
+    debugThrottle(state.debug.badConnection),
+    // Check if tag name is available, throw early if not
+    checkSeasonName(client, (_a2 = formData == null ? void 0 : formData.name) == null ? void 0 : _a2.current),
+    // Patch document (Update tag)
+    operators$1.mergeMap(() => rxjs.from(client.patch(season._id).set({
+      name: {
+        _type: "slug",
+        current: formData == null ? void 0 : formData.name.current
+      }
+    }).commit())),
+    // Dispatch complete action
+    operators$1.mergeMap(updatedSeason => {
+      return rxjs.of(seasonsSlice.actions.updateComplete({
+        closeDialogId,
+        season: updatedSeason
+      }));
+    }), operators$1.catchError(error => rxjs.of(seasonsSlice.actions.updateError({
+      error: {
+        message: (error == null ? void 0 : error.message) || "Internal error",
+        statusCode: (error == null ? void 0 : error.statusCode) || 500
+      },
+      season
+    }))));
+  }));
+};
+const seasonsDeleteEpic = (action$, state$, _ref47) => {
+  let {
+    client
+  } = _ref47;
+  return action$.pipe(operators$1.filter(seasonActions.deleteRequest.match), operators$1.withLatestFrom(state$), operators$1.mergeMap(_ref48 => {
+    let [action, state] = _ref48;
+    const {
+      season
+    } = action.payload;
+    return rxjs.of(action).pipe(
+    // Optionally throttle
+    debugThrottle(state.debug.badConnection),
+    // Fetch assets which reference this tag
+    operators$1.mergeMap(() => client.observable.fetch(groq__default.default(_b$8 || (_b$8 = __template$i(['*[\n              _type in ["sanity.fileAsset", "sanity.imageAsset"]\n              && references(*[_type == "season" && name.current == $seasonName]._id)\n            ] {\n              _id,\n              _rev,\n              opt\n            }']))), {
+      seasonName: season.name.current
+    })),
+    // Create transaction which remove tag references from all matched assets and delete tag
+    operators$1.mergeMap(assets => {
+      const patches = assets.map(asset => ({
+        id: asset._id,
+        patch: {
+          // this will cause the transaction to fail if the document has been modified since it was fetched.
+          ifRevisionID: asset._rev,
+          unset: ['season[_ref == "'.concat(season._id, '"]')]
+        }
+      }));
+      const transaction = patches.reduce((tx, patch) => tx.patch(patch.id, patch.patch), client.transaction());
+      transaction.delete(season._id);
+      return rxjs.from(transaction.commit());
+    }),
+    // Dispatch complete action
+    operators$1.mergeMap(() => rxjs.of(seasonsSlice.actions.deleteComplete({
+      seasonId: season._id
+    }))), operators$1.catchError(error => rxjs.of(seasonsSlice.actions.deleteError({
+      error: {
+        message: (error == null ? void 0 : error.message) || "Internal error",
+        statusCode: (error == null ? void 0 : error.statusCode) || 500
+      },
+      season
+    }))));
+  }));
+};
 const selectSeasonsByIds = state => state.seasons.byIds;
 const selectSeasonById = toolkit.createSelector([selectSeasonsByIds, (_state, seasonId) => seasonId], (byIds, seasonId) => byIds[seasonId]);
 const selectSeasons = toolkit.createSelector(selectSeasonsByIds, byIds => Object.values(byIds));
@@ -5991,6 +6109,12 @@ const dialogSlice = toolkit.createSlice({
       state.items.push({
         id: "tagCreate",
         type: "tagCreate"
+      });
+    });
+    builder.addCase(DIALOG_ACTIONS.showSeasonCreate, state => {
+      state.items.push({
+        id: "seasonCreate",
+        type: "seasonCreate"
       });
     });
     builder.addCase(DIALOG_ACTIONS.showMassEdit, state => {
@@ -6186,7 +6310,7 @@ const dialogSlice = toolkit.createSlice({
         closeDialogId,
         season
       } = action.payload;
-      const suffix = "tag";
+      const suffix = "season";
       state.items.push({
         closeDialogId,
         confirmCallbackAction: seasonActions.deleteRequest({
@@ -6872,11 +6996,11 @@ var __template$h = (cooked, raw) => __freeze$h(__defProp$i(cooked, "raw", {
   value: __freeze$h(raw || cooked.slice())
 }));
 var _a$h;
-const Container$1 = styled__default.default(ui.Box)(_ref45 => {
+const Container$1 = styled__default.default(ui.Box)(_ref49 => {
   let {
     scheme,
     theme
-  } = _ref45;
+  } = _ref49;
   return styled.css(_a$h || (_a$h = __template$h(["\n    background: ", ";\n    border-radius: ", ";\n  "])), getSchemeColor(scheme, "bg"), ui.rem(theme.sanity.radius[2]));
 });
 const SearchFacet = props => {
@@ -6947,10 +7071,10 @@ const TextInputNumber = props => {
     value: value != null ? value : ""
   });
 };
-const SearchFacetNumber = _ref46 => {
+const SearchFacetNumber = _ref50 => {
   let {
     facet
-  } = _ref46;
+  } = _ref50;
   var _a;
   const dispatch = reactRedux.useDispatch();
   const popoverProps = usePortalPopoverProps();
@@ -7038,10 +7162,10 @@ const SearchFacetNumber = _ref46 => {
     })]
   });
 };
-const SearchFacetSelect = _ref47 => {
+const SearchFacetSelect = _ref51 => {
   let {
     facet
-  } = _ref47;
+  } = _ref51;
   var _a;
   const dispatch = reactRedux.useDispatch();
   const popoverProps = usePortalPopoverProps();
@@ -7113,10 +7237,10 @@ const SearchFacetSelect = _ref47 => {
     })]
   });
 };
-const SearchFacetString = _ref48 => {
+const SearchFacetString = _ref52 => {
   let {
     facet
-  } = _ref48;
+  } = _ref52;
   const dispatch = reactRedux.useDispatch();
   const popoverProps = usePortalPopoverProps();
   const handleOperatorItemClick = operatorType => {
@@ -7185,11 +7309,11 @@ const {
 } = ui.studioTheme;
 const reactSelectStyles$1 = scheme => {
   return {
-    control: (styles, _ref49) => {
+    control: (styles, _ref53) => {
       let {
         isDisabled,
         isFocused
-      } = _ref49;
+      } = _ref53;
       let boxShadow = "inset 0 0 0 1px var(--card-border-color)";
       if (isFocused) {
         boxShadow = "inset 0 0 0 1px ".concat(getSchemeColor(scheme, "inputEnabledBorder"), ",\n        0 0 0 1px ").concat(getSchemeColor(scheme, "bg2"), ",\n        0 0 0 3px var(--card-focus-ring-color) !important");
@@ -7228,10 +7352,10 @@ const reactSelectStyles$1 = scheme => {
       fontSize: themeTextSizes[1].fontSize,
       lineHeight: "1em"
     }),
-    option: (styles, _ref50) => {
+    option: (styles, _ref54) => {
       let {
         isFocused
-      } = _ref50;
+      } = _ref54;
       return {
         ...styles,
         backgroundColor: isFocused ? getSchemeColor(scheme, "spotBlue") : "transparent",
@@ -7365,10 +7489,10 @@ const reactSelectComponents$1 = {
   Option: Option$1,
   SingleValue
 };
-const SearchFacetTags = _ref51 => {
+const SearchFacetTags = _ref55 => {
   let {
     facet
-  } = _ref51;
+  } = _ref55;
   const {
     scheme
   } = sanity.useColorScheme();
@@ -7448,10 +7572,10 @@ var __template$g = (cooked, raw) => __freeze$g(__defProp$h(cooked, "raw", {
   value: __freeze$g(raw || cooked.slice())
 }));
 var _a$g;
-const StackContainer = styled__default.default(ui.Flex)(_ref52 => {
+const StackContainer = styled__default.default(ui.Flex)(_ref56 => {
   let {
     theme
-  } = _ref52;
+  } = _ref56;
   return styled.css(_a$g || (_a$g = __template$g(["\n    > * {\n      margin-bottom: ", ";\n    }\n  "])), ui.rem(theme.sanity.space[2]));
 });
 const SearchFacets = props => {
@@ -7970,11 +8094,11 @@ const isImageAsset = asset => {
 const getAssetResolution = asset => {
   return "".concat(asset.metadata.dimensions.width, "x").concat(asset.metadata.dimensions.height, "px");
 };
-const ButtonAssetCopy = _ref53 => {
+const ButtonAssetCopy = _ref57 => {
   let {
     disabled,
     url
-  } = _ref53;
+  } = _ref57;
   const popoverProps = usePortalPopoverProps();
   const refPopoverTimeout = react.useRef();
   const [popoverVisible, setPopoverVisible] = react.useState(false);
@@ -8016,11 +8140,11 @@ const ButtonAssetCopy = _ref53 => {
     })
   });
 };
-const Row = _ref54 => {
+const Row = _ref58 => {
   let {
     label,
     value
-  } = _ref54;
+  } = _ref58;
   return /* @__PURE__ */jsxRuntime.jsxs(ui.Flex, {
     justify: "space-between",
     children: [/* @__PURE__ */jsxRuntime.jsx(ui.Text, {
@@ -8131,11 +8255,11 @@ const Dialog = props => {
     }
   });
 };
-const DocumentList = _ref55 => {
+const DocumentList = _ref59 => {
   let {
     documents,
     isLoading
-  } = _ref55;
+  } = _ref59;
   const schema = sanity.useSchema();
   if (isLoading) {
     return /* @__PURE__ */jsxRuntime.jsx(ui.Text, {
@@ -8207,10 +8331,10 @@ var __template$f = (cooked, raw) => __freeze$f(__defProp$g(cooked, "raw", {
   value: __freeze$f(raw || cooked.slice())
 }));
 var _a$f;
-const Container = styled__default.default(ui.Box)(_ref56 => {
+const Container = styled__default.default(ui.Box)(_ref60 => {
   let {
     theme
-  } = _ref56;
+  } = _ref60;
   var _a2, _b, _c;
   return styled.css(_a$f || (_a$f = __template$f(["\n    text {\n      font-family: ", " !important;\n      font-size: 8px !important;\n      font-weight: 500 !important;\n    }\n  "])), (_c = (_b = (_a2 = theme == null ? void 0 : theme.sanity) == null ? void 0 : _a2.fonts) == null ? void 0 : _b.text) == null ? void 0 : _c.family);
 });
@@ -8279,10 +8403,10 @@ const {
 } = ui.studioTheme;
 const reactSelectStyles = scheme => {
   return {
-    control: (styles, _ref57) => {
+    control: (styles, _ref61) => {
       let {
         isFocused
-      } = _ref57;
+      } = _ref61;
       let boxShadow = "inset 0 0 0 1px var(--card-border-color)";
       if (isFocused) {
         boxShadow = "inset 0 0 0 1px ".concat(getSchemeColor(scheme, "inputEnabledBorder"), ",\n        0 0 0 1px var(--card-bg-color),\n        0 0 0 3px var(--card-focus-ring-color) !important");
@@ -8304,10 +8428,10 @@ const reactSelectStyles = scheme => {
         }
       };
     },
-    indicatorsContainer: (styles, _ref58) => {
+    indicatorsContainer: (styles, _ref62) => {
       let {
         isDisabled
-      } = _ref58;
+      } = _ref62;
       return {
         ...styles,
         opacity: isDisabled ? 0.25 : 1
@@ -8323,10 +8447,10 @@ const reactSelectStyles = scheme => {
       ...styles,
       position: "relative"
     }),
-    multiValue: (styles, _ref59) => {
+    multiValue: (styles, _ref63) => {
       let {
         isDisabled
-      } = _ref59;
+      } = _ref63;
       return {
         ...styles,
         backgroundColor: getSchemeColor(scheme, "mutedHoveredBg"),
@@ -8359,10 +8483,10 @@ const reactSelectStyles = scheme => {
       fontFamily: ui.studioTheme.fonts.text.family,
       lineHeight: "1em"
     }),
-    option: (styles, _ref60) => {
+    option: (styles, _ref64) => {
       let {
         isFocused
-      } = _ref60;
+      } = _ref64;
       return {
         ...styles,
         zIndex: 13,
@@ -8483,10 +8607,10 @@ const reactSelectComponents = {
   MultiValueRemove,
   Option
 };
-const StyledErrorOutlineIcon = styled__default.default(ErrorOutlineIcon)(_ref61 => {
+const StyledErrorOutlineIcon = styled__default.default(ErrorOutlineIcon)(_ref65 => {
   let {
     theme
-  } = _ref61;
+  } = _ref65;
   var _a, _b, _c, _d;
   return {
     color: (_d = (_c = (_b = (_a = theme == null ? void 0 : theme.sanity) == null ? void 0 : _a.color) == null ? void 0 : _b.spot) == null ? void 0 : _c.red) != null ? _d : "red"
@@ -8574,10 +8698,10 @@ const FormFieldInputTags = props => {
       control,
       defaultValue: value,
       name,
-      render: _ref62 => {
+      render: _ref66 => {
         let {
           field
-        } = _ref62;
+        } = _ref66;
         const {
           onBlur,
           onChange,
@@ -8748,10 +8872,10 @@ const FormFieldInputSeasons = props => {
       control,
       defaultValue: value,
       name,
-      render: _ref63 => {
+      render: _ref67 => {
         let {
           field
-        } = _ref63;
+        } = _ref67;
         const {
           onBlur,
           onChange,
@@ -9028,10 +9152,10 @@ const FormFieldInputCollaborations = props => {
       control,
       defaultValue: value,
       name,
-      render: _ref64 => {
+      render: _ref68 => {
         let {
           field
-        } = _ref64;
+        } = _ref68;
         const {
           onBlur,
           onChange,
@@ -9173,12 +9297,12 @@ const collaborationSlice = toolkit.createSlice({
     }
   }
 });
-const collaborationFetchEpic = (action$, state$, _ref65) => {
+const collaborationFetchEpic = (action$, state$, _ref69) => {
   let {
     client
-  } = _ref65;
-  return action$.pipe(operators$1.filter(collaborationSlice.actions.fetchRequest.match), operators$1.withLatestFrom(state$), operators$1.switchMap(_ref66 => {
-    let [action, state] = _ref66;
+  } = _ref69;
+  return action$.pipe(operators$1.filter(collaborationSlice.actions.fetchRequest.match), operators$1.withLatestFrom(state$), operators$1.switchMap(_ref70 => {
+    let [action, state] = _ref70;
     const {
       query
     } = action.payload;
@@ -9203,12 +9327,12 @@ const collaborationFetchEpic = (action$, state$, _ref65) => {
     }))));
   }));
 };
-const collaborationsCreateEpic = (action$, state$, _ref67) => {
+const collaborationsCreateEpic = (action$, state$, _ref71) => {
   let {
     client
-  } = _ref67;
-  return action$.pipe(operators$1.filter(collaborationSlice.actions.createRequest.match), operators$1.withLatestFrom(state$), operators$1.mergeMap(_ref68 => {
-    let [action, state] = _ref68;
+  } = _ref71;
+  return action$.pipe(operators$1.filter(collaborationSlice.actions.createRequest.match), operators$1.withLatestFrom(state$), operators$1.mergeMap(_ref72 => {
+    let [action, state] = _ref72;
     const {
       name
     } = action.payload;
@@ -9456,11 +9580,11 @@ const DialogAssetEdit = props => {
         children: /* @__PURE__ */jsxRuntime.jsx(sanity.WithReferringDocuments, {
           documentStore,
           id: currentAsset._id,
-          children: _ref69 => {
+          children: _ref73 => {
             let {
               isLoading,
               referringDocuments
-            } = _ref69;
+            } = _ref73;
             var _a3, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
             const uniqueReferringDocuments = getUniqueDocuments(referringDocuments);
             return /* @__PURE__ */jsxRuntime.jsxs(jsxRuntime.Fragment, {
@@ -10117,11 +10241,11 @@ const Tag = props => {
     })]
   });
 };
-const VirtualRow$2 = react.memo(_ref70 => {
+const VirtualRow$2 = react.memo(_ref74 => {
   let {
     isScrolling,
     item
-  } = _ref70;
+  } = _ref74;
   var _a;
   if (typeof item === "string") {
     return /* @__PURE__ */jsxRuntime.jsx(ui.Flex, {
@@ -10227,12 +10351,12 @@ const TagsVirtualized = () => {
     totalCount: items.length
   });
 };
-const TagViewHeader = _ref71 => {
+const TagViewHeader = _ref75 => {
   let {
     allowCreate,
     light,
     title
-  } = _ref71;
+  } = _ref75;
   const {
     scheme
   } = sanity.useColorScheme();
@@ -10660,7 +10784,8 @@ const DialogSeasonEdit = props => {
       tag: seasonItem == null ? void 0 : seasonItem.season
     }));
   };
-  const handleTagUpdate = react.useCallback(update => {
+  const handleSeasonUpdate = react.useCallback(update => {
+    var _a3;
     const {
       result,
       transition
@@ -10668,6 +10793,9 @@ const DialogSeasonEdit = props => {
     if (result && transition === "update") {
       setSeasonSnapshot(result);
       reset(generateDefaultValues(result));
+      dispatch(dialogActions.remove({
+        id: (_a3 = seasonItem == null ? void 0 : seasonItem.season) == null ? void 0 : _a3._id
+      }));
     }
   }, [reset]);
   react.useEffect(() => {
@@ -10684,11 +10812,11 @@ const DialogSeasonEdit = props => {
     }
     const subscriptionAsset = client.listen(groq__default.default(_a$9 || (_a$9 = __template$9(["*[_id == $id]"]))), {
       id: seasonItem == null ? void 0 : seasonItem.season._id
-    }).subscribe(handleTagUpdate);
+    }).subscribe(handleSeasonUpdate);
     return () => {
       subscriptionAsset == null ? void 0 : subscriptionAsset.unsubscribe();
     };
-  }, [client, handleTagUpdate, seasonItem == null ? void 0 : seasonItem.season]);
+  }, [client, handleSeasonUpdate, seasonItem == null ? void 0 : seasonItem.season]);
   const Footer = () => {
     var _a3;
     return /* @__PURE__ */jsxRuntime.jsx(ui.Box, {
@@ -10750,6 +10878,89 @@ const DialogSeasonEdit = props => {
     }), children]
   });
 };
+const DialogSeasonCreate = props => {
+  var _a;
+  const {
+    children,
+    dialog: {
+      id
+    }
+  } = props;
+  const dispatch = reactRedux.useDispatch();
+  const creating = useTypedSelector(state => state.seasons.creating);
+  const creatingError = useTypedSelector(state => state.seasons.creatingError);
+  const {
+    // Read the formState before render to subscribe the form state through Proxy
+    formState: {
+      errors,
+      isDirty,
+      isValid
+    },
+    handleSubmit,
+    register,
+    setError
+  } = reactHookForm.useForm({
+    defaultValues: {
+      name: ""
+    },
+    mode: "onChange",
+    resolver: zod.zodResolver(tagFormSchema)
+  });
+  const formUpdating = creating;
+  const handleClose = () => {
+    dispatch(dialogActions.clear());
+  };
+  const onSubmit = formData => {
+    const sanitizedFormData = sanitizeFormData(formData);
+    dispatch(seasonActions.createRequest({
+      name: sanitizedFormData.name
+    }));
+    dispatch(dialogActions.clear());
+  };
+  react.useEffect(() => {
+    if (creatingError) {
+      setError("name", {
+        message: creatingError == null ? void 0 : creatingError.message
+      });
+    }
+  }, [creatingError, setError]);
+  const Footer = () => /* @__PURE__ */jsxRuntime.jsx(ui.Box, {
+    padding: 3,
+    children: /* @__PURE__ */jsxRuntime.jsx(ui.Flex, {
+      justify: "flex-end",
+      children: /* @__PURE__ */jsxRuntime.jsx(FormSubmitButton, {
+        disabled: formUpdating || !isDirty || !isValid,
+        isValid,
+        onClick: handleSubmit(onSubmit)
+      })
+    })
+  });
+  return /* @__PURE__ */jsxRuntime.jsxs(Dialog, {
+    footer: /* @__PURE__ */jsxRuntime.jsx(Footer, {}),
+    header: "Create Season",
+    id,
+    onClose: handleClose,
+    width: 1,
+    children: [/* @__PURE__ */jsxRuntime.jsxs(ui.Box, {
+      as: "form",
+      padding: 4,
+      onSubmit: handleSubmit(onSubmit),
+      children: [/* @__PURE__ */jsxRuntime.jsx("button", {
+        style: {
+          display: "none"
+        },
+        tabIndex: -1,
+        type: "submit"
+      }), /* @__PURE__ */jsxRuntime.jsx(FormFieldInputText, {
+        ...register("name"),
+        disabled: formUpdating,
+        error: (_a = errors == null ? void 0 : errors.name) == null ? void 0 : _a.message,
+        label: "Name",
+        name: "name"
+      })]
+    }), children]
+  });
+};
 const Dialogs = () => {
   const currentDialogs = useTypedSelector(state => state.dialog.items);
   const renderDialogs = (dialogs, index) => {
@@ -10784,6 +10995,12 @@ const Dialogs = () => {
     }
     if (dialog.type === "tagCreate") {
       return /* @__PURE__ */jsxRuntime.jsx(DialogTagCreate, {
+        dialog,
+        children: childDialogs
+      }, index);
+    }
+    if (dialog.type === "seasonCreate") {
+      return /* @__PURE__ */jsxRuntime.jsx(DialogSeasonCreate, {
         dialog,
         children: childDialogs
       }, index);
@@ -10954,25 +11171,25 @@ var __template$8 = (cooked, raw) => __freeze$8(__defProp$9(cooked, "raw", {
 }));
 var _a$8, _b$5, _c$1, _d;
 const CardWrapper$1 = styled__default.default(ui.Flex)(_a$8 || (_a$8 = __template$8(["\n  box-sizing: border-box;\n  height: 100%;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n"])));
-const CardContainer = styled__default.default(ui.Flex)(_ref72 => {
+const CardContainer = styled__default.default(ui.Flex)(_ref76 => {
   let {
     picked,
     theme,
     updating
-  } = _ref72;
+  } = _ref76;
   var _a2, _b2, _c2, _d2;
   return styled.css(_c$1 || (_c$1 = __template$8(["\n      border: 1px solid transparent;\n      height: 100%;\n      pointer-events: ", ";\n      position: relative;\n      transition: all 300ms;\n      user-select: none;\n      width: 100%;\n\n      border: ", ";\n\n      ", "\n    "])), updating ? "none" : "auto", picked ? "1px solid ".concat((_d2 = (_c2 = (_b2 = (_a2 = theme == null ? void 0 : theme.sanity) == null ? void 0 : _a2.color) == null ? void 0 : _b2.spot) == null ? void 0 : _c2.orange) != null ? _d2 : "orange", " !important") : "1px solid inherit", !updating && styled.css(_b$5 || (_b$5 = __template$8(["\n        @media (hover: hover) and (pointer: fine) {\n          &:hover {\n            border: 1px solid var(--card-border-color);\n          }\n        }\n      "]))));
 });
-const ContextActionContainer$2 = styled__default.default(ui.Flex)(_ref73 => {
+const ContextActionContainer$2 = styled__default.default(ui.Flex)(_ref77 => {
   let {
     scheme
-  } = _ref73;
+  } = _ref77;
   return styled.css(_d || (_d = __template$8(["\n    cursor: pointer;\n    height: ", "px;\n    transition: all 300ms;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), PANEL_HEIGHT, getSchemeColor(scheme, "bg"));
 });
-const StyledWarningOutlineIcon = styled__default.default(WarningFilledIcon)(_ref74 => {
+const StyledWarningOutlineIcon = styled__default.default(WarningFilledIcon)(_ref78 => {
   let {
     theme
-  } = _ref74;
+  } = _ref78;
   return {
     color: theme.sanity.color.spot.red
   };
@@ -11406,10 +11623,10 @@ const uploadsSlice = toolkit.createSlice({
     }
   }
 });
-const uploadsAssetStartEpic = (action$, _state$, _ref75) => {
+const uploadsAssetStartEpic = (action$, _state$, _ref79) => {
   let {
     client
-  } = _ref75;
+  } = _ref79;
   return action$.pipe(operators$1.filter(uploadsActions.uploadStart.match), operators$1.mergeMap(action => {
     const {
       file,
@@ -11448,8 +11665,8 @@ const uploadsAssetStartEpic = (action$, _state$, _ref75) => {
     })))));
   }));
 };
-const uploadsAssetUploadEpic = (action$, state$) => action$.pipe(operators$1.filter(uploadsActions.uploadRequest.match), operators$1.withLatestFrom(state$), operators$1.mergeMap(_ref76 => {
-  let [action, state] = _ref76;
+const uploadsAssetUploadEpic = (action$, state$) => action$.pipe(operators$1.filter(uploadsActions.uploadRequest.match), operators$1.withLatestFrom(state$), operators$1.mergeMap(_ref80 => {
+  let [action, state] = _ref80;
   const {
     file,
     forceAsAssetType
@@ -11485,12 +11702,12 @@ const uploadsCompleteQueueEpic = action$ => action$.pipe(operators$1.filter(UPLO
     assets: [action.payload.asset]
   }));
 }));
-const uploadsCheckRequestEpic = (action$, state$, _ref77) => {
+const uploadsCheckRequestEpic = (action$, state$, _ref81) => {
   let {
     client
-  } = _ref77;
-  return action$.pipe(operators$1.filter(uploadsActions.checkRequest.match), operators$1.withLatestFrom(state$), operators$1.mergeMap(_ref78 => {
-    let [action, state] = _ref78;
+  } = _ref81;
+  return action$.pipe(operators$1.filter(uploadsActions.checkRequest.match), operators$1.withLatestFrom(state$), operators$1.mergeMap(_ref82 => {
+    let [action, state] = _ref82;
     const {
       assets
     } = action.payload;
@@ -11670,11 +11887,11 @@ var __template$5 = (cooked, raw) => __freeze$5(__defProp$6(cooked, "raw", {
 var _a$5, _b$4;
 const CARD_HEIGHT = 220;
 const CARD_WIDTH = 240;
-const VirtualCell = react.memo(_ref79 => {
+const VirtualCell = react.memo(_ref83 => {
   let {
     item,
     selected
-  } = _ref79;
+  } = _ref83;
   if ((item == null ? void 0 : item.type) === "asset") {
     return /* @__PURE__ */jsxRuntime.jsx(CardAsset$1, {
       id: item.id,
@@ -11782,10 +11999,10 @@ var __template$4 = (cooked, raw) => __freeze$4(__defProp$5(cooked, "raw", {
   value: __freeze$4(raw || cooked.slice())
 }));
 var _a$4;
-const ContextActionContainer$1 = styled__default.default(ui.Flex)(_ref80 => {
+const ContextActionContainer$1 = styled__default.default(ui.Flex)(_ref84 => {
   let {
     scheme
-  } = _ref80;
+  } = _ref84;
   return styled.css(_a$4 || (_a$4 = __template$4(["\n    cursor: pointer;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), getSchemeColor(scheme, "bg"));
 });
 const TableHeader = () => {
@@ -11871,24 +12088,24 @@ var __template$3 = (cooked, raw) => __freeze$3(__defProp$4(cooked, "raw", {
 }));
 var _a$3, _b$3, _c;
 const REFERENCE_COUNT_VISIBILITY_DELAY = 750;
-const ContainerGrid = styled__default.default(ui.Grid)(_ref81 => {
+const ContainerGrid = styled__default.default(ui.Grid)(_ref85 => {
   let {
     scheme,
     selected,
     updating
-  } = _ref81;
+  } = _ref85;
   return styled.css(_b$3 || (_b$3 = __template$3(["\n      align-items: center;\n      cursor: ", ";\n      height: 100%;\n      pointer-events: ", ";\n      user-select: none;\n      white-space: nowrap;\n\n      ", "\n    "])), selected ? "default" : "pointer", updating ? "none" : "auto", !updating && styled.css(_a$3 || (_a$3 = __template$3(["\n        @media (hover: hover) and (pointer: fine) {\n          &:hover {\n            background: ", ";\n          }\n        }\n      "])), getSchemeColor(scheme, "bg")));
 });
-const ContextActionContainer = styled__default.default(ui.Flex)(_ref82 => {
+const ContextActionContainer = styled__default.default(ui.Flex)(_ref86 => {
   let {
     scheme
-  } = _ref82;
+  } = _ref86;
   return styled.css(_c || (_c = __template$3(["\n    cursor: pointer;\n    @media (hover: hover) and (pointer: fine) {\n      &:hover {\n        background: ", ";\n      }\n    }\n  "])), getSchemeColor(scheme, "bg2"));
 });
-const StyledWarningIcon = styled__default.default(WarningFilledIcon)(_ref83 => {
+const StyledWarningIcon = styled__default.default(WarningFilledIcon)(_ref87 => {
   let {
     theme
-  } = _ref83;
+  } = _ref87;
   return {
     color: theme.sanity.color.spot.red
   };
@@ -12172,11 +12389,11 @@ const TableRowAsset = props => {
         textOverflow: "ellipsis",
         children: referenceCountVisible ? /* @__PURE__ */jsxRuntime.jsx(sanity.WithReferringDocuments, {
           id,
-          children: _ref84 => {
+          children: _ref88 => {
             let {
               isLoading,
               referringDocuments
-            } = _ref84;
+            } = _ref88;
             const uniqueDocuments = getUniqueDocuments(referringDocuments);
             return isLoading ? /* @__PURE__ */jsxRuntime.jsx(jsxRuntime.Fragment, {
               children: "-"
@@ -12356,11 +12573,11 @@ const TableRowUpload = props => {
     })]
   });
 };
-const VirtualRow$1 = react.memo(_ref85 => {
+const VirtualRow$1 = react.memo(_ref89 => {
   let {
     item,
     selected
-  } = _ref85;
+  } = _ref89;
   if ((item == null ? void 0 : item.type) === "asset") {
     return /* @__PURE__ */jsxRuntime.jsx(ui.Box, {
       style: {
@@ -12662,7 +12879,7 @@ const notificationsTagUpdateCompleteEpic = action$ => action$.pipe(operators$1.f
 }))));
 const notificationsActions = notificationsSlice.actions;
 var notificationsReducer = notificationsSlice.reducer;
-const rootEpic = reduxObservable.combineEpics(assetsDeleteEpic, assetsFetchEpic, assetsFetchAfterDeleteAllEpic, assetsFetchNextPageEpic, assetsFetchPageIndexEpic, assetsListenerCreateQueueEpic, assetsListenerDeleteQueueEpic, assetsListenerUpdateQueueEpic, assetsOrderSetEpic, assetsSearchEpic, assetsSortEpic, assetsTagsAddEpic, assetsTagsRemoveEpic, assetsUnpickEpic, assetsUpdateEpic, assetsMassUpdateEpic, dialogClearOnAssetUpdateEpic, dialogTagCreateEpic, dialogTagDeleteEpic, notificationsAssetsDeleteErrorEpic, notificationsAssetsDeleteCompleteEpic, notificationsAssetsTagsAddCompleteEpic, notificationsAssetsTagsRemoveCompleteEpic, notificationsAssetsUpdateCompleteEpic, notificationsGenericErrorEpic, notificationsTagCreateCompleteEpic, notificationsTagDeleteCompleteEpic, notificationsTagUpdateCompleteEpic, searchFacetTagUpdateEpic, tagsCreateEpic, tagsDeleteEpic, tagsFetchEpic, tagsListenerCreateQueueEpic, tagsListenerDeleteQueueEpic, tagsListenerUpdateQueueEpic, tagsSortEpic, tagsUpdateEpic, uploadsAssetStartEpic, uploadsAssetUploadEpic, uploadsCheckRequestEpic, uploadsCompleteQueueEpic, seasonsCreateEpic, seasonsFetchEpic, collaborationFetchEpic, collaborationsCreateEpic);
+const rootEpic = reduxObservable.combineEpics(assetsDeleteEpic, assetsFetchEpic, assetsFetchAfterDeleteAllEpic, assetsFetchNextPageEpic, assetsFetchPageIndexEpic, assetsListenerCreateQueueEpic, assetsListenerDeleteQueueEpic, assetsListenerUpdateQueueEpic, assetsOrderSetEpic, assetsSearchEpic, assetsSortEpic, assetsTagsAddEpic, assetsTagsRemoveEpic, assetsUnpickEpic, assetsUpdateEpic, assetsMassUpdateEpic, dialogClearOnAssetUpdateEpic, dialogTagCreateEpic, dialogTagDeleteEpic, notificationsAssetsDeleteErrorEpic, notificationsAssetsDeleteCompleteEpic, notificationsAssetsTagsAddCompleteEpic, notificationsAssetsTagsRemoveCompleteEpic, notificationsAssetsUpdateCompleteEpic, notificationsGenericErrorEpic, notificationsTagCreateCompleteEpic, notificationsTagDeleteCompleteEpic, notificationsTagUpdateCompleteEpic, searchFacetTagUpdateEpic, tagsCreateEpic, tagsDeleteEpic, tagsFetchEpic, tagsListenerCreateQueueEpic, tagsListenerDeleteQueueEpic, tagsListenerUpdateQueueEpic, tagsSortEpic, tagsUpdateEpic, uploadsAssetStartEpic, uploadsAssetUploadEpic, uploadsCheckRequestEpic, uploadsCompleteQueueEpic, seasonsCreateEpic, seasonsUpdateEpic, seasonsDeleteEpic, seasonsFetchEpic, collaborationFetchEpic, collaborationsCreateEpic);
 const reducers = {
   assets: assetsReducer,
   seasons: seasonsReducer,
@@ -13014,11 +13231,11 @@ const Season = props => {
     })]
   });
 };
-const VirtualRow = react.memo(_ref86 => {
+const VirtualRow = react.memo(_ref90 => {
   let {
     isScrolling,
     item
-  } = _ref86;
+  } = _ref90;
   var _a;
   if (typeof item === "string") {
     return /* @__PURE__ */jsxRuntime.jsx(ui.Flex, {
@@ -13122,6 +13339,61 @@ const SeasonsVirtualized = () => {
     totalCount: items.length
   });
 };
+const SeasonViewHeader = _ref91 => {
+  let {
+    allowCreate,
+    light,
+    title
+  } = _ref91;
+  const {
+    scheme
+  } = sanity.useColorScheme();
+  const dispatch = reactRedux.useDispatch();
+  const tagsCreating = useTypedSelector(state => state.seasons.creating);
+  const tagsFetching = useTypedSelector(state => state.seasons.fetching);
+  const handleTagCreate = () => {
+    dispatch(DIALOG_ACTIONS.showSeasonCreate());
+  };
+  return /* @__PURE__ */jsxRuntime.jsx(jsxRuntime.Fragment, {
+    children: /* @__PURE__ */jsxRuntime.jsxs(ui.Flex, {
+      align: "center",
+      justify: "space-between",
+      paddingLeft: 3,
+      style: {
+        background: light ? getSchemeColor(scheme, "bg") : "inherit",
+        borderBottom: "1px solid var(--card-border-color)",
+        flexShrink: 0,
+        height: "".concat(PANEL_HEIGHT, "px")
+      },
+      children: [/* @__PURE__ */jsxRuntime.jsxs(ui.Inline, {
+        space: 2,
+        children: [/* @__PURE__ */jsxRuntime.jsx(ui.Label, {
+          size: 0,
+          children: title
+        }), tagsFetching && /* @__PURE__ */jsxRuntime.jsx(ui.Label, {
+          size: 0,
+          style: {
+            opacity: 0.3
+          },
+          children: "Loading..."
+        })]
+      }), allowCreate && /* @__PURE__ */jsxRuntime.jsx(ui.Box, {
+        marginRight: 1,
+        children: /* @__PURE__ */jsxRuntime.jsx(ui.Button, {
+          disabled: tagsCreating,
+          fontSize: 1,
+          icon: ComposeIcon,
+          mode: "bleed",
+          onClick: handleTagCreate,
+          style: {
+            background: "transparent",
+            boxShadow: "none"
+          }
+        })
+      })]
+    })
+  });
+};
 const SeasonView = () => {
   const numPickedAssets = useTypedSelector(selectAssetsPickedLength);
   const seasons = useTypedSelector(selectSeasons);
@@ -13134,7 +13406,7 @@ const SeasonView = () => {
     direction: "column",
     flex: 1,
     height: "fill",
-    children: [/* @__PURE__ */jsxRuntime.jsx(TagViewHeader, {
+    children: [/* @__PURE__ */jsxRuntime.jsx(SeasonViewHeader, {
       allowCreate: true,
       light: hasPicked,
       title: hasPicked ? "Seasons (in selection)" : "Seasons"
@@ -13182,10 +13454,10 @@ var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", {
   value: __freeze(raw || cooked.slice())
 }));
 var _a, _b;
-const BrowserContent = _ref87 => {
+const BrowserContent = _ref92 => {
   let {
     onClose
-  } = _ref87;
+  } = _ref92;
   const client = useVersionedClient();
   const [portalElement, setPortalElement] = react.useState(null);
   const dispatch = reactRedux.useDispatch();

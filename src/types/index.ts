@@ -86,6 +86,7 @@ export type Dialog =
   | DialogConfirmProps
   | DialogSearchFacetsProps
   | DialogTagCreateProps
+  | DialogSeasonCreateProps
   | DialogTagEditProps
   | DialogTagsProps
   | DialogMassAssetEditProps
@@ -151,6 +152,12 @@ export type DialogTagCreateProps = {
   closeDialogId?: string
   id: string
   type: 'tagCreate'
+}
+
+export type DialogSeasonCreateProps = {
+  closeDialogId?: string
+  id: string
+  type: 'seasonCreate'
 }
 
 export type DialogTagEditProps = {

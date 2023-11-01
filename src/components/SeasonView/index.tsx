@@ -3,8 +3,8 @@ import React from 'react'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPickedLength} from '../../modules/assets'
 import {selectSeasons} from '../../modules/seasons'
-import TagViewHeader from '../TagViewHeader'
 import SeasonsVirtualized from '../SeasonsVirtualized'
+import SeasonViewHeader from '../SeasonViewHeader'
 
 const SeasonView = () => {
   const numPickedAssets = useTypedSelector(selectAssetsPickedLength)
@@ -17,7 +17,7 @@ const SeasonView = () => {
 
   return (
     <Flex direction="column" flex={1} height="fill">
-      <TagViewHeader
+      <SeasonViewHeader
         allowCreate
         light={hasPicked}
         title={hasPicked ? 'Seasons (in selection)' : 'Seasons'}

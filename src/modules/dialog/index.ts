@@ -28,6 +28,12 @@ const dialogSlice = createSlice({
         type: 'tagCreate'
       })
     })
+    builder.addCase(DIALOG_ACTIONS.showSeasonCreate, state => {
+      state.items.push({
+        id: 'seasonCreate',
+        type: 'seasonCreate'
+      })
+    })
     builder.addCase(DIALOG_ACTIONS.showMassEdit, state => {
       state.items.push({
         id: 'massEdit',
@@ -227,7 +233,7 @@ const dialogSlice = createSlice({
     ) {
       const {closeDialogId, season} = action.payload
 
-      const suffix = 'tag'
+      const suffix = 'season'
 
       state.items.push({
         closeDialogId,

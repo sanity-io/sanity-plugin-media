@@ -1,12 +1,14 @@
 import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ClientError, SanityDocument} from '@sanity/client'
+import {ClientError, SanityDocument, Transaction} from '@sanity/client'
 import {HttpError, MyEpic} from '@types'
-import {bufferTime, catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
-import {of} from 'rxjs'
 import debugThrottle from '../../operators/debugThrottle'
 import {SEASONS_DOCUMENT_NAME} from '../../constants'
 import {RootReducerState} from '../types'
 import groq from 'groq'
+import {checkSeasonName} from '../../operators/checkTagName'
+import {from, Observable, of} from 'rxjs'
+import {bufferTime, catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
+import {Asset} from '../../types'
 
 type SeasonReducerState = {
   creating: boolean
@@ -163,7 +165,7 @@ const seasonsSlice = createSlice({
       const {season} = action.payload
       state.byIds[season?._id].updating = true
     },
-    updateComplete(state, action: PayloadAction<{season: Season}>) {
+    updateComplete(state, action: PayloadAction<{season: Season; closeDialogId?: string}>) {
       const {season} = action.payload
       state.byIds[season._id].updating = false
       state.byIds[season._id].season = season
@@ -183,6 +185,21 @@ const seasonsSlice = createSlice({
       Object.keys(state.byIds).forEach(key => {
         delete state.byIds[key].error
       })
+    },
+    deleteComplete(state, action: PayloadAction<{seasonId: string}>) {
+      const {seasonId} = action.payload
+      const deleteIndex = state.allIds.indexOf(seasonId)
+      if (deleteIndex >= 0) {
+        state.allIds.splice(deleteIndex, 1)
+      }
+      delete state.byIds[seasonId]
+    },
+    deleteError(state, action: PayloadAction<{error: HttpError; season: Season}>) {
+      const {error, season} = action.payload
+
+      const seasonId = season?._id
+      state.byIds[seasonId].error = error
+      state.byIds[seasonId].updating = false
     },
     // Set tag panel visibility
     panelVisibleSet(state, action: PayloadAction<{panelVisible: boolean}>) {
@@ -263,6 +280,115 @@ export const seasonsCreateEpic: MyEpic = (action$, state$, {client}) =>
     })
   )
 
+// On tag update request
+// - check if tag name already exists
+// - throw if tag already exists
+// - otherwise, patch document
+export const seasonsUpdateEpic: MyEpic = (action$, state$, {client}) =>
+  action$.pipe(
+    filter(seasonsSlice.actions.updateSeasonItemRequest.match),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {closeDialogId, formData, season} = action.payload
+
+      return of(action).pipe(
+        // Optionally throttle
+        debugThrottle(state.debug.badConnection),
+        // Check if tag name is available, throw early if not
+        checkSeasonName(client, formData?.name?.current),
+        // Patch document (Update tag)
+        mergeMap(
+          () =>
+            from(
+              client
+                .patch(season._id)
+                .set({name: {_type: 'slug', current: formData?.name.current}})
+                .commit()
+            ) as Observable<Season>
+        ),
+        // Dispatch complete action
+        mergeMap((updatedSeason: Season) => {
+          return of(
+            seasonsSlice.actions.updateComplete({
+              closeDialogId,
+              season: updatedSeason
+            })
+          )
+        }),
+        catchError((error: ClientError) =>
+          of(
+            seasonsSlice.actions.updateError({
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              season: season
+            })
+          )
+        )
+      )
+    })
+  )
+
+export const seasonsDeleteEpic: MyEpic = (action$, state$, {client}) =>
+  action$.pipe(
+    filter(seasonActions.deleteRequest.match),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {season} = action.payload
+      return of(action).pipe(
+        // Optionally throttle
+        debugThrottle(state.debug.badConnection),
+        // Fetch assets which reference this tag
+        mergeMap(() =>
+          client.observable.fetch<Asset[]>(
+            groq`*[
+              _type in ["sanity.fileAsset", "sanity.imageAsset"]
+              && references(*[_type == "season" && name.current == $seasonName]._id)
+            ] {
+              _id,
+              _rev,
+              opt
+            }`,
+            {seasonName: season.name.current}
+          )
+        ),
+        // Create transaction which remove tag references from all matched assets and delete tag
+        mergeMap(assets => {
+          const patches = assets.map(asset => ({
+            id: asset._id,
+            patch: {
+              // this will cause the transaction to fail if the document has been modified since it was fetched.
+              ifRevisionID: asset._rev,
+              unset: [`season[_ref == "${season._id}"]`]
+            }
+          }))
+
+          const transaction: Transaction = patches.reduce(
+            (tx, patch) => tx.patch(patch.id, patch.patch),
+            client.transaction()
+          )
+
+          transaction.delete(season._id)
+
+          return from(transaction.commit())
+        }),
+        // Dispatch complete action
+        mergeMap(() => of(seasonsSlice.actions.deleteComplete({seasonId: season._id}))),
+        catchError((error: ClientError) =>
+          of(
+            seasonsSlice.actions.deleteError({
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              season
+            })
+          )
+        )
+      )
+    })
+  )
 // Buffer tag creation via sanity subscriber
 export const seasonsListenerCreateQueueEpic: MyEpic = action$ =>
   action$.pipe(

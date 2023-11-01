@@ -60,7 +60,12 @@ import uploadsReducer, {
   uploadsCompleteQueueEpic
 } from './uploads'
 
-import seasonsReducer, {seasonsCreateEpic, seasonsFetchEpic} from './seasons'
+import seasonsReducer, {
+  seasonsCreateEpic,
+  seasonsDeleteEpic,
+  seasonsFetchEpic,
+  seasonsUpdateEpic
+} from './seasons'
 import collaborationsReducer, {
   collaborationFetchEpic,
   collaborationsCreateEpic
@@ -109,6 +114,8 @@ export const rootEpic = combineEpics(
   uploadsCheckRequestEpic,
   uploadsCompleteQueueEpic,
   seasonsCreateEpic,
+  seasonsUpdateEpic,
+  seasonsDeleteEpic,
   seasonsFetchEpic,
   collaborationFetchEpic,
   collaborationsCreateEpic
