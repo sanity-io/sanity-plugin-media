@@ -280,9 +280,9 @@ export const seasonsCreateEpic: MyEpic = (action$, state$, {client}) =>
     })
   )
 
-// On tag update request
-// - check if tag name already exists
-// - throw if tag already exists
+// On season update request
+// - check if season name already exists
+// - throw if season already exists
 // - otherwise, patch document
 export const seasonsUpdateEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(

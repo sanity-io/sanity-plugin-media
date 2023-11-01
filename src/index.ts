@@ -4,6 +4,8 @@ import type {AssetSource} from 'sanity'
 import FormBuilderTool from './components/FormBuilderTool'
 import Tool from './components/Tool'
 import mediaTag from './schemas/tag'
+import mediaSeason from './schemas/season'
+import mediaCollaboration from './schemas/collaborations'
 
 const plugin = {
   icon: ImageIcon,
@@ -36,7 +38,7 @@ export const media = definePlugin({
     }
   },
   schema: {
-    types: [mediaTag]
+    types: [mediaTag, mediaSeason, mediaCollaboration]
   },
   tools: prev => {
     return [...prev, tool]

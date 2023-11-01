@@ -68,7 +68,9 @@ import seasonsReducer, {
 } from './seasons'
 import collaborationsReducer, {
   collaborationFetchEpic,
-  collaborationsCreateEpic
+  collaborationUpdateEpic,
+  collaborationsCreateEpic,
+  collaborationsDeleteEpic
 } from './collaborations'
 
 export const rootEpic = combineEpics(
@@ -118,7 +120,9 @@ export const rootEpic = combineEpics(
   seasonsDeleteEpic,
   seasonsFetchEpic,
   collaborationFetchEpic,
-  collaborationsCreateEpic
+  collaborationsCreateEpic,
+  collaborationUpdateEpic,
+  collaborationsDeleteEpic
 )
 
 const reducers = {

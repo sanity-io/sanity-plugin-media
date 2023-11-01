@@ -1,12 +1,11 @@
-import {TAG_DOCUMENT_NAME} from '../constants'
+import {COLLABORATION_DOCUMENT_NAME} from '../constants'
 import TagIcon from '../components/TagIcon'
 
 export default {
-  title: 'Media Tag',
+  title: 'Media Collaboration',
   icon: TagIcon,
-  name: TAG_DOCUMENT_NAME,
+  name: COLLABORATION_DOCUMENT_NAME,
   type: 'object',
-  hidden: true,
   fields: [
     {
       title: 'Name',

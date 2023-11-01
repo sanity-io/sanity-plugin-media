@@ -1,6 +1,7 @@
 import {createAction} from '@reduxjs/toolkit'
 import {AssetItem, HttpError, Tag} from '../../types'
 import {Season} from '../seasons'
+import {Collaboration} from '../collaborations'
 
 export const ASSETS_ACTIONS = {
   tagsAddComplete: createAction(
@@ -19,12 +20,6 @@ export const ASSETS_ACTIONS = {
     'actions/tagsAddRequest',
     function prepare({assets, tag}: {assets: AssetItem[]; tag: Tag}) {
       return {payload: {assets, tag}}
-    }
-  ),
-  seasonsAddRequest: createAction(
-    'actions/seasonsAddRequest',
-    function prepare({assets, season}: {assets: AssetItem[]; season: Season}) {
-      return {payload: {assets, season}}
     }
   ),
   tagsRemoveComplete: createAction(
@@ -49,6 +44,24 @@ export const ASSETS_ACTIONS = {
     'actions/seasonsRemoveRequest',
     function prepare({assets, season}: {assets: AssetItem[]; season: Season}) {
       return {payload: {assets, season}}
+    }
+  ),
+  seasonsAddRequest: createAction(
+    'actions/seasonsAddRequest',
+    function prepare({assets, season}: {assets: AssetItem[]; season: Season}) {
+      return {payload: {assets, season}}
+    }
+  ),
+  collaborationsRemoveRequest: createAction(
+    'actions/collaborationsRemoveRequest',
+    function prepare({assets, collaboration}: {assets: AssetItem[]; collaboration: Collaboration}) {
+      return {payload: {assets, collaboration}}
+    }
+  ),
+  collaborationsAddRequest: createAction(
+    'actions/collaborationsAddRequest',
+    function prepare({assets, collaboration}: {assets: AssetItem[]; collaboration: Collaboration}) {
+      return {payload: {assets, collaboration}}
     }
   )
 }

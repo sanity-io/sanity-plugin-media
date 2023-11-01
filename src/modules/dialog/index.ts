@@ -9,6 +9,7 @@ import {ASSETS_ACTIONS} from '../assets/actions'
 import {tagsActions} from '../tags'
 import {DIALOG_ACTIONS} from './actions'
 import {Season, seasonActions} from '../seasons'
+import {Collaboration, collaborationActions} from '../collaborations'
 
 type DialogReducerState = {
   items: Dialog[]
@@ -54,6 +55,21 @@ const dialogSlice = createSlice({
         id: seasonId,
         seasonId,
         type: 'seasonEdit'
+      })
+    })
+    builder.addCase(DIALOG_ACTIONS.showCollaborationCreate, state => {
+      state.items.push({
+        id: 'collaborationCreate',
+        //@ts-ignore
+        type: 'collaborationCreate'
+      })
+    })
+    builder.addCase(DIALOG_ACTIONS.showCollaborationEdit, (state, action) => {
+      const {collaborationId} = action.payload
+      state.items.push({
+        id: collaborationId,
+        collaborationId,
+        type: 'collaborationEdit'
       })
     })
   },
@@ -142,6 +158,32 @@ const dialogSlice = createSlice({
         type: 'confirm'
       })
     },
+    showConfirmAssetsCollaborationsAdd(
+      state,
+      action: PayloadAction<{
+        assetsPicked: AssetItem[]
+        closeDialogId?: string
+        collaboration: Collaboration
+      }>
+    ) {
+      const {assetsPicked, closeDialogId, collaboration} = action.payload
+
+      const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: ASSETS_ACTIONS.collaborationsAddRequest({
+          assets: assetsPicked,
+          collaboration
+        }),
+        confirmText: `Yes, add collaboration to ${suffix}`,
+        title: `Add tag ${collaboration.name.current} to ${suffix}?`,
+        id: 'confirm',
+        headerTitle: 'Confirm collaboration addition',
+        tone: 'primary',
+        type: 'confirm'
+      })
+    },
     showConfirmAssetsTagRemove(
       state,
       action: PayloadAction<{
@@ -184,6 +226,32 @@ const dialogSlice = createSlice({
         headerTitle: 'Confirm season removal',
         id: 'confirm',
         title: `Remove season ${season.name.current} from ${suffix}?`,
+        tone: 'critical',
+        type: 'confirm'
+      })
+    },
+    showConfirmAssetsCollaborationRemove(
+      state,
+      action: PayloadAction<{
+        assetsPicked: AssetItem[]
+        closeDialogId?: string
+        collaboration: Collaboration
+      }>
+    ) {
+      const {assetsPicked, closeDialogId, collaboration} = action.payload
+
+      const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: ASSETS_ACTIONS.collaborationsRemoveRequest({
+          assets: assetsPicked,
+          collaboration
+        }),
+        confirmText: `Yes, remove collaboration from ${suffix}`,
+        headerTitle: 'Confirm collaboration removal',
+        id: 'confirm',
+        title: `Remove collaboration ${collaboration.name.current} from ${suffix}?`,
         tone: 'critical',
         type: 'confirm'
       })
@@ -238,6 +306,26 @@ const dialogSlice = createSlice({
       state.items.push({
         closeDialogId,
         confirmCallbackAction: seasonActions.deleteRequest({season}),
+        confirmText: `Yes, delete ${suffix}`,
+        description: 'This operation cannot be reversed. Are you sure you want to continue?',
+        title: `Permanently delete ${suffix}?`,
+        id: 'confirm',
+        headerTitle: 'Confirm deletion',
+        tone: 'critical',
+        type: 'confirm'
+      })
+    },
+    showConfirmDeleteCollaboration(
+      state,
+      action: PayloadAction<{closeDialogId?: string; collaboration: Collaboration}>
+    ) {
+      const {closeDialogId, collaboration} = action.payload
+
+      const suffix = 'collaboration'
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: collaborationActions.deleteRequest({collaboration: collaboration}),
         confirmText: `Yes, delete ${suffix}`,
         description: 'This operation cannot be reversed. Are you sure you want to continue?',
         title: `Permanently delete ${suffix}?`,

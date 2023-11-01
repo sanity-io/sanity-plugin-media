@@ -10,6 +10,7 @@ import DialogTags from '../DialogTags'
 import DialogMassAssetEdit from '../DialogMassAssetEdit'
 import DialogSeasonEdit from '../DialogSeasonEdit'
 import DialogSeasonCreate from '../DialogSeasonCreate'
+import DialogCollaborationEdit from '../DialogCollaborationEdit'
 
 const Dialogs = () => {
   // Redux
@@ -84,6 +85,13 @@ const Dialogs = () => {
         <DialogSeasonEdit dialog={dialog} key={index}>
           {childDialogs}
         </DialogSeasonEdit>
+      )
+    }
+    if (dialog.type === 'collaborationEdit') {
+      return (
+        <DialogCollaborationEdit dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogCollaborationEdit>
       )
     }
 

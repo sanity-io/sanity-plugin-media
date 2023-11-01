@@ -92,6 +92,7 @@ export type Dialog =
   | DialogMassAssetEditProps
   | DialogSeasonsProps
   | DialogSeasonEditProps
+  | DialogCollaborationEditProps
 
 export type DialogAction = 'deleteAsset' | 'deleteTag'
 
@@ -172,6 +173,13 @@ export type DialogSeasonEditProps = {
   id: string
   seasonId?: string
   type: 'seasonEdit'
+}
+
+export type DialogCollaborationEditProps = {
+  closeDialogId?: string
+  id: string
+  collaborationId?: string
+  type: 'collaborationEdit'
 }
 
 export type Document = {
@@ -361,6 +369,7 @@ export type Tag = SanityDocument & {
 
 export type TagActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
 export type SeasonActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
+export type CollaborationActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
 
 export type TagFormData = z.infer<typeof tagFormSchema>
 

@@ -23,6 +23,7 @@ import UploadDropzone from '../UploadDropzone'
 import {seasonActions} from '../../modules/seasons'
 import {collaborationActions} from '../../modules/collaborations'
 import SeasonsPanel from '../SeasonsPanel'
+import CollaborationsPanel from '../CollaborationPanel'
 
 type Props = {
   assetType?: AssetSourceComponentProps['assetType']
@@ -123,6 +124,7 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
                 <Items />
               </Flex>
               <SeasonsPanel />
+              <CollaborationsPanel />
             </Flex>
 
             {/* Debug */}
