@@ -161,7 +161,8 @@ const DialogAssetEdit = (props: Props) => {
       // Dispatch action to create new tag
       dispatch(
         collaborationActions.createRequest({
-          name: collaborationName
+          name: collaborationName,
+          assetId: currentAsset?._id
         })
       )
     },
@@ -183,6 +184,16 @@ const DialogAssetEdit = (props: Props) => {
           closeDialogId: assetItem?.asset._id,
           formData: {
             ...sanitizedFormData,
+            collaboration: {
+              _ref: sanitizedFormData.collaboration.value,
+              _type: 'reference',
+              _weak: true
+            },
+            season: {
+              _ref: sanitizedFormData.season.value,
+              _type: 'reference',
+              _weak: true
+            },
             // Map tags to sanity references
             opt: {
               media: {

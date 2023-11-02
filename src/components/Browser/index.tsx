@@ -24,6 +24,7 @@ import {seasonActions} from '../../modules/seasons'
 import {collaborationActions} from '../../modules/collaborations'
 import SeasonsPanel from '../SeasonsPanel'
 import CollaborationsPanel from '../CollaborationPanel'
+import TagsPanel from '../TagsPanel'
 
 type Props = {
   assetType?: AssetSourceComponentProps['assetType']
@@ -125,6 +126,7 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
               </Flex>
               <SeasonsPanel />
               <CollaborationsPanel />
+              <TagsPanel />
             </Flex>
 
             {/* Debug */}

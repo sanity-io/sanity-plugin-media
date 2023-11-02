@@ -6405,7 +6405,10 @@ const collaborationsDeleteEpic = (action$, state$, _ref58) => {
         patch: {
           // this will cause the transaction to fail if the document has been modified since it was fetched.
           ifRevisionID: asset._rev,
-          unset: ['collaboration[_ref == "'.concat(collaboration._id, '"]')]
+          unset: ['collaboration[_ref == "'.concat(collaboration._id, '"]')],
+          set: {
+            collaboration: null
+          }
         }
       }));
       const transaction = patches.reduce((tx, patch) => tx.patch(patch.id, patch.patch), client.transaction());
@@ -9733,7 +9736,8 @@ const DialogAssetEdit = props => {
   }, [dispatch]);
   const handleCreateCollaboration = useCallback(collaborationName => {
     dispatch(collaborationActions.createRequest({
-      name: collaborationName
+      name: collaborationName,
+      assetId: currentAsset == null ? void 0 : currentAsset._id
     }));
   }, [dispatch]);
   const onSubmit = useCallback(formData => {
@@ -9747,6 +9751,16 @@ const DialogAssetEdit = props => {
       closeDialogId: assetItem == null ? void 0 : assetItem.asset._id,
       formData: {
         ...sanitizedFormData,
+        collaboration: {
+          _ref: sanitizedFormData.collaboration.value,
+          _type: "reference",
+          _weak: true
+        },
+        season: {
+          _ref: sanitizedFormData.season.value,
+          _type: "reference",
+          _weak: true
+        },
         // Map tags to sanity references
         opt: {
           media: {
@@ -14156,7 +14170,7 @@ const Season = props => {
         icon: /* @__PURE__ */jsx(EditIcon, {}),
         onClick: handleShowSeasonEditDialog,
         tone: "primary",
-        tooltip: "Edit Season"
+        tooltip: "Edit Collaboration"
       }), (actions == null ? void 0 : actions.includes("applyAll")) && /* @__PURE__ */jsx(SeasonButton, {
         disabled: collaboration == null ? void 0 : collaboration.updating,
         icon: /* @__PURE__ */jsx(ArrowUpIcon, {}),
@@ -14174,7 +14188,7 @@ const Season = props => {
         icon: /* @__PURE__ */jsx(TrashIcon, {}),
         onClick: handleShowCollaborationDeleteDialog,
         tone: "critical",
-        tooltip: "Delete tag"
+        tooltip: "Delete Collaboration"
       })]
     })]
   });
@@ -14341,6 +14355,32 @@ const CollaborationsPanel = () => {
     })
   });
 };
+const TagsPanel = () => {
+  const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible);
+  if (!tagsPanelVisible) {
+    return null;
+  }
+  return /* @__PURE__ */jsx(Box, {
+    style: {
+      position: "relative",
+      width: TAGS_PANEL_WIDTH
+    },
+    children: /* @__PURE__ */jsx(Box, {
+      className: "media__custom-scrollbar",
+      style: {
+        borderLeft: "1px solid var(--card-border-color)",
+        height: "100%",
+        overflowX: "hidden",
+        overflowY: "auto",
+        position: "absolute",
+        right: 0,
+        top: 0,
+        width: "100%"
+      },
+      children: /* @__PURE__ */jsx(TagView, {})
+    })
+  });
+};
 var __freeze = Object.freeze;
 var __defProp = Object.defineProperty;
 var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", {
@@ -14434,7 +14474,7 @@ const BrowserContent = _ref101 => {
                 position: "relative"
               },
               children: [/* @__PURE__ */jsx(PickedBar, {}), /* @__PURE__ */jsx(Items, {})]
-            }), /* @__PURE__ */jsx(SeasonsPanel, {}), /* @__PURE__ */jsx(CollaborationsPanel, {})]
+            }), /* @__PURE__ */jsx(SeasonsPanel, {}), /* @__PURE__ */jsx(CollaborationsPanel, {}), /* @__PURE__ */jsx(TagsPanel, {})]
           }), /* @__PURE__ */jsx(DebugControls, {})]
         })
       })]

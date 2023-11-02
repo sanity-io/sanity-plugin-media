@@ -177,7 +177,7 @@ const Season = (props: Props) => {
             icon={<EditIcon />}
             onClick={handleShowSeasonEditDialog}
             tone="primary"
-            tooltip="Edit Season"
+            tooltip="Edit Collaboration"
           />
         )}
         {/* Apply to all */}
@@ -208,7 +208,7 @@ const Season = (props: Props) => {
             icon={<TrashIcon />}
             onClick={handleShowCollaborationDeleteDialog}
             tone="critical"
-            tooltip="Delete tag"
+            tooltip="Delete Collaboration"
           />
         )}
       </ButtonContainer>

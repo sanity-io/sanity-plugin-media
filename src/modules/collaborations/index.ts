@@ -52,7 +52,7 @@ const collaborationSlice = createSlice({
   initialState,
   reducers: {
     // Create collaboration
-    createRequest(state, _action: PayloadAction<{name: string}>) {
+    createRequest(state, _action: PayloadAction<{name: string; assetId?: string}>) {
       state.creating = true
       delete state.creatingError
     },
@@ -367,10 +367,10 @@ export const collaborationsDeleteEpic: MyEpic = (action$, state$, {client}) =>
             patch: {
               // this will cause the transaction to fail if the document has been modified since it was fetched.
               ifRevisionID: asset._rev,
-              unset: [`collaboration[_ref == "${collaboration._id}"]`]
+              unset: [`collaboration[_ref == "${collaboration._id}"]`],
+              set: {collaboration: null}
             }
           }))
-
           const transaction: Transaction = patches.reduce(
             (tx, patch) => tx.patch(patch.id, patch.patch),
             client.transaction()
