@@ -105,8 +105,12 @@ const Season = (props: Props) => {
     )
   }
 
-  const handleShowSeasonDeleteDialog = () => {
-    dispatch(dialogActions.showConfirmDeleteSeason({season: collaboration.collaboration}))
+  const handleShowCollaborationDeleteDialog = () => {
+    dispatch(
+      dialogActions.showConfirmDeleteCollaboration({
+        collaboration: collaboration.collaboration
+      })
+    )
   }
 
   const handleShowSeasonEditDialog = () => {
@@ -202,7 +206,7 @@ const Season = (props: Props) => {
           <SeasonButton
             disabled={collaboration?.updating}
             icon={<TrashIcon />}
-            onClick={handleShowSeasonDeleteDialog}
+            onClick={handleShowCollaborationDeleteDialog}
             tone="critical"
             tooltip="Delete tag"
           />

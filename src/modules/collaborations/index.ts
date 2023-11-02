@@ -200,7 +200,6 @@ const collaborationSlice = createSlice({
     },
     deleteError(state, action: PayloadAction<{error: HttpError; collaboration: Collaboration}>) {
       const {error, collaboration} = action.payload
-
       const collaborationId = collaboration?._id
       state.byIds[collaborationId].error = error
       state.byIds[collaborationId].updating = false
@@ -343,7 +342,7 @@ export const collaborationsDeleteEpic: MyEpic = (action$, state$, {client}) =>
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       //@ts-ignore
-      const {collaborationName} = action.payload
+      const {collaboration} = action.payload
       return of(action).pipe(
         // Optionally throttle
         debugThrottle(state.debug.badConnection),
@@ -352,13 +351,13 @@ export const collaborationsDeleteEpic: MyEpic = (action$, state$, {client}) =>
           client.observable.fetch<Asset[]>(
             groq`*[
               _type in ["sanity.fileAsset", "sanity.imageAsset"]
-              && references(*[_type == "collaboration" && name.current == $collaborationName]._id)
+              && references(*[_type == "collaboration" && name.current == $collaboration]._id)
             ] {
               _id,
               _rev,
               opt
             }`,
-            {collaborationName: collaborationName.name.current}
+            {collaboration: collaboration?.name?.current ?? null}
           )
         ),
         // Create transaction which remove collaboration references from all matched assets and delete tag
@@ -368,7 +367,7 @@ export const collaborationsDeleteEpic: MyEpic = (action$, state$, {client}) =>
             patch: {
               // this will cause the transaction to fail if the document has been modified since it was fetched.
               ifRevisionID: asset._rev,
-              unset: [`collaboration[_ref == "${collaborationName._id}"]`]
+              unset: [`collaboration[_ref == "${collaboration._id}"]`]
             }
           }))
 
@@ -377,13 +376,13 @@ export const collaborationsDeleteEpic: MyEpic = (action$, state$, {client}) =>
             client.transaction()
           )
 
-          transaction.delete(collaborationName._id)
+          transaction.delete(collaboration._id)
 
           return from(transaction.commit())
         }),
         // Dispatch complete action
         mergeMap(() =>
-          of(collaborationSlice.actions.deleteComplete({collaborationId: collaborationName._id}))
+          of(collaborationSlice.actions.deleteComplete({collaborationId: collaboration._id}))
         ),
         catchError((error: ClientError) =>
           of(
@@ -392,7 +391,7 @@ export const collaborationsDeleteEpic: MyEpic = (action$, state$, {client}) =>
                 message: error?.message || 'Internal error',
                 statusCode: error?.statusCode || 500
               },
-              collaboration: collaborationName
+              collaboration: collaboration
             })
           )
         )

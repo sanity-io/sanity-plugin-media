@@ -11,6 +11,7 @@ import DialogMassAssetEdit from '../DialogMassAssetEdit'
 import DialogSeasonEdit from '../DialogSeasonEdit'
 import DialogSeasonCreate from '../DialogSeasonCreate'
 import DialogCollaborationEdit from '../DialogCollaborationEdit'
+import DialogCollaborationCreate from '../DialogCollaborationCreate'
 
 const Dialogs = () => {
   // Redux
@@ -69,6 +70,14 @@ const Dialogs = () => {
         <DialogSeasonCreate dialog={dialog} key={index}>
           {childDialogs}
         </DialogSeasonCreate>
+      )
+    }
+
+    if (dialog.type === 'collaborationCreate') {
+      return (
+        <DialogCollaborationCreate dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogCollaborationCreate>
       )
     }
 

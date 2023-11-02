@@ -6386,15 +6386,18 @@ const collaborationsDeleteEpic = (action$, state$, _ref58) => {
   return action$.pipe(filter(collaborationActions.deleteRequest.match), withLatestFrom(state$), mergeMap(_ref59 => {
     let [action, state] = _ref59;
     const {
-      collaborationName
+      collaboration
     } = action.payload;
     return of(action).pipe(
     // Optionally throttle
     debugThrottle(state.debug.badConnection),
     // Fetch assets which reference this tag
-    mergeMap(() => client.observable.fetch(groq(_b$9 || (_b$9 = __template$j(['*[\n              _type in ["sanity.fileAsset", "sanity.imageAsset"]\n              && references(*[_type == "collaboration" && name.current == $collaborationName]._id)\n            ] {\n              _id,\n              _rev,\n              opt\n            }']))), {
-      collaborationName: collaborationName.name.current
-    })),
+    mergeMap(() => {
+      var _a2, _b2;
+      return client.observable.fetch(groq(_b$9 || (_b$9 = __template$j(['*[\n              _type in ["sanity.fileAsset", "sanity.imageAsset"]\n              && references(*[_type == "collaboration" && name.current == $collaboration]._id)\n            ] {\n              _id,\n              _rev,\n              opt\n            }']))), {
+        collaboration: (_b2 = (_a2 = collaboration == null ? void 0 : collaboration.name) == null ? void 0 : _a2.current) != null ? _b2 : null
+      });
+    }),
     // Create transaction which remove collaboration references from all matched assets and delete tag
     mergeMap(assets => {
       const patches = assets.map(asset => ({
@@ -6402,22 +6405,22 @@ const collaborationsDeleteEpic = (action$, state$, _ref58) => {
         patch: {
           // this will cause the transaction to fail if the document has been modified since it was fetched.
           ifRevisionID: asset._rev,
-          unset: ['collaboration[_ref == "'.concat(collaborationName._id, '"]')]
+          unset: ['collaboration[_ref == "'.concat(collaboration._id, '"]')]
         }
       }));
       const transaction = patches.reduce((tx, patch) => tx.patch(patch.id, patch.patch), client.transaction());
-      transaction.delete(collaborationName._id);
+      transaction.delete(collaboration._id);
       return from(transaction.commit());
     }),
     // Dispatch complete action
     mergeMap(() => of(collaborationSlice.actions.deleteComplete({
-      collaborationId: collaborationName._id
+      collaborationId: collaboration._id
     }))), catchError(error => of(collaborationSlice.actions.deleteError({
       error: {
         message: (error == null ? void 0 : error.message) || "Internal error",
         statusCode: (error == null ? void 0 : error.statusCode) || 500
       },
-      collaboration: collaborationName
+      collaboration
     }))));
   }));
 };
@@ -6446,6 +6449,12 @@ const dialogSlice = createSlice({
         type: "seasonCreate"
       });
     });
+    builder.addCase(DIALOG_ACTIONS.showCollaborationCreate, state => {
+      state.items.push({
+        id: "collaborationCreate",
+        type: "collaborationCreate"
+      });
+    });
     builder.addCase(DIALOG_ACTIONS.showMassEdit, state => {
       state.items.push({
         id: "massEdit",
@@ -6470,13 +6479,6 @@ const dialogSlice = createSlice({
         id: seasonId,
         seasonId,
         type: "seasonEdit"
-      });
-    });
-    builder.addCase(DIALOG_ACTIONS.showCollaborationCreate, state => {
-      state.items.push({
-        id: "collaborationCreate",
-        //@ts-ignore
-        type: "collaborationCreate"
       });
     });
     builder.addCase(DIALOG_ACTIONS.showCollaborationEdit, (state, action) => {
@@ -6770,7 +6772,7 @@ const dialogSlice = createSlice({
     }
   }
 });
-const dialogClearOnAssetUpdateEpic = action$ => action$.pipe(ofType(assetsActions.deleteComplete.type, assetsActions.updateComplete.type, tagsActions.deleteComplete.type, tagsActions.updateComplete.type), filter(action => {
+const dialogClearOnAssetUpdateEpic = action$ => action$.pipe(ofType(assetsActions.deleteComplete.type, assetsActions.updateComplete.type, tagsActions.deleteComplete.type, tagsActions.updateComplete.type, seasonActions.deleteComplete.type, seasonActions.updateComplete.type, collaborationActions.deleteComplete.type, collaborationActions.updateComplete.type), filter(action => {
   var _a;
   return !!((_a = action == null ? void 0 : action.payload) == null ? void 0 : _a.closeDialogId);
 }), mergeMap(action => {
@@ -11383,6 +11385,89 @@ const DialogCollaborationEdit = props => {
     }), children]
   });
 };
+const DialogCollaborationCreate = props => {
+  var _a;
+  const {
+    children,
+    dialog: {
+      id
+    }
+  } = props;
+  const dispatch = useDispatch();
+  const creating = useTypedSelector(state => state.collaborations.creating);
+  const creatingError = useTypedSelector(state => state.collaborations.creatingError);
+  const {
+    // Read the formState before render to subscribe the form state through Proxy
+    formState: {
+      errors,
+      isDirty,
+      isValid
+    },
+    handleSubmit,
+    register,
+    setError
+  } = useForm({
+    defaultValues: {
+      name: ""
+    },
+    mode: "onChange",
+    resolver: zodResolver(tagFormSchema)
+  });
+  const formUpdating = creating;
+  const handleClose = () => {
+    dispatch(dialogActions.clear());
+  };
+  const onSubmit = formData => {
+    const sanitizedFormData = sanitizeFormData(formData);
+    dispatch(collaborationActions.createRequest({
+      name: sanitizedFormData.name
+    }));
+    dispatch(dialogActions.clear());
+  };
+  useEffect(() => {
+    if (creatingError) {
+      setError("name", {
+        message: creatingError == null ? void 0 : creatingError.message
+      });
+    }
+  }, [creatingError, setError]);
+  const Footer = () => /* @__PURE__ */jsx(Box, {
+    padding: 3,
+    children: /* @__PURE__ */jsx(Flex, {
+      justify: "flex-end",
+      children: /* @__PURE__ */jsx(FormSubmitButton, {
+        disabled: formUpdating || !isDirty || !isValid,
+        isValid,
+        onClick: handleSubmit(onSubmit)
+      })
+    })
+  });
+  return /* @__PURE__ */jsxs(Dialog, {
+    footer: /* @__PURE__ */jsx(Footer, {}),
+    header: "Create Collaboration",
+    id,
+    onClose: handleClose,
+    width: 1,
+    children: [/* @__PURE__ */jsxs(Box, {
+      as: "form",
+      padding: 4,
+      onSubmit: handleSubmit(onSubmit),
+      children: [/* @__PURE__ */jsx("button", {
+        style: {
+          display: "none"
+        },
+        tabIndex: -1,
+        type: "submit"
+      }), /* @__PURE__ */jsx(FormFieldInputText, {
+        ...register("name"),
+        disabled: formUpdating,
+        error: (_a = errors == null ? void 0 : errors.name) == null ? void 0 : _a.message,
+        label: "Name",
+        name: "name"
+      })]
+    }), children]
+  });
+};
 const Dialogs = () => {
   const currentDialogs = useTypedSelector(state => state.dialog.items);
   const renderDialogs = (dialogs, index) => {
@@ -11423,6 +11508,12 @@ const Dialogs = () => {
     }
     if (dialog.type === "seasonCreate") {
       return /* @__PURE__ */jsx(DialogSeasonCreate, {
+        dialog,
+        children: childDialogs
+      }, index);
+    }
+    if (dialog.type === "collaborationCreate") {
+      return /* @__PURE__ */jsx(DialogCollaborationCreate, {
         dialog,
         children: childDialogs
       }, index);
@@ -13876,6 +13967,61 @@ const SeasonsPanel = () => {
     })
   });
 };
+const CollaborationViewHeader = _ref99 => {
+  let {
+    allowCreate,
+    light,
+    title
+  } = _ref99;
+  const {
+    scheme
+  } = useColorScheme();
+  const dispatch = useDispatch();
+  const collaborationsCreating = useTypedSelector(state => state.collaborations.creating);
+  const collaborationsFetching = useTypedSelector(state => state.collaborations.fetching);
+  const handleTagCreate = () => {
+    dispatch(DIALOG_ACTIONS.showCollaborationCreate());
+  };
+  return /* @__PURE__ */jsx(Fragment, {
+    children: /* @__PURE__ */jsxs(Flex, {
+      align: "center",
+      justify: "space-between",
+      paddingLeft: 3,
+      style: {
+        background: light ? getSchemeColor(scheme, "bg") : "inherit",
+        borderBottom: "1px solid var(--card-border-color)",
+        flexShrink: 0,
+        height: "".concat(PANEL_HEIGHT, "px")
+      },
+      children: [/* @__PURE__ */jsxs(Inline, {
+        space: 2,
+        children: [/* @__PURE__ */jsx(Label, {
+          size: 0,
+          children: title
+        }), collaborationsFetching && /* @__PURE__ */jsx(Label, {
+          size: 0,
+          style: {
+            opacity: 0.3
+          },
+          children: "Loading..."
+        })]
+      }), allowCreate && /* @__PURE__ */jsx(Box, {
+        marginRight: 1,
+        children: /* @__PURE__ */jsx(Button, {
+          disabled: collaborationsCreating,
+          fontSize: 1,
+          icon: ComposeIcon,
+          mode: "bleed",
+          onClick: handleTagCreate,
+          style: {
+            background: "transparent",
+            boxShadow: "none"
+          }
+        })
+      })]
+    })
+  });
+};
 var __freeze$1 = Object.freeze;
 var __defProp$1 = Object.defineProperty;
 var __template$1 = (cooked, raw) => __freeze$1(__defProp$1(cooked, "raw", {
@@ -13945,9 +14091,9 @@ const Season = props => {
       collaboration: collaboration.collaboration
     }));
   };
-  const handleShowSeasonDeleteDialog = () => {
-    dispatch(dialogActions.showConfirmDeleteSeason({
-      season: collaboration.collaboration
+  const handleShowCollaborationDeleteDialog = () => {
+    dispatch(dialogActions.showConfirmDeleteCollaboration({
+      collaboration: collaboration.collaboration
     }));
   };
   const handleShowSeasonEditDialog = () => {
@@ -14026,18 +14172,18 @@ const Season = props => {
       }), (actions == null ? void 0 : actions.includes("delete")) && /* @__PURE__ */jsx(SeasonButton, {
         disabled: collaboration == null ? void 0 : collaboration.updating,
         icon: /* @__PURE__ */jsx(TrashIcon, {}),
-        onClick: handleShowSeasonDeleteDialog,
+        onClick: handleShowCollaborationDeleteDialog,
         tone: "critical",
         tooltip: "Delete tag"
       })]
     })]
   });
 };
-const VirtualRow = memo(_ref99 => {
+const VirtualRow = memo(_ref100 => {
   let {
     isScrolling,
     item
-  } = _ref99;
+  } = _ref100;
   var _a;
   if (typeof item === "string") {
     return /* @__PURE__ */jsx(Flex, {
@@ -14153,7 +14299,7 @@ const CollaborationView = () => {
     direction: "column",
     flex: 1,
     height: "fill",
-    children: [/* @__PURE__ */jsx(SeasonViewHeader, {
+    children: [/* @__PURE__ */jsx(CollaborationViewHeader, {
       allowCreate: true,
       light: hasPicked,
       title: hasPicked ? "Collaborations (in selection)" : "Collaborations"
@@ -14201,10 +14347,10 @@ var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", {
   value: __freeze(raw || cooked.slice())
 }));
 var _a, _b;
-const BrowserContent = _ref100 => {
+const BrowserContent = _ref101 => {
   let {
     onClose
-  } = _ref100;
+  } = _ref101;
   const client = useVersionedClient();
   const [portalElement, setPortalElement] = useState(null);
   const dispatch = useDispatch();

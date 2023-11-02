@@ -35,6 +35,12 @@ const dialogSlice = createSlice({
         type: 'seasonCreate'
       })
     })
+    builder.addCase(DIALOG_ACTIONS.showCollaborationCreate, state => {
+      state.items.push({
+        id: 'collaborationCreate',
+        type: 'collaborationCreate'
+      })
+    })
     builder.addCase(DIALOG_ACTIONS.showMassEdit, state => {
       state.items.push({
         id: 'massEdit',
@@ -55,13 +61,6 @@ const dialogSlice = createSlice({
         id: seasonId,
         seasonId,
         type: 'seasonEdit'
-      })
-    })
-    builder.addCase(DIALOG_ACTIONS.showCollaborationCreate, state => {
-      state.items.push({
-        id: 'collaborationCreate',
-        //@ts-ignore
-        type: 'collaborationCreate'
       })
     })
     builder.addCase(DIALOG_ACTIONS.showCollaborationEdit, (state, action) => {
@@ -379,7 +378,11 @@ export const dialogClearOnAssetUpdateEpic: MyEpic = action$ =>
       assetsActions.deleteComplete.type,
       assetsActions.updateComplete.type,
       tagsActions.deleteComplete.type,
-      tagsActions.updateComplete.type
+      tagsActions.updateComplete.type,
+      seasonActions.deleteComplete.type,
+      seasonActions.updateComplete.type,
+      collaborationActions.deleteComplete.type,
+      collaborationActions.updateComplete.type
     ),
     filter(action => !!action?.payload?.closeDialogId),
     mergeMap(action => {

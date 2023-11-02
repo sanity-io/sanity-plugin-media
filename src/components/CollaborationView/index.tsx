@@ -2,7 +2,7 @@ import {Box, Flex, Text} from '@sanity/ui'
 import React from 'react'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPickedLength} from '../../modules/assets'
-import SeasonViewHeader from '../SeasonViewHeader'
+import CollaborationViewHeader from '../CollaborationViewHeader'
 import {selectCollaborations} from '../../modules/collaborations'
 import CollaborationsVirtualized from '../CollaborationVirtualized'
 
@@ -17,7 +17,7 @@ const CollaborationView = () => {
 
   return (
     <Flex direction="column" flex={1} height="fill">
-      <SeasonViewHeader
+      <CollaborationViewHeader
         allowCreate
         light={hasPicked}
         title={hasPicked ? 'Collaborations (in selection)' : 'Collaborations'}
