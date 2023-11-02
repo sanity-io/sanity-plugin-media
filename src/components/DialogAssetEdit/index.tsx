@@ -31,9 +31,13 @@ import Image from '../Image'
 import FormFieldInputSeasons from '../FormFieldInputSeasons'
 import ProductSelector from '../ProductsSelector'
 import getSeasonSelectOptions from '../../utils/getSeasonSelectOptions'
-import {seasonActions, selectSeasons} from '../../modules/seasons'
+import {seasonActions, selectInitialSelectedSeasons, selectSeasons} from '../../modules/seasons'
 import FormFieldInputCollaborations from '../FormFieldInputCollaborations'
-import {collaborationActions, selectCollaborations} from '../../modules/collaborations'
+import {
+  collaborationActions,
+  selectCollaborations,
+  selectInitialSelectedCollaboration
+} from '../../modules/collaborations'
 import getSeasonCollaborationOptions from '../../utils/getCollaborationSelectOptions'
 
 type Props = {
@@ -68,16 +72,19 @@ const DialogAssetEdit = (props: Props) => {
   const allTagOptions = getTagSelectOptions(tags)
   const allSeasonOptions = getSeasonSelectOptions(seasons)
   const allCollaborationOptions = getSeasonCollaborationOptions(collaboration)
-
+  const initialCollaboration = useTypedSelector(selectInitialSelectedCollaboration(currentAsset))
+  const initialSeason = useTypedSelector(selectInitialSelectedSeasons(currentAsset))
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
 
   const generateDefaultValues = useCallback(
     (asset?: Asset): AssetFormData => {
+      console.log('initial asset', initialCollaboration)
+
       return {
         name: asset?.name || asset?.originalFilename || '',
         products: asset?.products || [],
-        season: asset?.season || '',
-        collaboration: asset?.collaboration || '',
+        season: initialSeason || '',
+        collaboration: initialCollaboration || '',
         altText: asset?.altText || '',
         description: asset?.description || '',
         opt: {media: {tags: assetTagOptions}},

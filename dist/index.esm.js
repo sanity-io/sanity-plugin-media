@@ -5807,7 +5807,7 @@ const initialState$6 = {
   fetchingError: void 0,
   creatingError: void 0,
   byIds: {},
-  panelVisible: true,
+  panelVisible: false,
   fetchCount: -1,
   allIds: []
 };
@@ -6107,6 +6107,15 @@ const seasonsDeleteEpic = (action$, state$, _ref50) => {
 const selectSeasonsByIds = state => state.seasons.byIds;
 const selectSeasonById = createSelector([selectSeasonsByIds, (_state, seasonId) => seasonId], (byIds, seasonId) => byIds[seasonId]);
 const selectSeasons = createSelector(selectSeasonsByIds, byIds => Object.values(byIds));
+const selectInitialSelectedSeasons = asset => createSelector(selectSeasons, seasons => {
+  var _a2, _b2, _c, _d, _e, _f, _g, _h;
+  const selectedCollaboration = (_c = (_a2 = asset == null ? void 0 : asset.season) == null ? void 0 : _a2._ref) != null ? _c : (_b2 = asset == null ? void 0 : asset.season) == null ? void 0 : _b2._id;
+  const season = seasons.find(seasonItem => seasonItem.season._id === selectedCollaboration);
+  return {
+    label: (_f = (_e = (_d = season == null ? void 0 : season.season) == null ? void 0 : _d.name) == null ? void 0 : _e.current) != null ? _f : "",
+    value: (_h = (_g = season == null ? void 0 : season.season) == null ? void 0 : _g._id) != null ? _h : ""
+  };
+});
 createSelector(selectSeasonsByIds, byIds => byIds);
 const seasonActions = seasonsSlice.actions;
 var seasonsReducer = seasonsSlice.reducer;
@@ -6122,7 +6131,7 @@ const initialState$5 = {
   fetchingError: void 0,
   creatingError: void 0,
   byIds: {},
-  panelVisible: true,
+  panelVisible: false,
   fetchCount: -1,
   allIds: []
 };
@@ -6430,6 +6439,15 @@ const collaborationsDeleteEpic = (action$, state$, _ref58) => {
 const selectCollaborationsByIds = state => state.collaborations.byIds;
 const selectCollaborationById = createSelector([selectCollaborationsByIds, (_state, collaborationId) => collaborationId], (byIds, collaborationId) => byIds[collaborationId]);
 const selectCollaborations = createSelector(selectCollaborationsByIds, byIds => Object.values(byIds));
+const selectInitialSelectedCollaboration = asset => createSelector(selectCollaborations, collaborations => {
+  var _a2, _b2, _c, _d, _e, _f, _g, _h;
+  const selectedCollaboration = (_c = (_a2 = asset == null ? void 0 : asset.collaboration) == null ? void 0 : _a2._ref) != null ? _c : (_b2 = asset == null ? void 0 : asset.collaboration) == null ? void 0 : _b2._id;
+  const collaboration = collaborations.find(collaborationItem => collaborationItem.collaboration._id === selectedCollaboration);
+  return {
+    label: (_f = (_e = (_d = collaboration == null ? void 0 : collaboration.collaboration) == null ? void 0 : _d.name) == null ? void 0 : _e.current) != null ? _f : "",
+    value: (_h = (_g = collaboration == null ? void 0 : collaboration.collaboration) == null ? void 0 : _g._id) != null ? _h : ""
+  };
+});
 createSelector(selectCollaborationsByIds, byIds => byIds);
 const collaborationActions = collaborationSlice.actions;
 var collaborationsReducer = collaborationSlice.reducer;
@@ -9663,13 +9681,16 @@ const DialogAssetEdit = props => {
   const allTagOptions = getTagSelectOptions(tags);
   const allSeasonOptions = getSeasonSelectOptions(seasons);
   const allCollaborationOptions = getSeasonCollaborationOptions(collaboration);
+  const initialCollaboration = useTypedSelector(selectInitialSelectedCollaboration(currentAsset));
+  const initialSeason = useTypedSelector(selectInitialSelectedSeasons(currentAsset));
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset));
   const generateDefaultValues = useCallback(asset => {
+    console.log("initial asset", initialCollaboration);
     return {
       name: (asset == null ? void 0 : asset.name) || (asset == null ? void 0 : asset.originalFilename) || "",
       products: (asset == null ? void 0 : asset.products) || [],
-      season: (asset == null ? void 0 : asset.season) || "",
-      collaboration: (asset == null ? void 0 : asset.collaboration) || "",
+      season: initialSeason || "",
+      collaboration: initialCollaboration || "",
       altText: (asset == null ? void 0 : asset.altText) || "",
       description: (asset == null ? void 0 : asset.description) || "",
       opt: {
@@ -10800,6 +10821,16 @@ const DialogMassAssetEdit = props => {
       closeDialogId: "massEdit",
       formData: {
         ...sanitizedFormData,
+        collaboration: {
+          _ref: sanitizedFormData.collaboration.value,
+          _type: "reference",
+          _weak: true
+        },
+        season: {
+          _ref: sanitizedFormData.season.value,
+          _type: "reference",
+          _weak: true
+        },
         // Map tags to sanity references
         opt: {
           media: {
@@ -14355,32 +14386,6 @@ const CollaborationsPanel = () => {
     })
   });
 };
-const TagsPanel = () => {
-  const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible);
-  if (!tagsPanelVisible) {
-    return null;
-  }
-  return /* @__PURE__ */jsx(Box, {
-    style: {
-      position: "relative",
-      width: TAGS_PANEL_WIDTH
-    },
-    children: /* @__PURE__ */jsx(Box, {
-      className: "media__custom-scrollbar",
-      style: {
-        borderLeft: "1px solid var(--card-border-color)",
-        height: "100%",
-        overflowX: "hidden",
-        overflowY: "auto",
-        position: "absolute",
-        right: 0,
-        top: 0,
-        width: "100%"
-      },
-      children: /* @__PURE__ */jsx(TagView, {})
-    })
-  });
-};
 var __freeze = Object.freeze;
 var __defProp = Object.defineProperty;
 var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", {
@@ -14474,7 +14479,7 @@ const BrowserContent = _ref101 => {
                 position: "relative"
               },
               children: [/* @__PURE__ */jsx(PickedBar, {}), /* @__PURE__ */jsx(Items, {})]
-            }), /* @__PURE__ */jsx(SeasonsPanel, {}), /* @__PURE__ */jsx(CollaborationsPanel, {}), /* @__PURE__ */jsx(TagsPanel, {})]
+            }), /* @__PURE__ */jsx(SeasonsPanel, {}), /* @__PURE__ */jsx(CollaborationsPanel, {})]
           }), /* @__PURE__ */jsx(DebugControls, {})]
         })
       })]

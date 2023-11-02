@@ -42,7 +42,7 @@ const initialState: CollaborationReducerState = {
   fetchingError: undefined,
   creatingError: undefined,
   byIds: {},
-  panelVisible: true,
+  panelVisible: false,
   fetchCount: -1,
   allIds: []
 }
@@ -424,6 +424,18 @@ export const selectCollaborationById = createSelector(
 export const selectCollaborations = createSelector(selectCollaborationsByIds, byIds =>
   Object.values(byIds)
 )
+
+export const selectInitialSelectedCollaboration = (asset?: Asset) =>
+  createSelector(selectCollaborations, collaborations => {
+    const selectedCollaboration = asset?.collaboration?._ref ?? asset?.collaboration?._id
+    const collaboration = collaborations.find(
+      collaborationItem => collaborationItem.collaboration._id === selectedCollaboration
+    )
+    return {
+      label: collaboration?.collaboration?.name?.current ?? '',
+      value: collaboration?.collaboration?._id ?? ''
+    }
+  })
 
 export const selectCollaborationsById = createSelector(selectCollaborationsByIds, byIds => byIds)
 

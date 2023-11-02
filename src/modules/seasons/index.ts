@@ -42,7 +42,7 @@ const initialState: SeasonReducerState = {
   fetchingError: undefined,
   creatingError: undefined,
   byIds: {},
-  panelVisible: true,
+  panelVisible: false,
   fetchCount: -1,
   allIds: []
 }
@@ -411,6 +411,15 @@ export const selectSeasonById = createSelector(
 
 export const selectSeasons = createSelector(selectSeasonsByIds, byIds => Object.values(byIds))
 
+export const selectInitialSelectedSeasons = (asset?: Asset) =>
+  createSelector(selectSeasons, seasons => {
+    const selectedCollaboration = asset?.season?._ref ?? asset?.season?._id
+    const season = seasons.find(seasonItem => seasonItem.season._id === selectedCollaboration)
+    return {
+      label: season?.season?.name?.current ?? '',
+      value: season?.season?._id ?? ''
+    }
+  })
 export const selectSeasonsById = createSelector(selectSeasonsByIds, byIds => byIds)
 
 export const seasonActions = seasonsSlice.actions

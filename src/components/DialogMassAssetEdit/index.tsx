@@ -105,6 +105,16 @@ const DialogMassAssetEdit = (props: Props) => {
           closeDialogId: 'massEdit',
           formData: {
             ...sanitizedFormData,
+            collaboration: {
+              _ref: sanitizedFormData.collaboration.value,
+              _type: 'reference',
+              _weak: true
+            },
+            season: {
+              _ref: sanitizedFormData.season.value,
+              _type: 'reference',
+              _weak: true
+            },
             // Map tags to sanity references
             opt: {
               media: {
