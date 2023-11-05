@@ -11663,7 +11663,7 @@ const Header = props => {
         })
       }), /* @__PURE__ */jsxs(Flex, {
         marginX: 2,
-        children: [/* @__PURE__ */jsx(Button, {
+        children: [!onSelect && /* @__PURE__ */jsx(Button, {
           fontSize: 1,
           icon: UploadIcon,
           mode: "bleed",
@@ -14667,8 +14667,8 @@ const media = definePlugin({
       }
     },
     image: {
-      assetSources: prev => {
-        return [...prev, mediaAssetSource];
+      assetSources: () => {
+        return [mediaAssetSource];
       }
     }
   },

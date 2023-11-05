@@ -32,8 +32,8 @@ export const media = definePlugin({
       }
     },
     image: {
-      assetSources: prev => {
-        return [...prev, mediaAssetSource]
+      assetSources: () => {
+        return [mediaAssetSource]
       }
     }
   },

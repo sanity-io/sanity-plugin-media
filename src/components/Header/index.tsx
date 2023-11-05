@@ -46,14 +46,16 @@ const Header = (props: Props) => {
 
         <Flex marginX={2}>
           {/* Upload */}
-          <Button
-            fontSize={1}
-            icon={UploadIcon}
-            mode="bleed"
-            onClick={open}
-            text={`Upload ${assetTypes.length === 1 ? pluralize(assetTypes[0]) : 'assets'}`}
-            tone="primary"
-          />
+          {!onSelect && (
+            <Button
+              fontSize={1}
+              icon={UploadIcon}
+              mode="bleed"
+              onClick={open}
+              text={`Upload ${assetTypes.length === 1 ? pluralize(assetTypes[0]) : 'assets'}`}
+              tone="primary"
+            />
+          )}
 
           {/* Close */}
           {onClose && (
