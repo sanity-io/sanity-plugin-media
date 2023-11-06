@@ -11663,7 +11663,7 @@ const Header = props => {
         })
       }), /* @__PURE__ */jsxs(Flex, {
         marginX: 2,
-        children: [!onSelect && /* @__PURE__ */jsx(Button, {
+        children: [/* @__PURE__ */jsx(Button, {
           fontSize: 1,
           icon: UploadIcon,
           mode: "bleed",
