@@ -9419,7 +9419,10 @@ function ProductSelector(props) {
   const {
     value = [],
     onChange,
-    error
+    error,
+    label,
+    labelDescription,
+    name
   } = props;
   const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState([]);
@@ -9483,9 +9486,9 @@ function ProductSelector(props) {
     padding: 3,
     children: [/* @__PURE__ */jsx(FormFieldInputLabel, {
       error,
-      description: "Add products to image",
-      label: "Products",
-      name: "products"
+      description: labelDescription,
+      label,
+      name
     }), /* @__PURE__ */jsx(Card, {
       marginY: 2,
       children: /* @__PURE__ */jsx(AutocompleteWithPayload, {
@@ -9875,7 +9878,7 @@ const DialogAssetEdit = props => {
               isLoading,
               referringDocuments
             } = _ref80;
-            var _a3, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
+            var _a3, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
             const uniqueReferringDocuments = getUniqueDocuments(referringDocuments);
             return /* @__PURE__ */jsxs(Fragment, {
               children: [/* @__PURE__ */jsxs(TabList, {
@@ -9974,12 +9977,26 @@ const DialogAssetEdit = props => {
                           shouldDirty: true
                         });
                       },
-                      error: (_j = errors.products) == null ? void 0 : _j.message,
-                      value: (_k = currentValues == null ? void 0 : currentValues.products) != null ? _k : []
+                      error: (_k = (_j = errors.products) == null ? void 0 : _j.message) == null ? void 0 : _k.toString(),
+                      value: (_l = currentValues == null ? void 0 : currentValues.products) != null ? _l : [],
+                      labelDescription: "Add products to image",
+                      label: "Products",
+                      name: "products"
+                    }), /* @__PURE__ */jsx(ProductSelector, {
+                      onChange: updatedValue => {
+                        setValue("products", updatedValue, {
+                          shouldDirty: true
+                        });
+                      },
+                      error: (_n = (_m = errors.products) == null ? void 0 : _m.message) == null ? void 0 : _n.toString(),
+                      value: (_o = currentValues == null ? void 0 : currentValues.products) != null ? _o : [],
+                      labelDescription: "Add products to image",
+                      label: "Products",
+                      name: "products"
                     }), /* @__PURE__ */jsx(FormFieldInputText, {
                       ...register("altText"),
                       disabled: formUpdating,
-                      error: (_l = errors == null ? void 0 : errors.altText) == null ? void 0 : _l.message,
+                      error: (_p = errors == null ? void 0 : errors.altText) == null ? void 0 : _p.message,
                       label: "Alt Text",
                       name: "altText",
                       value: currentAsset == null ? void 0 : currentAsset.altText
@@ -10752,7 +10769,7 @@ const DialogTags = props => {
   });
 };
 const DialogMassAssetEdit = props => {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
   const {
     children,
     dialog: {
@@ -10988,11 +11005,25 @@ const DialogMassAssetEdit = props => {
                     });
                   },
                   error: (_j = errors.products) == null ? void 0 : _j.message,
-                  value: (_k = currentValues == null ? void 0 : currentValues.products) != null ? _k : []
+                  value: (_k = currentValues == null ? void 0 : currentValues.products) != null ? _k : [],
+                  labelDescription: "Add products to image",
+                  label: "Products",
+                  name: "products"
+                }), /* @__PURE__ */jsx(ProductSelector, {
+                  onChange: updatedValue => {
+                    setValue("products", updatedValue, {
+                      shouldDirty: true
+                    });
+                  },
+                  error: (_l = errors.products) == null ? void 0 : _l.message,
+                  value: (_m = currentValues == null ? void 0 : currentValues.products) != null ? _m : [],
+                  labelDescription: "Add products to image",
+                  label: "Products",
+                  name: "products"
                 }), /* @__PURE__ */jsx(FormFieldInputText, {
                   ...register("altText"),
                   disabled: formUpdating,
-                  error: (_l = errors == null ? void 0 : errors.altText) == null ? void 0 : _l.message,
+                  error: (_n = errors == null ? void 0 : errors.altText) == null ? void 0 : _n.message,
                   label: "Alt Text",
                   name: "altText",
                   value: currentValues == null ? void 0 : currentValues.altText

@@ -34,8 +34,11 @@ export default function ProductSelector(props: {
   value: ProductDataType[]
   onChange?: (updatedValue: ProductDataType[]) => void
   error?: string
+  label: string
+  labelDescription: string
+  name: string
 }) {
-  const {value = [], onChange, error} = props
+  const {value = [], onChange, error, label, labelDescription, name} = props
   const [searchValue, setSearchValue] = useState<string>('')
   const [results, setResults] = useState<ProductProjection[]>([])
   const [localValue, setLocalValue] = useState<ProductDataType[]>(value)
@@ -113,12 +116,7 @@ export default function ProductSelector(props: {
 
   return (
     <Card border padding={3}>
-      <FormFieldInputLabel
-        error={error}
-        description="Add products to image"
-        label="Products"
-        name="products"
-      />
+      <FormFieldInputLabel error={error} description={labelDescription} label={label} name={name} />
       <Card marginY={2}>
         <AutocompleteWithPayload
           fontSize={[2, 2, 3]}

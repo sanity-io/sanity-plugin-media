@@ -424,8 +424,22 @@ const DialogAssetEdit = (props: Props) => {
                           onChange={updatedValue => {
                             setValue('products', updatedValue, {shouldDirty: true})
                           }}
-                          error={errors.products?.message}
+                          error={errors.products?.message?.toString()}
                           value={currentValues?.products ?? []}
+                          labelDescription="Add products to image"
+                          label="Products"
+                          name="products"
+                        />
+
+                        <ProductSelector
+                          onChange={updatedValue => {
+                            setValue('products', updatedValue, {shouldDirty: true})
+                          }}
+                          error={errors.products?.message?.toString()}
+                          value={currentValues?.products ?? []}
+                          labelDescription="Add products to image"
+                          label="Products"
+                          name="products"
                         />
                         {/* Alt text */}
                         <FormFieldInputText

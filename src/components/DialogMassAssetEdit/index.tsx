@@ -314,6 +314,21 @@ const DialogMassAssetEdit = (props: Props) => {
                     }}
                     error={errors.products?.message}
                     value={currentValues?.products ?? []}
+                    labelDescription="Add products to image"
+                    label="Products"
+                    name="products"
+                  />
+
+                  {/* products */}
+                  <ProductSelector
+                    onChange={updatedValue => {
+                      setValue('products', updatedValue, {shouldDirty: true})
+                    }}
+                    error={errors.products?.message}
+                    value={currentValues?.products ?? []}
+                    labelDescription="Add products to image"
+                    label="Products"
+                    name="products"
                   />
                   {/* Alt text */}
                   <FormFieldInputText
