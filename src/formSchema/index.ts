@@ -35,6 +35,28 @@ export const assetFormSchema = z.object({
       })
     )
     .optional(),
+  primaryProducts: z
+    .array(
+      z.object({
+        _key: z.string(),
+        id: z.string(),
+        imageUrl: z.string(),
+        name: z.string(),
+        published: z.boolean()
+      })
+    )
+    .optional(),
+  secondaryProducts: z
+    .array(
+      z.object({
+        _key: z.string(),
+        id: z.string(),
+        imageUrl: z.string(),
+        name: z.string(),
+        published: z.boolean()
+      })
+    )
+    .optional(),
   altText: z.string().trim().optional(),
   description: z.string().trim().optional(),
   opt: z.object({
@@ -60,6 +82,28 @@ export const massEditAssetsFormSchema = z.object({
     })
     .nullable(),
   products: z
+    .array(
+      z.object({
+        _key: z.string(),
+        id: z.string(),
+        imageUrl: z.string(),
+        name: z.string(),
+        published: z.boolean()
+      })
+    )
+    .optional(),
+  primaryProducts: z
+    .array(
+      z.object({
+        _key: z.string(),
+        id: z.string(),
+        imageUrl: z.string(),
+        name: z.string(),
+        published: z.boolean()
+      })
+    )
+    .optional(),
+  secondaryProducts: z
     .array(
       z.object({
         _key: z.string(),

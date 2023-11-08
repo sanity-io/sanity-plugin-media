@@ -82,7 +82,8 @@ const DialogAssetEdit = (props: Props) => {
 
       return {
         name: asset?.name || asset?.originalFilename || '',
-        products: asset?.products || [],
+        primaryProducts: asset?.products || asset?.primaryProducts || [],
+        secondaryProducts: asset?.secondaryProducts || [],
         season: initialSeason || '',
         collaboration: initialCollaboration || '',
         altText: asset?.altText || '',
@@ -422,24 +423,24 @@ const DialogAssetEdit = (props: Props) => {
                         {/* products */}
                         <ProductSelector
                           onChange={updatedValue => {
-                            setValue('products', updatedValue, {shouldDirty: true})
+                            setValue('primaryProducts', updatedValue, {shouldDirty: true})
                           }}
                           error={errors.products?.message?.toString()}
                           value={currentValues?.products ?? []}
                           labelDescription="Add products to image"
-                          label="Products"
-                          name="products"
+                          label="Primary Products"
+                          name="primaryProducts"
                         />
 
                         <ProductSelector
                           onChange={updatedValue => {
-                            setValue('products', updatedValue, {shouldDirty: true})
+                            setValue('secondaryProducts', updatedValue, {shouldDirty: true})
                           }}
                           error={errors.products?.message?.toString()}
                           value={currentValues?.products ?? []}
                           labelDescription="Add products to image"
-                          label="Products"
-                          name="products"
+                          label="Secondary Products"
+                          name="secondaryProducts"
                         />
                         {/* Alt text */}
                         <FormFieldInputText

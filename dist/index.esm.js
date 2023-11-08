@@ -8447,6 +8447,20 @@ const assetFormSchema = z.object({
     name: z.string(),
     published: z.boolean()
   })).optional(),
+  primaryProducts: z.array(z.object({
+    _key: z.string(),
+    id: z.string(),
+    imageUrl: z.string(),
+    name: z.string(),
+    published: z.boolean()
+  })).optional(),
+  secondaryProducts: z.array(z.object({
+    _key: z.string(),
+    id: z.string(),
+    imageUrl: z.string(),
+    name: z.string(),
+    published: z.boolean()
+  })).optional(),
   altText: z.string().trim().optional(),
   description: z.string().trim().optional(),
   opt: z.object({
@@ -8475,6 +8489,20 @@ const massEditAssetsFormSchema = z.object({
     })
   }).nullable(),
   products: z.array(z.object({
+    _key: z.string(),
+    id: z.string(),
+    imageUrl: z.string(),
+    name: z.string(),
+    published: z.boolean()
+  })).optional(),
+  primaryProducts: z.array(z.object({
+    _key: z.string(),
+    id: z.string(),
+    imageUrl: z.string(),
+    name: z.string(),
+    published: z.boolean()
+  })).optional(),
+  secondaryProducts: z.array(z.object({
     _key: z.string(),
     id: z.string(),
     imageUrl: z.string(),
@@ -9691,7 +9719,8 @@ const DialogAssetEdit = props => {
     console.log("initial asset", initialCollaboration);
     return {
       name: (asset == null ? void 0 : asset.name) || (asset == null ? void 0 : asset.originalFilename) || "",
-      products: (asset == null ? void 0 : asset.products) || [],
+      primaryProducts: (asset == null ? void 0 : asset.products) || (asset == null ? void 0 : asset.primaryProducts) || [],
+      secondaryProducts: (asset == null ? void 0 : asset.secondaryProducts) || [],
       season: initialSeason || "",
       collaboration: initialCollaboration || "",
       altText: (asset == null ? void 0 : asset.altText) || "",
@@ -9973,26 +10002,26 @@ const DialogAssetEdit = props => {
                       value: (_i = currentValues == null ? void 0 : currentValues.collaboration) != null ? _i : null
                     }), /* @__PURE__ */jsx(ProductSelector, {
                       onChange: updatedValue => {
-                        setValue("products", updatedValue, {
+                        setValue("primaryProducts", updatedValue, {
                           shouldDirty: true
                         });
                       },
                       error: (_k = (_j = errors.products) == null ? void 0 : _j.message) == null ? void 0 : _k.toString(),
                       value: (_l = currentValues == null ? void 0 : currentValues.products) != null ? _l : [],
                       labelDescription: "Add products to image",
-                      label: "Products",
-                      name: "products"
+                      label: "Primary Products",
+                      name: "primaryProducts"
                     }), /* @__PURE__ */jsx(ProductSelector, {
                       onChange: updatedValue => {
-                        setValue("products", updatedValue, {
+                        setValue("secondaryProducts", updatedValue, {
                           shouldDirty: true
                         });
                       },
                       error: (_n = (_m = errors.products) == null ? void 0 : _m.message) == null ? void 0 : _n.toString(),
                       value: (_o = currentValues == null ? void 0 : currentValues.products) != null ? _o : [],
                       labelDescription: "Add products to image",
-                      label: "Products",
-                      name: "products"
+                      label: "Secondary Products",
+                      name: "secondaryProducts"
                     }), /* @__PURE__ */jsx(FormFieldInputText, {
                       ...register("altText"),
                       disabled: formUpdating,
@@ -10789,7 +10818,8 @@ const DialogMassAssetEdit = props => {
   const allCollaborationOptions = getSeasonCollaborationOptions(collaborations);
   const defaultValues = {
     name: "",
-    products: [],
+    primaryProducts: [],
+    secondaryProducts: [],
     season: null,
     collaboration: null,
     altText: "",
@@ -11000,26 +11030,26 @@ const DialogMassAssetEdit = props => {
                   value: (_i = currentValues == null ? void 0 : currentValues.collaboration) != null ? _i : null
                 }), /* @__PURE__ */jsx(ProductSelector, {
                   onChange: updatedValue => {
-                    setValue("products", updatedValue, {
+                    setValue("primaryProducts", updatedValue, {
                       shouldDirty: true
                     });
                   },
                   error: (_j = errors.products) == null ? void 0 : _j.message,
                   value: (_k = currentValues == null ? void 0 : currentValues.products) != null ? _k : [],
                   labelDescription: "Add products to image",
-                  label: "Products",
-                  name: "products"
+                  label: "Primary Products",
+                  name: "primaryProducts"
                 }), /* @__PURE__ */jsx(ProductSelector, {
                   onChange: updatedValue => {
-                    setValue("products", updatedValue, {
+                    setValue("secondaryProducts", updatedValue, {
                       shouldDirty: true
                     });
                   },
                   error: (_l = errors.products) == null ? void 0 : _l.message,
                   value: (_m = currentValues == null ? void 0 : currentValues.products) != null ? _m : [],
                   labelDescription: "Add products to image",
-                  label: "Products",
-                  name: "products"
+                  label: "Secondary Products",
+                  name: "secondaryProducts"
                 }), /* @__PURE__ */jsx(FormFieldInputText, {
                   ...register("altText"),
                   disabled: formUpdating,

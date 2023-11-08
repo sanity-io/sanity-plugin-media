@@ -52,7 +52,8 @@ const DialogMassAssetEdit = (props: Props) => {
 
   const defaultValues = {
     name: '',
-    products: [],
+    primaryProducts: [],
+    secondaryProducts: [],
     season: null,
     collaboration: null,
     altText: '',
@@ -310,25 +311,25 @@ const DialogMassAssetEdit = (props: Props) => {
                   {/* products */}
                   <ProductSelector
                     onChange={updatedValue => {
-                      setValue('products', updatedValue, {shouldDirty: true})
+                      setValue('primaryProducts', updatedValue, {shouldDirty: true})
                     }}
                     error={errors.products?.message}
                     value={currentValues?.products ?? []}
                     labelDescription="Add products to image"
-                    label="Products"
-                    name="products"
+                    label="Primary Products"
+                    name="primaryProducts"
                   />
 
                   {/* products */}
                   <ProductSelector
                     onChange={updatedValue => {
-                      setValue('products', updatedValue, {shouldDirty: true})
+                      setValue('secondaryProducts', updatedValue, {shouldDirty: true})
                     }}
                     error={errors.products?.message}
                     value={currentValues?.products ?? []}
                     labelDescription="Add products to image"
-                    label="Products"
-                    name="products"
+                    label="Secondary Products"
+                    name="secondaryProducts"
                   />
                   {/* Alt text */}
                   <FormFieldInputText
