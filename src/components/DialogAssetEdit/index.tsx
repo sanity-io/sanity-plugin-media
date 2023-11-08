@@ -98,7 +98,7 @@ const DialogAssetEdit = (props: Props) => {
   const {
     control,
     // Read the formState before render to subscribe the form state through Proxy
-    formState: {errors, isDirty, isValid},
+    formState: {errors, isValid},
     getValues,
     handleSubmit,
     register,
@@ -281,7 +281,7 @@ const DialogAssetEdit = (props: Props) => {
 
         {/* Submit button */}
         <FormSubmitButton
-          disabled={formUpdating || !isDirty || !isValid}
+          disabled={formUpdating || !isValid}
           isValid={isValid}
           lastUpdated={currentAsset?._updatedAt}
           onClick={handleSubmit(onSubmit)}

@@ -9738,7 +9738,6 @@ const DialogAssetEdit = props => {
     // Read the formState before render to subscribe the form state through Proxy
     formState: {
       errors,
-      isDirty,
       isValid
     },
     getValues,
@@ -9877,7 +9876,7 @@ const DialogAssetEdit = props => {
         text: "Delete",
         tone: "critical"
       }), /* @__PURE__ */jsx(FormSubmitButton, {
-        disabled: formUpdating || !isDirty || !isValid,
+        disabled: formUpdating || !isValid,
         isValid,
         lastUpdated: currentAsset == null ? void 0 : currentAsset._updatedAt,
         onClick: handleSubmit(onSubmit)
