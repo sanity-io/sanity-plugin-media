@@ -6108,13 +6108,16 @@ const selectSeasonsByIds = state => state.seasons.byIds;
 const selectSeasonById = createSelector([selectSeasonsByIds, (_state, seasonId) => seasonId], (byIds, seasonId) => byIds[seasonId]);
 const selectSeasons = createSelector(selectSeasonsByIds, byIds => Object.values(byIds));
 const selectInitialSelectedSeasons = asset => createSelector(selectSeasons, seasons => {
-  var _a2, _b2, _c, _d, _e, _f, _g, _h;
+  var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k;
   const selectedCollaboration = (_c = (_a2 = asset == null ? void 0 : asset.season) == null ? void 0 : _a2._ref) != null ? _c : (_b2 = asset == null ? void 0 : asset.season) == null ? void 0 : _b2._id;
   const season = seasons.find(seasonItem => seasonItem.season._id === selectedCollaboration);
-  return {
-    label: (_f = (_e = (_d = season == null ? void 0 : season.season) == null ? void 0 : _d.name) == null ? void 0 : _e.current) != null ? _f : "",
-    value: (_h = (_g = season == null ? void 0 : season.season) == null ? void 0 : _g._id) != null ? _h : ""
-  };
+  if (((_e = (_d = season == null ? void 0 : season.season) == null ? void 0 : _d.name) == null ? void 0 : _e.current) && ((_f = season == null ? void 0 : season.season) == null ? void 0 : _f._id)) {
+    return {
+      label: (_i = (_h = (_g = season == null ? void 0 : season.season) == null ? void 0 : _g.name) == null ? void 0 : _h.current) != null ? _i : "",
+      value: (_k = (_j = season == null ? void 0 : season.season) == null ? void 0 : _j._id) != null ? _k : ""
+    };
+  }
+  return null;
 });
 createSelector(selectSeasonsByIds, byIds => byIds);
 const seasonActions = seasonsSlice.actions;
@@ -6440,13 +6443,16 @@ const selectCollaborationsByIds = state => state.collaborations.byIds;
 const selectCollaborationById = createSelector([selectCollaborationsByIds, (_state, collaborationId) => collaborationId], (byIds, collaborationId) => byIds[collaborationId]);
 const selectCollaborations = createSelector(selectCollaborationsByIds, byIds => Object.values(byIds));
 const selectInitialSelectedCollaboration = asset => createSelector(selectCollaborations, collaborations => {
-  var _a2, _b2, _c, _d, _e, _f, _g, _h;
+  var _a2, _b2, _c, _d, _e, _f, _g, _h, _i, _j, _k;
   const selectedCollaboration = (_c = (_a2 = asset == null ? void 0 : asset.collaboration) == null ? void 0 : _a2._ref) != null ? _c : (_b2 = asset == null ? void 0 : asset.collaboration) == null ? void 0 : _b2._id;
   const collaboration = collaborations.find(collaborationItem => collaborationItem.collaboration._id === selectedCollaboration);
-  return {
-    label: (_f = (_e = (_d = collaboration == null ? void 0 : collaboration.collaboration) == null ? void 0 : _d.name) == null ? void 0 : _e.current) != null ? _f : "",
-    value: (_h = (_g = collaboration == null ? void 0 : collaboration.collaboration) == null ? void 0 : _g._id) != null ? _h : ""
-  };
+  if (((_e = (_d = collaboration == null ? void 0 : collaboration.collaboration) == null ? void 0 : _d.name) == null ? void 0 : _e.current) && ((_f = collaboration == null ? void 0 : collaboration.collaboration) == null ? void 0 : _f._id)) {
+    return {
+      label: (_i = (_h = (_g = collaboration == null ? void 0 : collaboration.collaboration) == null ? void 0 : _g.name) == null ? void 0 : _h.current) != null ? _i : "",
+      value: (_k = (_j = collaboration == null ? void 0 : collaboration.collaboration) == null ? void 0 : _j._id) != null ? _k : ""
+    };
+  }
+  return null;
 });
 createSelector(selectCollaborationsByIds, byIds => byIds);
 const collaborationActions = collaborationSlice.actions;
@@ -9721,8 +9727,8 @@ const DialogAssetEdit = props => {
       name: (asset == null ? void 0 : asset.name) || (asset == null ? void 0 : asset.originalFilename) || "",
       primaryProducts: (asset == null ? void 0 : asset.products) || (asset == null ? void 0 : asset.primaryProducts) || [],
       secondaryProducts: (asset == null ? void 0 : asset.secondaryProducts) || [],
-      season: initialSeason || "",
-      collaboration: initialCollaboration || "",
+      season: initialSeason || null,
+      collaboration: initialCollaboration || null,
       altText: (asset == null ? void 0 : asset.altText) || "",
       description: (asset == null ? void 0 : asset.description) || "",
       opt: {

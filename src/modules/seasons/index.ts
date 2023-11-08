@@ -415,10 +415,13 @@ export const selectInitialSelectedSeasons = (asset?: Asset) =>
   createSelector(selectSeasons, seasons => {
     const selectedCollaboration = asset?.season?._ref ?? asset?.season?._id
     const season = seasons.find(seasonItem => seasonItem.season._id === selectedCollaboration)
-    return {
-      label: season?.season?.name?.current ?? '',
-      value: season?.season?._id ?? ''
+    if (season?.season?.name?.current && season?.season?._id) {
+      return {
+        label: season?.season?.name?.current ?? '',
+        value: season?.season?._id ?? ''
+      }
     }
+    return null
   })
 export const selectSeasonsById = createSelector(selectSeasonsByIds, byIds => byIds)
 

@@ -431,10 +431,13 @@ export const selectInitialSelectedCollaboration = (asset?: Asset) =>
     const collaboration = collaborations.find(
       collaborationItem => collaborationItem.collaboration._id === selectedCollaboration
     )
-    return {
-      label: collaboration?.collaboration?.name?.current ?? '',
-      value: collaboration?.collaboration?._id ?? ''
+    if (collaboration?.collaboration?.name?.current && collaboration?.collaboration?._id) {
+      return {
+        label: collaboration?.collaboration?.name?.current ?? '',
+        value: collaboration?.collaboration?._id ?? ''
+      }
     }
+    return null
   })
 
 export const selectCollaborationsById = createSelector(selectCollaborationsByIds, byIds => byIds)
