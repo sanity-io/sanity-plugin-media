@@ -14662,10 +14662,10 @@ var mediaTag = {
   }
 };
 var mediaSeason = {
-  title: "Media Season",
+  title: "Season",
   icon: TagIcon,
   name: SEASONS_DOCUMENT_NAME,
-  type: "object",
+  type: "document",
   fields: [{
     title: "Name",
     name: "name",
@@ -14687,10 +14687,10 @@ var mediaSeason = {
   }
 };
 var mediaCollaboration = {
-  title: "Media Collaboration",
+  title: "Drops",
   icon: TagIcon,
   name: COLLABORATION_DOCUMENT_NAME,
-  type: "object",
+  type: "document",
   fields: [{
     title: "Name",
     name: "name",

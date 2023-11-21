@@ -2,10 +2,10 @@ import {SEASONS_DOCUMENT_NAME} from '../constants'
 import TagIcon from '../components/TagIcon'
 
 export default {
-  title: 'Media Season',
+  title: 'Season',
   icon: TagIcon,
   name: SEASONS_DOCUMENT_NAME,
-  type: 'object',
+  type: 'document',
   fields: [
     {
       title: 'Name',

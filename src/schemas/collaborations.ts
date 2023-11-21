@@ -2,10 +2,10 @@ import {COLLABORATION_DOCUMENT_NAME} from '../constants'
 import TagIcon from '../components/TagIcon'
 
 export default {
-  title: 'Media Collaboration',
+  title: 'Drops',
   icon: TagIcon,
   name: COLLABORATION_DOCUMENT_NAME,
-  type: 'object',
+  type: 'document',
   fields: [
     {
       title: 'Name',
