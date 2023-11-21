@@ -764,7 +764,6 @@ export const assetsUpdateEpic: MyEpic = (action$, state$, {client}) =>
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {asset, closeDialogId, formData} = action.payload
-
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() =>
