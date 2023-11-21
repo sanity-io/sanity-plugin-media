@@ -5336,7 +5336,7 @@ const assetsSlice = createSlice({
           sort = groq(_a$m || (_a$m = __template$m(["order(_updatedAt desc)"])))
         } = _ref25;
         const pipe = sort || selector ? "|" : "";
-        const query = groq(_b$c || (_b$c = __template$m(['\n          {\n            "items": *[', "] {\n              _id,\n              _type,\n              _createdAt,\n              _updatedAt,\n              altText,\n              description,\n              extension,\n              metadata {\n                dimensions,\n                exif,\n                isOpaque,\n              },\n              mimeType,\n              opt {\n                media\n              },\n              originalFilename,\n              size,\n              title,\n              products,\n              collaboration, \n              season,\n              name,\n              url\n            } ", " ", " ", ",\n          }\n        "])), queryFilter, pipe, sort, selector);
+        const query = groq(_b$c || (_b$c = __template$m(['\n          {\n            "items": *[', "] {\n              _id,\n              _type,\n              _createdAt,\n              _updatedAt,\n              altText,\n              description,\n              extension,\n              metadata {\n                dimensions,\n                exif,\n                isOpaque,\n              },\n              mimeType,\n              opt {\n                media\n              },\n              originalFilename,\n              size,\n              title,\n              products,\n              primaryProducts,\n              secondaryProducts,  \n              collaboration, \n              season,\n              name,\n              url\n            } ", " ", " ", ",\n          }\n        "])), queryFilter, pipe, sort, selector);
         return {
           payload: {
             params,
@@ -9722,11 +9722,10 @@ const DialogAssetEdit = props => {
   const initialSeason = useTypedSelector(selectInitialSelectedSeasons(currentAsset));
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset));
   const generateDefaultValues = useCallback(asset => {
-    console.log("initial asset", initialCollaboration);
     return {
       name: (asset == null ? void 0 : asset.name) || (asset == null ? void 0 : asset.originalFilename) || "",
-      primaryProducts: (asset == null ? void 0 : asset.products) || (asset == null ? void 0 : asset.primaryProducts) || [],
-      secondaryProducts: (asset == null ? void 0 : asset.secondaryProducts) || [],
+      primaryProducts: (asset == null ? void 0 : asset.primaryProducts) || (asset == null ? void 0 : asset.products) || [],
+      secondaryProducts: (asset == null ? void 0 : asset.secondaryProducts) || (asset == null ? void 0 : asset.products),
       season: initialSeason || null,
       collaboration: initialCollaboration || null,
       altText: (asset == null ? void 0 : asset.altText) || "",
@@ -10012,7 +10011,7 @@ const DialogAssetEdit = props => {
                         });
                       },
                       error: (_k = (_j = errors.products) == null ? void 0 : _j.message) == null ? void 0 : _k.toString(),
-                      value: (_l = currentValues == null ? void 0 : currentValues.products) != null ? _l : [],
+                      value: (_l = currentValues == null ? void 0 : currentValues.primaryProducts) != null ? _l : [],
                       labelDescription: "Add products to image",
                       label: "Primary Products",
                       name: "primaryProducts"
@@ -10023,7 +10022,7 @@ const DialogAssetEdit = props => {
                         });
                       },
                       error: (_n = (_m = errors.products) == null ? void 0 : _m.message) == null ? void 0 : _n.toString(),
-                      value: (_o = currentValues == null ? void 0 : currentValues.products) != null ? _o : [],
+                      value: (_o = currentValues == null ? void 0 : currentValues.secondaryProducts) != null ? _o : [],
                       labelDescription: "Add products to image",
                       label: "Secondary Products",
                       name: "secondaryProducts"

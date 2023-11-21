@@ -78,12 +78,10 @@ const DialogAssetEdit = (props: Props) => {
 
   const generateDefaultValues = useCallback(
     (asset?: Asset): AssetFormData => {
-      console.log('initial asset', initialCollaboration)
-
       return {
         name: asset?.name || asset?.originalFilename || '',
-        primaryProducts: asset?.products || asset?.primaryProducts || [],
-        secondaryProducts: asset?.secondaryProducts || [],
+        primaryProducts: asset?.primaryProducts || asset?.products || [],
+        secondaryProducts: asset?.secondaryProducts || asset?.products,
         season: initialSeason || null,
         collaboration: initialCollaboration || null,
         altText: asset?.altText || '',
@@ -426,7 +424,7 @@ const DialogAssetEdit = (props: Props) => {
                             setValue('primaryProducts', updatedValue, {shouldDirty: true})
                           }}
                           error={errors.products?.message?.toString()}
-                          value={currentValues?.products ?? []}
+                          value={currentValues?.primaryProducts ?? []}
                           labelDescription="Add products to image"
                           label="Primary Products"
                           name="primaryProducts"
@@ -437,7 +435,7 @@ const DialogAssetEdit = (props: Props) => {
                             setValue('secondaryProducts', updatedValue, {shouldDirty: true})
                           }}
                           error={errors.products?.message?.toString()}
-                          value={currentValues?.products ?? []}
+                          value={currentValues?.secondaryProducts ?? []}
                           labelDescription="Add products to image"
                           label="Secondary Products"
                           name="secondaryProducts"

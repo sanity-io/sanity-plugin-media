@@ -255,6 +255,8 @@ const assetsSlice = createSlice({
               size,
               title,
               products,
+              primaryProducts,
+              secondaryProducts,  
               collaboration, 
               season,
               name,
