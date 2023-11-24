@@ -14,14 +14,14 @@ export const assetFormSchema = z.object({
   name: z.string().trim(),
   season: z
     .object({
-      label: z.string().trim().min(1, {message: 'Label cannot be empty'}),
-      value: z.string().trim().min(1, {message: 'Value cannot be empty'})
+      label: z.string().trim(),
+      value: z.string().trim()
     })
     .nullable(),
   collaboration: z
     .object({
-      label: z.string().trim().min(1, {message: 'Label cannot be empty'}),
-      value: z.string().trim().min(1, {message: 'Value cannot be empty'})
+      label: z.string().trim(),
+      value: z.string().trim()
     })
     .nullable(),
   products: z

@@ -230,7 +230,6 @@ const assetsSlice = createSlice({
         sort?: string
       }) => {
         const pipe = sort || selector ? '|' : ''
-
         // Construct query
         const query = groq`
           {
