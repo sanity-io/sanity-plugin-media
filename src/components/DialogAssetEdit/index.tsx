@@ -81,7 +81,7 @@ const DialogAssetEdit = (props: Props) => {
       return {
         name: asset?.name || asset?.originalFilename || '',
         primaryProducts: asset?.primaryProducts || asset?.products || [],
-        secondaryProducts: asset?.secondaryProducts || asset?.products,
+        secondaryProducts: asset?.secondaryProducts || asset?.products || [],
         season: initialSeason || null,
         collaboration: initialCollaboration || null,
         altText: asset?.altText || '',
@@ -108,6 +108,7 @@ const DialogAssetEdit = (props: Props) => {
     resolver: zodResolver(assetFormSchema)
   })
 
+  console.log(errors, isValid, 'validation errors')
   const currentValues = getValues()
 
   const formUpdating = !assetItem || assetItem?.updating

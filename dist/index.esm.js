@@ -9717,7 +9717,7 @@ const DialogAssetEdit = props => {
     return {
       name: (asset == null ? void 0 : asset.name) || (asset == null ? void 0 : asset.originalFilename) || "",
       primaryProducts: (asset == null ? void 0 : asset.primaryProducts) || (asset == null ? void 0 : asset.products) || [],
-      secondaryProducts: (asset == null ? void 0 : asset.secondaryProducts) || (asset == null ? void 0 : asset.products),
+      secondaryProducts: (asset == null ? void 0 : asset.secondaryProducts) || (asset == null ? void 0 : asset.products) || [],
       season: initialSeason || null,
       collaboration: initialCollaboration || null,
       altText: (asset == null ? void 0 : asset.altText) || "",
@@ -9747,6 +9747,7 @@ const DialogAssetEdit = props => {
     mode: "onChange",
     resolver: zodResolver(assetFormSchema)
   });
+  console.log(errors, isValid, "validation errors");
   const currentValues = getValues();
   const formUpdating = !assetItem || (assetItem == null ? void 0 : assetItem.updating);
   const handleClose = useCallback(() => {
