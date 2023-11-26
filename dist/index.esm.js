@@ -9791,7 +9791,7 @@ const DialogAssetEdit = props => {
     }));
   }, [dispatch]);
   const onSubmit = useCallback(formData => {
-    var _a3;
+    var _a3, _b, _c;
     if (!(assetItem == null ? void 0 : assetItem.asset)) {
       return;
     }
@@ -9801,21 +9801,21 @@ const DialogAssetEdit = props => {
       closeDialogId: assetItem == null ? void 0 : assetItem.asset._id,
       formData: {
         ...sanitizedFormData,
-        collaboration: {
+        collaboration: ((_a3 = sanitizedFormData == null ? void 0 : sanitizedFormData.collaboration) == null ? void 0 : _a3.value) ? {
           _ref: sanitizedFormData.collaboration.value,
           _type: "reference",
           _weak: true
-        },
-        season: {
+        } : null,
+        season: ((_b = sanitizedFormData == null ? void 0 : sanitizedFormData.season) == null ? void 0 : _b.value) ? {
           _ref: sanitizedFormData.season.value,
           _type: "reference",
           _weak: true
-        },
+        } : null,
         // Map tags to sanity references
         opt: {
           media: {
             ...sanitizedFormData.opt.media,
-            tags: ((_a3 = sanitizedFormData.opt.media.tags) == null ? void 0 : _a3.map(tag => ({
+            tags: ((_c = sanitizedFormData.opt.media.tags) == null ? void 0 : _c.map(tag => ({
               _ref: tag.value,
               _type: "reference",
               _weak: true

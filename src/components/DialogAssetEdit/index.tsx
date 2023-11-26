@@ -182,7 +182,6 @@ const DialogAssetEdit = (props: Props) => {
       if (!assetItem?.asset) {
         return
       }
-
       const sanitizedFormData = sanitizeFormData(formData)
 
       dispatch(
@@ -191,16 +190,20 @@ const DialogAssetEdit = (props: Props) => {
           closeDialogId: assetItem?.asset._id,
           formData: {
             ...sanitizedFormData,
-            collaboration: {
-              _ref: sanitizedFormData.collaboration.value,
-              _type: 'reference',
-              _weak: true
-            },
-            season: {
-              _ref: sanitizedFormData.season.value,
-              _type: 'reference',
-              _weak: true
-            },
+            collaboration: sanitizedFormData?.collaboration?.value
+              ? {
+                  _ref: sanitizedFormData.collaboration.value,
+                  _type: 'reference',
+                  _weak: true
+                }
+              : null,
+            season: sanitizedFormData?.season?.value
+              ? {
+                  _ref: sanitizedFormData.season.value,
+                  _type: 'reference',
+                  _weak: true
+                }
+              : null,
             // Map tags to sanity references
             opt: {
               media: {
