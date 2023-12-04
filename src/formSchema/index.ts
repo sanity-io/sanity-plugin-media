@@ -18,6 +18,7 @@ export const assetFormSchema = z.object({
       value: z.string().trim()
     })
     .nullable(),
+  isCurrentSeason: z.boolean(),
   collaboration: z
     .object({
       label: z.string().trim(),

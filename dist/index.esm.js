@@ -8206,7 +8206,6 @@ const TextInputSearch = () => {
         zIndex: 1
         // force stacking context
       },
-
       children: /* @__PURE__ */jsx(CloseIcon, {})
     })]
   });
@@ -10789,7 +10788,6 @@ const DialogTags = props => {
         minHeight: "420px"
         // explicit height required as <TagView> is virtualized
       },
-
       children: /* @__PURE__ */jsx(TagView, {})
     }), children]
   });
@@ -12665,7 +12663,6 @@ const TableHeader = () => {
       zIndex: 1
       // force stacking context
     },
-
     children: [onSelect ? /* @__PURE__ */jsx(TableHeaderItem, {}) : /* @__PURE__ */jsx(ContextActionContainer$1, {
       align: "center",
       justify: "center",
@@ -13559,7 +13556,6 @@ class ReduxProvider extends Component {
         // inject sanity client as a dependency to all epics
       }
     });
-
     this.store = configureStore({
       reducer: rootReducer,
       middleware: getDefaultMiddleware => getDefaultMiddleware({

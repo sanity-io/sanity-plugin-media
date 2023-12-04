@@ -24,6 +24,7 @@ type CustomFields = {
 type ImageCustomFields = {
   name: string
   season: string
+  isCurrentSeason: boolean
   collaboration?: string
   products: string[]
   altText?: string
