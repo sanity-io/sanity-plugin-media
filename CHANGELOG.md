@@ -5,6 +5,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.5](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.4...v2.2.5) (2024-01-12)
+
+### Bug Fixes
+
+- **deps:** bump @sanity/ui, widen peer dependency range ([a6c8982](https://github.com/sanity-io/sanity-plugin-media/commit/a6c898244a2f8311cf0c1b08cd13988f98226036))
+- **deps:** widen styled-components peer dependency range ([8a81bb1](https://github.com/sanity-io/sanity-plugin-media/commit/8a81bb1153b726fc454d8718670ad985bf266dba))
+
 ## [2.2.4](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.3...v2.2.4) (2023-10-27)
 
 ### Bug Fixes
