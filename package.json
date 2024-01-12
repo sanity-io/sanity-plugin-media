@@ -89,7 +89,7 @@
     "@sanity/client": "^6.7.0",
     "@sanity/color": "^2.1.20",
     "@sanity/icons": "^2.0.0",
-    "@sanity/pkg-utils": "^2.4.8",
+    "@sanity/pkg-utils": "^3.3.8",
     "@sanity/plugin-kit": "^3.1.10",
     "@sanity/semantic-release-preset": "^2.0.2",
     "@types/is-hotkey": "^0.1.7",
