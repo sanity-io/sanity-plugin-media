@@ -124,7 +124,7 @@
     "react": "^18",
     "react-dom": "^18",
     "sanity": "^3.0.0",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.0 || ^6.0"
   },
   "engines": {
     "node": ">=14"
