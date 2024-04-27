@@ -16,7 +16,7 @@ const VirtualRow = memo(
   ({item, selected}: {item: CardAssetData | CardUploadData; selected: boolean}) => {
     if (item?.type === 'asset') {
       return (
-        <Box style={{height: '100px'}}>
+        <Box style={{height: '200px'}}>
           <TableRowAsset id={item.id} selected={selected} />
         </Box>
       )

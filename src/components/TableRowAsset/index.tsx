@@ -222,8 +222,10 @@ const TableRowAsset = (props: Props) => {
           gridColumn: 2,
           gridRowStart: 1,
           gridRowEnd: 'span 5',
-          height: '90px',
-          width: '100px'
+          height: '180px',
+          width: '200px'
+          // height: '90px',
+          // width: '100px'
         }}
       >
         <Flex align="center" justify="center" style={{height: '100%', position: 'relative'}}>
@@ -237,7 +239,7 @@ const TableRowAsset = (props: Props) => {
                 draggable={false}
                 scheme={scheme}
                 showCheckerboard={!isOpaque}
-                src={imageDprUrl(asset, {height: 100, width: 100})}
+                src={imageDprUrl(asset, {height: 180, width: 200})}
               />
             )}
           </Box>
