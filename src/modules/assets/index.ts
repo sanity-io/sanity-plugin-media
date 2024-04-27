@@ -185,6 +185,17 @@ const assetsSlice = createSlice({
         delete state.byIds[key].error
       })
     },
+    downloadRequest(state, action: PayloadAction<{assets: Asset[]; closeDialogId?: string}>) {
+      const {assets} = action.payload
+      assets.forEach(asset => {
+        // state.byIds[asset?._id].updating = true
+        window.location.href = `${asset.url}?dl=${asset.originalFilename}`
+      })
+
+      Object.keys(state.byIds).forEach(key => {
+        delete state.byIds[key].error
+      })
+    },
     fetchComplete(state, action: PayloadAction<{assets: Asset[]}>) {
       const assets = action.payload?.assets || []
 

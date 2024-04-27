@@ -140,6 +140,28 @@ const dialogSlice = createSlice({
         type: 'confirm'
       })
     },
+    showConfirmDownloadAssets(
+      state,
+      action: PayloadAction<{assets: AssetItem[]; closeDialogId?: string}>
+    ) {
+      const {assets, closeDialogId} = action.payload
+
+      const suffix = `${assets.length} ${pluralize('asset', assets.length)}`
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: assetsActions.downloadRequest({
+          assets: assets.map(assetItem => assetItem.asset)
+        }),
+        confirmText: `Yes, download ${suffix}`,
+        description: 'Download a bunch of images?',
+        title: `Download ${suffix}?`,
+        id: 'confirm',
+        headerTitle: 'Confirm download',
+        tone: 'critical',
+        type: 'confirm'
+      })
+    },
     showConfirmDeleteTag(state, action: PayloadAction<{closeDialogId?: string; tag: Tag}>) {
       const {closeDialogId, tag} = action.payload
 

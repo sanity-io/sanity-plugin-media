@@ -25,6 +25,10 @@ const PickedBar = () => {
     dispatch(dialogActions.showConfirmDeleteAssets({assets: assetsPicked}))
   }
 
+  const handleDownloadPicked = () => {
+    dispatch(dialogActions.showConfirmDownloadAssets({assets: assetsPicked}))
+  }
+
   if (assetsPicked.length === 0) {
     return null
   }
@@ -68,6 +72,17 @@ const PickedBar = () => {
           tone="critical"
         >
           <Label size={0}>Delete</Label>
+        </Button>
+
+        {/* Download Selected button */}
+        <Button
+          mode="bleed"
+          onClick={handleDownloadPicked}
+          padding={2}
+          style={{background: 'none', boxShadow: 'none'}}
+          tone="critical"
+        >
+          <Label size={0}>Download Selected</Label>
         </Button>
       </Flex>
     </Flex>
