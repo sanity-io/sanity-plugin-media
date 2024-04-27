@@ -50,6 +50,9 @@ const AssetMetadata = (props: Props) => {
   const handleDownload = () => {
     window.location.href = `${asset.url}?dl=${asset.originalFilename}`
   }
+  const handleDownloadSm = () => {
+    window.location.href = `${asset.url}?w=1080&dl=${asset.originalFilename}`
+  }
 
   return (
     <Box marginTop={3}>
@@ -109,6 +112,15 @@ const AssetMetadata = (props: Props) => {
             mode="ghost"
             onClick={handleDownload}
             text="Download"
+          />
+          {/* Download 1080w */}
+          <Button
+            disabled={!item || item?.updating}
+            fontSize={1}
+            icon={DownloadIcon}
+            mode="ghost"
+            onClick={handleDownloadSm}
+            text="Download 1080w"
           />
           {/* Copy to clipboard */}
           <ButtonAssetCopy disabled={!item || item?.updating} url={asset.url} />
