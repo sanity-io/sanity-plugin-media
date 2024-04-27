@@ -1,6 +1,6 @@
 {
   "name": "@heavy-dev/sanity-plugin-media",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "This version of `sanity-plugin-media` is for Sanity Studio V3.",
   "keywords": [
     "sanity",
@@ -124,7 +124,7 @@
     "@sanity/ui": "^1.0 || ^2.0",
     "react": "^18",
     "react-dom": "^18",
-    "sanity": "^3.0.0",
+    "sanity": "^3.39.0",
     "styled-components": "^5.0 || ^6.0"
   },
   "engines": {
