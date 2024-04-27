@@ -154,7 +154,8 @@ const dialogSlice = createSlice({
           assets: assets.map(assetItem => assetItem.asset)
         }),
         confirmText: `Yes, download ${suffix}`,
-        description: 'Download a bunch of images?',
+        description:
+          'Your browser may require you to allow popups in order to download multiple images in succession.',
         title: `Download ${suffix}?`,
         id: 'confirm',
         headerTitle: 'Confirm download',

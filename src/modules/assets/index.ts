@@ -187,13 +187,11 @@ const assetsSlice = createSlice({
     },
     downloadRequest(state, action: PayloadAction<{assets: Asset[]; closeDialogId?: string}>) {
       const {assets} = action.payload
-      assets.forEach(asset => {
-        // state.byIds[asset?._id].updating = true
-        window.location.href = `${asset.url}?dl=${asset.originalFilename}`
-      })
-
-      Object.keys(state.byIds).forEach(key => {
-        delete state.byIds[key].error
+      const interval = 500
+      assets.forEach(function (el, index) {
+        setTimeout(function () {
+          window.open(`${el.url}?dl=${el.originalFilename}`, '_blank')
+        }, index * interval)
       })
     },
     fetchComplete(state, action: PayloadAction<{assets: Asset[]}>) {

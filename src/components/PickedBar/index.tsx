@@ -63,6 +63,17 @@ const PickedBar = () => {
           <Label size={0}>Deselect</Label>
         </Button>
 
+        {/* Download Selected button */}
+        <Button
+          mode="bleed"
+          onClick={handleDownloadPicked}
+          padding={2}
+          style={{background: 'none', boxShadow: 'none'}}
+          tone="default"
+        >
+          <Label size={0}>Download</Label>
+        </Button>
+
         {/* Delete button */}
         <Button
           mode="bleed"
@@ -72,17 +83,6 @@ const PickedBar = () => {
           tone="critical"
         >
           <Label size={0}>Delete</Label>
-        </Button>
-
-        {/* Download Selected button */}
-        <Button
-          mode="bleed"
-          onClick={handleDownloadPicked}
-          padding={2}
-          style={{background: 'none', boxShadow: 'none'}}
-          tone="critical"
-        >
-          <Label size={0}>Download Selected</Label>
         </Button>
       </Flex>
     </Flex>
