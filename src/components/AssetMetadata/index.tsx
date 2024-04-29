@@ -3,10 +3,13 @@ import {Box, Button, Flex, Inline, Stack, Text} from '@sanity/ui'
 import {Asset, AssetItem} from '@types'
 import format from 'date-fns/format'
 import filesize from 'filesize'
-import React, {ReactNode} from 'react'
+import {useColorScheme} from 'sanity'
+import React, {useState, ReactNode} from 'react'
 import getAssetResolution from '../../utils/getAssetResolution'
 import {isImageAsset} from '../../utils/typeGuards'
 import ButtonAssetCopy from '../ButtonAssetCopy'
+import Select from 'react-select'
+import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/alt'
 
 type Props = {
   asset: Asset
@@ -43,15 +46,46 @@ const Row = ({label, value}: {label: string; value: ReactNode}) => {
 
 const AssetMetadata = (props: Props) => {
   const {asset, item} = props
+  const {scheme} = useColorScheme()
 
   const exif = asset?.metadata?.exif
 
+  interface Option {
+    label: string
+    value: number
+  }
+  const options = [
+    {value: 0, label: 'Original Width'},
+    {value: 1920, label: '1920w'},
+    {value: 1080, label: '1080w'},
+    {value: 720, label: '720w'}
+  ]
+  const [option, setOption] = useState(options[0])
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const handleSizeSelect = (option: Option) => {
+    setOption(option)
+  }
+
+  // const handleChange = (option: TagSelectOption) => {
+  //   dispatch(
+  //     searchActions.facetsUpdateById({
+  //       id: facet.id,
+  //       value: option
+  //     })
+  //   )
+  // }
+  // const [option, setOption] = useState<{value: number; label: string}>(options[0])
+  // const handleSizeSelect = (selection: ValueType<(typeof options)[0], true>) => {
+  //   setOption(selection)
+  // }
+
   // Callbacks
   const handleDownload = () => {
-    window.location.href = `${asset.url}?dl=${asset.originalFilename}`
-  }
-  const handleDownloadSm = () => {
-    window.location.href = `${asset.url}?w=1080&dl=${asset.originalFilename}`
+    if (option.value == 0) {
+      window.location.href = `${asset.url}?dl=${asset.originalFilename}`
+    } else {
+      window.location.href = `${asset.url}?w=${option.value}&dl=${asset.originalFilename}`
+    }
   }
 
   return (
@@ -103,25 +137,38 @@ const AssetMetadata = (props: Props) => {
 
       {/* Asset actions */}
       <Box marginTop={5}>
-        <Inline space={2}>
+        <Inline space={3}>
           {/* Download */}
-          <Button
-            disabled={!item || item?.updating}
-            fontSize={1}
-            icon={DownloadIcon}
-            mode="ghost"
-            onClick={handleDownload}
-            text="Download"
-          />
-          {/* Download 1080w */}
-          <Button
-            disabled={!item || item?.updating}
-            fontSize={1}
-            icon={DownloadIcon}
-            mode="ghost"
-            onClick={handleDownloadSm}
-            text="Download 1080w"
-          />
+          <Flex
+            align={'center'}
+            style={{
+              background: '#f2f3f5',
+              padding: 4,
+              gap: 6,
+              borderRadius: 3
+            }}
+          >
+            <Button
+              disabled={!item || item?.updating}
+              fontSize={1}
+              icon={DownloadIcon}
+              mode="ghost"
+              onClick={handleDownload}
+              text="Download"
+            />
+            <span>@</span>
+            <Select
+              value={option}
+              components={reactSelectComponents}
+              isSearchable
+              name="downloadSize"
+              options={options}
+              defaultValue={options[0]}
+              menuPlacement="top"
+              styles={reactSelectStyles(scheme)}
+              onChange={value => handleSizeSelect(value as Option)}
+            />
+          </Flex>
           {/* Copy to clipboard */}
           <ButtonAssetCopy disabled={!item || item?.updating} url={asset.url} />
         </Inline>
