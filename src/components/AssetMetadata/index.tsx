@@ -50,20 +50,19 @@ const AssetMetadata = (props: Props) => {
 
   const exif = asset?.metadata?.exif
 
-  interface Option {
-    label: string
-    value: number
-  }
   const options = [
     {value: 0, label: 'Original Width'},
     {value: 1920, label: '1920w'},
     {value: 1080, label: '1080w'},
     {value: 720, label: '720w'}
   ]
-  const [option, setOption] = useState(options[0])
-  // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleSizeSelect = (option: Option) => {
     setOption(option)
+  }
+  const [option, setOption] = useState(options[0])
+  interface Option {
+    label: string
+    value: number
   }
 
   // const handleChange = (option: TagSelectOption) => {
