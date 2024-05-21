@@ -65,6 +65,19 @@ const AssetMetadata = (props: Props) => {
     value: number
   }
 
+  // const handleChange = (option: TagSelectOption) => {
+  //   dispatch(
+  //     searchActions.facetsUpdateById({
+  //       id: facet.id,
+  //       value: option
+  //     })
+  //   )
+  // }
+  // const [option, setOption] = useState<{value: number; label: string}>(options[0])
+  // const handleSizeSelect = (selection: ValueType<(typeof options)[0], true>) => {
+  //   setOption(selection)
+  // }
+
   // Callbacks
   const handleDownload = () => {
     if (option.value == 0) {
