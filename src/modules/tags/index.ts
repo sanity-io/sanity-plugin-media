@@ -1,12 +1,12 @@
 import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, Transaction} from '@sanity/client'
-import type {Asset, HttpError, MyEpic, TagSelectOption, Tag, TagItem} from '@types'
+import type {Asset, HttpError, MyEpic, Tag, TagItem, TagSelectOption} from '@types'
 import groq from 'groq'
 import {Selector} from 'react-redux'
 import {ofType} from 'redux-observable'
 import {from, Observable, of} from 'rxjs'
 import {bufferTime, catchError, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
-import {TAG_DOCUMENT_NAME} from '../../constants'
+import {PROJECT_DOCUMENT_NAME, TAG_DOCUMENT_NAME} from '../../constants'
 import checkTagName from '../../operators/checkTagName'
 import debugThrottle from '../../operators/debugThrottle'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
@@ -152,7 +152,7 @@ const tagsSlice = createSlice({
         const query = groq`
           {
             "items": *[
-              _type == "${TAG_DOCUMENT_NAME}"
+              _type in ["${TAG_DOCUMENT_NAME}", "${PROJECT_DOCUMENT_NAME}"]
               && !(_id in path("drafts.**"))
             ] {
               _createdAt,
@@ -522,9 +522,13 @@ export const selectTagById = createSelector(
 // TODO: use createSelector
 // Map tag references to react-select options, skipping over items with no linked tags
 export const selectTagSelectOptions =
-  (asset?: Asset) =>
+  (asset?: Asset, key = 'tags') =>
   (state: RootReducerState): TagSelectOption[] | null => {
-    const tags = asset?.opt?.media?.tags?.reduce((acc: TagItem[], v) => {
+    if (!asset?.opt?.media?.[key]) {
+      return null
+    }
+
+    const tags = asset.opt.media[key].reduce((acc: TagItem[], v) => {
       const tagItem = state.tags.byIds[v._ref]
       if (tagItem?.tag) {
         acc.push(tagItem)

@@ -1,5 +1,4 @@
 import {Box} from '@sanity/ui'
-import React from 'react'
 import {Controller} from 'react-hook-form'
 import CreatableSelect from 'react-select/creatable'
 import {useColorScheme} from 'sanity'
@@ -22,6 +21,7 @@ type Props = {
   }[]
   placeholder?: string
   value?: TagSelectOption[] | null
+  zIndex?: number
 }
 
 const FormFieldInputTags = (props: Props) => {
@@ -35,7 +35,8 @@ const FormFieldInputTags = (props: Props) => {
     onCreateTag,
     options,
     placeholder,
-    value
+    value,
+    zIndex = 2
   } = props
 
   const {scheme} = useColorScheme()
@@ -47,7 +48,7 @@ const FormFieldInputTags = (props: Props) => {
   return (
     <Box
       // HACK: force stacking context to ensure react-select dropdown sits above other fields
-      style={{zIndex: 2}}
+      style={{zIndex}}
     >
       {/* Label */}
       <FormFieldInputLabel description={description} error={error} label={label} name={name} />

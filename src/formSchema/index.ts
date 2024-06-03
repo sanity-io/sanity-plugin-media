@@ -10,7 +10,8 @@ export const assetFormSchema = z.object({
   description: z.string().trim().optional(),
   opt: z.object({
     media: z.object({
-      tags: z.array(tagOptionSchema).nullable()
+      tags: z.array(tagOptionSchema).nullable(),
+      projects: z.array(tagOptionSchema).nullable()
     })
   }),
   originalFilename: z.string().trim().min(1, {message: 'Filename cannot be empty'}),

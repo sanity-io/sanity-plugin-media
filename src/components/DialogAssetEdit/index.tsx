@@ -3,17 +3,16 @@ import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
 import {Asset, AssetFormData, DialogAssetEditProps, TagSelectOption} from '@types'
 import groq from 'groq'
-import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react'
+import {ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import {WithReferringDocuments, useColorScheme, useDocumentStore} from 'sanity'
+import {useColorScheme, useDocumentStore, WithReferringDocuments} from 'sanity'
 import {assetFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
-import {selectTags, selectTagSelectOptions, tagsActions} from '../../modules/tags'
-import getTagSelectOptions from '../../utils/getTagSelectOptions'
+import {selectTagSelectOptions} from '../../modules/tags'
 import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
 import imageDprUrl from '../../utils/imageDprUrl'
 import sanitizeFormData from '../../utils/sanitizeFormData'
@@ -22,9 +21,9 @@ import AssetMetadata from '../AssetMetadata'
 import Dialog from '../Dialog'
 import DocumentList from '../DocumentList'
 import FileAssetPreview from '../FileAssetPreview'
-import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
+import FormFieldTags from '../FormFieldTags'
 import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
 
@@ -46,7 +45,6 @@ const DialogAssetEdit = (props: Props) => {
 
   const dispatch = useDispatch()
   const assetItem = useTypedSelector(state => selectAssetById(state, String(assetId))) // TODO: check casting
-  const tags = useTypedSelector(selectTags)
 
   const assetUpdatedPrev = useRef<string | undefined>(undefined)
 
@@ -55,9 +53,9 @@ const DialogAssetEdit = (props: Props) => {
   const [tabSection, setTabSection] = useState<'details' | 'references'>('details')
 
   const currentAsset = assetItem ? assetItem?.asset : assetSnapshot
-  const allTagOptions = getTagSelectOptions(tags)
 
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
+  const assetProjectOptions = useTypedSelector(selectTagSelectOptions(currentAsset, 'projects'))
 
   const generateDefaultValues = useCallback(
     (asset?: Asset): AssetFormData => {
@@ -65,7 +63,7 @@ const DialogAssetEdit = (props: Props) => {
         altText: asset?.altText || '',
         description: asset?.description || '',
         originalFilename: asset?.originalFilename || '',
-        opt: {media: {tags: assetTagOptions}},
+        opt: {media: {tags: assetTagOptions, projects: assetProjectOptions}},
         title: asset?.title || ''
       }
     },
@@ -114,19 +112,6 @@ const DialogAssetEdit = (props: Props) => {
     }
   }, [])
 
-  const handleCreateTag = useCallback(
-    (tagName: string) => {
-      // Dispatch action to create new tag
-      dispatch(
-        tagsActions.createRequest({
-          assetId: currentAsset?._id,
-          name: tagName
-        })
-      )
-    },
-    [currentAsset?._id, dispatch]
-  )
-
   // Submit react-hook-form
   const onSubmit: SubmitHandler<AssetFormData> = useCallback(
     formData => {
@@ -148,6 +133,12 @@ const DialogAssetEdit = (props: Props) => {
                 ...sanitizedFormData.opt.media,
                 tags:
                   sanitizedFormData.opt.media.tags?.map((tag: TagSelectOption) => ({
+                    _ref: tag.value,
+                    _type: 'reference',
+                    _weak: true
+                  })) || null,
+                projects:
+                  sanitizedFormData.opt.media.projects?.map((tag: TagSelectOption) => ({
                     _ref: tag.value,
                     _type: 'reference',
                     _weak: true
@@ -294,16 +285,28 @@ const DialogAssetEdit = (props: Props) => {
                     >
                       <Stack space={3}>
                         {/* Tags */}
-                        <FormFieldInputTags
+                        <FormFieldTags
                           control={control}
                           disabled={formUpdating}
-                          error={errors?.opt?.media?.tags?.message}
+                          assetSnapshot={assetSnapshot}
+                          assetId={assetId}
+                          error={'error'}
                           label="Tags"
-                          name="opt.media.tags"
-                          onCreateTag={handleCreateTag}
-                          options={allTagOptions}
                           placeholder="Select or create..."
-                          value={assetTagOptions}
+                          name="opt.media.tags"
+                          type="media.tag"
+                          zIndex={3}
+                        />
+                        <FormFieldTags
+                          control={control}
+                          disabled={formUpdating}
+                          assetSnapshot={assetSnapshot}
+                          assetId={assetId}
+                          error={'error'}
+                          label="Projects"
+                          placeholder="Select or create..."
+                          name="opt.media.projects"
+                          type="project.tag"
                         />
                         {/* Filename */}
                         <FormFieldInputText

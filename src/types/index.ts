@@ -15,7 +15,7 @@ type CustomFields = {
   description?: string
   opt?: {
     media?: {
-      tags?: SanityReference[]
+      [key: string]: SanityReference[]
     }
   }
   title?: string
