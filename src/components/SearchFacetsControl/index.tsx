@@ -11,7 +11,9 @@ const SearchFacetsControl = () => {
   // Redux
   const dispatch = useDispatch()
   const assetTypes = useTypedSelector(state => state.assets.assetTypes)
+    console.log("aqq", assetTypes)
   const searchFacets = useTypedSelector(state => state.search.facets)
+    console.log("facets", searchFacets)
   const selectedDocument = useTypedSelector(state => state.selected.document)
 
   const isTool = !selectedDocument

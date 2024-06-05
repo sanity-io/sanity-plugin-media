@@ -47,6 +47,7 @@ const Browser = (props: Props) => {
 
   const handleTagUpdate = (update: MutationEvent) => {
     const {documentId, result, transition} = update
+    console.log("handleTags")
 
     if (transition === 'appear') {
       dispatch(tagsActions.listenerCreateQueue({tag: result as Tag}))
@@ -69,19 +70,35 @@ const Browser = (props: Props) => {
     // Fetch all tags
     dispatch(tagsActions.fetchRequest())
 
+    const tagsRefs = {
+      us: "2yXnm4mew8QvsGqhdMhYHY",
+      br: "L9kJ2ltVJF2K9EcyKNB9pV",
+      ua: "9q4DLwlx4GaCDdOE1fIe3s",
+      gb: "ISMpGAlllEDUeg1EmZjul4",
+      co: "ISMpGAlllEDUeg1EmZjuyX",
+      de: "ISMpGAlllEDUeg1EmZjv6c",
+      ar: "9q4DLwlx4GaCDdOE1fIdsV",
+      tr: "NlvmxH0U7Vz33q3WYVbACf",
+      ae: "QFupi900N8MGZiKkhuHeFl",
+      ca: "QFupi900N8MGZiKkhuHeKG",
+      za: "oabqLdliTwd35fNcGPgsut",
+      au: "oabqLdliTwd35fNcGPgtJP",
+      id: "oabqLdliTwd35fNcGPgtY7",
+      mx: "oabqLdliTwd35fNcGPgtmp",
+      cl: "xsFDdtCGs1CGERgpfPehEc",
+    }
+
+    const market = process.env["SANITY_STUDIO_MARKET"] ? process.env["SANITY_STUDIO_MARKET"] : "";
+    console.log("market plugin", market)
+
     // Listen for asset and tag changes in published documents.
     // Remember that Sanity listeners ignore joins, order clauses and projections!
     // Also note that changes to the selected document (if present) will automatically re-load the media plugin
     // due to the desk pane re-rendering.
-    const subscriptionAsset = client
-      .listen(
-        groq`*[_type in ["sanity.fileAsset", "sanity.imageAsset"] && !(_id in path("drafts.**"))]`
-      )
-      .subscribe(handleAssetUpdate)
-
-    const subscriptionTag = client
-      .listen(groq`*[_type == "${TAG_DOCUMENT_NAME}" && !(_id in path("drafts.**"))]`)
-      .subscribe(handleTagUpdate)
+    // @ts-ignore
+    const subscriptionAsset = client.listen(groq`*[_type in ["sanity.fileAsset", "sanity.imageAsset"] && count(opt.media.tags[(_ref == "${tagsRefs[market]}")]) > 0 && !(_id in path("drafts.**"))]`).subscribe(handleAssetUpdate)
+    // @ts-ignore
+    const subscriptionTag = client.listen(groq`*[_type == "${TAG_DOCUMENT_NAME}" && count(opt.media.tags[(_ref == "${tagsRefs[market]}")]) > 0 &&  !(_id in path("drafts.**"))]`).subscribe(handleTagUpdate)
 
     return () => {
       subscriptionAsset?.unsubscribe()
@@ -90,31 +107,31 @@ const Browser = (props: Props) => {
   }, [])
 
   return (
-    <UploadDropzone>
-      <Dialogs />
-      <Notifications />
+      <UploadDropzone>
+        <Dialogs/>
+        <Notifications/>
 
-      <Card display="flex" height="fill">
-        <Flex direction="column" flex={1}>
-          {/* Header */}
-          <Header onClose={onClose} />
+        <Card display="flex" height="fill">
+          <Flex direction="column" flex={1}>
+            {/* Header */}
+            <Header onClose={onClose}/>
 
-          {/* Browser Controls */}
-          <Controls />
+            {/* Browser Controls */}
+            <Controls/>
 
-          <Flex flex={1}>
-            <Flex align="flex-end" direction="column" flex={1} style={{position: 'relative'}}>
-              <PickedBar />
-              <Items />
+            <Flex flex={1}>
+              <Flex align="flex-end" direction="column" flex={1} style={{position: 'relative'}}>
+                <PickedBar/>
+                <Items/>
+              </Flex>
+              <TagsPanel/>
             </Flex>
-            <TagsPanel />
-          </Flex>
 
-          {/* Debug */}
-          <DebugControls />
-        </Flex>
-      </Card>
-    </UploadDropzone>
+            {/* Debug */}
+            <DebugControls/>
+          </Flex>
+        </Card>
+      </UploadDropzone>
   )
 }
 

@@ -17,9 +17,28 @@ const constructFilter = ({
   // Sanity will crash if you try and insert incompatible asset types into fields!
   const documentAssetTypes = assetTypes.map(type => `sanity.${type}Asset`)
 
-  const baseFilter = groq`
-    _type in ${JSON.stringify(documentAssetTypes)} && !(_id in path("drafts.**"))
-  `
+  const tagsRefs = {
+    us: "2yXnm4mew8QvsGqhdMhYHY",
+    br: "L9kJ2ltVJF2K9EcyKNB9pV",
+    ua: "9q4DLwlx4GaCDdOE1fIe3s",
+    gb: "ISMpGAlllEDUeg1EmZjul4",
+    co: "ISMpGAlllEDUeg1EmZjuyX",
+    de: "ISMpGAlllEDUeg1EmZjv6c",
+    ar: "9q4DLwlx4GaCDdOE1fIdsV",
+    tr: "NlvmxH0U7Vz33q3WYVbACf",
+    ae: "QFupi900N8MGZiKkhuHeFl",
+    ca: "QFupi900N8MGZiKkhuHeKG",
+    za: "oabqLdliTwd35fNcGPgsut",
+    au: "oabqLdliTwd35fNcGPgtJP",
+    id: "oabqLdliTwd35fNcGPgtY7",
+    mx: "oabqLdliTwd35fNcGPgtmp",
+    cl: "xsFDdtCGs1CGERgpfPehEc",
+  }
+
+  const market =  process.env["SANITY_STUDIO_MARKET"]? process.env["SANITY_STUDIO_MARKET"]: "";
+
+  // @ts-ignore
+  const baseFilter = groq`_type in ${JSON.stringify(documentAssetTypes)} && count(opt.media.tags[(_ref == "${tagsRefs[market]}")]) > 0 && !(_id in path("drafts.**"))`
 
   const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
     if (facet.type === 'number') {
@@ -75,6 +94,7 @@ const constructFilter = ({
     return acc
   }, [])
 
+  console.log(searchQuery, "searchQuery")
   // Join separate filter fragments
   const constructedQuery = [
     // Base filter
