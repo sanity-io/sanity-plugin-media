@@ -1,8 +1,8 @@
 import {Flex, Label} from '@sanity/ui'
 import {TagActions, TagItem} from '@types'
-import React, {memo, useState} from 'react'
+import {memo, useState} from 'react'
 import {Virtuoso} from 'react-virtuoso'
-import {PANEL_HEIGHT} from '../../constants'
+import {PANEL_HEIGHT, TAG_DOCUMENT_NAME} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'
@@ -42,7 +42,8 @@ const VirtualRow = memo(
 
 const TagsVirtualized = () => {
   const assetsPicked = useTypedSelector(selectAssetsPicked)
-  const tags = useTypedSelector(selectTags)
+  let tags = useTypedSelector(selectTags)
+  tags = tags.filter(tag => tag.tag._type === TAG_DOCUMENT_NAME)
 
   // State
   const [isScrolling, setIsScrolling] = useState(false)

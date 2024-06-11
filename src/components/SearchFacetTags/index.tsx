@@ -1,16 +1,16 @@
 import {SelectIcon} from '@sanity/icons'
 import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
 import {
-  TagSelectOption,
   SearchFacetInputSearchableProps,
   SearchFacetOperatorType,
+  TagSelectOption,
   WithId
 } from '@types'
-import React from 'react'
 import {useDispatch} from 'react-redux'
 import Select from 'react-select'
 import {useColorScheme} from 'sanity'
 import {operators} from '../../config/searchFacets'
+import {TAG_DOCUMENT_NAME} from '../../constants'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
@@ -28,7 +28,9 @@ const SearchFacetTags = ({facet}: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const tags = useTypedSelector(state => selectTags(state))
+  let tags = useTypedSelector(state => selectTags(state))
+  tags = tags.filter(tag => tag.tag._type === TAG_DOCUMENT_NAME)
+
   const tagsFetching = useTypedSelector(state => state.tags.fetching)
   const allTagOptions = getTagSelectOptions(tags)
 

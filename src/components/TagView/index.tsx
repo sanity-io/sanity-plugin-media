@@ -1,5 +1,5 @@
 import {Box, Flex, Text} from '@sanity/ui'
-import React from 'react'
+import {TAG_DOCUMENT_NAME} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPickedLength} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'
@@ -8,7 +8,9 @@ import TagViewHeader from '../TagViewHeader'
 
 const TagView = () => {
   const numPickedAssets = useTypedSelector(selectAssetsPickedLength)
-  const tags = useTypedSelector(selectTags)
+  let tags = useTypedSelector(selectTags)
+  tags = tags.filter(tag => tag.tag._type === TAG_DOCUMENT_NAME)
+
   const fetching = useTypedSelector(state => state.tags.fetching)
   const fetchCount = useTypedSelector(state => state.tags.fetchCount)
   const fetchComplete = fetchCount !== -1

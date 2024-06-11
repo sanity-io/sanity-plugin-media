@@ -1,14 +1,14 @@
 import {Checkbox, Flex, Grid, ThemeColorSchemeKey, useMediaIndex} from '@sanity/ui'
-import React, {MouseEvent} from 'react'
+import {MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
+import {useColorScheme} from 'sanity'
 import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS, PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsLength, selectAssetsPickedLength} from '../../modules/assets'
-import TableHeaderItem from '../TableHeaderItem'
-import {useColorScheme} from 'sanity'
 import {getSchemeColor} from '../../utils/getSchemeColor'
+import TableHeaderItem from '../TableHeaderItem'
 
 // TODO: DRY
 const ContextActionContainer = styled(Flex)(({scheme}: {scheme: ThemeColorSchemeKey}) => {
@@ -94,6 +94,7 @@ const TableHeader = () => {
 
       <TableHeaderItem />
       <TableHeaderItem field="originalFilename" title="Filename" />
+      <TableHeaderItem field="projects" title="Projects" />
       <TableHeaderItem title="Resolution" />
       <TableHeaderItem field="mimeType" title="MIME type" />
       <TableHeaderItem field="size" title="Size" />

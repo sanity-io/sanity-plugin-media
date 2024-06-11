@@ -13,9 +13,9 @@ import {
 } from '@sanity/ui'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
-import React, {memo, MouseEvent, RefObject, useCallback, useEffect, useRef, useState} from 'react'
+import {memo, MouseEvent, RefObject, useCallback, useEffect, useRef, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {WithReferringDocuments, useColorScheme} from 'sanity'
+import {useColorScheme, WithReferringDocuments} from 'sanity'
 import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -23,13 +23,14 @@ import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
+import {selectTagSelectOptions} from '../../modules/tags'
 import getAssetResolution from '../../utils/getAssetResolution'
+import {getSchemeColor} from '../../utils/getSchemeColor'
+import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
 import imageDprUrl from '../../utils/imageDprUrl'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
 import Image from '../Image'
-import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
-import {getSchemeColor} from '../../utils/getSchemeColor'
 
 // Duration (ms) to wait before reference counts (and associated listeners) are rendered
 const REFERENCE_COUNT_VISIBILITY_DELAY = 750
@@ -108,6 +109,8 @@ const TableRowAsset = (props: Props) => {
   const isOpaque = item?.asset?.metadata?.isOpaque
   const picked = item?.picked
   const updating = item?.updating
+
+  const assetProjects = useTypedSelector(selectTagSelectOptions(asset, 'projects'))
 
   const {onSelect} = useAssetSourceActions()
 
@@ -287,7 +290,8 @@ const TableRowAsset = (props: Props) => {
         marginLeft={mediaIndex < 3 ? 3 : 0}
         style={{
           gridColumn: 3,
-          gridRow: mediaIndex < 3 ? 2 : 'auto',
+          gridRow: mediaIndex < 3 ? 1 : 'auto',
+          gridRowEnd: mediaIndex < 3 ? 'span 2' : 'auto',
           opacity: opacityCell
         }}
       >
@@ -295,13 +299,28 @@ const TableRowAsset = (props: Props) => {
           {asset.originalFilename}
         </Text>
       </Box>
-
-      {/* Resolution */}
+      {/* Project tags */}
       <Box
         marginLeft={mediaIndex < 3 ? 3 : 0}
         style={{
           gridColumn: mediaIndex < 3 ? 3 : 4,
           gridRow: mediaIndex < 3 ? 3 : 'auto',
+          opacity: opacityCell
+        }}
+      >
+        <Text muted size={1} style={{lineHeight: '2em'}} textOverflow="ellipsis">
+          {assetProjects?.length
+            ? assetProjects.map((project: any) => project.label).join(', ')
+            : '-'}
+        </Text>
+      </Box>
+
+      {/* Resolution */}
+      <Box
+        marginLeft={mediaIndex < 3 ? 3 : 0}
+        style={{
+          gridColumn: mediaIndex < 3 ? 3 : 5,
+          gridRow: mediaIndex < 3 ? 4 : 'auto',
           opacity: opacityCell
         }}
       >
@@ -314,7 +333,7 @@ const TableRowAsset = (props: Props) => {
       <Box
         style={{
           display: mediaIndex < 3 ? 'none' : 'block',
-          gridColumn: 5,
+          gridColumn: 6,
           gridRow: 'auto',
           opacity: opacityCell
         }}
@@ -328,7 +347,7 @@ const TableRowAsset = (props: Props) => {
       <Box
         style={{
           display: mediaIndex < 3 ? 'none' : 'block',
-          gridColumn: 6,
+          gridColumn: 7,
           gridRow: 'auto',
           opacity: opacityCell
         }}
@@ -342,8 +361,8 @@ const TableRowAsset = (props: Props) => {
       <Box
         marginLeft={mediaIndex < 3 ? 3 : 0}
         style={{
-          gridColumn: mediaIndex < 3 ? 3 : 7,
-          gridRow: mediaIndex < 3 ? 4 : 'auto',
+          gridColumn: mediaIndex < 3 ? 3 : 8,
+          gridRow: mediaIndex < 3 ? 5 : 'auto',
           opacity: opacityCell
         }}
       >
@@ -356,7 +375,7 @@ const TableRowAsset = (props: Props) => {
       <Box
         style={{
           display: mediaIndex < 3 ? 'none' : 'block',
-          gridColumn: 8,
+          gridColumn: 9,
           gridRow: 'auto',
           opacity: opacityCell
         }}
@@ -384,7 +403,7 @@ const TableRowAsset = (props: Props) => {
         align="center"
         justify="center"
         style={{
-          gridColumn: mediaIndex < 3 ? 4 : 9,
+          gridColumn: mediaIndex < 3 ? 4 : 10,
           gridRowStart: '1',
           gridRowEnd: mediaIndex < 3 ? 'span 5' : 'auto',
           opacity: opacityCell
