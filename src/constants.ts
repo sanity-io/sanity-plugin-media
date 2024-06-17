@@ -1,4 +1,4 @@
-import {SearchFacetInputProps, SearchFacetDivider, SearchFacetGroup, OrderDirection} from '@types'
+import {OrderDirection, SearchFacetDivider, SearchFacetGroup, SearchFacetInputProps} from '@types'
 import {divider, inputs} from './config/searchFacets'
 
 // Sort order dropdown options
@@ -71,5 +71,5 @@ export const GRID_TEMPLATE_COLUMNS = {
 }
 export const PANEL_HEIGHT = 32 // px
 export const TAG_DOCUMENT_NAME = 'media.tag'
-export const PROJECT_DOCUMENT_NAME = 'project.tag'
+export const PROJECT_DOCUMENT_NAME = 'media.project'
 export const TAGS_PANEL_WIDTH = 250 // px

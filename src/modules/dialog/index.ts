@@ -49,7 +49,8 @@ const dialogSlice = createSlice({
         if (item.type === 'assetEdit' && item.assetId === assetId) {
           item.lastCreatedTag = {
             label: tag.name.current,
-            value: tag._id
+            value: tag._id,
+            type: tag._type
           }
         }
       })

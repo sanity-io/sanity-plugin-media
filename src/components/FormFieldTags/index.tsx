@@ -12,17 +12,29 @@ type Props = {
   disabled?: boolean
   assetSnapshot: Asset | undefined
   assetId: string | undefined
-  error: string
+  error: string | undefined
   label: string
   placeholder: string
+  noOptionsMessage: string
   type: string
   name: string
   zIndex?: number
 }
 
 const FormFieldTags = (props: Props) => {
-  const {control, disabled, error, label, placeholder, name, type, assetSnapshot, assetId, zIndex} =
-    props
+  const {
+    control,
+    disabled,
+    error,
+    label,
+    placeholder,
+    noOptionsMessage,
+    name,
+    type,
+    assetSnapshot,
+    assetId,
+    zIndex
+  } = props
 
   const dispatch = useDispatch()
   const assetItem = useTypedSelector(state => selectAssetById(state, String(assetId)))
@@ -43,11 +55,12 @@ const FormFieldTags = (props: Props) => {
       dispatch(
         tagsActions.createRequest({
           assetId: currentAsset?._id,
-          name: tagName
+          name: tagName,
+          type
         })
       )
     },
-    [currentAsset?._id, dispatch]
+    [currentAsset?._id, dispatch, type]
   )
 
   useEffect(() => {
@@ -64,6 +77,7 @@ const FormFieldTags = (props: Props) => {
       label={label}
       name={name}
       placeholder={placeholder}
+      noOptionsMessage={noOptionsMessage}
       onCreateTag={handleCreateTag}
       options={allTagOptions}
       value={assetTagOptions}

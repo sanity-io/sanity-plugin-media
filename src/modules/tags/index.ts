@@ -92,7 +92,7 @@ const tagsSlice = createSlice({
       state.creating = false
       state.creatingError = action.payload.error
     },
-    createRequest(state, _action: PayloadAction<{assetId?: string; name: string}>) {
+    createRequest(state, _action: PayloadAction<{assetId?: string; name: string; type?: string}>) {
       state.creating = true
       delete state.creatingError
     },
@@ -272,14 +272,14 @@ export const tagsCreateEpic: MyEpic = (action$, state$, {client}) =>
     filter(tagsSlice.actions.createRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const {assetId, name} = action.payload
+      const {assetId, name, type} = action.payload
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         checkTagName(client, name),
         mergeMap(() =>
           client.observable.create({
-            _type: TAG_DOCUMENT_NAME,
+            _type: type ?? TAG_DOCUMENT_NAME,
             name: {
               _type: 'slug',
               current: name

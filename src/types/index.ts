@@ -83,6 +83,7 @@ export type DialogAssetEditProps = {
   lastCreatedTag?: {
     label: string
     value: string
+    type?: string
   }
   lastRemovedTagIds?: string[]
   type: 'assetEdit'

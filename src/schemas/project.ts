@@ -2,7 +2,7 @@ import TagIcon from '../components/TagIcon'
 import {PROJECT_DOCUMENT_NAME} from '../constants'
 
 export default {
-  title: 'Project Tag',
+  title: 'Media Project',
   icon: TagIcon,
   name: PROJECT_DOCUMENT_NAME,
   type: 'document',

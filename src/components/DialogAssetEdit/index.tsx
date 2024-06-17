@@ -171,21 +171,25 @@ const DialogAssetEdit = (props: Props) => {
   // Update tags form field (react-select) when a new _inline_ tag has been created
   useEffect(() => {
     if (lastCreatedTag) {
-      const existingTags = (getValues('opt.media.tags') as TagSelectOption[]) || []
+      const name =
+        lastCreatedTag?.type === 'media.project' ? 'opt.media.projects' : 'opt.media.tags'
+      const existingTags = (getValues(name) as TagSelectOption[]) || []
       const updatedTags = existingTags.concat([lastCreatedTag])
-      setValue('opt.media.tags', updatedTags, {shouldDirty: true})
+      setValue(name, updatedTags, {shouldDirty: true})
     }
   }, [getValues, lastCreatedTag, setValue])
 
   // Update tags form field (react-select) when an _inline_ tag has been removed elsewhere
   useEffect(() => {
+    const name = 'opt.media.tags'
+
     if (lastRemovedTagIds) {
-      const existingTags = (getValues('opt.media.tags') as TagSelectOption[]) || []
+      const existingTags = (getValues(name) as TagSelectOption[]) || []
       const updatedTags = existingTags.filter(tag => {
         return !lastRemovedTagIds.includes(tag.value)
       })
 
-      setValue('opt.media.tags', updatedTags, {shouldDirty: true})
+      setValue(name, updatedTags, {shouldDirty: true})
     }
   }, [getValues, lastRemovedTagIds, setValue])
 
@@ -290,9 +294,10 @@ const DialogAssetEdit = (props: Props) => {
                           disabled={formUpdating}
                           assetSnapshot={assetSnapshot}
                           assetId={assetId}
-                          error={'error'}
+                          error={errors?.opt?.media?.tags?.message}
                           label="Tags"
                           placeholder="Select or create..."
+                          noOptionsMessage="No tags"
                           name="opt.media.tags"
                           type="media.tag"
                           zIndex={3}
@@ -302,11 +307,12 @@ const DialogAssetEdit = (props: Props) => {
                           disabled={formUpdating}
                           assetSnapshot={assetSnapshot}
                           assetId={assetId}
-                          error={'error'}
+                          error={errors?.opt?.media?.projects?.message}
                           label="Projects"
                           placeholder="Select or create..."
+                          noOptionsMessage="No projects"
                           name="opt.media.projects"
-                          type="project.tag"
+                          type="media.project"
                         />
                         {/* Filename */}
                         <FormFieldInputText

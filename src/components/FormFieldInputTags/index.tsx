@@ -20,6 +20,7 @@ type Props = {
     value: string
   }[]
   placeholder?: string
+  noOptionsMessage?: string
   value?: TagSelectOption[] | null
   zIndex?: number
 }
@@ -35,6 +36,7 @@ const FormFieldInputTags = (props: Props) => {
     onCreateTag,
     options,
     placeholder,
+    noOptionsMessage,
     value,
     zIndex = 2
   } = props
@@ -80,7 +82,7 @@ const FormFieldInputTags = (props: Props) => {
               isLoading={creating}
               isMulti
               name={name}
-              noOptionsMessage={() => 'No tags'}
+              noOptionsMessage={() => noOptionsMessage}
               onBlur={onBlur}
               onChange={onChange}
               onCreateOption={onCreateTag}
