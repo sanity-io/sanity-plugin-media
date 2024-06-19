@@ -94,7 +94,7 @@ const TableHeader = () => {
 
       <TableHeaderItem />
       <TableHeaderItem field="originalFilename" title="Filename" />
-      <TableHeaderItem field="projects" title="Projects" />
+      <TableHeaderItem title="Projects" />
       <TableHeaderItem title="Resolution" />
       <TableHeaderItem field="mimeType" title="MIME type" />
       <TableHeaderItem field="size" title="Size" />
