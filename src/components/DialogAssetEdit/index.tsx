@@ -206,22 +206,6 @@ const DialogAssetEdit = (props: Props) => {
     assetUpdatedPrev.current = assetItem?.asset._updatedAt
   }, [assetItem?.asset, generateDefaultValues, reset])
 
-  // Set URL param on mount
-  useEffect(() => {
-    // append url query param with current assetId
-    const url = new URL(window.location.href)
-    url.searchParams.set('assetId', props.dialog.id)
-    window.history.pushState({}, '', url.toString())
-
-    return () => {
-      // remove url query param on unmount
-      const returnUrl = new URL(window.location.href)
-      returnUrl.searchParams.delete('assetId')
-      window.history.pushState({}, '', returnUrl.toString())
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const Footer = () => (
     <Box padding={3}>
       <Flex justify="space-between">

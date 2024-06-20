@@ -9,7 +9,6 @@ import {TAG_DOCUMENT_NAME} from '../../constants'
 import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions} from '../../modules/assets'
-import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
 import GlobalStyle from '../../styled/GlobalStyles'
 import Controls from '../Controls'
@@ -94,18 +93,10 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
       .listen(groq`*[_type == "${TAG_DOCUMENT_NAME}" && !(_id in path("drafts.**"))]`)
       .subscribe(handleTagUpdate)
 
-    // Restore opened asset dialog if URL query param exists
-    const query = new URLSearchParams(window.location.search)
-    const assetId = query.get('assetId')
-    if (assetId) {
-      dispatch(dialogActions.showAssetEdit({assetId}))
-    }
-
     return () => {
       subscriptionAsset?.unsubscribe()
       subscriptionTag?.unsubscribe()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
