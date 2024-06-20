@@ -1,6 +1,7 @@
-import {definePlugin, Tool as SanityTool} from 'sanity'
-import {ImageIcon} from '@sanity/icons'
+import {EditIcon, ImageIcon} from '@sanity/icons'
 import type {AssetSource} from 'sanity'
+import {definePlugin, Tool as SanityTool} from 'sanity'
+import EditAssetTool from './components/EditAssetTool'
 import FormBuilderTool from './components/FormBuilderTool'
 import Tool from './components/Tool'
 import mediaTag from './schemas/tag'
@@ -16,6 +17,13 @@ export const mediaAssetSource: AssetSource = {
   component: FormBuilderTool
 }
 
+const editMediaAssetSource: AssetSource = {
+  icon: EditIcon,
+  title: 'Edit Media',
+  name: 'edit-media',
+  component: EditAssetTool
+}
+
 const tool = {
   ...plugin,
   component: Tool
@@ -26,12 +34,12 @@ export const media = definePlugin({
   form: {
     file: {
       assetSources: prev => {
-        return [...prev, mediaAssetSource]
+        return [...prev, mediaAssetSource, editMediaAssetSource]
       }
     },
     image: {
       assetSources: prev => {
-        return [...prev, mediaAssetSource]
+        return [...prev, mediaAssetSource, editMediaAssetSource]
       }
     }
   },
