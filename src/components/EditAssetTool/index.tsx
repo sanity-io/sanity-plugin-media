@@ -7,7 +7,38 @@ import useKeyPress from '../../hooks/useKeyPress'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import GlobalStyle from '../../styled/GlobalStyles'
 import ReduxProvider from '../ReduxProvider'
-import EditAssetDialog from './EditAssetDialog'
+import {useDispatch} from 'react-redux'
+import {assetsActions} from '../../modules/assets'
+import {dialogActions} from '../../modules/dialog'
+import constructFilter from '../../utils/constructFilter'
+import Dialogs from '../Dialogs'
+
+/**
+ * Dialog for editing a single asset
+ */
+const EditAssetDialog = (props: AssetSourceComponentProps) => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const constructedFilter = constructFilter({
+      assetTypes: ['file', 'image'],
+      searchFacets: []
+    })
+    const params = {
+      documentId: props.selectedAssets[0]?._id
+    }
+    dispatch(
+      assetsActions.fetchRequest({
+        params,
+        queryFilter: constructedFilter
+      })
+    )
+    dispatch(dialogActions.showAssetEdit({assetId: props.selectedAssets[0]._id}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return <Dialogs />
+}
 
 const EditAssetTool = (props: AssetSourceComponentProps) => {
   const {onClose} = props
