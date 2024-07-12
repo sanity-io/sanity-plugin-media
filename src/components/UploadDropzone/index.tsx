@@ -1,7 +1,7 @@
 import {white} from '@sanity/color'
 import {Flex, Text} from '@sanity/ui'
 import React, {ReactNode} from 'react'
-import {DropEvent, useDropzone} from 'react-dropzone'
+import {DropEvent, DropzoneOptions, useDropzone} from 'react-dropzone'
 import {useDispatch} from 'react-redux'
 import styled from 'styled-components'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -9,6 +9,7 @@ import {DropzoneDispatchProvider} from '../../contexts/DropzoneDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {notificationsActions} from '../../modules/notifications'
 import {uploadsActions} from '../../modules/uploads'
+import {useToolOptions} from '../../contexts/ToolOptionsContext'
 
 type Props = {
   children: ReactNode
@@ -62,6 +63,10 @@ async function filterFiles(fileList: FileList) {
 const UploadDropzone = (props: Props) => {
   const {children} = props
 
+  const {
+    dropzone: {maxSize}
+  } = useToolOptions()
+
   const {onSelect} = useAssetSourceActions()
 
   // Redux
@@ -80,6 +85,19 @@ const UploadDropzone = (props: Props) => {
         })
       )
     )
+  }
+
+  const handleDropRejected: DropzoneOptions['onDropRejected'] = rejections => {
+    const errorCodes = rejections.flatMap(({errors}) => errors.map(({code}) => code))
+
+    if (errorCodes.includes('file-too-large')) {
+      dispatch(
+        notificationsActions.add({
+          status: 'error',
+          title: 'One or more files exceed the maximum upload size.'
+        })
+      )
+    }
   }
 
   // Use custom file selector to obtain files on file drop + change events (excluding folders and packages)
@@ -123,7 +141,9 @@ const UploadDropzone = (props: Props) => {
     // HACK: Disable drag and drop functionality when in a selecting context
     // (This is currently due to Sanity's native image input taking precedence with drag and drop)
     noDrag: !!onSelect,
-    onDrop: handleDrop
+    onDrop: handleDrop,
+    maxSize,
+    onDropRejected: handleDropRejected
   })
 
   return (
