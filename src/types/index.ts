@@ -10,6 +10,10 @@ import * as z from 'zod'
 import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
 import {RootReducerState} from '../modules/types'
 
+export type MediaToolOptions = {
+  maximumUploadSize?: number
+}
+
 type CustomFields = {
   altText?: string
   description?: string

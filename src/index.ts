@@ -1,9 +1,10 @@
-import {definePlugin, Tool as SanityTool} from 'sanity'
+import {definePlugin} from 'sanity'
 import {ImageIcon} from '@sanity/icons'
 import type {AssetSource} from 'sanity'
 import FormBuilderTool from './components/FormBuilderTool'
 import Tool from './components/Tool'
 import mediaTag from './schemas/tag'
+import {MediaToolOptions} from '@types'
 
 const plugin = {
   icon: ImageIcon,
@@ -16,12 +17,7 @@ export const mediaAssetSource: AssetSource = {
   component: FormBuilderTool
 }
 
-const tool = {
-  ...plugin,
-  component: Tool
-} as SanityTool
-
-export const media = definePlugin({
+export const media = definePlugin<MediaToolOptions | void>(options => ({
   name: 'media',
   form: {
     file: {
@@ -39,6 +35,13 @@ export const media = definePlugin({
     types: [mediaTag]
   },
   tools: prev => {
-    return [...prev, tool]
+    return [
+      ...prev,
+      {
+        ...plugin,
+        options,
+        component: Tool
+      }
+    ]
   }
-})
+}))
