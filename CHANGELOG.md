@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.5...v2.3.0) (2024-07-16)
+
+### Features
+
+- [#203](https://github.com/sanity-io/sanity-plugin-media/issues/203) allow users to specify maximum upload size ([ae2bcd8](https://github.com/sanity-io/sanity-plugin-media/commit/ae2bcd8e706bb465500a552ad18fcb29cebb0719))
+
 ## [2.2.5](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.4...v2.2.5) (2024-01-12)
 
 ### Bug Fixes
