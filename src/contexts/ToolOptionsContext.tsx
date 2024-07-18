@@ -9,7 +9,7 @@ type ContextProps = {
 const ToolOptionsContext = createContext<ContextProps | null>(null)
 
 type Props = {
-  options?: MediaToolOptions
+  options?: MediaToolOptions | void
 }
 
 export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props>) => {
@@ -30,5 +30,3 @@ export const useToolOptions = () => {
 
   return context
 }
-
-export default ToolOptionsContext
