@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.3.0...v2.3.1) (2024-07-19)
+
+### Bug Fixes
+
+- add a layout component to provide tool options ([1512fba](https://github.com/sanity-io/sanity-plugin-media/commit/1512fbac94c8e3f77ed5394a1b14ac3c97b75aff))
+
 ## [2.3.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.2.5...v2.3.0) (2024-07-16)
 
 ### Features
