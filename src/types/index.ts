@@ -12,6 +12,10 @@ import {RootReducerState} from '../modules/types'
 
 export type MediaToolOptions = {
   maximumUploadSize?: number
+  creditLine: {
+    enabled: boolean
+    excludeSources?: string | string[]
+  }
 }
 
 type CustomFields = {
@@ -152,6 +156,7 @@ export type FileAsset = SanityAssetDocument &
 export type ImageAsset = SanityImageAssetDocument &
   CustomFields & {
     _type: 'sanity.imageAsset'
+    creditLine?: string
   }
 
 export type MarkDef = {_key: string; _type: string}
@@ -238,6 +243,7 @@ export type SearchFacetInputStringProps = SearchFacetInputCommon & {
 
 export type SearchFacetName =
   | 'altText'
+  | 'creditLine'
   | 'description'
   | 'fileName'
   | 'height'

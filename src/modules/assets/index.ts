@@ -239,6 +239,7 @@ const assetsSlice = createSlice({
               _createdAt,
               _updatedAt,
               altText,
+              creditLine,
               description,
               extension,
               metadata {
@@ -252,6 +253,9 @@ const assetsSlice = createSlice({
               },
               originalFilename,
               size,
+              source {
+                name
+              },
               title,
               url
             } ${pipe} ${sort} ${selector},

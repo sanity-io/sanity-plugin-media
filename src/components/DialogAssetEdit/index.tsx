@@ -27,6 +27,7 @@ import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
 import FormSubmitButton from '../FormSubmitButton'
 import Image from '../Image'
+import {useToolOptions} from '../../contexts/ToolOptionsContext'
 
 type Props = {
   children: ReactNode
@@ -59,10 +60,14 @@ const DialogAssetEdit = (props: Props) => {
 
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
 
+  // Check if credit line options are configured
+  const {creditLine} = useToolOptions()
+
   const generateDefaultValues = useCallback(
     (asset?: Asset): AssetFormData => {
       return {
         altText: asset?.altText || '',
+        creditLine: asset?.creditLine || '',
         description: asset?.description || '',
         originalFilename: asset?.originalFilename || '',
         opt: {media: {tags: assetTagOptions}},
@@ -342,6 +347,20 @@ const DialogAssetEdit = (props: Props) => {
                           rows={5}
                           value={currentAsset?.description}
                         />
+                        {/* CreditLine */}
+                        {creditLine?.enabled && (
+                          <FormFieldInputText
+                            {...register('creditLine')}
+                            error={errors?.creditLine?.message}
+                            label="Credit"
+                            name="creditLine"
+                            value={currentAsset?.creditLine}
+                            disabled={
+                              formUpdating ||
+                              creditLine?.excludeSources?.includes(currentAsset?.source?.name)
+                            }
+                          />
+                        )}
                       </Stack>
                     </TabPanel>
 
