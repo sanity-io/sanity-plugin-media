@@ -106,7 +106,7 @@ export default defineConfig({
       creditLine: {
         enabled: true,
         // boolean - enables an optional "Credit Line" field in the plugin.
-        // Used to store credits e.g. photographer, licence info
+        // Used to store credits e.g. photographer, licence information
         excludeSources: ['unsplash'],
         // string | string[] - when used with 3rd party asset sources, you may
         // wish to prevent users overwriting the creditLine based on the `source.name`
