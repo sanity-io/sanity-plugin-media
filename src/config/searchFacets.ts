@@ -19,6 +19,16 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     type: 'string',
     value: ''
   },
+  creditLine: {
+    assetTypes: ['file', 'image'],
+    field: 'creditLine',
+    name: 'creditLine',
+    operatorType: 'empty',
+    operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
+    title: 'Credit',
+    type: 'string',
+    value: ''
+  },
   description: {
     assetTypes: ['file', 'image'],
     field: 'description',

@@ -7,6 +7,7 @@ export const tagOptionSchema = z.object({
 
 export const assetFormSchema = z.object({
   altText: z.string().trim().optional(),
+  creditLine: z.string().trim().optional(),
   description: z.string().trim().optional(),
   opt: z.object({
     media: z.object({

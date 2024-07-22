@@ -7,6 +7,7 @@ import {FACETS} from '../../constants'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
+import {useToolOptions} from '../../contexts/ToolOptionsContext'
 
 const SearchFacetsControl = () => {
   // Redux
@@ -17,11 +18,18 @@ const SearchFacetsControl = () => {
 
   const popoverProps = usePortalPopoverProps()
 
+  const {creditLine} = useToolOptions()
+
   const isTool = !selectedDocument
 
   const filteredFacets = FACETS
     // Filter facets based on current context, whether it's invoked as a tool, or via selection through via custom asset source.
     .filter(facet => {
+      // Remove credit line filter if it's not enabled
+      if (!creditLine?.enabled && facet?.type === 'string' && facet?.name === 'creditLine') {
+        return false
+      }
+
       if (facet.type === 'group' || facet.type === 'divider') {
         return true
       }
