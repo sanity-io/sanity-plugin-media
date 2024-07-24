@@ -6,7 +6,7 @@ import groq from 'groq'
 import React, {ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import {WithReferringDocuments, useColorScheme, useDocumentStore} from 'sanity'
+import {WithReferringDocuments, useDocumentStore, useColorSchemeValue} from 'sanity'
 import {assetFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
@@ -41,7 +41,7 @@ const DialogAssetEdit = (props: Props) => {
   } = props
 
   const client = useVersionedClient()
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   const documentStore = useDocumentStore()
 

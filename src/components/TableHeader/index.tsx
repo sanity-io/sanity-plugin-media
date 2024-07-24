@@ -7,7 +7,7 @@ import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsLength, selectAssetsPickedLength} from '../../modules/assets'
 import TableHeaderItem from '../TableHeaderItem'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 
 // TODO: DRY
@@ -23,7 +23,7 @@ const ContextActionContainer = styled(Flex)(({scheme}: {scheme: ThemeColorScheme
 })
 
 const TableHeader = () => {
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Redux
   const dispatch = useDispatch()

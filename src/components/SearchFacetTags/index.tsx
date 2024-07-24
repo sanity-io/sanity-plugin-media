@@ -9,7 +9,7 @@ import {
 import React from 'react'
 import {useDispatch} from 'react-redux'
 import Select from 'react-select'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import {operators} from '../../config/searchFacets'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -24,7 +24,7 @@ type Props = {
 }
 
 const SearchFacetTags = ({facet}: Props) => {
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Redux
   const dispatch = useDispatch()
