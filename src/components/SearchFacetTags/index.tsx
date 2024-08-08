@@ -10,7 +10,7 @@ import {useDispatch} from 'react-redux'
 import Select from 'react-select'
 import {useColorScheme} from 'sanity'
 import {operators} from '../../config/searchFacets'
-import {TAG_DOCUMENT_NAME} from '../../constants'
+import {PROJECT_DOCUMENT_NAME, TAG_DOCUMENT_NAME} from '../../constants'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'
@@ -26,10 +26,12 @@ type Props = {
 const SearchFacetTags = ({facet}: Props) => {
   const {scheme} = useColorScheme()
 
+  const panelType = facet.name === 'project' ? PROJECT_DOCUMENT_NAME : TAG_DOCUMENT_NAME
+
   // Redux
   const dispatch = useDispatch()
   let tags = useTypedSelector(state => selectTags(state))
-  tags = tags.filter(tag => tag.tag._type === TAG_DOCUMENT_NAME)
+  tags = tags.filter(tag => tag.tag._type === panelType)
 
   const tagsFetching = useTypedSelector(state => state.tags.fetching)
   const allTagOptions = getTagSelectOptions(tags)

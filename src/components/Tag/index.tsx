@@ -102,8 +102,10 @@ const Tag = (props: Props) => {
   }
 
   const handleSearchFacetTagAddOrUpdate = () => {
+    const inputsTag = panelType === TAG_DOCUMENT_NAME ? inputs.tag : inputs.project
+
     const searchFacet = {
-      ...inputs.tag,
+      ...inputsTag,
       value: {
         label: tag?.tag?.name?.current,
         value: tag?.tag?._id

@@ -244,6 +244,7 @@ export type SearchFacetName =
   | 'orientation'
   | 'size'
   | 'tag'
+  | 'project'
   | 'title'
   | 'type'
   | 'width'
