@@ -1,10 +1,11 @@
 import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
-import React from 'react'
 import {useDispatch} from 'react-redux'
+import {PROJECT_DOCUMENT_NAME, TAG_DOCUMENT_NAME} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
 import ButtonViewGroup from '../ButtonViewGroup'
+import FileIcon from '../FileIcon'
 import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
 import SearchFacets from '../SearchFacets'
@@ -19,6 +20,7 @@ const Controls = () => {
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.search.facets)
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
+  const panelType = useTypedSelector(state => state.tags.panelType)
 
   const mediaIndex = useMediaIndex()
 
@@ -31,8 +33,13 @@ const Controls = () => {
     dispatch(dialogActions.showTags())
   }
 
-  const toggleTagsPanelToggle = () => {
-    dispatch(tagsActions.panelVisibleSet({panelVisible: !tagsPanelVisible}))
+  const toggleTagsPanelToggle = (type = 'tags') => {
+    let _tagsPanelVisible = !tagsPanelVisible
+    if (panelType !== type) {
+      _tagsPanelVisible = true
+    }
+
+    dispatch(tagsActions.panelVisibleSet({panelVisible: _tagsPanelVisible, panelType: type}))
   }
 
   return (
@@ -118,9 +125,23 @@ const Controls = () => {
                     <TagIcon />
                   </Box>
                 }
-                onClick={toggleTagsPanelToggle}
-                mode={tagsPanelVisible ? 'default' : 'ghost'}
-                text={tagsPanelVisible ? 'Tags' : ''}
+                onClick={() => toggleTagsPanelToggle(TAG_DOCUMENT_NAME)}
+                mode={tagsPanelVisible && panelType === TAG_DOCUMENT_NAME ? 'default' : 'ghost'}
+                text={tagsPanelVisible && panelType === TAG_DOCUMENT_NAME ? 'Tags' : ''}
+              />
+            </Box>
+            {/* Projects panel toggle */}
+            <Box display={['none', 'none', 'block']} marginLeft={2}>
+              <Button
+                fontSize={1}
+                icon={
+                  <Box style={{transform: 'scale(0.75)'}}>
+                    <FileIcon width="1em" />
+                  </Box>
+                }
+                onClick={() => toggleTagsPanelToggle(PROJECT_DOCUMENT_NAME)}
+                mode={tagsPanelVisible && panelType === PROJECT_DOCUMENT_NAME ? 'default' : 'ghost'}
+                text={tagsPanelVisible && panelType === PROJECT_DOCUMENT_NAME ? 'Projects' : ''}
               />
             </Box>
           </Flex>

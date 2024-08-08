@@ -1,9 +1,10 @@
 import {zodResolver} from '@hookform/resolvers/zod'
 import {Box, Flex} from '@sanity/ui'
 import {DialogTagCreateProps, TagFormData} from '@types'
-import React, {ReactNode, useEffect} from 'react'
+import {ReactNode, useEffect, useState} from 'react'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
+import {PROJECT_DOCUMENT_NAME} from '../../constants'
 import {tagFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
@@ -28,6 +29,9 @@ const DialogTagCreate = (props: Props) => {
 
   const creating = useTypedSelector(state => state.tags.creating)
   const creatingError = useTypedSelector(state => state.tags.creatingError)
+  const panelType = useTypedSelector(state => state.tags.panelType)
+
+  const [textType, setTextType] = useState('Tag')
 
   const {
     // Read the formState before render to subscribe the form state through Proxy
@@ -53,7 +57,7 @@ const DialogTagCreate = (props: Props) => {
   const onSubmit: SubmitHandler<TagFormData> = formData => {
     const sanitizedFormData = sanitizeFormData(formData)
 
-    dispatch(tagsActions.createRequest({name: sanitizedFormData.name}))
+    dispatch(tagsActions.createRequest({name: sanitizedFormData.name, type: panelType}))
   }
 
   useEffect(() => {
@@ -63,6 +67,14 @@ const DialogTagCreate = (props: Props) => {
       })
     }
   }, [creatingError, setError])
+
+  useEffect(() => {
+    if (panelType === PROJECT_DOCUMENT_NAME) {
+      setTextType('Project')
+    } else {
+      setTextType('Tag')
+    }
+  }, [panelType])
 
   const Footer = () => (
     <Box padding={3}>
@@ -78,7 +90,13 @@ const DialogTagCreate = (props: Props) => {
   )
 
   return (
-    <Dialog footer={<Footer />} header="Create Tag" id={id} onClose={handleClose} width={1}>
+    <Dialog
+      footer={<Footer />}
+      header={`Create ${textType}`}
+      id={id}
+      onClose={handleClose}
+      width={1}
+    >
       {/* Form fields */}
       <Box as="form" padding={4} onSubmit={handleSubmit(onSubmit)}>
         {/* Hidden button to enable enter key submissions */}

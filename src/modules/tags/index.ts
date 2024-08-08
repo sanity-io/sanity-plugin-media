@@ -24,6 +24,7 @@ type TagsReducerState = {
   fetchingError?: HttpError
   // totalCount: number
   panelVisible: boolean
+  panelType?: string
 }
 
 const initialState = {
@@ -34,7 +35,8 @@ const initialState = {
   fetchCount: -1,
   fetching: false,
   fetchingError: undefined,
-  panelVisible: true
+  panelVisible: true,
+  panelType: TAG_DOCUMENT_NAME
 } as TagsReducerState
 
 const tagsSlice = createSlice({
@@ -96,9 +98,10 @@ const tagsSlice = createSlice({
       state.creating = true
       delete state.creatingError
     },
-    deleteComplete(state, action: PayloadAction<{tagId: string}>) {
-      const {tagId} = action.payload
+    deleteComplete(state, action: PayloadAction<{tag: Tag}>) {
+      const tagId = action.payload.tag?._id
       const deleteIndex = state.allIds.indexOf(tagId)
+
       if (deleteIndex >= 0) {
         state.allIds.splice(deleteIndex, 1)
       }
@@ -218,9 +221,10 @@ const tagsSlice = createSlice({
       })
     },
     // Set tag panel visibility
-    panelVisibleSet(state, action: PayloadAction<{panelVisible: boolean}>) {
-      const {panelVisible} = action.payload
+    panelVisibleSet(state, action: PayloadAction<{panelVisible: boolean; panelType?: string}>) {
+      const {panelVisible, panelType} = action.payload
       state.panelVisible = panelVisible
+      state.panelType = panelType ?? 'tags'
     },
     // Sort all tags by name
     sort(state) {
@@ -349,7 +353,7 @@ export const tagsDeleteEpic: MyEpic = (action$, state$, {client}) =>
           return from(transaction.commit())
         }),
         // Dispatch complete action
-        mergeMap(() => of(tagsSlice.actions.deleteComplete({tagId: tag._id}))),
+        mergeMap(() => of(tagsSlice.actions.deleteComplete({tag}))),
         catchError((error: ClientError) =>
           of(
             tagsSlice.actions.deleteError({

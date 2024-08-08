@@ -3,9 +3,10 @@ import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Text} from '@sanity/ui'
 import {DialogTagEditProps, Tag, TagFormData} from '@types'
 import groq from 'groq'
-import React, {ReactNode, useCallback, useEffect, useState} from 'react'
+import {ReactNode, useCallback, useEffect, useState} from 'react'
 import {SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
+import {PROJECT_DOCUMENT_NAME} from '../../constants'
 import {tagFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
@@ -31,7 +32,9 @@ const DialogTagEdit = (props: Props) => {
 
   const dispatch = useDispatch()
   const tagItem = useTypedSelector(state => selectTagById(state, String(tagId))) // TODO: double check string cast
+  const panelType = useTypedSelector(state => state.tags.panelType)
 
+  const [textType, setTextType] = useState('Tag')
   // - Generate a snapshot of the current tag
   const [tagSnapshot, setTagSnapshot] = useState(tagItem?.tag)
 
@@ -129,6 +132,14 @@ const DialogTagEdit = (props: Props) => {
     }
   }, [client, handleTagUpdate, tagItem?.tag])
 
+  useEffect(() => {
+    if (panelType === PROJECT_DOCUMENT_NAME) {
+      setTextType('Project')
+    } else {
+      setTextType('Tag')
+    }
+  }, [panelType])
+
   const Footer = () => (
     <Box padding={3}>
       <Flex justify="space-between">
@@ -158,13 +169,15 @@ const DialogTagEdit = (props: Props) => {
   }
 
   return (
-    <Dialog footer={<Footer />} header="Edit Tag" id={id} onClose={handleClose} width={1}>
+    <Dialog footer={<Footer />} header={`Edit ${textType}`} id={id} onClose={handleClose} width={1}>
       {/* Form fields */}
       <Box as="form" padding={4} onSubmit={handleSubmit(onSubmit)}>
         {/* Deleted notification */}
         {!tagItem && (
           <Card marginBottom={3} padding={3} radius={2} shadow={1} tone="critical">
-            <Text size={1}>This tag cannot be found – it may have been deleted.</Text>
+            <Text size={1}>
+              This {textType.toLowerCase()} cannot be found – it may have been deleted.
+            </Text>
           </Card>
         )}
 

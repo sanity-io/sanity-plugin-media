@@ -2,7 +2,7 @@ import {Flex, Label} from '@sanity/ui'
 import {TagActions, TagItem} from '@types'
 import {memo, useState} from 'react'
 import {Virtuoso} from 'react-virtuoso'
-import {PANEL_HEIGHT, TAG_DOCUMENT_NAME} from '../../constants'
+import {PANEL_HEIGHT, PROJECT_DOCUMENT_NAME} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'
@@ -41,9 +41,10 @@ const VirtualRow = memo(
 )
 
 const TagsVirtualized = () => {
+  const panelType = useTypedSelector(state => state.tags.panelType)
   const assetsPicked = useTypedSelector(selectAssetsPicked)
   let tags = useTypedSelector(selectTags)
-  tags = tags.filter(tag => tag.tag._type === TAG_DOCUMENT_NAME)
+  tags = tags.filter(tag => tag.tag._type === panelType)
 
   // State
   const [isScrolling, setIsScrolling] = useState(false)
@@ -52,7 +53,10 @@ const TagsVirtualized = () => {
 
   // Filter out all tag IDS used (across all) and dedupe
   const pickedTagIds = assetsPicked?.reduce((acc: string[], val) => {
-    const assetTagIds = val?.asset?.opt?.media?.tags?.map(tag => tag._ref) || []
+    const assetTagIds =
+      panelType === PROJECT_DOCUMENT_NAME
+        ? val?.asset?.opt?.media?.projects?.map(tag => tag._ref) || []
+        : val?.asset?.opt?.media?.tags?.map(tag => tag._ref) || []
     acc = acc.concat(assetTagIds)
     return acc
   }, [])
@@ -65,7 +69,9 @@ const TagsVirtualized = () => {
     (acc: {appliedToAll: string[]; appliedToSome: string[]}, tagId) => {
       const tagIsInEveryAsset = assetsPicked.every(assetItem => {
         const tagIndex =
-          assetItem.asset.opt?.media?.tags?.findIndex(tag => tag._ref === tagId) ?? -1
+          panelType === PROJECT_DOCUMENT_NAME
+            ? assetItem.asset.opt?.media?.projects?.findIndex(tag => tag._ref === tagId) || -1
+            : assetItem.asset.opt?.media?.tags?.findIndex(tag => tag._ref === tagId) || -1
         return tagIndex >= 0
       })
 

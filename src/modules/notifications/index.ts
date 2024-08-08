@@ -4,6 +4,7 @@ import pluralize from 'pluralize'
 import {ofType} from 'redux-observable'
 import {of} from 'rxjs'
 import {bufferTime, filter, mergeMap} from 'rxjs/operators'
+import {PROJECT_DOCUMENT_NAME} from '../../constants'
 import {assetsActions} from '../assets'
 import {ASSETS_ACTIONS} from '../assets/actions'
 import {tagsActions} from '../tags'
@@ -94,10 +95,13 @@ export const notificationsAssetsTagsAddCompleteEpic: MyEpic = action$ =>
     filter(ASSETS_ACTIONS.tagsAddComplete.match),
     mergeMap(action => {
       const count = action?.payload?.assets?.length
+      const tag = action?.payload?.tag
+      const textType = tag._type === PROJECT_DOCUMENT_NAME ? 'Project' : 'Tag'
+
       return of(
         notificationsSlice.actions.add({
           status: 'info',
-          title: `Tag added to ${count} ${pluralize('asset', count)}`
+          title: `${textType} added to ${count} ${pluralize('asset', count)}`
         })
       )
     })
@@ -155,22 +159,29 @@ export const notificationsGenericErrorEpic: MyEpic = action$ =>
     })
   )
 
+const showNotification = (payload: any, type: string) => {
+  const {tag} = payload
+  const textType = tag._type === PROJECT_DOCUMENT_NAME ? 'Project' : 'Tag'
+
+  return of(notificationsSlice.actions.add({status: 'info', title: `${textType} ${type}`}))
+}
+
 export const notificationsTagCreateCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(tagsActions.createComplete.match),
-    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Tag created`})))
+    mergeMap(({payload}) => showNotification(payload, 'created'))
   )
 
 export const notificationsTagDeleteCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(tagsActions.deleteComplete.match),
-    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Tag deleted`})))
+    mergeMap(({payload}) => showNotification(payload, 'deleted'))
   )
 
 export const notificationsTagUpdateCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(tagsActions.updateComplete.match),
-    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Tag updated`})))
+    mergeMap(({payload}) => showNotification(payload, 'updated'))
   )
 
 export const notificationsActions = notificationsSlice.actions

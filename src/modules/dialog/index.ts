@@ -4,6 +4,7 @@ import pluralize from 'pluralize'
 import {ofType} from 'redux-observable'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap} from 'rxjs/operators'
+import {PROJECT_DOCUMENT_NAME} from '../../constants'
 import {assetsActions} from '../assets'
 import {ASSETS_ACTIONS} from '../assets/actions'
 import {tagsActions} from '../tags'
@@ -80,6 +81,8 @@ const dialogSlice = createSlice({
     ) {
       const {assetsPicked, closeDialogId, tag} = action.payload
 
+      const textType = tag._type === PROJECT_DOCUMENT_NAME ? 'project' : 'tag'
+
       const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
 
       state.items.push({
@@ -88,10 +91,10 @@ const dialogSlice = createSlice({
           assets: assetsPicked,
           tag
         }),
-        confirmText: `Yes, add tag to ${suffix}`,
-        title: `Add tag ${tag.name.current} to ${suffix}?`,
+        confirmText: `Yes, add ${textType} to ${suffix}`,
+        title: `Add ${textType} ${tag.name.current} to ${suffix}?`,
         id: 'confirm',
-        headerTitle: 'Confirm tag addition',
+        headerTitle: `Confirm ${textType} addition`,
         tone: 'primary',
         type: 'confirm'
       })
@@ -166,8 +169,9 @@ const dialogSlice = createSlice({
     },
     showConfirmDeleteTag(state, action: PayloadAction<{closeDialogId?: string; tag: Tag}>) {
       const {closeDialogId, tag} = action.payload
+      const type = tag._type ?? 'media.tag'
 
-      const suffix = 'tag'
+      const suffix = type.split('.').pop()
 
       state.items.push({
         closeDialogId,
