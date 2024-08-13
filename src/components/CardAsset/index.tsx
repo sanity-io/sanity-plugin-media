@@ -10,7 +10,7 @@ import {
   ThemeColorSchemeKey,
   Tooltip
 } from '@sanity/ui'
-import React, {memo, MouseEvent, RefObject} from 'react'
+import {memo, MouseEvent, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import {useColorScheme} from 'sanity'
 import styled, {css} from 'styled-components'
@@ -20,11 +20,12 @@ import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
-import imageDprUrl from '../../utils/imageDprUrl'
-import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
-import FileIcon from '../FileIcon'
-import Image from '../Image'
 import {getSchemeColor} from '../../utils/getSchemeColor'
+import imageDprUrl from '../../utils/imageDprUrl'
+import {isFileAsset, isImageAsset, isPdfAsset} from '../../utils/typeGuards'
+import FileIcon from '../FileIcon'
+import FilePdfPreview from '../FilePdfPreview'
+import Image from '../Image'
 
 type Props = {
   id: string
@@ -160,6 +161,9 @@ const CardAsset = (props: Props) => {
           }}
         >
           <div onClick={handleAssetClick} style={{height: '100%', opacity: opacityPreview}}>
+            {/* File pdf */}
+            {isPdfAsset(asset) && <FilePdfPreview url={asset.url} width={460} />}
+
             {/* File icon */}
             {isFileAsset(asset) && <FileIcon extension={asset.extension} width="80px" />}
 

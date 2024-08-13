@@ -28,8 +28,9 @@ import getAssetResolution from '../../utils/getAssetResolution'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
 import imageDprUrl from '../../utils/imageDprUrl'
-import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
+import {isFileAsset, isImageAsset, isPdfAsset} from '../../utils/typeGuards'
 import FileIcon from '../FileIcon'
+import FilePdfPreview from '../FilePdfPreview'
 import Image from '../Image'
 
 // Duration (ms) to wait before reference counts (and associated listeners) are rendered
@@ -233,6 +234,9 @@ const TableRowAsset = (props: Props) => {
       >
         <Flex align="center" justify="center" style={{height: '100%', position: 'relative'}}>
           <Box style={{height: '100%', opacity: opacityPreview, position: 'relative'}}>
+            {/* File pdf */}
+            {isPdfAsset(asset) && <FilePdfPreview url={asset.url} width={400} />}
+
             {/* File icon */}
             {isFileAsset(asset) && <FileIcon extension={asset.extension} width="40px" />}
 

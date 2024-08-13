@@ -1,8 +1,9 @@
+import {Worker} from '@react-pdf-viewer/core'
 import type {MutationEvent} from '@sanity/client'
 import {Card, Flex, PortalProvider, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
 import {Asset, Tag} from '@types'
 import groq from 'groq'
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {useColorScheme, type AssetSourceComponentProps, type SanityDocument} from 'sanity'
 import {TAG_DOCUMENT_NAME} from '../../constants'
@@ -130,6 +131,14 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
   )
 }
 
+const WorkerProvider = ({children}: {children: React.ReactNode}) => {
+  return (
+    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+      {children}
+    </Worker>
+  )
+}
+
 const Browser = (props: Props) => {
   const client = useVersionedClient()
   const {scheme} = useColorScheme()
@@ -145,8 +154,9 @@ const Browser = (props: Props) => {
         <ToastProvider>
           <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
             <GlobalStyle />
-
-            <BrowserContent onClose={props?.onClose} />
+            <WorkerProvider>
+              <BrowserContent onClose={props?.onClose} />
+            </WorkerProvider>
           </AssetBrowserDispatchProvider>
         </ToastProvider>
       </ThemeProvider>

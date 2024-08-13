@@ -35,6 +35,19 @@ const GlobalStyle = createGlobalStyle`
     background-color: rgba(15, 17, 18, 0.9);
   }
 
+  .rpv-thumbnail__cover-image,
+  .rpv-thumbnail__cover-inner,
+  .rpv-thumbnail__cover {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  @media screen and (max-width: 974px) {
+    .rpv-core__display--hidden {
+      display: none;
+    }
+  }
 `
 
 export default GlobalStyle
