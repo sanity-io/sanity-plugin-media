@@ -1,5 +1,4 @@
 import {Box, Card, rem, studioTheme, Text, ThemeColorSchemeKey} from '@sanity/ui'
-import React from 'react'
 import {components, StylesConfig} from 'react-select'
 import {Virtuoso} from 'react-virtuoso'
 import {getSchemeColor} from '../../utils/getSchemeColor'
@@ -92,6 +91,14 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
     dropdownIndicator: styles => ({
       ...styles,
       padding: 6
+    }),
+    multiValueLabel: styles => ({
+      ...styles,
+      padding: '16px 6px'
+    }),
+    multiValueRemove: styles => ({
+      ...styles,
+      color: 'var(--card-bg-color)'
     })
   }
 }

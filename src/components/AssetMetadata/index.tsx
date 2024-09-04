@@ -3,13 +3,13 @@ import {Box, Button, Flex, Inline, Stack, Text} from '@sanity/ui'
 import {Asset, AssetItem} from '@types'
 import format from 'date-fns/format'
 import filesize from 'filesize'
+import {ReactNode, useState} from 'react'
+import Select from 'react-select'
 import {useColorScheme} from 'sanity'
-import React, {useState, ReactNode} from 'react'
+import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/alt'
 import getAssetResolution from '../../utils/getAssetResolution'
 import {isImageAsset} from '../../utils/typeGuards'
 import ButtonAssetCopy from '../ButtonAssetCopy'
-import Select from 'react-select'
-import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/alt'
 
 type Props = {
   asset: Asset
@@ -56,10 +56,10 @@ const AssetMetadata = (props: Props) => {
     {value: 1080, label: '1080w'},
     {value: 720, label: '720w'}
   ]
-  const handleSizeSelect = (option: Option) => {
+  const handleSizeSelect = (option: Option[]) => {
     setOption(option)
   }
-  const [option, setOption] = useState(options[0])
+  const [option, setOption] = useState([options[0]])
   interface Option {
     label: string
     value: number
@@ -80,11 +80,15 @@ const AssetMetadata = (props: Props) => {
 
   // Callbacks
   const handleDownload = () => {
-    if (option.value == 0) {
-      window.location.href = `${asset.url}?dl=${asset.originalFilename}`
-    } else {
-      window.location.href = `${asset.url}?w=${option.value}&dl=${asset.originalFilename}`
-    }
+    const [fileName, fileExtension] = (asset.originalFilename ?? '').split('.')
+
+    option.forEach(file => {
+      if (file.value == 0) {
+        window.open(`${asset.url}?dl=${asset.originalFilename}`)
+      } else {
+        window.open(`${asset.url}?w=${file.value}&dl=${fileName}-w${file.value}.${fileExtension}`)
+      }
+    })
   }
 
   return (
@@ -155,18 +159,23 @@ const AssetMetadata = (props: Props) => {
               onClick={handleDownload}
               text="Download"
             />
-            <span>@</span>
-            <Select
-              value={option}
-              components={reactSelectComponents}
-              isSearchable
-              name="downloadSize"
-              options={options}
-              defaultValue={options[0]}
-              menuPlacement="top"
-              styles={reactSelectStyles(scheme)}
-              onChange={value => handleSizeSelect(value as Option)}
-            />
+            {isImageAsset(asset) && (
+              <>
+                <span>@</span>
+                <Select
+                  value={option}
+                  components={reactSelectComponents}
+                  isSearchable
+                  name="downloadSize"
+                  options={options}
+                  isMulti
+                  defaultValue={options[0]}
+                  menuPlacement="top"
+                  styles={reactSelectStyles(scheme)}
+                  onChange={value => handleSizeSelect(value as Option[])}
+                />
+              </>
+            )}
           </Flex>
           {/* Copy to clipboard */}
           <ButtonAssetCopy disabled={!item || item?.updating} url={asset.url} />
