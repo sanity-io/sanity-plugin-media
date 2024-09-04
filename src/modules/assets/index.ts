@@ -26,7 +26,7 @@ import {
   withLatestFrom
 } from 'rxjs/operators'
 import {getOrderTitle} from '../../config/orders'
-import {ORDER_OPTIONS} from '../../constants'
+import {ORDER_OPTIONS, PROJECT_DOCUMENT_NAME} from '../../constants'
 import debugThrottle from '../../operators/debugThrottle'
 import constructFilter from '../../utils/constructFilter'
 import {searchActions} from '../search'
@@ -507,23 +507,33 @@ export const assetsFetchAfterDeleteAllEpic: MyEpic = (action$, state$) =>
   )
 
 const filterAssetWithoutTag = (tag: Tag) => (asset: AssetItem) => {
-  const tagIndex = asset?.asset?.opt?.media?.tags?.findIndex(t => t._ref === tag?._id) ?? -1
+  const key = tag._type === PROJECT_DOCUMENT_NAME ? 'projects' : 'tags'
+
+  const tagIndex = asset?.asset?.opt?.media?.[key]?.findIndex(t => t._ref === tag?._id) ?? -1
+
   return tagIndex < 0
 }
 
-const patchOperationTagAppend =
-  ({tag}: {tag: Tag}) =>
-  (patch: Patch) =>
+const patchOperationTagAppend = ({tag}: {tag: Tag}) => {
+  const key = tag._type === PROJECT_DOCUMENT_NAME ? 'projects' : 'tags'
+
+  return (patch: Patch) =>
     patch
       .setIfMissing({opt: {}})
       .setIfMissing({'opt.media': {}})
       .setIfMissing({'opt.media.tags': []})
-      .append('opt.media.tags', [{_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}])
+      .setIfMissing({'opt.media.projects': []})
+      .append(`opt.media.${key}`, [
+        {_key: nanoid(), _ref: tag?._id, _type: 'reference', _weak: true}
+      ])
+}
 
-const patchOperationTagUnset =
-  ({asset, tag}: {asset: AssetItem; tag: Tag}) =>
-  (patch: Patch) =>
-    patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.tags[_ref == "${tag._id}"]`])
+const patchOperationTagUnset = ({asset, tag}: {asset: AssetItem; tag: Tag}) => {
+  const key = tag._type === PROJECT_DOCUMENT_NAME ? 'projects' : 'tags'
+
+  return (patch: Patch) =>
+    patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.${key}[_ref == "${tag._id}"]`])
+}
 
 export const assetsRemoveTagsEpic: MyEpic = (action$, state$, {client}) => {
   return action$.pipe(

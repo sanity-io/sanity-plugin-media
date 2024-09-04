@@ -109,15 +109,17 @@ const dialogSlice = createSlice({
     ) {
       const {assetsPicked, closeDialogId, tag} = action.payload
 
+      const textType = tag._type === PROJECT_DOCUMENT_NAME ? 'project' : 'tag'
+
       const suffix = `${assetsPicked.length} ${pluralize('asset', assetsPicked.length)}`
 
       state.items.push({
         closeDialogId,
         confirmCallbackAction: ASSETS_ACTIONS.tagsRemoveRequest({assets: assetsPicked, tag}),
-        confirmText: `Yes, remove tag from ${suffix}`,
-        headerTitle: 'Confirm tag removal',
+        confirmText: `Yes, remove ${textType} from ${suffix}`,
+        headerTitle: `Confirm ${textType} removal`,
         id: 'confirm',
-        title: `Remove tag ${tag.name.current} from ${suffix}?`,
+        title: `Remove ${textType} ${tag.name.current} from ${suffix}?`,
         tone: 'critical',
         type: 'confirm'
       })
