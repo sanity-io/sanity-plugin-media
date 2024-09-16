@@ -1,6 +1,8 @@
 import {createGlobalStyle, css} from 'styled-components'
+import {pdfCoreStyles} from './pdf-core'
+import {pdfToolbarStyles} from './pdf-toolbar'
 
-const customScrollbar = css`
+export const customScrollbar = css`
   ::-webkit-scrollbar {
     width: 14px;
   }
@@ -48,6 +50,9 @@ const GlobalStyle = createGlobalStyle`
       display: none;
     }
   }
+
+  ${pdfCoreStyles}
+  ${pdfToolbarStyles}
 `
 
 export default GlobalStyle

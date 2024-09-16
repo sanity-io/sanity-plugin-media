@@ -1,3 +1,4 @@
+import {DocumentTextIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import {PROJECT_DOCUMENT_NAME, TAG_DOCUMENT_NAME} from '../../constants'
@@ -5,7 +6,6 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
 import {tagsActions} from '../../modules/tags'
 import ButtonViewGroup from '../ButtonViewGroup'
-import FileIcon from '../FileIcon'
 import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
 import SearchFacets from '../SearchFacets'
@@ -136,7 +136,7 @@ const Controls = () => {
                 fontSize={1}
                 icon={
                   <Box style={{transform: 'scale(0.75)'}}>
-                    <FileIcon width="1em" />
+                    <DocumentTextIcon width={'1.3em'} height={'1.3em'} />
                   </Box>
                 }
                 onClick={() => toggleTagsPanelToggle(PROJECT_DOCUMENT_NAME)}

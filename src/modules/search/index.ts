@@ -1,8 +1,8 @@
 import {PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
+import {uuid} from '@sanity/uuid'
 import type {MyEpic, SearchFacetInputProps, SearchFacetOperatorType, WithId} from '@types'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
-import {uuid} from '@sanity/uuid'
 
 import {tagsActions} from '../tags'
 import type {RootReducerState} from '../types'
@@ -41,7 +41,7 @@ const searchSlice = createSlice({
       state.facets = state.facets.filter(
         facet =>
           !(
-            facet.name === 'tag' &&
+            (facet.name === 'tag' || facet.name === 'project') &&
             facet.type === 'searchable' &&
             (facet.operatorType === 'references' || facet.operatorType === 'doesNotReference') &&
             facet.value?.value === action.payload.tagId
@@ -125,7 +125,9 @@ export const searchFacetTagUpdateEpic: MyEpic = (action$, state$) =>
     mergeMap(([action, state]) => {
       const {tag} = action.payload
 
-      const currentSearchFacetTag = state.search.facets?.find(facet => facet.name === 'tag')
+      const currentSearchFacetTag = state.search.facets?.find(
+        facet => facet.name === 'tag' || facet.name === 'project'
+      )
       const tagItem = state.tags.byIds[tag._id]
 
       if (currentSearchFacetTag?.type === 'searchable') {
@@ -155,7 +157,7 @@ export const selectIsSearchFacetTag = createSelector(
   (searchFacets, tagId) =>
     searchFacets.some(
       facet =>
-        facet.name === 'tag' &&
+        (facet.name === 'tag' || facet.name === 'project') &&
         facet.type === 'searchable' &&
         (facet.operatorType === 'references' || facet.operatorType === 'doesNotReference') &&
         facet.value?.value === tagId

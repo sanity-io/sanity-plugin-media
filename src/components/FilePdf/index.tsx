@@ -1,10 +1,6 @@
 import {Viewer} from '@react-pdf-viewer/core'
 import {toolbarPlugin, ToolbarSlot, TransformToolbarSlot} from '@react-pdf-viewer/toolbar'
 
-// Import the styles
-import '@react-pdf-viewer/core/lib/styles/index.css'
-import '@react-pdf-viewer/toolbar/lib/styles/index.css'
-
 type Props = {
   url: string
 }
