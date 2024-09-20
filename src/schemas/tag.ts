@@ -1,9 +1,9 @@
+import {TagsIcon} from '@sanity/icons'
 import {TAG_DOCUMENT_NAME} from '../constants'
-import TagIcon from '../components/TagIcon'
 
 export default {
   title: 'Media Tag',
-  icon: TagIcon,
+  icon: TagsIcon,
   name: TAG_DOCUMENT_NAME,
   type: 'document',
   fields: [
@@ -20,7 +20,7 @@ export default {
     prepare(selection: any) {
       const {name} = selection
       return {
-        media: TagIcon,
+        media: TagsIcon,
         title: name?.current
       }
     }

@@ -1,4 +1,4 @@
-import {DocumentTextIcon} from '@sanity/icons'
+import {DocumentsIcon, TagsIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import {PROJECT_DOCUMENT_NAME, TAG_DOCUMENT_NAME} from '../../constants'
@@ -10,7 +10,6 @@ import OrderSelect from '../OrderSelect'
 import Progress from '../Progress'
 import SearchFacets from '../SearchFacets'
 import SearchFacetsControl from '../SearchFacetsControl'
-import TagIcon from '../TagIcon'
 import TextInputSearch from '../TextInputSearch'
 
 const Controls = () => {
@@ -122,7 +121,7 @@ const Controls = () => {
                 fontSize={1}
                 icon={
                   <Box style={{transform: 'scale(0.75)'}}>
-                    <TagIcon />
+                    <TagsIcon width={'1.3em'} height={'1.3em'} />
                   </Box>
                 }
                 onClick={() => toggleTagsPanelToggle(TAG_DOCUMENT_NAME)}
@@ -136,7 +135,7 @@ const Controls = () => {
                 fontSize={1}
                 icon={
                   <Box style={{transform: 'scale(0.75)'}}>
-                    <DocumentTextIcon width={'1.3em'} height={'1.3em'} />
+                    <DocumentsIcon width={'1.3em'} height={'1.3em'} />
                   </Box>
                 }
                 onClick={() => toggleTagsPanelToggle(PROJECT_DOCUMENT_NAME)}
