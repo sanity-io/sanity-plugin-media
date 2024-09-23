@@ -235,7 +235,7 @@ const TableRowAsset = (props: Props) => {
         <Flex align="center" justify="center" style={{height: '100%', position: 'relative'}}>
           <Box style={{height: '100%', opacity: opacityPreview, position: 'relative'}}>
             {/* File pdf */}
-            {isPdfAsset(asset) && <FilePdfPreview url={asset.url} width={400} />}
+            {isPdfAsset(asset) && <FilePdfPreview asset={asset} url={asset.url} width={400} />}
 
             {/* File icon */}
             {isFileAsset(asset) && <FileIcon extension={asset.extension} width="40px" />}

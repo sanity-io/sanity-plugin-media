@@ -162,7 +162,7 @@ const CardAsset = (props: Props) => {
         >
           <div onClick={handleAssetClick} style={{height: '100%', opacity: opacityPreview}}>
             {/* File pdf */}
-            {isPdfAsset(asset) && <FilePdfPreview url={asset.url} width={460} />}
+            {isPdfAsset(asset) && <FilePdfPreview asset={asset} url={asset.url} width={460} />}
 
             {/* File icon */}
             {isFileAsset(asset) && <FileIcon extension={asset.extension} width="80px" />}

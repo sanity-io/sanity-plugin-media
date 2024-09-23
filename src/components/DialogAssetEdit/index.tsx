@@ -143,7 +143,8 @@ const DialogAssetEdit = (props: Props) => {
                     _ref: tag.value,
                     _type: 'reference',
                     _weak: true
-                  })) || null
+                  })) || null,
+                preview: assetItem?.asset?.opt?.media?.preview || null
               }
             }
           }
