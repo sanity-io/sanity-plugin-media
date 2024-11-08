@@ -101,7 +101,7 @@ const SearchFacetTags = ({facet}: Props) => {
 
       {/* Value */}
       {!operators[selectedOperatorType].hideInput && (
-        <Box marginX={1} style={{width: '160px'}}>
+        <Box marginX={1} style={{width: 'fit-content', minWidth: '210px'}}>
           <Select
             components={reactSelectComponents}
             instanceId="facet-searchable"
@@ -109,7 +109,7 @@ const SearchFacetTags = ({facet}: Props) => {
             isDisabled={tagsFetching}
             isSearchable
             name="tags"
-            noOptionsMessage={() => 'No tags'}
+            noOptionsMessage={() => `No ${facet.name === 'project' ? 'projects' : 'tags'}`}
             onChange={value => handleChange(value as TagSelectOption)}
             options={allTagOptions}
             placeholder={tagsFetching ? 'Loading...' : 'Select...'}

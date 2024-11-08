@@ -51,6 +51,12 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
+  .media__custom-menu > div {
+    position: relative !important;
+    width: fit-content !important;
+    min-width: 100% !important;
+  }
+
   ${pdfCoreStyles}
   ${pdfToolbarStyles}
 `

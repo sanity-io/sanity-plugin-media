@@ -1,6 +1,5 @@
 import {CloseIcon} from '@sanity/icons'
 import {Box, Card, rem, studioTheme, Text, ThemeColorSchemeKey} from '@sanity/ui'
-import React from 'react'
 import {components, StylesConfig} from 'react-select'
 import {Virtuoso} from 'react-virtuoso'
 import {getSchemeColor} from '../../utils/getSchemeColor'
@@ -112,7 +111,7 @@ const ClearIndicator = (props: any) => {
 const Menu = (props: any) => {
   return (
     <components.Menu {...props}>
-      <Card radius={1} shadow={2}>
+      <Card radius={1} shadow={2} style={{minWidth: '100%', width: 'fit-content'}}>
         {props.children}
       </Card>
     </components.Menu>
@@ -131,12 +130,12 @@ const MenuList = (props: any) => {
 
     return (
       <Virtuoso
-        className="media__custom-scrollbar"
+        className="media__custom-scrollbar media__custom-menu"
         itemContent={index => {
           const item = children[index]
           return <Option {...item.props} />
         }}
-        style={{height}}
+        style={{height, position: 'relative', width: 'fit-content', minWidth: '100%'}}
         totalCount={children.length}
       />
     )
