@@ -20,7 +20,9 @@ export const mediaAssetSource = {
 
 const tool = {
   ...plugin,
-  component: Tool
+  component: Tool,
+  // @ts-expect-error TS doesn't know about this internal field see https://github.com/sanity-io/sanity/pull/7980
+  __internalApplicationType: 'sanity/media'
 } satisfies SanityTool
 
 export const media = definePlugin<MediaToolOptions | void>(options => ({
