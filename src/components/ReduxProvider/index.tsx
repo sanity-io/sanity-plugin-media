@@ -18,6 +18,7 @@ type Props = {
   client: SanityClient
   document?: SanityDocument
   selectedAssets?: AssetSourceComponentProps['selectedAssets']
+  selectionType?: AssetSourceComponentProps['selectionType'] | 'multiple'
 }
 
 class ReduxProvider extends Component<Props> {
@@ -59,7 +60,8 @@ class ReduxProvider extends Component<Props> {
           assets: props.selectedAssets || [],
           document: props.document,
           documentAssetIds: props.document ? getDocumentAssetIds(props.document) : []
-        }
+        },
+        selectionType: props?.selectionType || 'single'
       }
     })
     epicMiddleware.run(rootEpic)

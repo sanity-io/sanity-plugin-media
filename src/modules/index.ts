@@ -30,6 +30,7 @@ import dialogReducer, {
   dialogTagDeleteEpic
 } from './dialog'
 import selectedReducer from './selected'
+import selectionTypeReducer from './selectionType'
 import notificationsReducer, {
   notificationsAssetsDeleteErrorEpic,
   notificationsAssetsDeleteCompleteEpic,
@@ -109,6 +110,7 @@ const reducers = {
   notifications: notificationsReducer,
   search: searchReducer,
   selected: selectedReducer,
+  selectionType: selectionTypeReducer,
   tags: tagsReducer,
   uploads: uploadsReducer
 }

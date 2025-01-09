@@ -28,6 +28,7 @@ type Props = {
   onClose?: AssetSourceComponentProps['onClose']
   onSelect?: AssetSourceComponentProps['onSelect']
   selectedAssets?: AssetSourceComponentProps['selectedAssets']
+  selectionType?: AssetSourceComponentProps['selectionType'] | 'multiple'
 }
 
 const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose']}) => {
@@ -140,6 +141,7 @@ const Browser = (props: Props) => {
       client={client}
       document={props?.document}
       selectedAssets={props?.selectedAssets}
+      selectionType={props?.selectionType}
     >
       <ThemeProvider scheme={scheme} theme={studioTheme}>
         <ToastProvider>

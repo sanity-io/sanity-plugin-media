@@ -97,6 +97,7 @@ const CardAsset = (props: Props) => {
   const dispatch = useDispatch()
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
   const item = useTypedSelector(state => selectAssetById(state, id))
+  const selectionType = useTypedSelector(state => state.selectionType)
 
   const asset = item?.asset
   const error = item?.error
@@ -115,7 +116,7 @@ const CardAsset = (props: Props) => {
   const handleAssetClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
 
-    if (onSelect) {
+    if (onSelect && selectionType !== 'multiple') {
       onSelect([
         {
           kind: 'assetDocumentId',
@@ -136,7 +137,7 @@ const CardAsset = (props: Props) => {
   const handleContextActionClick = (e: MouseEvent) => {
     e.stopPropagation()
 
-    if (onSelect) {
+    if (onSelect && selectionType !== 'multiple') {
       dispatch(dialogActions.showAssetEdit({assetId: asset._id}))
     } else if (shiftPressed.current && !picked) {
       dispatch(assetsActions.pickRange({startId: lastPicked || asset._id, endId: asset._id}))
@@ -224,7 +225,7 @@ const CardAsset = (props: Props) => {
           scheme={scheme}
           style={{opacity: opacityContainer}}
         >
-          {onSelect ? (
+          {onSelect && selectionType !== 'multiple' ? (
             <EditIcon
               style={{
                 flexShrink: 0,
