@@ -3,7 +3,7 @@ import {Box, Flex, Label, rem, Text, Theme, ThemeColorSchemeKey} from '@sanity/u
 import {SearchFacetInputProps, WithId} from '@types'
 import React, {ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import styled, {css} from 'styled-components'
 import {searchActions} from '../../modules/search'
 import {getSchemeColor} from '../../utils/getSchemeColor'
@@ -23,7 +23,7 @@ const Container = styled(Box)(({scheme, theme}: {scheme: ThemeColorSchemeKey; th
 const SearchFacet = (props: Props) => {
   const {children, facet} = props
 
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Redux
   const dispatch = useDispatch()
