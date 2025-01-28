@@ -176,6 +176,12 @@ const dialogSlice = createSlice({
         id: 'tags',
         type: 'tags'
       })
+    },
+    showAllAssetsDialog(state) {
+      state.items.push({
+        id: 'dialogAllAssets',
+        type: 'dialogAllAssets'
+      })
     }
   }
 })

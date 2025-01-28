@@ -1,12 +1,13 @@
 import {Dialog} from '@types'
 import React from 'react'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import DialogAssetEdit from '../DialogAssetEdit'
 import DialogConfirm from '../DialogConfirm'
 import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'
 import DialogTags from '../DialogTags'
+import DialogAllAssets from '../DialogAllAssets'
+import DialogAssetEdit from '../DialogAssetEdit'
 
 const Dialogs = () => {
   // Redux
@@ -65,6 +66,15 @@ const Dialogs = () => {
         <DialogTags dialog={dialog} key={index}>
           {childDialogs}
         </DialogTags>
+      )
+    }
+
+    if (dialog.type === 'dialogAllAssets') {
+      return (
+        // eslint-disable-next-line react/jsx-no-undef
+        <DialogAllAssets dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogAllAssets>
       )
     }
 
