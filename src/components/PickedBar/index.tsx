@@ -80,11 +80,7 @@ const PickedBar = () => {
             mode="bleed"
             onClick={handleReplaceImages}
             padding={2}
-            style={{
-              background: 'none',
-              boxShadow: 'none',
-              display: assetsPicked.length === 1 ? 'block' : 'none'
-            }}
+            style={{background: 'none', boxShadow: 'none'}}
             tone="default"
           >
             <Label size={0}>Replace</Label>
