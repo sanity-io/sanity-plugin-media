@@ -22,7 +22,7 @@ import assetsReducer, {
   assetsTagsRemoveEpic,
   assetsUnpickEpic,
   assetsUpdateEpic,
-  getAllAssetReferencesEpic
+  assetsUpdateImageReferencesEpic
 } from './assets'
 import debugReducer from './debug'
 import dialogReducer, {
@@ -102,7 +102,7 @@ export const rootEpic = combineEpics(
   uploadsCheckRequestEpic,
   uploadsCompleteQueueEpic,
   assetsTagsRemoveEpic,
-  getAllAssetReferencesEpic
+  assetsUpdateImageReferencesEpic
 )
 
 const reducers = {

@@ -144,7 +144,7 @@ const assetsSlice = createSlice({
           state.byIds[asset.asset._id].updating = true
         })
       })
-      .addCase(ASSETS_ACTIONS.getAllAssetReferences, (state, action) => {
+      .addCase(ASSETS_ACTIONS.updateImageReferences, (state, action) => {
         const {assets} = action.payload
         assets.forEach(asset => {
           state.byIds[asset.asset._id].updating = true
@@ -392,11 +392,11 @@ const assetsSlice = createSlice({
     viewSet(state, action: PayloadAction<{view: BrowserView}>) {
       state.view = action.payload?.view
     },
-    getAllAssetReferences(state, action: PayloadAction<{asset: Asset; id: string}>) {
+    updateImageReferences(state, action: PayloadAction<{asset: Asset; id: string}>) {
       const assetId = action.payload?.id
       state.byIds[assetId].updating = true
     },
-    getAllAssetReferencesComplete(state, action: PayloadAction<{id: String}>) {
+    updateImageReferencesComplete(state, action: PayloadAction<{id: String}>) {
       const {id} = action.payload
       state.byIds[id as string].updating = false
     }
@@ -800,9 +800,9 @@ export const assetsUpdateEpic: MyEpic = (action$, state$, {client}) =>
     })
   )
 
-export const getAllAssetReferencesEpic: MyEpic = (action$, state$, {client}) =>
+export const assetsUpdateImageReferencesEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
-    filter(assetsActions.getAllAssetReferences.match),
+    filter(assetsActions.updateImageReferences.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const {asset, id} = action.payload
@@ -822,7 +822,7 @@ export const getAllAssetReferencesEpic: MyEpic = (action$, state$, {client}) =>
         }),
         mergeMap((_documents: string[]) =>
           of(
-            assetsActions.getAllAssetReferencesComplete({
+            assetsActions.updateImageReferencesComplete({
               id
             })
           )

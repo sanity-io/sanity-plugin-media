@@ -136,7 +136,7 @@ const CardAssetMinimal = (props: Props) => {
 
   const handleContextActionClick = (e: MouseEvent) => {
     e.stopPropagation()
-    dispatch(assetsActions.getAllAssetReferences({asset: asset, id: lastPicked as string}))
+    dispatch(assetsActions.updateImageReferences({asset: asset, id: lastPicked as string}))
     toast.push({
       status: 'success',
       title: 'All images successfully updated'

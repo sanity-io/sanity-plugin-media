@@ -38,8 +38,8 @@ export const ASSETS_ACTIONS = {
       return {payload: {assets, tag}}
     }
   ),
-  getAllAssetReferences: createAction(
-    'actions/getAllAssetReferences',
+  updateImageReferences: createAction(
+    'actions/updateImageReferences',
     function prepare({assets, id}: {assets: AssetItem[]; id: String}) {
       return {payload: {assets, id}}
     }
