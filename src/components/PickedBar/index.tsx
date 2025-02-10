@@ -74,15 +74,22 @@ const PickedBar = () => {
           <Label size={0}>Delete</Label>
         </Button>
 
-        <Button
-          mode="bleed"
-          onClick={handleReplaceImages}
-          padding={2}
-          style={{background: 'none', boxShadow: 'none'}}
-          tone="default"
-        >
-          <Label size={0}>Replace</Label>
-        </Button>
+        {/* Replace button */}
+        {assetsPicked.length === 1 && (
+          <Button
+            mode="bleed"
+            onClick={handleReplaceImages}
+            padding={2}
+            style={{
+              background: 'none',
+              boxShadow: 'none',
+              display: assetsPicked.length === 1 ? 'block' : 'none'
+            }}
+            tone="default"
+          >
+            <Label size={0}>Replace</Label>
+          </Button>
+        )}
       </Flex>
     </Flex>
   )

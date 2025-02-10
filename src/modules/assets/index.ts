@@ -15,7 +15,7 @@ import groq from 'groq'
 import {nanoid} from 'nanoid'
 import {Selector} from 'react-redux'
 import {ofType} from 'redux-observable'
-import {empty, from, of} from 'rxjs'
+import {empty, from, of, tap} from 'rxjs'
 import {
   bufferTime,
   catchError,
@@ -33,6 +33,8 @@ import {searchActions} from '../search'
 import type {RootReducerState} from '../types'
 import {UPLOADS_ACTIONS} from '../uploads/actions'
 import {ASSETS_ACTIONS} from './actions'
+import {findImageAssets} from '../../utils/ReplaceImages'
+
 type ItemError = {
   description: string
   id: string
@@ -137,6 +139,12 @@ const assetsSlice = createSlice({
         })
       })
       .addCase(ASSETS_ACTIONS.tagsRemoveRequest, (state, action) => {
+        const {assets} = action.payload
+        assets.forEach(asset => {
+          state.byIds[asset.asset._id].updating = true
+        })
+      })
+      .addCase(ASSETS_ACTIONS.getAllAssetReferences, (state, action) => {
         const {assets} = action.payload
         assets.forEach(asset => {
           state.byIds[asset.asset._id].updating = true
@@ -383,6 +391,14 @@ const assetsSlice = createSlice({
     },
     viewSet(state, action: PayloadAction<{view: BrowserView}>) {
       state.view = action.payload?.view
+    },
+    getAllAssetReferences(state, action: PayloadAction<{asset: Asset; id: string}>) {
+      const assetId = action.payload?.id
+      state.byIds[assetId].updating = true
+    },
+    getAllAssetReferencesComplete(state, action: PayloadAction<{id: String}>) {
+      const {id} = action.payload
+      state.byIds[id as string].updating = false
     }
   }
 })
@@ -766,6 +782,48 @@ export const assetsUpdateEpic: MyEpic = (action$, state$, {client}) =>
             assetsActions.updateComplete({
               asset: updatedAsset,
               closeDialogId
+            })
+          )
+        ),
+        catchError((error: ClientError) =>
+          of(
+            assetsActions.updateError({
+              asset,
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              }
+            })
+          )
+        )
+      )
+    })
+  )
+
+export const getAllAssetReferencesEpic: MyEpic = (action$, state$, {client}) =>
+  action$.pipe(
+    filter(assetsActions.getAllAssetReferences.match),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {asset, id} = action.payload
+      return of(action).pipe(
+        debugThrottle(state.debug.badConnection),
+        mergeMap(() => client.fetch(`*[references("${id}")]`)),
+        tap(async documents => {
+          if (documents && documents.length > 0) {
+            for (const document of documents) {
+              const clonedDocument = JSON.parse(JSON.stringify(document))
+              const assetsToReplace = findImageAssets(clonedDocument, asset, id)
+              for (const assetToReplace of assetsToReplace) {
+                await client.patch(document._id).set(assetToReplace).commit()
+              }
+            }
+          }
+        }),
+        mergeMap((_documents: string[]) =>
+          of(
+            assetsActions.getAllAssetReferencesComplete({
+              id
             })
           )
         ),

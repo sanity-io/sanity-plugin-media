@@ -6,7 +6,7 @@ import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'
 import DialogTags from '../DialogTags'
-import DialogAllAssets from '../DialogAllAssets'
+import DialogAllAssets from '../DialogAssetsOverView'
 import DialogAssetEdit from '../DialogAssetEdit'
 
 const Dialogs = () => {
@@ -71,13 +71,11 @@ const Dialogs = () => {
 
     if (dialog.type === 'dialogAllAssets') {
       return (
-        // eslint-disable-next-line react/jsx-no-undef
         <DialogAllAssets dialog={dialog} key={index}>
           {childDialogs}
         </DialogAllAssets>
       )
     }
-
     return null
   }
 

@@ -1,8 +1,8 @@
 import {
   ActionFromReducersMapObject,
+  combineReducers,
   Reducer,
-  StateFromReducersMapObject,
-  combineReducers
+  StateFromReducersMapObject
 } from '@reduxjs/toolkit'
 import {combineEpics} from 'redux-observable'
 
@@ -21,7 +21,8 @@ import assetsReducer, {
   assetsTagsAddEpic,
   assetsTagsRemoveEpic,
   assetsUnpickEpic,
-  assetsUpdateEpic
+  assetsUpdateEpic,
+  getAllAssetReferencesEpic
 } from './assets'
 import debugReducer from './debug'
 import dialogReducer, {
@@ -31,8 +32,8 @@ import dialogReducer, {
 } from './dialog'
 import selectedReducer from './selected'
 import notificationsReducer, {
-  notificationsAssetsDeleteErrorEpic,
   notificationsAssetsDeleteCompleteEpic,
+  notificationsAssetsDeleteErrorEpic,
   notificationsAssetsTagsAddCompleteEpic,
   notificationsAssetsTagsRemoveCompleteEpic,
   notificationsAssetsUpdateCompleteEpic,
@@ -99,7 +100,9 @@ export const rootEpic = combineEpics(
   uploadsAssetStartEpic,
   uploadsAssetUploadEpic,
   uploadsCheckRequestEpic,
-  uploadsCompleteQueueEpic
+  uploadsCompleteQueueEpic,
+  assetsTagsRemoveEpic,
+  getAllAssetReferencesEpic
 )
 
 const reducers = {

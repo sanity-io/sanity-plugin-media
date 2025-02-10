@@ -4,6 +4,7 @@ import Dialog from '../Dialog'
 import {DialogAllAssetsProps} from '@types'
 import {dialogActions} from '../../modules/dialog'
 import {useDispatch} from 'react-redux'
+import ReplaceAssetsOverview from '../ReplaceAssetsOverView'
 
 type Props = {
   children: ReactNode
@@ -22,16 +23,10 @@ const DialogAllAssets = (props: Props) => {
   }
 
   return (
-    <Dialog header="Choose an asset for replacing" id={id} width={2} onClose={handleClose}>
-      <Box
-        style={{
-          height: '100%'
-        }}
-        padding={4}
-      >
-        <p>Assets overview</p>
+    <Dialog header="Choose an asset for replacing" id={id} width={3} onClose={handleClose}>
+      <Box padding={4} style={{height: '50vh'}}>
+        <ReplaceAssetsOverview />
       </Box>
-
       {children}
     </Dialog>
   )

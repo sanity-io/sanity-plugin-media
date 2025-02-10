@@ -37,5 +37,11 @@ export const ASSETS_ACTIONS = {
     function prepare({assets, tag}: {assets: AssetItem[]; tag: Tag}) {
       return {payload: {assets, tag}}
     }
+  ),
+  getAllAssetReferences: createAction(
+    'actions/getAllAssetReferences',
+    function prepare({assets, id}: {assets: AssetItem[]; id: String}) {
+      return {payload: {assets, id}}
+    }
   )
 }
