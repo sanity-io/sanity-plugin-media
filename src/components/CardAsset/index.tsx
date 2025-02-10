@@ -8,7 +8,8 @@ import {
   Text,
   Theme,
   ThemeColorSchemeKey,
-  Tooltip
+  Tooltip,
+  useToast
 } from '@sanity/ui'
 import React, {memo, MouseEvent, RefObject} from 'react'
 import {useDispatch} from 'react-redux'
@@ -29,6 +30,7 @@ import {getSchemeColor} from '../../utils/getSchemeColor'
 type Props = {
   id: string
   selected: boolean
+  source: string
 }
 
 const CardWrapper = styled(Flex)`
@@ -86,7 +88,7 @@ const StyledWarningOutlineIcon = styled(WarningFilledIcon)(({theme}) => {
 })
 
 const CardAsset = (props: Props) => {
-  const {id, selected} = props
+  const {id, selected, source} = props
 
   const {scheme} = useColorScheme()
 
@@ -103,8 +105,8 @@ const CardAsset = (props: Props) => {
   const isOpaque = item?.asset?.metadata?.isOpaque
   const picked = item?.picked
   const updating = item?.updating
-
   const {onSelect} = useAssetSourceActions()
+  const toast = useToast()
 
   // Short circuit if no asset is available
   if (!asset) {
@@ -135,6 +137,17 @@ const CardAsset = (props: Props) => {
 
   const handleContextActionClick = (e: MouseEvent) => {
     e.stopPropagation()
+
+    if (source === 'replace-asset') {
+      e.stopPropagation()
+      dispatch(assetsActions.updateImageReferences({asset: asset, id: lastPicked as string}))
+      toast.push({
+        status: 'success',
+        title: 'All images successfully updated'
+      })
+      dispatch(dialogActions.clear())
+      return
+    }
 
     if (onSelect) {
       dispatch(dialogActions.showAssetEdit({assetId: asset._id}))

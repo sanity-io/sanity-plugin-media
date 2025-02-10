@@ -4,7 +4,7 @@ import {selectCombinedItems} from '../../modules/selectors'
 import {Box, Text} from '@sanity/ui'
 import {assetsActions} from '../../modules/assets'
 import {useDispatch} from 'react-redux'
-import ReplaceAssetGridVirtualizedMinimal from '../ReplaceAssetGridVirtualizedMinimal'
+import AssetGridVirtualized from '../AssetGridVirtualized'
 
 const ReplaceAssetsOverview = () => {
   const dispatch = useDispatch()
@@ -22,6 +22,9 @@ const ReplaceAssetsOverview = () => {
     }
   }
 
+  const lastPicked = useTypedSelector(state => state.assets.lastPicked)
+  const reducedItems = combinedItems.filter(asset => asset.id !== lastPicked)
+
   return (
     <Box height="fill">
       {isEmpty ? (
@@ -32,9 +35,10 @@ const ReplaceAssetsOverview = () => {
         </Box>
       ) : (
         <Box height="fill">
-          <ReplaceAssetGridVirtualizedMinimal
-            items={combinedItems}
+          <AssetGridVirtualized
+            items={reducedItems}
             onLoadMore={handleLoadMoreItems}
+            source="replace-asset"
           />
         </Box>
       )}

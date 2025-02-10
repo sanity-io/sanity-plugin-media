@@ -1,6 +1,10 @@
-export function findImageAssets(document: any, replacementAsset: any, oldId: string) {
+export function findImageAssets(
+  document: Record<string, unknown>,
+  newAsset: Record<string, unknown>,
+  assetToReplaceId: string
+): any[] {
   const foundEntries: any[] = []
-  findNestedObjects(document, foundEntries, replacementAsset, oldId, '')
+  findNestedObjects(document, foundEntries, newAsset, assetToReplaceId, '')
   return foundEntries
 }
 
@@ -8,8 +12,8 @@ export function findImageAssets(document: any, replacementAsset: any, oldId: str
 function findNestedObjects(
   document: any,
   foundEntries: any[],
-  replacementAsset: any,
-  oldId: string,
+  newAsset: any,
+  assetToReplaceId: string,
   currentPath: string
 ) {
   if (typeof document !== 'object' || document === null) {
@@ -18,9 +22,9 @@ function findNestedObjects(
 
   if (document.hasOwnProperty('_type') && document._type === 'image') {
     const assetProperty = document.asset
-    if (assetProperty.hasOwnProperty('_ref') && assetProperty._ref === oldId) {
+    if (assetProperty.hasOwnProperty('_ref') && assetProperty._ref === assetToReplaceId) {
       const imageObject: any = {}
-      document.asset._ref = replacementAsset._id
+      document.asset._ref = newAsset._id
       imageObject[currentPath] = document
 
       if (!foundEntries.find(entry => entry.hasOwnProperty(currentPath))) {
@@ -32,7 +36,7 @@ function findNestedObjects(
   for (const key in document) {
     if (typeof document[key] === 'object') {
       const newPath = currentPath ? `${currentPath}` : key
-      findNestedObjects(document[key], foundEntries, replacementAsset, oldId, newPath)
+      findNestedObjects(document[key], foundEntries, newAsset, assetToReplaceId, newPath)
     }
   }
 }

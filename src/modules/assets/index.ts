@@ -810,13 +810,11 @@ export const assetsUpdateImageReferencesEpic: MyEpic = (action$, state$, {client
         debugThrottle(state.debug.badConnection),
         mergeMap(() => client.fetch(`*[references("${id}")]`)),
         tap(async documents => {
-          if (documents && documents.length > 0) {
-            for (const document of documents) {
-              const clonedDocument = JSON.parse(JSON.stringify(document))
-              const assetsToReplace = findImageAssets(clonedDocument, asset, id)
-              for (const assetToReplace of assetsToReplace) {
-                await client.patch(document._id).set(assetToReplace).commit()
-              }
+          for (const document of documents) {
+            const clonedDocument = JSON.parse(JSON.stringify(document))
+            const assetsToReplace = findImageAssets(clonedDocument, asset, id)
+            for (const assetToReplace of assetsToReplace) {
+              await client.patch(document._id).set(assetToReplace).commit()
             }
           }
         }),
