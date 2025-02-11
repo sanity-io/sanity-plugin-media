@@ -52,11 +52,7 @@ const Items = () => {
       ) : (
         <>
           {view === 'grid' && (
-            <AssetGridVirtualized
-              items={combinedItems}
-              onLoadMore={handleLoadMoreItems}
-              source="original"
-            />
+            <AssetGridVirtualized items={combinedItems} onLoadMore={handleLoadMoreItems} />
           )}
 
           {view === 'table' && (

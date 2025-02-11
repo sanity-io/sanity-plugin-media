@@ -30,7 +30,7 @@ import {getSchemeColor} from '../../utils/getSchemeColor'
 type Props = {
   id: string
   selected: boolean
-  source: string
+  source?: string
 }
 
 const CardWrapper = styled(Flex)`

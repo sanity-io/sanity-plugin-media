@@ -9,7 +9,7 @@ import CardUpload from '../CardUpload'
 type Props = {
   items: (CardAssetData | CardUploadData)[]
   onLoadMore?: () => void
-  source: string
+  source?: string
 }
 
 const CARD_HEIGHT = 220
@@ -23,7 +23,7 @@ const VirtualCell = memo(
   }: {
     item: CardAssetData | CardUploadData
     selected: boolean
-    source: string
+    source?: string
   }) => {
     if (item?.type === 'asset') {
       return <CardAsset id={item.id} selected={selected} source={source} />
