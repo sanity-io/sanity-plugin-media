@@ -11,7 +11,7 @@ export function findImageAssets<T extends {_id: string}>(
 }
 
 // Because of GROQ limitations we have to filter all image assets out the document manually
-function findNestedObjects<T extends {_id?: string; _type?: string; asset?: Asset}>(
+function findNestedObjects<T extends {_id: string; _type?: string; asset?: Asset}>(
   document: T,
   foundEntries: T[],
   newAsset: T,
