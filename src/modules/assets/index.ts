@@ -15,7 +15,7 @@ import groq from 'groq'
 import {nanoid} from 'nanoid'
 import {Selector} from 'react-redux'
 import {ofType} from 'redux-observable'
-import {empty, from, of, tap} from 'rxjs'
+import {empty, from, of} from 'rxjs'
 import {
   bufferTime,
   catchError,
@@ -809,7 +809,7 @@ export const assetsUpdateImageReferencesEpic: MyEpic = (action$, state$, {client
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() => client.fetch(`*[references("${id}")]`)),
-        tap(async documents => {
+        mergeMap(async documents => {
           for (const document of documents) {
             const clonedDocument = JSON.parse(JSON.stringify(document))
             const assetsToReplace = findImageAssets(clonedDocument, asset, id)
@@ -817,14 +817,8 @@ export const assetsUpdateImageReferencesEpic: MyEpic = (action$, state$, {client
               await client.patch(document._id).set(assetToReplace).commit()
             }
           }
+          return assetsActions.updateImageReferencesComplete({id})
         }),
-        mergeMap((_documents: string[]) =>
-          of(
-            assetsActions.updateImageReferencesComplete({
-              id
-            })
-          )
-        ),
         catchError((error: ClientError) =>
           of(
             assetsActions.updateError({

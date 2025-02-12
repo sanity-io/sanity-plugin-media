@@ -142,8 +142,9 @@ const CardAsset = (props: Props) => {
       e.stopPropagation()
       dispatch(assetsActions.updateImageReferences({asset: asset, id: lastPicked as string}))
       toast.push({
-        status: 'success',
-        title: 'All images successfully updated'
+        status: 'info',
+        title:
+          'Updating in progress, depending on the amount of references, this could take a few miutes'
       })
       dispatch(dialogActions.clear())
       return
