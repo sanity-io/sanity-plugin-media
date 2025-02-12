@@ -1,27 +1,29 @@
-export function findImageAssets(
-  document: Record<string, unknown>,
-  newAsset: Record<string, unknown>,
+import {Asset} from '@types'
+
+export function findImageAssets<T extends {_id: string}>(
+  document: T,
+  newAsset: T,
   assetToReplaceId: string
-): any[] {
-  const foundEntries: any[] = []
-  findNestedObjects(document, foundEntries, newAsset, assetToReplaceId, '')
+): T[] {
+  const foundEntries: T[] = []
+  findNestedObjects(document, foundEntries, newAsset, assetToReplaceId)
   return foundEntries
 }
 
 // Because of GROQ limitations we have to filter all image assets out the document manually
-function findNestedObjects(
-  document: any,
-  foundEntries: any[],
-  newAsset: any,
+function findNestedObjects<T extends {_id?: string; _type?: string; asset?: Asset}>(
+  document: T,
+  foundEntries: T[],
+  newAsset: T,
   assetToReplaceId: string,
-  currentPath: string
+  currentPath: string = ''
 ) {
   if (typeof document !== 'object' || document === null) {
     return
   }
 
-  if (document.hasOwnProperty('_type') && document._type === 'image') {
-    const assetProperty = document.asset
+  if (document.hasOwnProperty('_type') && document._type === 'image' && document.asset) {
+    const assetProperty = document.asset as Asset
     if (assetProperty.hasOwnProperty('_ref') && assetProperty._ref === assetToReplaceId) {
       const imageObject: any = {}
       document.asset._ref = newAsset._id
@@ -36,7 +38,7 @@ function findNestedObjects(
   for (const key in document) {
     if (typeof document[key] === 'object') {
       const newPath = currentPath ? `${currentPath}` : key
-      findNestedObjects(document[key], foundEntries, newAsset, assetToReplaceId, newPath)
+      findNestedObjects(document[key] as T, foundEntries, newAsset, assetToReplaceId, newPath)
     }
   }
 }

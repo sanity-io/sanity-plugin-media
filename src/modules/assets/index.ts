@@ -1,5 +1,5 @@
 import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import type {ClientError, Patch, Transaction} from '@sanity/client'
+import type {AttributeSet, ClientError, Patch, Transaction} from '@sanity/client'
 import {
   Asset,
   AssetItem,
@@ -814,7 +814,10 @@ export const assetsUpdateImageReferencesEpic: MyEpic = (action$, state$, {client
             const clonedDocument = JSON.parse(JSON.stringify(document))
             const assetsToReplace = findImageAssets(clonedDocument, asset, id)
             for (const assetToReplace of assetsToReplace) {
-              await client.patch(document._id).set(assetToReplace).commit()
+              await client
+                .patch(document._id)
+                .set(assetToReplace as AttributeSet)
+                .commit()
             }
           }
           return assetsActions.updateImageReferencesComplete({id})
