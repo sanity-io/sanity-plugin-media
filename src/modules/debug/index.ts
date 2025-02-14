@@ -23,6 +23,6 @@ const debugSlice = createSlice({
   }
 })
 
-export const debugActions = debugSlice.actions
+export const debugActions = {...debugSlice.actions}
 
 export default debugSlice.reducer

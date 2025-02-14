@@ -1,6 +1,6 @@
 import {type PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
 import type {MyEpic, SearchFacetInputProps, SearchFacetOperatorType, WithId} from '../../types'
-import {empty, of} from 'rxjs'
+import {EMPTY, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'
 import {uuid} from '@sanity/uuid'
 
@@ -142,7 +142,7 @@ export const searchFacetTagUpdateEpic: MyEpic = (action$, state$) =>
         }
       }
 
-      return empty()
+      return EMPTY
     })
   )
 
@@ -162,6 +162,6 @@ export const selectIsSearchFacetTag = createSelector(
     )
 )
 
-export const searchActions = searchSlice.actions
+export const searchActions = {...searchSlice.actions}
 
 export default searchSlice.reducer
