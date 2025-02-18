@@ -81,6 +81,7 @@ export type Dialog =
   | DialogTagCreateProps
   | DialogTagEditProps
   | DialogTagsProps
+  | DialogAllAssetsProps
 
 export type DialogAction = 'deleteAsset' | 'deleteTag'
 
@@ -124,6 +125,12 @@ export type DialogTagCreateProps = {
   closeDialogId?: string
   id: string
   type: 'tagCreate'
+}
+
+export type DialogAllAssetsProps = {
+  closeDialogId?: string
+  id: string
+  type: 'dialogAllAssets'
 }
 
 export type DialogTagEditProps = {

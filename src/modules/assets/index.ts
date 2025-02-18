@@ -1,5 +1,5 @@
 import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import type {ClientError, Patch, Transaction} from '@sanity/client'
+import type {AttributeSet, ClientError, Patch, Transaction} from '@sanity/client'
 import {
   Asset,
   AssetItem,
@@ -33,6 +33,8 @@ import {searchActions} from '../search'
 import type {RootReducerState} from '../types'
 import {UPLOADS_ACTIONS} from '../uploads/actions'
 import {ASSETS_ACTIONS} from './actions'
+import {findImageAssets} from '../../utils/ReplaceImages'
+
 type ItemError = {
   description: string
   id: string
@@ -137,6 +139,12 @@ const assetsSlice = createSlice({
         })
       })
       .addCase(ASSETS_ACTIONS.tagsRemoveRequest, (state, action) => {
+        const {assets} = action.payload
+        assets.forEach(asset => {
+          state.byIds[asset.asset._id].updating = true
+        })
+      })
+      .addCase(ASSETS_ACTIONS.updateImageReferences, (state, action) => {
         const {assets} = action.payload
         assets.forEach(asset => {
           state.byIds[asset.asset._id].updating = true
@@ -383,6 +391,14 @@ const assetsSlice = createSlice({
     },
     viewSet(state, action: PayloadAction<{view: BrowserView}>) {
       state.view = action.payload?.view
+    },
+    updateImageReferences(state, action: PayloadAction<{asset: Asset; id: string}>) {
+      const assetId = action.payload?.id
+      state.byIds[assetId].updating = true
+    },
+    updateImageReferencesComplete(state, action: PayloadAction<{id: String}>) {
+      const {id} = action.payload
+      state.byIds[id as string].updating = false
     }
   }
 })
@@ -769,6 +785,43 @@ export const assetsUpdateEpic: MyEpic = (action$, state$, {client}) =>
             })
           )
         ),
+        catchError((error: ClientError) =>
+          of(
+            assetsActions.updateError({
+              asset,
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              }
+            })
+          )
+        )
+      )
+    })
+  )
+
+export const assetsUpdateImageReferencesEpic: MyEpic = (action$, state$, {client}) =>
+  action$.pipe(
+    filter(assetsActions.updateImageReferences.match),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {asset, id} = action.payload
+      return of(action).pipe(
+        debugThrottle(state.debug.badConnection),
+        mergeMap(() => client.fetch(`*[references("${id}")]`)),
+        mergeMap(async documents => {
+          for (const document of documents) {
+            const clonedDocument = JSON.parse(JSON.stringify(document))
+            const assetsToReplace = findImageAssets(clonedDocument, asset, id)
+            for (const assetToReplace of assetsToReplace) {
+              await client
+                .patch(document._id)
+                .set(assetToReplace as AttributeSet)
+                .commit()
+            }
+          }
+          return assetsActions.updateImageReferencesComplete({id})
+        }),
         catchError((error: ClientError) =>
           of(
             assetsActions.updateError({

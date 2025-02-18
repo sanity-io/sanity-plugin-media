@@ -1,12 +1,13 @@
 import {Dialog} from '@types'
 import React from 'react'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import DialogAssetEdit from '../DialogAssetEdit'
 import DialogConfirm from '../DialogConfirm'
 import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'
 import DialogTags from '../DialogTags'
+import DialogAllAssets from '../DialogAssetsOverView'
+import DialogAssetEdit from '../DialogAssetEdit'
 
 const Dialogs = () => {
   // Redux
@@ -68,6 +69,13 @@ const Dialogs = () => {
       )
     }
 
+    if (dialog.type === 'dialogAllAssets') {
+      return (
+        <DialogAllAssets dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogAllAssets>
+      )
+    }
     return null
   }
 

@@ -25,6 +25,10 @@ const PickedBar = () => {
     dispatch(dialogActions.showConfirmDeleteAssets({assets: assetsPicked}))
   }
 
+  const handleReplaceImages = () => {
+    dispatch(dialogActions.showAllAssetsDialog())
+  }
+
   if (assetsPicked.length === 0) {
     return null
   }
@@ -69,6 +73,19 @@ const PickedBar = () => {
         >
           <Label size={0}>Delete</Label>
         </Button>
+
+        {/* Replace button */}
+        {assetsPicked.length === 1 && (
+          <Button
+            mode="bleed"
+            onClick={handleReplaceImages}
+            padding={2}
+            style={{background: 'none', boxShadow: 'none'}}
+            tone="default"
+          >
+            <Label size={0}>Replace</Label>
+          </Button>
+        )}
       </Flex>
     </Flex>
   )
