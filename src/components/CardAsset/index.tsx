@@ -144,7 +144,7 @@ const CardAsset = (props: Props) => {
       toast.push({
         status: 'info',
         title:
-          'Updating in progress, depending on the amount of references, this could take a few miutes'
+          'Updating in progress. Depending on the amount of changes, this could take a few minutes.'
       })
       dispatch(dialogActions.clear())
       return
