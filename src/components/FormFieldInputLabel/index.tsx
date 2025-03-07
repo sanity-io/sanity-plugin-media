@@ -32,6 +32,7 @@ const FormFieldInputLabel = (props: Props) => {
           {error && (
             <Text size={1}>
               <Tooltip
+                animate
                 content={
                   <Box padding={2}>
                     <Text muted size={1}>

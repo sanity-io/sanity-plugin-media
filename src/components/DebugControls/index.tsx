@@ -49,6 +49,7 @@ const DebugControls = () => {
           </Text>
         </Box>
         <Tooltip
+          animate
           content={
             <Box padding={2}>
               <Text muted size={1}>

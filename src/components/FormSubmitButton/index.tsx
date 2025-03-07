@@ -31,6 +31,7 @@ const FormSubmitButton = (props: Props) => {
 
   return (
     <Tooltip
+      animate
       content={
         <Box padding={3} style={{maxWidth: '185px'}}>
           <Text muted size={1}>

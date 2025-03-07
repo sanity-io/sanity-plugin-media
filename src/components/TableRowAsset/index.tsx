@@ -396,6 +396,7 @@ const TableRowAsset = (props: Props) => {
         {error && (
           <Box padding={2}>
             <Tooltip
+              animate
               content={
                 <Container padding={2} width={0}>
                   <Text size={1}>{error}</Text>

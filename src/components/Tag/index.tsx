@@ -46,6 +46,7 @@ const TagButton = (props: TagButtonProps) => {
 
   return (
     <Tooltip
+      animate
       content={
         <Container padding={2} width={0}>
           <Text muted size={1}>
