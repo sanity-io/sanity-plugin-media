@@ -5,6 +5,16 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.4.2...v3.0.0) (2025-03-07)
+
+### ⚠ BREAKING CHANGES
+
+- add react 19 support (#243)
+
+### Features
+
+- add react 19 support ([#243](https://github.com/sanity-io/sanity-plugin-media/issues/243)) ([1e26560](https://github.com/sanity-io/sanity-plugin-media/commit/1e265609c3c59a891b55c202aa97c7a40be030f2))
+
 ## [2.4.2](https://github.com/sanity-io/sanity-plugin-media/compare/v2.4.1...v2.4.2) (2025-03-07)
 
 ### Bug Fixes
