@@ -5,6 +5,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.2](https://github.com/sanity-io/sanity-plugin-media/compare/v2.4.1...v2.4.2) (2025-03-07)
+
+### Bug Fixes
+
+- **deps:** update redux ([#237](https://github.com/sanity-io/sanity-plugin-media/issues/237)) ([97a1ccc](https://github.com/sanity-io/sanity-plugin-media/commit/97a1cccdac23290748bcbba245ed519927a72260))
+- remove `useColorScheme()` deprecation warning ([3f15058](https://github.com/sanity-io/sanity-plugin-media/commit/3f150586c161c10142e0d0c132d9839b50986f9c))
+
 ## [2.4.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.4.0...v2.4.1) (2025-03-07)
 
 ### Bug Fixes
