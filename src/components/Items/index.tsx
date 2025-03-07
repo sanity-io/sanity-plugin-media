@@ -1,5 +1,5 @@
 import {Box, Text} from '@sanity/ui'
-import React, {useEffect} from 'react'
+import {useEffect} from 'react'
 import {useDispatch} from 'react-redux'
 import useBreakpointIndex from '../../hooks/useBreakpointIndex'
 import useTypedSelector from '../../hooks/useTypedSelector'

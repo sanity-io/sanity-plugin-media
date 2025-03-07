@@ -1,6 +1,6 @@
 import {Box, Button, Text, Tooltip} from '@sanity/ui'
 import format from 'date-fns/format'
-import React, {ReactNode} from 'react'
+import {type ReactNode} from 'react'
 
 type Props = {
   disabled: boolean

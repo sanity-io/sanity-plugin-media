@@ -1,7 +1,7 @@
 import {ClipboardIcon} from '@sanity/icons'
 import {Button, Popover, Text} from '@sanity/ui'
 import copy from 'copy-to-clipboard'
-import React, {useEffect, useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 
 type Props = {

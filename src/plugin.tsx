@@ -1,10 +1,10 @@
 import React from 'react'
-import {AssetSource, Tool as SanityTool, definePlugin} from 'sanity'
+import {type AssetSource, type Tool as SanityTool, definePlugin} from 'sanity'
 import {ImageIcon} from '@sanity/icons'
 import FormBuilderTool from './components/FormBuilderTool'
 import Tool from './components/Tool'
 import mediaTag from './schemas/tag'
-import {MediaToolOptions} from '@types'
+import type {MediaToolOptions} from '@types'
 import {ToolOptionsProvider} from './contexts/ToolOptionsContext'
 
 const plugin = {

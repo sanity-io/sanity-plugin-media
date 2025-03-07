@@ -1,5 +1,5 @@
-import {CardAssetData, CardUploadData} from '@types'
-import React, {memo} from 'react'
+import type {CardAssetData, CardUploadData} from '@types'
+import {memo} from 'react'
 import {VirtuosoGrid} from 'react-virtuoso'
 import styled from 'styled-components'
 import useTypedSelector from '../../hooks/useTypedSelector'

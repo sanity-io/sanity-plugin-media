@@ -1,5 +1,5 @@
 import {Dialog as SanityDialog} from '@sanity/ui'
-import React, {ComponentProps} from 'react'
+import {type ComponentProps} from 'react'
 
 const Dialog = (props: ComponentProps<typeof SanityDialog>) => {
   // HACK: Temporarily force fixed positioning on all @sanity/ui <Dialog /> components.

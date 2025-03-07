@@ -1,4 +1,4 @@
-import React, {ReactNode, createContext, useContext} from 'react'
+import {type ReactNode, createContext, useContext} from 'react'
 
 type ContextProps = {
   open: () => void

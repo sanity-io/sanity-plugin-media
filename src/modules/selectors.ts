@@ -1,7 +1,7 @@
 import {createSelector} from '@reduxjs/toolkit'
-import {CardAssetData, CardUploadData} from '@types'
+import type {CardAssetData, CardUploadData} from '@types'
 
-import {RootReducerState} from './types'
+import type {RootReducerState} from './types'
 
 export const selectCombinedItems = createSelector(
   [

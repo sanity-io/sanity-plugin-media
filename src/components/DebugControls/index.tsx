@@ -1,6 +1,6 @@
 import {PlugIcon} from '@sanity/icons'
 import {Box, Flex, Switch, Text, Tooltip} from '@sanity/ui'
-import React, {ChangeEvent} from 'react'
+import {type ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import useKeyPress from '../../hooks/useKeyPress'
 import useTypedSelector from '../../hooks/useTypedSelector'

@@ -1,4 +1,9 @@
-import {SearchFacetInputProps, SearchFacetDivider, SearchFacetGroup, OrderDirection} from '@types'
+import type {
+  SearchFacetInputProps,
+  SearchFacetDivider,
+  SearchFacetGroup,
+  OrderDirection
+} from '@types'
 import {divider, inputs} from './config/searchFacets'
 
 // Sort order dropdown options

@@ -1,7 +1,7 @@
 import {
-  ActionFromReducersMapObject,
-  Reducer,
-  StateFromReducersMapObject,
+  type ActionFromReducersMapObject,
+  type Reducer,
+  type StateFromReducersMapObject,
   combineReducers
 } from '@reduxjs/toolkit'
 import {combineEpics} from 'redux-observable'

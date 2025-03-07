@@ -1,6 +1,6 @@
-import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, Patch, Transaction} from '@sanity/client'
-import {
+import type {
   Asset,
   AssetItem,
   AssetType,
@@ -13,7 +13,7 @@ import {
 } from '@types'
 import groq from 'groq'
 import {nanoid} from 'nanoid'
-import {Selector} from 'react-redux'
+import type {Selector} from 'react-redux'
 import {ofType} from 'redux-observable'
 import {empty, from, of} from 'rxjs'
 import {

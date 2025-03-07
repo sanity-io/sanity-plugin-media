@@ -1,6 +1,6 @@
-import {MediaToolOptions} from '@types'
-import React, {PropsWithChildren, createContext, useContext, useMemo} from 'react'
-import {DropzoneOptions} from 'react-dropzone'
+import type {MediaToolOptions} from '@types'
+import {type PropsWithChildren, createContext, useContext, useMemo} from 'react'
+import type {DropzoneOptions} from 'react-dropzone'
 
 type ContextProps = {
   dropzone: Pick<DropzoneOptions, 'maxSize'>

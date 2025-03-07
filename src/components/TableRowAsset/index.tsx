@@ -7,13 +7,21 @@ import {
   Grid,
   Spinner,
   Text,
-  ThemeColorSchemeKey,
+  type ThemeColorSchemeKey,
   Tooltip,
   useMediaIndex
 } from '@sanity/ui'
 import formatRelative from 'date-fns/formatRelative'
 import filesize from 'filesize'
-import React, {memo, MouseEvent, RefObject, useCallback, useEffect, useRef, useState} from 'react'
+import {
+  memo,
+  type MouseEvent,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import {useDispatch} from 'react-redux'
 import {WithReferringDocuments, useColorScheme} from 'sanity'
 import styled, {css} from 'styled-components'

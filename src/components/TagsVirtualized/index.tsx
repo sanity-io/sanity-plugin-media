@@ -1,6 +1,6 @@
 import {Flex, Label} from '@sanity/ui'
-import {TagActions, TagItem} from '@types'
-import React, {memo, useState} from 'react'
+import type {TagActions, TagItem} from '@types'
+import {memo, useState} from 'react'
 import {Virtuoso} from 'react-virtuoso'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'

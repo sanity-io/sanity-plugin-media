@@ -1,4 +1,4 @@
-import {Dialog} from '@types'
+import type {Dialog} from '@types'
 import React from 'react'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import DialogAssetEdit from '../DialogAssetEdit'

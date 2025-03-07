@@ -1,5 +1,5 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {AssetItem, Dialog, MyEpic, Tag} from '@types'
+import {createSlice, type PayloadAction} from '@reduxjs/toolkit'
+import type {AssetItem, Dialog, MyEpic, Tag} from '@types'
 import pluralize from 'pluralize'
 import {ofType} from 'redux-observable'
 import {empty, of} from 'rxjs'

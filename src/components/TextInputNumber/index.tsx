@@ -1,5 +1,5 @@
 import {TextInput} from '@sanity/ui'
-import React, {ChangeEvent} from 'react'
+import {type ChangeEvent} from 'react'
 
 // TODO: use correct type
 type Props = any & {

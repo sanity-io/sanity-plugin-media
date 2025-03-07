@@ -1,4 +1,4 @@
-import {AnyAction} from '@reduxjs/toolkit'
+import type {AnyAction} from '@reduxjs/toolkit'
 import type {
   SanityAssetDocument,
   SanityClient,
@@ -8,7 +8,7 @@ import type {
 import type {Epic} from 'redux-observable'
 import * as z from 'zod'
 import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
-import {RootReducerState} from '../modules/types'
+import type {RootReducerState} from '../modules/types'
 
 export type MediaToolOptions = {
   maximumUploadSize?: number

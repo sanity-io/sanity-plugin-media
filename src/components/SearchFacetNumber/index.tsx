@@ -1,6 +1,6 @@
 import {SelectIcon} from '@sanity/icons'
 import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
-import {
+import type {
   SearchFacetInputNumberModifier,
   SearchFacetInputNumberProps,
   SearchFacetOperatorType,

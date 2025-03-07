@@ -1,6 +1,6 @@
 import {Box, Portal, PortalProvider, useLayer} from '@sanity/ui'
-import React, {SyntheticEvent, useEffect, useState} from 'react'
-import {AssetSourceComponentProps, SanityDocument, useFormValue} from 'sanity'
+import {type SyntheticEvent, useEffect, useState} from 'react'
+import {type AssetSourceComponentProps, type SanityDocument, useFormValue} from 'sanity'
 import useKeyPress from '../../hooks/useKeyPress'
 import Browser from '../Browser'
 

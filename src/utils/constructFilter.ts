@@ -1,4 +1,4 @@
-import {AssetType, SearchFacetInputProps} from '@types'
+import type {AssetType, SearchFacetInputProps} from '@types'
 import groq from 'groq'
 
 import {operators} from '../config/searchFacets'

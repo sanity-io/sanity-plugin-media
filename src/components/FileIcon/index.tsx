@@ -1,5 +1,5 @@
-import {Box, Flex, Theme} from '@sanity/ui'
-import React, {MouseEvent} from 'react'
+import {Box, Flex, type Theme} from '@sanity/ui'
+import {type MouseEvent} from 'react'
 import {defaultStyles, FileIcon as ReactFileIcon} from 'react-file-icon'
 import type {DefaultExtensionType} from 'react-file-icon'
 import styled, {css} from 'styled-components'

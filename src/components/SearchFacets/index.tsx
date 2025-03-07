@@ -1,4 +1,4 @@
-import {Box, Flex, Inline, rem, Theme} from '@sanity/ui'
+import {Box, Flex, Inline, rem, type Theme} from '@sanity/ui'
 import React from 'react'
 import styled, {css} from 'styled-components'
 

@@ -1,7 +1,7 @@
 import {CloseIcon} from '@sanity/icons'
-import {Box, Card, rem, studioTheme, Text, ThemeColorSchemeKey} from '@sanity/ui'
+import {Box, Card, rem, studioTheme, Text, type ThemeColorSchemeKey} from '@sanity/ui'
 import React from 'react'
-import {components, StylesConfig} from 'react-select'
+import {components, type StylesConfig} from 'react-select'
 import {Virtuoso} from 'react-virtuoso'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 

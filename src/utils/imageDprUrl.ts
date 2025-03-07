@@ -1,4 +1,4 @@
-import {ImageAsset} from '@types'
+import type {ImageAsset} from '@types'
 
 const imageDprUrl = (
   asset: ImageAsset,

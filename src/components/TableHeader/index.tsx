@@ -1,5 +1,5 @@
-import {Checkbox, Flex, Grid, ThemeColorSchemeKey, useMediaIndex} from '@sanity/ui'
-import React, {MouseEvent} from 'react'
+import {Checkbox, Flex, Grid, type ThemeColorSchemeKey, useMediaIndex} from '@sanity/ui'
+import {type MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import styled, {css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS, PANEL_HEIGHT} from '../../constants'

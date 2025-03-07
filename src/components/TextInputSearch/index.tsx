@@ -1,6 +1,6 @@
 import {CloseIcon, SearchIcon} from '@sanity/icons'
 import {Box, Flex, TextInput} from '@sanity/ui'
-import React, {ChangeEvent} from 'react'
+import {type ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {searchActions} from '../../modules/search'

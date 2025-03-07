@@ -1,5 +1,5 @@
 import {createAction} from '@reduxjs/toolkit'
-import {AssetItem, HttpError, Tag} from '../../types'
+import type {AssetItem, HttpError, Tag} from '../../types'
 
 export const ASSETS_ACTIONS = {
   tagsAddComplete: createAction(

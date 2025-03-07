@@ -1,4 +1,4 @@
-import {PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
+import {type PayloadAction, createSelector, createSlice} from '@reduxjs/toolkit'
 import type {MyEpic, SearchFacetInputProps, SearchFacetOperatorType, WithId} from '@types'
 import {empty, of} from 'rxjs'
 import {filter, mergeMap, withLatestFrom} from 'rxjs/operators'

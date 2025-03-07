@@ -6,11 +6,11 @@ import {
   Flex,
   Spinner,
   Text,
-  Theme,
-  ThemeColorSchemeKey,
+  type Theme,
+  type ThemeColorSchemeKey,
   Tooltip
 } from '@sanity/ui'
-import React, {memo, MouseEvent, RefObject} from 'react'
+import {memo, type MouseEvent, type RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import {useColorScheme} from 'sanity'
 import styled, {css} from 'styled-components'

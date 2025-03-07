@@ -1,4 +1,4 @@
-import {SanityDocument} from '@sanity/client'
+import type {SanityDocument} from '@sanity/client'
 
 export function getUniqueDocuments(documents: SanityDocument[]): SanityDocument[] {
   const draftIds = documents.reduce(
