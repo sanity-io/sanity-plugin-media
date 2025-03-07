@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1](https://github.com/sanity-io/sanity-plugin-media/compare/v2.4.0...v2.4.1) (2025-03-07)
+
+### Bug Fixes
+
+- export typings correctly ([b850424](https://github.com/sanity-io/sanity-plugin-media/commit/b85042463e56bcec0d44c625e8eeeb85414231fc))
+
 ## [2.4.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.3.2...v2.4.0) (2025-03-07)
 
 ### Features
