@@ -1,9 +1,8 @@
 import {CloseIcon} from '@sanity/icons'
 import {Box, Button, Flex, Text} from '@sanity/ui'
 import filesize from 'filesize'
-import React from 'react'
 import {useDispatch} from 'react-redux'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import {styled} from 'styled-components'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -27,7 +26,7 @@ const CardWrapper = styled(Flex)`
 const CardUpload = (props: Props) => {
   const {id} = props
 
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Redux
   const dispatch = useDispatch()

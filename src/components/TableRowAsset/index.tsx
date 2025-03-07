@@ -23,7 +23,7 @@ import {
   useState
 } from 'react'
 import {useDispatch} from 'react-redux'
-import {WithReferringDocuments, useColorScheme} from 'sanity'
+import {WithReferringDocuments, useColorSchemeValue} from 'sanity'
 import {styled, css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -100,7 +100,7 @@ const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
 const TableRowAsset = (props: Props) => {
   const {id, selected} = props
 
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
 

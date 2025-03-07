@@ -1,8 +1,7 @@
 import {Box} from '@sanity/ui'
-import React from 'react'
 import {Controller} from 'react-hook-form'
 import CreatableSelect from 'react-select/creatable'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/creatable'
 import type {TagSelectOption} from '../../types'
@@ -38,7 +37,7 @@ const FormFieldInputTags = (props: Props) => {
     value
   } = props
 
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Redux
   const creating = useTypedSelector(state => state.tags.creating)

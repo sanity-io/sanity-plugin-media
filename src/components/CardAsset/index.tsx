@@ -12,7 +12,7 @@ import {
 } from '@sanity/ui'
 import {memo, type MouseEvent, type RefObject} from 'react'
 import {useDispatch} from 'react-redux'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import {styled, css} from 'styled-components'
 import {PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
@@ -91,7 +91,7 @@ const StyledWarningOutlineIcon = styled(WarningFilledIcon)(({theme}) => {
 const CardAsset = (props: Props) => {
   const {id, selected} = props
 
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Refs
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')

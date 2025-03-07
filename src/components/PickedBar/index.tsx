@@ -1,8 +1,7 @@
 import {Box, Button, Flex, Label} from '@sanity/ui'
 import pluralize from 'pluralize'
-import React from 'react'
 import {useDispatch} from 'react-redux'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
@@ -10,7 +9,7 @@ import {dialogActions} from '../../modules/dialog'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 
 const PickedBar = () => {
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Redux
   const dispatch = useDispatch()

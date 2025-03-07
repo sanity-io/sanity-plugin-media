@@ -1,9 +1,8 @@
 import {CloseIcon} from '@sanity/icons'
 import {Box, Button, Flex, Grid, Stack, Text, useMediaIndex} from '@sanity/ui'
 import filesize from 'filesize'
-import React from 'react'
 import {useDispatch} from 'react-redux'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectUploadById, uploadsActions} from '../../modules/uploads'
@@ -18,7 +17,7 @@ type Props = {
 const TableRowUpload = (props: Props) => {
   const {id} = props
 
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   // Redux
   const dispatch = useDispatch()

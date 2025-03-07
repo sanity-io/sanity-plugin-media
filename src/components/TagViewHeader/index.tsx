@@ -1,8 +1,7 @@
 import {ComposeIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Label} from '@sanity/ui'
-import React from 'react'
 import {useDispatch} from 'react-redux'
-import {useColorScheme} from 'sanity'
+import {useColorSchemeValue} from 'sanity'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
@@ -15,7 +14,7 @@ type Props = {
 }
 
 const TagViewHeader = ({allowCreate, light, title}: Props) => {
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   const dispatch = useDispatch()
   const tagsCreating = useTypedSelector(state => state.tags.creating)

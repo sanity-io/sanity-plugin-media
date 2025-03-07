@@ -4,7 +4,7 @@ import type {Asset, Tag} from '../../types'
 import groq from 'groq'
 import {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {useColorScheme, type AssetSourceComponentProps, type SanityDocument} from 'sanity'
+import {useColorSchemeValue, type AssetSourceComponentProps, type SanityDocument} from 'sanity'
 import {TAG_DOCUMENT_NAME} from '../../constants'
 import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
 import useVersionedClient from '../../hooks/useVersionedClient'
@@ -132,7 +132,7 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
 
 const Browser = (props: Props) => {
   const client = useVersionedClient()
-  const {scheme} = useColorScheme()
+  const scheme = useColorSchemeValue()
 
   return (
     <ReduxProvider
