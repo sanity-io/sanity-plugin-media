@@ -1,7 +1,7 @@
 import {Checkbox, Flex, Grid, type ThemeColorSchemeKey, useMediaIndex} from '@sanity/ui'
 import {type MouseEvent} from 'react'
 import {useDispatch} from 'react-redux'
-import styled, {css} from 'styled-components'
+import {styled, css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS, PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'

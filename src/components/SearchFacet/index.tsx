@@ -4,7 +4,7 @@ import type {SearchFacetInputProps, WithId} from '@types'
 import {type ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import {useColorScheme} from 'sanity'
-import styled, {css} from 'styled-components'
+import {styled, css} from 'styled-components'
 import {searchActions} from '../../modules/search'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 

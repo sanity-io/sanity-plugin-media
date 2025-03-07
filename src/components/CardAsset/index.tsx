@@ -13,7 +13,7 @@ import {
 import {memo, type MouseEvent, type RefObject} from 'react'
 import {useDispatch} from 'react-redux'
 import {useColorScheme} from 'sanity'
-import styled, {css} from 'styled-components'
+import {styled, css} from 'styled-components'
 import {PANEL_HEIGHT} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'

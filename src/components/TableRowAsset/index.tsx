@@ -24,7 +24,7 @@ import {
 } from 'react'
 import {useDispatch} from 'react-redux'
 import {WithReferringDocuments, useColorScheme} from 'sanity'
-import styled, {css} from 'styled-components'
+import {styled, css} from 'styled-components'
 import {GRID_TEMPLATE_COLUMNS} from '../../constants'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useKeyPress from '../../hooks/useKeyPress'

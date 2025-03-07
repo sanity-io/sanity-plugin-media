@@ -42,9 +42,9 @@
     "v2-incompatible.js"
   ],
   "scripts": {
+    "dev": "sanity dev",
     "build": "plugin-kit verify-package --silent && pkg-utils build --strict --check --clean",
     "clean": "rimraf dist",
-    "dev": "npm run watch",
     "format": "prettier --write --cache --ignore-unknown .",
     "link-watch": "plugin-kit link-watch",
     "lint": "eslint .",
@@ -92,7 +92,6 @@
     "@types/react-dom": "^18",
     "@types/react-file-icon": "^1.0.1",
     "@types/react-redux": "^7.1.24",
-    "@types/styled-components": "^5.1.7",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "conventional-changelog-conventionalcommits": "^5.0.0",
@@ -109,16 +108,16 @@
     "react": "^18",
     "react-dom": "^18",
     "rimraf": "^3.0.2",
-    "sanity": "^3.2.0",
+    "sanity": "^3.78.1",
     "standard-version": "^9.5.0",
-    "styled-components": "^5.3.3",
+    "styled-components": "^6.1.15",
     "typescript": "5.7.3"
   },
   "peerDependencies": {
     "@sanity/ui": "^1.0 || ^2.0",
     "react": "^18",
     "react-dom": "^18",
-    "sanity": "^3.0.0",
+    "sanity": "^3",
     "styled-components": "^5.0 || ^6.0"
   },
   "engines": {
