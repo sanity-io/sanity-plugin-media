@@ -11,7 +11,7 @@ type Props = {
 
 const ButtonAssetCopy = ({disabled, url}: Props) => {
   const popoverProps = usePortalPopoverProps()
-  const refPopoverTimeout = useRef<ReturnType<typeof window.setTimeout>>()
+  const refPopoverTimeout = useRef<ReturnType<typeof window.setTimeout>>(null)
   const [popoverVisible, setPopoverVisible] = useState(false)
 
   const handleClick = () => {

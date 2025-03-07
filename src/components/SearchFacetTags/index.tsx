@@ -105,7 +105,7 @@ const SearchFacetTags = ({facet}: Props) => {
             isSearchable
             name="tags"
             noOptionsMessage={() => 'No tags'}
-            onChange={value => handleChange(value as TagSelectOption)}
+            onChange={(value: any) => handleChange(value as TagSelectOption)}
             options={allTagOptions}
             placeholder={tagsFetching ? 'Loading...' : 'Select...'}
             styles={reactSelectStyles(scheme)}

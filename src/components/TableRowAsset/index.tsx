@@ -105,7 +105,7 @@ const TableRowAsset = (props: Props) => {
   const shiftPressed: RefObject<boolean> = useKeyPress('shift')
 
   const [referenceCountVisible, setReferenceCountVisible] = useState(false)
-  const refCountVisibleTimeout = useRef<ReturnType<typeof window.setTimeout>>()
+  const refCountVisibleTimeout = useRef<ReturnType<typeof window.setTimeout>>(null)
 
   const dispatch = useDispatch()
   const lastPicked = useTypedSelector(state => state.assets.lastPicked)
