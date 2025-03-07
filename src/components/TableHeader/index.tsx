@@ -11,14 +11,13 @@ import {useColorSchemeValue} from 'sanity'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 
 // TODO: DRY
-const ContextActionContainer = styled(Flex)(
-  // @ts-expect-error - fix typings later
-  ({scheme}: {scheme: ThemeColorSchemeKey}) => {
+const ContextActionContainer = styled<typeof Flex, {$scheme: ThemeColorSchemeKey}>(Flex)(
+  ({$scheme}) => {
     return css`
       cursor: pointer;
       @media (hover: hover) and (pointer: fine) {
         &:hover {
-          background: ${getSchemeColor(scheme, 'bg')};
+          background: ${getSchemeColor($scheme, 'bg')};
         }
       }
     `
@@ -78,8 +77,7 @@ const TableHeader = () => {
           align="center"
           justify="center"
           onClick={handleContextActionClick}
-          // @ts-expect-error - fix typings later
-          scheme={scheme}
+          $scheme={scheme}
           style={{
             height: '100%',
             position: 'relative'

@@ -60,7 +60,14 @@ const DialogConfirm = (props: Props) => {
   )
 
   return (
-    <Dialog footer={<Footer />} header={<Header />} id="confirm" onClose={handleClose} width={1}>
+    <Dialog
+      animate
+      footer={<Footer />}
+      header={<Header />}
+      id="confirm"
+      onClose={handleClose}
+      width={1}
+    >
       <Box paddingX={4} paddingY={4}>
         <Stack space={3}>
           {dialog?.title && <Text size={1}>{dialog.title}</Text>}

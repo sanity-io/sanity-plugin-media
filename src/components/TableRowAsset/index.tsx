@@ -47,48 +47,41 @@ type Props = {
   selected: boolean
 }
 
-const ContainerGrid = styled(Grid)(
-  // @ts-expect-error - fix typings later
-  ({
-    scheme,
-    selected,
-    updating
-  }: {
-    selected?: boolean
-    scheme: ThemeColorSchemeKey
-    updating?: boolean
-  }) => {
-    return css`
-      align-items: center;
-      cursor: ${selected ? 'default' : 'pointer'};
-      height: 100%;
-      pointer-events: ${updating ? 'none' : 'auto'};
-      user-select: none;
-      white-space: nowrap;
+const ContainerGrid = styled<
+  typeof Grid,
+  {$selected?: boolean; $scheme: ThemeColorSchemeKey; $updating?: boolean}
+>(Grid)(({$scheme, $selected, $updating}) => {
+  return css`
+    align-items: center;
+    cursor: ${$selected ? 'default' : 'pointer'};
+    height: 100%;
+    pointer-events: ${$updating ? 'none' : 'auto'};
+    user-select: none;
+    white-space: nowrap;
 
-      ${!updating &&
-      css`
-        @media (hover: hover) and (pointer: fine) {
-          &:hover {
-            background: ${getSchemeColor(scheme, 'bg')};
-          }
+    ${!$updating &&
+    css`
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background: ${getSchemeColor($scheme, 'bg')};
         }
-      `}
+      }
+    `}
+  `
+})
+
+const ContextActionContainer = styled<typeof Flex, {$scheme: ThemeColorSchemeKey}>(Flex)(
+  ({$scheme}) => {
+    return css`
+      cursor: pointer;
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background: ${getSchemeColor($scheme, 'bg2')};
+        }
+      }
     `
   }
 )
-
-// @ts-expect-error - fix typings later
-const ContextActionContainer = styled(Flex)(({scheme}: {scheme: ThemeColorSchemeKey}) => {
-  return css`
-    cursor: pointer;
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: ${getSchemeColor(scheme, 'bg2')};
-      }
-    }
-  `
-})
 
 const StyledWarningIcon = styled(WarningFilledIcon)(({theme}) => {
   return {
@@ -181,9 +174,8 @@ const TableRowAsset = (props: Props) => {
   return (
     <ContainerGrid
       onClick={selected ? undefined : handleClick}
-      // @ts-expect-error - fix typings later
-      scheme={scheme}
-      selected={selected}
+      $scheme={scheme}
+      $selected={selected}
       style={{
         gridColumnGap: mediaIndex < 3 ? 0 : '16px',
         gridRowGap: 0,
@@ -191,13 +183,12 @@ const TableRowAsset = (props: Props) => {
           mediaIndex < 3 ? GRID_TEMPLATE_COLUMNS.SMALL : GRID_TEMPLATE_COLUMNS.LARGE,
         gridTemplateRows: mediaIndex < 3 ? 'auto' : '1fr'
       }}
-      updating={item.updating}
+      $updating={item.updating}
     >
       {/* Picked checkbox */}
       <ContextActionContainer
         onClick={handleContextActionClick}
-        // @ts-expect-error - fix typings later
-        scheme={scheme}
+        $scheme={scheme}
         style={{
           alignItems: 'center',
           gridColumn: 1,
@@ -247,8 +238,8 @@ const TableRowAsset = (props: Props) => {
             {isImageAsset(asset) && (
               <Image
                 draggable={false}
-                scheme={scheme}
-                showCheckerboard={!isOpaque}
+                $scheme={scheme}
+                $showCheckerboard={!isOpaque}
                 src={imageDprUrl(asset, {height: 100, width: 100})}
               />
             )}

@@ -26,7 +26,7 @@ const DialogTags = (props: Props) => {
   }, [])
 
   return (
-    <Dialog header="All Tags" id={id} onClose={handleClose} width={1}>
+    <Dialog animate header="All Tags" id={id} onClose={handleClose} width={1}>
       <Box
         style={{
           height: '100%',

@@ -6,7 +6,7 @@ import type {
   SearchFacetOperatorType,
   WithId
 } from '../../types'
-import React from 'react'
+
 import {useDispatch} from 'react-redux'
 
 import {operators} from '../../config/searchFacets'

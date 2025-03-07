@@ -158,7 +158,7 @@ const DialogTagEdit = (props: Props) => {
   }
 
   return (
-    <Dialog footer={<Footer />} header="Edit Tag" id={id} onClose={handleClose} width={1}>
+    <Dialog animate footer={<Footer />} header="Edit Tag" id={id} onClose={handleClose} width={1}>
       {/* Form fields */}
       <Box as="form" padding={4} onSubmit={handleSubmit(onSubmit)}>
         {/* Deleted notification */}

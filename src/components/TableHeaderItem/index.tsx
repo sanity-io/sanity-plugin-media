@@ -1,6 +1,6 @@
 import {ChevronDownIcon, ChevronUpIcon} from '@sanity/icons'
 import {Box, Label} from '@sanity/ui'
-import React from 'react'
+
 import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions} from '../../modules/assets'

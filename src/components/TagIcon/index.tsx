@@ -1,5 +1,3 @@
-import React from 'react'
-
 const TagIcon = () => (
   <svg
     data-sanity-icon="media__tag" // For icon usage with @sanity/ui <Button />

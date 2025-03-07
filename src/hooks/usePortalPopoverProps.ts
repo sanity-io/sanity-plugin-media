@@ -4,6 +4,7 @@ export function usePortalPopoverProps(): PopoverProps {
   const portal = usePortal()
 
   return {
+    animate: true,
     constrainSize: true,
     floatingBoundary: portal.element,
     portal: true,

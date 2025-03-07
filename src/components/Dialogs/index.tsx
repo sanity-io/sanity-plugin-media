@@ -1,5 +1,5 @@
 import type {Dialog} from '../../types'
-import React from 'react'
+
 import useTypedSelector from '../../hooks/useTypedSelector'
 import DialogAssetEdit from '../DialogAssetEdit'
 import DialogConfirm from '../DialogConfirm'

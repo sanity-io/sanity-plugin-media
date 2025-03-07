@@ -1,5 +1,5 @@
 import {Box, Flex, Inline, rem, type Theme} from '@sanity/ui'
-import React from 'react'
+
 import {styled, css} from 'styled-components'
 
 import useTypedSelector from '../../hooks/useTypedSelector'

@@ -90,7 +90,7 @@ const CardUpload = (props: Props) => {
           {item.assetType === 'image' && item?.objectUrl && (
             <Image
               draggable={false}
-              scheme={scheme}
+              $scheme={scheme}
               src={item.objectUrl}
               style={{
                 opacity: 0.4

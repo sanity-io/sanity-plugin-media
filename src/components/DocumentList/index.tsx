@@ -1,6 +1,6 @@
 import type {SanityDocument} from '@sanity/client'
 import {Box, Button, Card, Stack, Text} from '@sanity/ui'
-import React from 'react'
+
 import {Preview, type SchemaType, useSchema} from 'sanity'
 import {useIntentLink} from 'sanity/router'
 

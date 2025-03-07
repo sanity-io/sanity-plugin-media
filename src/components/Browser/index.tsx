@@ -1,10 +1,10 @@
 import type {MutationEvent} from '@sanity/client'
-import {Card, Flex, PortalProvider, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
+import {Card, Flex, PortalProvider} from '@sanity/ui'
 import type {Asset, Tag} from '../../types'
 import groq from 'groq'
 import {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {useColorSchemeValue, type AssetSourceComponentProps, type SanityDocument} from 'sanity'
+import {type AssetSourceComponentProps, type SanityDocument} from 'sanity'
 import {TAG_DOCUMENT_NAME} from '../../constants'
 import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
 import useVersionedClient from '../../hooks/useVersionedClient'
@@ -32,47 +32,42 @@ type Props = {
 
 const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose']}) => {
   const client = useVersionedClient()
-
   const [portalElement, setPortalElement] = useState<HTMLDivElement | null>(null)
-
-  // Redux
   const dispatch = useDispatch()
 
-  // Callbacks
-  const handleAssetUpdate = (update: MutationEvent) => {
-    const {documentId, result, transition} = update
-
-    if (transition === 'appear') {
-      dispatch(assetsActions.listenerCreateQueue({asset: result as Asset}))
-    }
-
-    if (transition === 'disappear') {
-      dispatch(assetsActions.listenerDeleteQueue({assetId: documentId}))
-    }
-
-    if (transition === 'update') {
-      dispatch(assetsActions.listenerUpdateQueue({asset: result as Asset}))
-    }
-  }
-
-  const handleTagUpdate = (update: MutationEvent) => {
-    const {documentId, result, transition} = update
-
-    if (transition === 'appear') {
-      dispatch(tagsActions.listenerCreateQueue({tag: result as Tag}))
-    }
-
-    if (transition === 'disappear') {
-      dispatch(tagsActions.listenerDeleteQueue({tagId: documentId}))
-    }
-
-    if (transition === 'update') {
-      dispatch(tagsActions.listenerUpdateQueue({tag: result as Tag}))
-    }
-  }
-
-  // Effects
   useEffect(() => {
+    const handleAssetUpdate = (update: MutationEvent) => {
+      const {documentId, result, transition} = update
+
+      if (transition === 'appear') {
+        dispatch(assetsActions.listenerCreateQueue({asset: result as Asset}))
+      }
+
+      if (transition === 'disappear') {
+        dispatch(assetsActions.listenerDeleteQueue({assetId: documentId}))
+      }
+
+      if (transition === 'update') {
+        dispatch(assetsActions.listenerUpdateQueue({asset: result as Asset}))
+      }
+    }
+
+    const handleTagUpdate = (update: MutationEvent) => {
+      const {documentId, result, transition} = update
+
+      if (transition === 'appear') {
+        dispatch(tagsActions.listenerCreateQueue({tag: result as Tag}))
+      }
+
+      if (transition === 'disappear') {
+        dispatch(tagsActions.listenerDeleteQueue({tagId: documentId}))
+      }
+
+      if (transition === 'update') {
+        dispatch(tagsActions.listenerUpdateQueue({tag: result as Tag}))
+      }
+    }
+
     // Fetch assets: first page
     dispatch(assetsActions.loadPageIndex({pageIndex: 0}))
 
@@ -97,7 +92,7 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
       subscriptionAsset?.unsubscribe()
       subscriptionTag?.unsubscribe()
     }
-  }, [])
+  }, [client, dispatch])
 
   return (
     <PortalProvider element={portalElement}>
@@ -132,7 +127,6 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
 
 const Browser = (props: Props) => {
   const client = useVersionedClient()
-  const scheme = useColorSchemeValue()
 
   return (
     <ReduxProvider
@@ -141,15 +135,10 @@ const Browser = (props: Props) => {
       document={props?.document}
       selectedAssets={props?.selectedAssets}
     >
-      <ThemeProvider scheme={scheme} theme={studioTheme}>
-        <ToastProvider>
-          <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
-            <GlobalStyle />
-
-            <BrowserContent onClose={props?.onClose} />
-          </AssetBrowserDispatchProvider>
-        </ToastProvider>
-      </ThemeProvider>
+      <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
+        <GlobalStyle />
+        <BrowserContent onClose={props?.onClose} />
+      </AssetBrowserDispatchProvider>
     </ReduxProvider>
   )
 }

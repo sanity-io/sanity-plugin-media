@@ -27,7 +27,7 @@ const DialogSearchFacets = (props: Props) => {
   }, [])
 
   return (
-    <Dialog header="Filters" id={id} onClose={handleClose} width={1}>
+    <Dialog animate header="Filters" id={id} onClose={handleClose} width={1}>
       <Box padding={3}>
         <SearchFacets layout="stack" />
         <SearchFacetsControl />

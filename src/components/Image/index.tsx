@@ -5,15 +5,15 @@ import {getSchemeColor} from '../../utils/getSchemeColor'
 
 type Props = {
   onClick?: (e: MouseEvent) => void
-  showCheckerboard?: boolean
-  scheme?: ThemeColorSchemeKey
+  $showCheckerboard?: boolean
+  $scheme?: ThemeColorSchemeKey
   src: string
   style?: any
 }
 
 const Image = styled.img<Props>`
   --checkerboard-color: ${props =>
-    props.scheme ? getSchemeColor(props.scheme, 'bg2') : 'inherit'};
+    props.$scheme ? getSchemeColor(props.$scheme, 'bg2') : 'inherit'};
 
   display: block;
   width: 100%;
@@ -21,7 +21,7 @@ const Image = styled.img<Props>`
   object-fit: contain;
 
   ${props =>
-    props.showCheckerboard &&
+    props.$showCheckerboard &&
     css`
       background-image: linear-gradient(45deg, var(--checkerboard-color) 25%, transparent 25%),
         linear-gradient(-45deg, var(--checkerboard-color) 25%, transparent 25%),

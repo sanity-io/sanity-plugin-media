@@ -1,7 +1,7 @@
 import {AddIcon} from '@sanity/icons'
 import {Button, Flex, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem} from '@sanity/ui'
 import type {SearchFacetDivider, SearchFacetGroup, SearchFacetInputProps} from '../../types'
-import React from 'react'
+
 import {useDispatch} from 'react-redux'
 import {FACETS} from '../../constants'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'

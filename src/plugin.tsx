@@ -1,4 +1,3 @@
-import React from 'react'
 import {type AssetSource, type Tool as SanityTool, definePlugin} from 'sanity'
 import {ImageIcon} from '@sanity/icons'
 import FormBuilderTool from './components/FormBuilderTool'

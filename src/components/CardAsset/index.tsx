@@ -39,22 +39,22 @@ const CardWrapper = styled(Flex)`
   width: 100%;
 `
 
-const CardContainer = styled(Flex)<{picked?: boolean; theme: Theme; updating?: boolean}>(
-  ({picked, theme, updating}) => {
+const CardContainer = styled(Flex)<{$picked?: boolean; theme: Theme; $updating?: boolean}>(
+  ({$picked, theme, $updating}) => {
     return css`
       border: 1px solid transparent;
       height: 100%;
-      pointer-events: ${updating ? 'none' : 'auto'};
+      pointer-events: ${$updating ? 'none' : 'auto'};
       position: relative;
       transition: all 300ms;
       user-select: none;
       width: 100%;
 
-      border: ${picked
+      border: ${$picked
         ? `1px solid ${theme.sanity.color.spot.orange} !important`
         : '1px solid inherit'};
 
-      ${!updating &&
+      ${!$updating &&
       css`
         @media (hover: hover) and (pointer: fine) {
           &:hover {
@@ -66,16 +66,15 @@ const CardContainer = styled(Flex)<{picked?: boolean; theme: Theme; updating?: b
   }
 )
 
-const ContextActionContainer = styled(Flex)(
-  // @ts-expect-error - fix typings later
-  ({scheme}: {scheme: ThemeColorSchemeKey}) => {
+const ContextActionContainer = styled<typeof Flex, {$scheme: ThemeColorSchemeKey}>(Flex)(
+  ({$scheme}) => {
     return css`
       cursor: pointer;
       height: ${PANEL_HEIGHT}px;
       transition: all 300ms;
       @media (hover: hover) and (pointer: fine) {
         &:hover {
-          background: ${getSchemeColor(scheme, 'bg')};
+          background: ${getSchemeColor($scheme, 'bg')};
         }
       }
     `
@@ -153,7 +152,7 @@ const CardAsset = (props: Props) => {
 
   return (
     <CardWrapper padding={1}>
-      <CardContainer direction="column" picked={picked} updating={item.updating}>
+      <CardContainer direction="column" $picked={picked} $updating={item.updating}>
         {/* Image */}
         <Box
           flex={1}
@@ -170,8 +169,8 @@ const CardAsset = (props: Props) => {
             {isImageAsset(asset) && (
               <Image
                 draggable={false}
-                scheme={scheme}
-                showCheckerboard={!isOpaque}
+                $scheme={scheme}
+                $showCheckerboard={!isOpaque}
                 src={imageDprUrl(asset, {height: 250, width: 250})}
                 style={{
                   draggable: false,
@@ -224,8 +223,7 @@ const CardAsset = (props: Props) => {
           align="center"
           onClick={handleContextActionClick}
           paddingX={1}
-          // @ts-expect-error - fix typings later
-          scheme={scheme}
+          $scheme={scheme}
           style={{opacity: opacityContainer}}
         >
           {onSelect ? (

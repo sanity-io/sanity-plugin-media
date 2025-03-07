@@ -28,18 +28,29 @@ const VirtualCell = memo(
   }
 )
 
-const ItemContainer = styled.div`
+const StyledItemContainer = styled.div`
   height: ${CARD_HEIGHT}px;
   width: ${CARD_WIDTH}px;
 `
 
-const ListContainer = styled.div`
+function ItemContainer(props: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we're doing this to avoid sc warnings about `context` passed as an attribute
+  const {context, ...rest} = props
+  return <StyledItemContainer {...rest} />
+}
+
+const StyledListContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, ${CARD_WIDTH}px);
   grid-template-rows: repeat(auto-fill, ${CARD_HEIGHT}px);
   justify-content: center;
   margin: 0 auto;
 `
+function ListContainer(props: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we're doing this to avoid sc warnings about `context` passed as an attribute
+  const {context, ...rest} = props
+  return <StyledListContainer {...rest} />
+}
 
 const AssetGridVirtualized = (props: Props) => {
   const {items, onLoadMore} = props

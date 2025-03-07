@@ -1,5 +1,5 @@
 import {Box, Flex, Text} from '@sanity/ui'
-import React from 'react'
+
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPickedLength} from '../../modules/assets'
 import {selectTags} from '../../modules/tags'

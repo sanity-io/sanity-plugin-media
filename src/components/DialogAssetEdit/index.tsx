@@ -240,7 +240,14 @@ const DialogAssetEdit = (props: Props) => {
   }
 
   return (
-    <Dialog footer={<Footer />} header="Asset details" id={id} onClose={handleClose} width={3}>
+    <Dialog
+      animate
+      footer={<Footer />}
+      header="Asset details"
+      id={id}
+      onClose={handleClose}
+      width={3}
+    >
       {/*
         We reverse direction to ensure the download button doesn't appear (in the DOM) before other tabbable items.
         This ensures that the dialog doesn't scroll down to the download button (which on smaller screens, can sometimes
@@ -395,8 +402,8 @@ const DialogAssetEdit = (props: Props) => {
             {isImageAsset(currentAsset) && (
               <Image
                 draggable={false}
-                scheme={scheme}
-                showCheckerboard={!currentAsset?.metadata?.isOpaque}
+                $scheme={scheme}
+                $showCheckerboard={!currentAsset?.metadata?.isOpaque}
                 src={imageDprUrl(currentAsset, {height: 600, width: 600})}
               />
             )}

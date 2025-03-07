@@ -93,7 +93,12 @@ const TableRowUpload = (props: Props) => {
       >
         <Box style={{height: '100%', position: 'relative'}}>
           {item.assetType === 'image' && item?.objectUrl && (
-            <Image draggable={false} scheme={scheme} src={item.objectUrl} style={{opacity: 0.25}} />
+            <Image
+              draggable={false}
+              $scheme={scheme}
+              src={item.objectUrl}
+              style={{opacity: 0.25}}
+            />
           )}
 
           {item.assetType === 'file' && (

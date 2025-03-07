@@ -1,6 +1,6 @@
 import {ErrorOutlineIcon} from '@sanity/icons'
 import {Box, Inline, Text, Tooltip} from '@sanity/ui'
-import React from 'react'
+
 import {styled} from 'styled-components'
 
 type Props = {

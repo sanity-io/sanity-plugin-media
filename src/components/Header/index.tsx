@@ -1,7 +1,7 @@
 import {CloseIcon, Icon, UploadIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Text} from '@sanity/ui'
 import pluralize from 'pluralize'
-import React from 'react'
+
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import {useDropzoneActions} from '../../contexts/DropzoneDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'

@@ -1,6 +1,5 @@
 import {SortIcon} from '@sanity/icons'
 import {Button, Menu, MenuButton, MenuDivider, MenuItem} from '@sanity/ui'
-import React from 'react'
 import {useDispatch} from 'react-redux'
 import {getOrderTitle} from '../../config/orders'
 import {ORDER_OPTIONS} from '../../constants'

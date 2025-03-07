@@ -1,5 +1,5 @@
 import {Flex} from '@sanity/ui'
-import React from 'react'
+
 import Browser from '../Browser'
 
 const Tool = () => {

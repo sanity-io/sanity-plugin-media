@@ -85,7 +85,6 @@ class ReduxProvider extends Component<Props> {
   }
 
   override render() {
-    // @ts-ignore
     return <Provider store={this.store}>{this.props.children}</Provider>
   }
 }
