@@ -58,3 +58,5 @@ yalc.lock
 
 # Compiled plugin
 dist
+
+.sanity
