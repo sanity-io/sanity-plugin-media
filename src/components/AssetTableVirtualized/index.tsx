@@ -1,4 +1,4 @@
-import type {CardAssetData, CardUploadData} from '@types'
+import type {CardAssetData, CardUploadData} from '../../types'
 import {Box} from '@sanity/ui'
 import {memo} from 'react'
 import {GroupedVirtuoso} from 'react-virtuoso'

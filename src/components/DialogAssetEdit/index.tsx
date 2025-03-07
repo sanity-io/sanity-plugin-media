@@ -1,7 +1,7 @@
 import {zodResolver} from '@hookform/resolvers/zod'
 import type {MutationEvent} from '@sanity/client'
 import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
-import type {Asset, AssetFormData, DialogAssetEditProps, TagSelectOption} from '@types'
+import type {Asset, AssetFormData, DialogAssetEditProps, TagSelectOption} from '../../types'
 import groq from 'groq'
 import {type ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {type SubmitHandler, useForm} from 'react-hook-form'

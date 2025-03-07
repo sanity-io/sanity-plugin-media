@@ -48,6 +48,7 @@ type Props = {
 }
 
 const ContainerGrid = styled(Grid)(
+  // @ts-expect-error - fix typings later
   ({
     scheme,
     selected,
@@ -77,6 +78,7 @@ const ContainerGrid = styled(Grid)(
   }
 )
 
+// @ts-expect-error - fix typings later
 const ContextActionContainer = styled(Flex)(({scheme}: {scheme: ThemeColorSchemeKey}) => {
   return css`
     cursor: pointer;
@@ -179,6 +181,7 @@ const TableRowAsset = (props: Props) => {
   return (
     <ContainerGrid
       onClick={selected ? undefined : handleClick}
+      // @ts-expect-error - fix typings later
       scheme={scheme}
       selected={selected}
       style={{
@@ -193,6 +196,7 @@ const TableRowAsset = (props: Props) => {
       {/* Picked checkbox */}
       <ContextActionContainer
         onClick={handleContextActionClick}
+        // @ts-expect-error - fix typings later
         scheme={scheme}
         style={{
           alignItems: 'center',

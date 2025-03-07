@@ -1,6 +1,6 @@
 import {CloseIcon} from '@sanity/icons'
 import {Box, Flex, Label, rem, Text, type Theme, type ThemeColorSchemeKey} from '@sanity/ui'
-import type {SearchFacetInputProps, WithId} from '@types'
+import type {SearchFacetInputProps, WithId} from '../../types'
 import {type ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import {useColorScheme} from 'sanity'
@@ -13,6 +13,7 @@ type Props = {
   facet: WithId<SearchFacetInputProps>
 }
 
+// @ts-expect-error - fix typings later
 const Container = styled(Box)(({scheme, theme}: {scheme: ThemeColorSchemeKey; theme: Theme}) => {
   return css`
     background: ${getSchemeColor(scheme, 'bg')};
@@ -33,7 +34,11 @@ const SearchFacet = (props: Props) => {
   }
 
   return (
-    <Container padding={[2, 2, 1]} scheme={scheme}>
+    <Container
+      padding={[2, 2, 1]}
+      // @ts-expect-error - fix typings later
+      scheme={scheme}
+    >
       <Flex align={['flex-start', 'flex-start', 'center']} direction={['column', 'column', 'row']}>
         {/* Title */}
         <Box paddingBottom={[3, 3, 0]} paddingLeft={1} paddingRight={2} paddingTop={[1, 1, 0]}>

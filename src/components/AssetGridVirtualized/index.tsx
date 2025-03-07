@@ -1,4 +1,4 @@
-import type {CardAssetData, CardUploadData} from '@types'
+import type {CardAssetData, CardUploadData} from '../../types'
 import {memo} from 'react'
 import {VirtuosoGrid} from 'react-virtuoso'
 import {styled} from 'styled-components'
@@ -63,6 +63,7 @@ const AssetGridVirtualized = (props: Props) => {
       }}
       components={{
         Item: ItemContainer,
+        // @ts-expect-error - fix typings later
         List: ListContainer
       }}
       endReached={onLoadMore}

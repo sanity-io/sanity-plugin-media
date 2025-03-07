@@ -1,6 +1,6 @@
 import type {MutationEvent} from '@sanity/client'
 import {Card, Flex, PortalProvider, studioTheme, ThemeProvider, ToastProvider} from '@sanity/ui'
-import type {Asset, Tag} from '@types'
+import type {Asset, Tag} from '../../types'
 import groq from 'groq'
 import {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'

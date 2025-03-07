@@ -3,11 +3,17 @@ module.exports = {
     browser: true,
     node: false
   },
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true
+    }
+  },
   extends: [
     'sanity/react', // must come before sanity/typescript
     'sanity/typescript',
     'plugin:react-hooks/recommended',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
+    'plugin:react/jsx-runtime'
   ],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 0,

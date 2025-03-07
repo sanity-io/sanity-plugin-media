@@ -1,6 +1,6 @@
 import {ArrowDownIcon, ArrowUpIcon, CloseIcon, EditIcon, SearchIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Container, Flex, Text, Tooltip} from '@sanity/ui'
-import type {SearchFacetInputSearchableProps, TagActions, TagItem} from '@types'
+import type {SearchFacetInputSearchableProps, TagActions, TagItem} from '../../types'
 import {type ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import {styled} from 'styled-components'

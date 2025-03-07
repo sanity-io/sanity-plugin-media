@@ -1,6 +1,6 @@
 import {zodResolver} from '@hookform/resolvers/zod'
 import {Box, Flex} from '@sanity/ui'
-import type {DialogTagCreateProps, TagFormData} from '@types'
+import type {DialogTagCreateProps, TagFormData} from '../../types'
 import {type ReactNode, useEffect} from 'react'
 import {type SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'

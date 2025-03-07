@@ -1,6 +1,6 @@
 import {SelectIcon} from '@sanity/icons'
 import {Box, Button, Menu, MenuButton, MenuDivider, MenuItem, TextInput} from '@sanity/ui'
-import type {SearchFacetInputStringProps, SearchFacetOperatorType, WithId} from '@types'
+import type {SearchFacetInputStringProps, SearchFacetOperatorType, WithId} from '../../types'
 import {type ChangeEvent} from 'react'
 import {useDispatch} from 'react-redux'
 

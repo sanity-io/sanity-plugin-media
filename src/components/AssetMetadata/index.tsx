@@ -1,6 +1,6 @@
 import {DownloadIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Stack, Text} from '@sanity/ui'
-import type {Asset, AssetItem} from '@types'
+import type {Asset, AssetItem} from '../../types'
 import format from 'date-fns/format'
 import filesize from 'filesize'
 import {type ReactNode} from 'react'

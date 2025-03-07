@@ -3,7 +3,7 @@ import type {
   SearchFacetDivider,
   SearchFacetGroup,
   OrderDirection
-} from '@types'
+} from './types'
 import {divider, inputs} from './config/searchFacets'
 
 // Sort order dropdown options

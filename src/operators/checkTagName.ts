@@ -1,5 +1,5 @@
 import type {SanityClient} from '@sanity/client'
-import type {HttpError} from '@types'
+import type {HttpError} from '../types'
 import groq from 'groq'
 import {from, Observable, of, throwError} from 'rxjs'
 import {mergeMap} from 'rxjs/operators'

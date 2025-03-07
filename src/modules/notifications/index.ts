@@ -1,5 +1,5 @@
 import {type PayloadAction, createSlice} from '@reduxjs/toolkit'
-import type {ImageAsset, MyEpic} from '@types'
+import type {ImageAsset, MyEpic} from '../../types'
 import pluralize from 'pluralize'
 import {ofType} from 'redux-observable'
 import {of} from 'rxjs'

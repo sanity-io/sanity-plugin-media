@@ -3,9 +3,6 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "dist",
-    "paths": {
-      "@types": ["./src/types"]
-    },
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false
   }

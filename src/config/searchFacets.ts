@@ -3,7 +3,7 @@ import type {
   SearchFacetInputProps,
   SearchFacetName,
   SearchFacetOperators
-} from '@types'
+} from '../types'
 import groq from 'groq'
 
 export const divider: SearchFacetDivider = {type: 'divider'}

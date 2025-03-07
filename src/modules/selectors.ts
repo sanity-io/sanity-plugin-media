@@ -1,5 +1,5 @@
 import {createSelector} from '@reduxjs/toolkit'
-import type {CardAssetData, CardUploadData} from '@types'
+import type {CardAssetData, CardUploadData} from '../types'
 
 import type {RootReducerState} from './types'
 

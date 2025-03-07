@@ -1,6 +1,6 @@
 import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, Transaction} from '@sanity/client'
-import type {Asset, HttpError, MyEpic, TagSelectOption, Tag, TagItem} from '@types'
+import type {Asset, HttpError, MyEpic, TagSelectOption, Tag, TagItem} from '../../types'
 import groq from 'groq'
 import type {Selector} from 'react-redux'
 import {ofType} from 'redux-observable'

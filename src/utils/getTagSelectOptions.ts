@@ -1,4 +1,4 @@
-import type {TagSelectOption, TagItem} from '@types'
+import type {TagSelectOption, TagItem} from '../types'
 
 const getTagSelectOptions = (tags: TagItem[]): TagSelectOption[] => {
   return tags.reduce((acc: TagSelectOption[], val) => {

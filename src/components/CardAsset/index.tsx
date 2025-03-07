@@ -66,18 +66,21 @@ const CardContainer = styled(Flex)<{picked?: boolean; theme: Theme; updating?: b
   }
 )
 
-const ContextActionContainer = styled(Flex)(({scheme}: {scheme: ThemeColorSchemeKey}) => {
-  return css`
-    cursor: pointer;
-    height: ${PANEL_HEIGHT}px;
-    transition: all 300ms;
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: ${getSchemeColor(scheme, 'bg')};
+const ContextActionContainer = styled(Flex)(
+  // @ts-expect-error - fix typings later
+  ({scheme}: {scheme: ThemeColorSchemeKey}) => {
+    return css`
+      cursor: pointer;
+      height: ${PANEL_HEIGHT}px;
+      transition: all 300ms;
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background: ${getSchemeColor(scheme, 'bg')};
+        }
       }
-    }
-  `
-})
+    `
+  }
+)
 
 const StyledWarningOutlineIcon = styled(WarningFilledIcon)(({theme}) => {
   return {
@@ -221,6 +224,7 @@ const CardAsset = (props: Props) => {
           align="center"
           onClick={handleContextActionClick}
           paddingX={1}
+          // @ts-expect-error - fix typings later
           scheme={scheme}
           style={{opacity: opacityContainer}}
         >

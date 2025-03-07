@@ -1,5 +1,5 @@
 import {Box} from '@sanity/ui'
-import type {DialogSearchFacetsProps} from '@types'
+import type {DialogSearchFacetsProps} from '../../types'
 import {type ReactNode, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 import {dialogActions} from '../../modules/dialog'

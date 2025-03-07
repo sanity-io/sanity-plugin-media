@@ -1,6 +1,6 @@
 import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
-import type {HttpError, MyEpic, SanityUploadProgressEvent, UploadItem} from '@types'
+import type {HttpError, MyEpic, SanityUploadProgressEvent, UploadItem} from '../../types'
 import groq from 'groq'
 import type {Selector} from 'react-redux'
 import {empty, merge, of} from 'rxjs'

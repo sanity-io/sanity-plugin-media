@@ -1,5 +1,5 @@
 import {Flex, Label} from '@sanity/ui'
-import type {TagActions, TagItem} from '@types'
+import type {TagActions, TagItem} from '../../types'
 import {memo, useState} from 'react'
 import {Virtuoso} from 'react-virtuoso'
 import {PANEL_HEIGHT} from '../../constants'

@@ -1,6 +1,6 @@
 import {WarningOutlineIcon} from '@sanity/icons'
 import {Box, Button, Flex, Stack, Text} from '@sanity/ui'
-import type {DialogConfirmProps} from '@types'
+import type {DialogConfirmProps} from '../../types'
 import {type ReactNode} from 'react'
 import {useDispatch} from 'react-redux'
 import {dialogActions} from '../../modules/dialog'

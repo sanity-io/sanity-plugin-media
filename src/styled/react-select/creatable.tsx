@@ -1,6 +1,5 @@
 import {AddIcon, ChevronDownIcon, CloseIcon} from '@sanity/icons'
 import {Box, Card, Flex, rem, studioTheme, Text, type ThemeColorSchemeKey} from '@sanity/ui'
-import React from 'react'
 import {components, type StylesConfig} from 'react-select'
 import {Virtuoso} from 'react-virtuoso'
 import {getSchemeColor} from '../../utils/getSchemeColor'
@@ -9,6 +8,7 @@ const {radius: themeRadius, space: themeSpace} = studioTheme
 
 export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => {
   return {
+    // @ts-expect-error - fix typings later
     control: (styles, {isFocused}) => {
       let boxShadow = `inset 0 0 0 1px var(--card-border-color)`
       if (isFocused) {
@@ -34,10 +34,12 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
         }
       }
     },
+    // @ts-expect-error - fix typings later
     indicatorsContainer: (styles, {isDisabled}) => ({
       ...styles,
       opacity: isDisabled ? 0.25 : 1
     }),
+    // @ts-expect-error - fix typings later
     input: styles => ({
       ...styles,
       color: 'var(--card-fg-color)',
@@ -47,6 +49,7 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
     menuList: styles => ({
       ...styles
     }),
+    // @ts-expect-error - fix typings later
     multiValue: (styles, {isDisabled}) => ({
       ...styles,
       backgroundColor: getSchemeColor(scheme, 'mutedHoveredBg'),
@@ -58,6 +61,7 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
       fontSize: 'inherit',
       padding: 0
     }),
+    // @ts-expect-error - fix typings later
     multiValueRemove: styles => ({
       ...styles,
       borderTopLeftRadius: 0,
@@ -67,11 +71,13 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
         backgroundColor: getSchemeColor(scheme, 'mutedSelectedBg')
       }
     }),
+    // @ts-expect-error - fix typings later
     noOptionsMessage: styles => ({
       ...styles,
       fontFamily: studioTheme.fonts.text.family,
       lineHeight: '1em'
     }),
+    // @ts-expect-error - fix typings later
     option: (styles, {isFocused}) => ({
       ...styles,
       backgroundColor: isFocused ? getSchemeColor(scheme, 'spotBlue') : 'transparent',
@@ -83,10 +89,12 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
         color: getSchemeColor(scheme, 'bg')
       }
     }),
+    // @ts-expect-error - fix typings later
     placeholder: styles => ({
       ...styles,
       marginLeft: rem(themeSpace[2])
     }),
+    // @ts-expect-error - fix typings later
     valueContainer: styles => ({
       ...styles,
       margin: 0,

@@ -5,7 +5,7 @@ import type {
   SearchFacetInputSelectProps,
   SearchFacetOperatorType,
   WithId
-} from '@types'
+} from '../../types'
 import React from 'react'
 import {useDispatch} from 'react-redux'
 

@@ -10,7 +10,7 @@ import type {
   Order,
   OrderDirection,
   Tag
-} from '@types'
+} from '../../types'
 import groq from 'groq'
 import {nanoid} from 'nanoid'
 import type {Selector} from 'react-redux'
