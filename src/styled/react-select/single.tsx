@@ -14,7 +14,6 @@ const {
 
 export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => {
   return {
-    // @ts-expect-error - fix typings later
     control: (styles, {isDisabled, isFocused}) => {
       let boxShadow = `inset 0 0 0 1px var(--card-border-color)`
       if (isFocused) {
@@ -40,7 +39,6 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
         }
       }
     },
-    // @ts-expect-error - fix typings later
     input: styles => ({
       ...styles,
       color: 'var(--card-fg-color)',
@@ -48,19 +46,16 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
       fontSize: themeTextSizes[1].fontSize,
       marginLeft: rem(themeSpace[2])
     }),
-    // @ts-expect-error - fix typings later
     menuList: styles => ({
       ...styles,
       padding: 0
     }),
-    // @ts-expect-error - fix typings later
     noOptionsMessage: styles => ({
       ...styles,
       fontFamily: studioTheme.fonts.text.family,
       fontSize: themeTextSizes[1].fontSize,
       lineHeight: '1em'
     }),
-    // @ts-expect-error - fix typings later
     option: (styles, {isFocused}) => ({
       ...styles,
       backgroundColor: isFocused ? getSchemeColor(scheme, 'spotBlue') : 'transparent',
@@ -75,14 +70,12 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
         color: getSchemeColor(scheme, 'bg')
       }
     }),
-    // @ts-expect-error - fix typings later
     placeholder: styles => ({
       ...styles,
       fontSize: themeTextSizes[1].fontSize,
       marginLeft: rem(themeSpace[2]),
       paddingLeft: 0
     }),
-    // @ts-expect-error - fix typings later
     singleValue: styles => ({
       ...styles,
       alignItems: 'center',
@@ -90,7 +83,6 @@ export const reactSelectStyles = (scheme: ThemeColorSchemeKey): StylesConfig => 
       height: '100%',
       marginLeft: rem(themeSpace[2])
     }),
-    // @ts-expect-error - fix typings later
     valueContainer: styles => ({
       ...styles,
       margin: 0,

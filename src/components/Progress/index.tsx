@@ -1,6 +1,5 @@
 import {Box} from '@sanity/ui'
 import {useNProgress} from '@tanem/react-nprogress'
-import React from 'react'
 
 type Props = {
   loading?: boolean

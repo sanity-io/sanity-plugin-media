@@ -63,7 +63,6 @@ const AssetGridVirtualized = (props: Props) => {
       }}
       components={{
         Item: ItemContainer,
-        // @ts-expect-error - fix typings later
         List: ListContainer
       }}
       endReached={onLoadMore}
