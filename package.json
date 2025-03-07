@@ -122,10 +122,6 @@
     "sanity": "^3.78",
     "styled-components": "^6.1"
   },
-  "overrides": {
-    "react": "$react",
-    "react-dom": "$react-dom"
-  },
   "engines": {
     "node": ">=18"
   }
