@@ -5,6 +5,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.0...v3.0.1) (2025-03-07)
+
+### Bug Fixes
+
+- animate tooltips ([3e7487c](https://github.com/sanity-io/sanity-plugin-media/commit/3e7487c4d38d3ebb59c772c46d4d2b3fa60fb3d2))
+- handle styled-components attribute warnings ([25e4ed3](https://github.com/sanity-io/sanity-plugin-media/commit/25e4ed3402cd7e34d417431b92f1e8ec60474003))
+
 ## [3.0.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.4.2...v3.0.0) (2025-03-07)
 
 ### ⚠ BREAKING CHANGES
