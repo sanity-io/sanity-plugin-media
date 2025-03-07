@@ -1,4 +1,4 @@
-import type {AnyAction} from '@reduxjs/toolkit'
+import type {Action} from '@reduxjs/toolkit'
 import type {
   SanityAssetDocument,
   SanityClient,
@@ -98,7 +98,7 @@ export type DialogAssetEditProps = {
 
 export type DialogConfirmProps = {
   closeDialogId?: string
-  confirmCallbackAction: AnyAction // TODO: reconsider
+  confirmCallbackAction: Action // TODO: reconsider
   confirmText: string
   description?: string
   headerTitle: string
@@ -162,8 +162,8 @@ export type ImageAsset = SanityImageAssetDocument &
 export type MarkDef = {_key: string; _type: string}
 
 export type MyEpic = Epic<
-  AnyAction,
-  AnyAction,
+  Action,
+  Action,
   RootReducerState,
   {
     client: SanityClient

@@ -55,10 +55,29 @@ class ReduxProvider extends Component<Props> {
           ...assetsInitialState,
           assetTypes: props?.assetType ? [props.assetType] : ['file', 'image']
         },
+        debug: {
+          badConnection: false,
+          enabled: false
+        },
+        dialog: {items: []},
+        notifications: {items: []},
+        search: {facets: [], query: ''},
         selected: {
           assets: props.selectedAssets || [],
           document: props.document,
           documentAssetIds: props.document ? getDocumentAssetIds(props.document) : []
+        },
+        tags: {
+          allIds: [],
+          byIds: {},
+          creating: false,
+          fetchCount: -1,
+          fetching: false,
+          panelVisible: true
+        },
+        uploads: {
+          allIds: [],
+          byIds: {}
         }
       }
     })

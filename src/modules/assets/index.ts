@@ -15,7 +15,7 @@ import groq from 'groq'
 import {nanoid} from 'nanoid'
 import type {Selector} from 'react-redux'
 import {ofType} from 'redux-observable'
-import {empty, from, of} from 'rxjs'
+import {EMPTY, from, of} from 'rxjs'
 import {
   bufferTime,
   catchError,
@@ -497,7 +497,7 @@ export const assetsFetchAfterDeleteAllEpic: MyEpic = (action$, state$) =>
         return of(assetsActions.loadPageIndex({pageIndex: nextPageIndex}))
       }
 
-      return empty()
+      return EMPTY
     })
   )
 
@@ -817,6 +817,6 @@ export const selectAssetsPickedLength = createSelector(
   assetsPicked => assetsPicked.length
 )
 
-export const assetsActions = assetsSlice.actions
+export const assetsActions = {...assetsSlice.actions}
 
 export default assetsSlice.reducer

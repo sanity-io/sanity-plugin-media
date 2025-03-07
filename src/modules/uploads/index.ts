@@ -276,6 +276,6 @@ export const selectUploads: Selector<RootReducerState, UploadItem[]> = createSel
   (byIds, allIds) => allIds.map(id => byIds[id])
 )
 
-export const uploadsActions = uploadsSlice.actions
+export const uploadsActions = {...uploadsSlice.actions}
 
 export default uploadsSlice.reducer

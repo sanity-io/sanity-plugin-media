@@ -1,4 +1,4 @@
-import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
+import {createSelector, createSlice, isAnyOf, type PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, Transaction} from '@sanity/client'
 import type {Asset, HttpError, MyEpic, TagSelectOption, Tag, TagItem} from '../../types'
 import groq from 'groq'
@@ -50,24 +50,19 @@ const tagsSlice = createSlice({
         delete state.byIds[tagId].error
       })
       .addMatcher(
-        action =>
-          [
-            ASSETS_ACTIONS.tagsAddComplete.type,
-            ASSETS_ACTIONS.tagsAddError.type,
-            ASSETS_ACTIONS.tagsRemoveComplete.type,
-            ASSETS_ACTIONS.tagsRemoveError.type
-          ].includes(action.type),
+        isAnyOf(
+          ASSETS_ACTIONS.tagsAddComplete,
+          ASSETS_ACTIONS.tagsAddError,
+          ASSETS_ACTIONS.tagsRemoveComplete,
+          ASSETS_ACTIONS.tagsRemoveError
+        ),
         (state, action) => {
           const {tag} = action.payload
           state.byIds[tag._id].updating = false
         }
       )
       .addMatcher(
-        action =>
-          [
-            ASSETS_ACTIONS.tagsAddRequest.type, //
-            ASSETS_ACTIONS.tagsRemoveRequest.type
-          ].includes(action.type),
+        isAnyOf(ASSETS_ACTIONS.tagsAddRequest, ASSETS_ACTIONS.tagsRemoveRequest),
         (state, action) => {
           const {tag} = action.payload
           state.byIds[tag._id].updating = true
@@ -539,6 +534,6 @@ export const selectTagSelectOptions =
     return null
   }
 
-export const tagsActions = tagsSlice.actions
+export const tagsActions = {...tagsSlice.actions}
 
 export default tagsSlice.reducer
