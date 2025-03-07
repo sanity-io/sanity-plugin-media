@@ -5,6 +5,16 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.0](https://github.com/sanity-io/sanity-plugin-media/compare/v2.3.2...v2.4.0) (2025-03-07)
+
+### Features
+
+- add \_\_internalApplicationType to tool spec ([#235](https://github.com/sanity-io/sanity-plugin-media/issues/235)) ([602145b](https://github.com/sanity-io/sanity-plugin-media/commit/602145b65746fecdd43aee8191bb544fbe209d32))
+
+### Bug Fixes
+
+- stop inlining `@sanity/icons`, `@sanity/color` ([592cd93](https://github.com/sanity-io/sanity-plugin-media/commit/592cd9374a1df04f38ea60c7fd20fba97e2da7ea))
+
 ## [2.3.2](https://github.com/sanity-io/sanity-plugin-media/compare/v2.3.1...v2.3.2) (2024-07-22)
 
 ### Bug Fixes
