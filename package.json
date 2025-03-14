@@ -85,7 +85,7 @@
     "@commitlint/config-conventional": "^17.8.1",
     "@sanity/pkg-utils": "^7.0.4",
     "@sanity/plugin-kit": "^4.0.19",
-    "@sanity/semantic-release-preset": "^2.0.5",
+    "@sanity/semantic-release-preset": "^3.0.2",
     "@sanity/vision": "^3.78.1",
     "@types/is-hotkey": "^0.1.10",
     "@types/pluralize": "^0.0.33",
