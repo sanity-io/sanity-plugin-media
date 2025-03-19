@@ -83,13 +83,13 @@
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
-    "@sanity/pkg-utils": "^7.0.4",
+    "@sanity/pkg-utils": "^7.1.1",
     "@sanity/plugin-kit": "^4.0.19",
     "@sanity/semantic-release-preset": "^2.0.5",
-    "@sanity/vision": "^3.78.1",
+    "@sanity/vision": "^3.80.1",
     "@types/is-hotkey": "^0.1.10",
     "@types/pluralize": "^0.0.33",
-    "@types/react": "^19.0.10",
+    "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@types/react-file-icon": "^1.0.4",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
@@ -109,10 +109,10 @@
     "react-dom": "^19.0.0",
     "react-is": "^19.0.0",
     "rimraf": "^3.0.2",
-    "sanity": "^3.78.1",
+    "sanity": "^3.80.1",
     "standard-version": "^9.5.0",
-    "styled-components": "^6.1.15",
-    "typescript": "5.7.3"
+    "styled-components": "^6.1.16",
+    "typescript": "5.8.2"
   },
   "peerDependencies": {
     "@sanity/ui": "^2.15",
