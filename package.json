@@ -63,7 +63,7 @@
     "@sanity/uuid": "^3.0.1",
     "@tanem/react-nprogress": "^5.0.55",
     "copy-to-clipboard": "^3.3.1",
-    "date-fns": "^2.27.0",
+    "date-fns": "^3.6.0",
     "filesize": "^9.0.0",
     "groq": "^3.0.0",
     "is-hotkey-esm": "^1.0.0",
