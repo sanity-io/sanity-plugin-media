@@ -5,6 +5,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.2](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.1...v3.0.2) (2025-03-19)
+
+### Bug Fixes
+
+- **deps:** Update dependency date-fns to v4 ([#247](https://github.com/sanity-io/sanity-plugin-media/issues/247)) ([4c16590](https://github.com/sanity-io/sanity-plugin-media/commit/4c1659067e1109583507172ea719146083f5f416))
+- update date-fns to v3 ([#220](https://github.com/sanity-io/sanity-plugin-media/issues/220)) ([a8f02e0](https://github.com/sanity-io/sanity-plugin-media/commit/a8f02e03236cdd76edcb8057d09318e3fdfec724))
+
 ## [3.0.1](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.0...v3.0.1) (2025-03-07)
 
 ### Bug Fixes
