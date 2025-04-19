@@ -1,5 +1,5 @@
 import type {CardAssetData, CardUploadData} from '../../types'
-import {memo} from 'react'
+import {memo, forwardRef} from 'react'
 import {VirtuosoGrid} from 'react-virtuoso'
 import {styled} from 'styled-components'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -46,11 +46,12 @@ const StyledListContainer = styled.div`
   justify-content: center;
   margin: 0 auto;
 `
-function ListContainer(props: any) {
+
+const ListContainer = forwardRef<HTMLDivElement>((props: any, ref) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we're doing this to avoid sc warnings about `context` passed as an attribute
   const {context, ...rest} = props
-  return <StyledListContainer {...rest} />
-}
+  return <StyledListContainer {...rest} ref={ref} />
+})
 
 const AssetGridVirtualized = (props: Props) => {
   const {items, onLoadMore} = props
