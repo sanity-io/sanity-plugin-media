@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.3](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.2...v3.0.3) (2025-06-04)
+
+### Bug Fixes
+
+- fixed grid view only show 1 item bug ([#255](https://github.com/sanity-io/sanity-plugin-media/issues/255)) ([9b5002b](https://github.com/sanity-io/sanity-plugin-media/commit/9b5002b03ecfcaba16e717a2ebc5f7b6300dc45c))
+
 ## [3.0.3](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.2...v3.0.3) (2025-04-30)
 
 ### Bug Fixes
