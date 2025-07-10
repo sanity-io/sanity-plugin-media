@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.4](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.3...v3.0.4) (2025-07-10)
+
+### Bug Fixes
+
+- **deps:** allow studio v4 in peer dep ranges ([#259](https://github.com/sanity-io/sanity-plugin-media/issues/259)) ([5aea7a7](https://github.com/sanity-io/sanity-plugin-media/commit/5aea7a714331db4b1e3d30fea6edb392ff3ce198))
+
 ## [3.0.3](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.2...v3.0.3) (2025-06-04)
 
 ### Bug Fixes
