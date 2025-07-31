@@ -5,6 +5,16 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.0](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.5...v4.0.0) (2025-07-31)
+
+### ⚠ BREAKING CHANGES
+
+- **deps:** update dependency @sanity/ui to v3 (#261)
+
+### Bug Fixes
+
+- **deps:** update dependency @sanity/ui to v3 ([#261](https://github.com/sanity-io/sanity-plugin-media/issues/261)) ([3321238](https://github.com/sanity-io/sanity-plugin-media/commit/3321238555f3dff8cdd4f9e9764ef74c31819c77))
+
 ## [3.0.5](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.4...v3.0.5) (2025-07-31)
 
 ### Bug Fixes
