@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.5](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.4...v3.0.5) (2025-07-31)
+
+### Bug Fixes
+
+- remove `@sanity/ui` from peer deps ([d239ca7](https://github.com/sanity-io/sanity-plugin-media/commit/d239ca730d51481187cbb08751f15898bb0cabf8))
+
 ## [3.0.4](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.3...v3.0.4) (2025-07-10)
 
 ### Bug Fixes
