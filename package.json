@@ -59,7 +59,7 @@
     "@sanity/color": "^3.0.6",
     "@sanity/icons": "^3.7.0",
     "@sanity/incompatible-plugin": "^1.0.5",
-    "@sanity/ui": "^2.15",
+    "@sanity/ui": "^3.0.5",
     "@sanity/uuid": "^3.0.1",
     "@tanem/react-nprogress": "^5.0.55",
     "copy-to-clipboard": "^3.3.1",
