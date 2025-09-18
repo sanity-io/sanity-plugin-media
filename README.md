@@ -95,10 +95,14 @@ export default defineConfig({
 })
 ```
 
+
 ### Plugin Config
 
 ```ts
 // sanity.config.ts
+import {media} from 'sanity-plugin-media'
+import {CustomDetails} from './MyCustomDetails'
+
 export default defineConfig({
   //...
   plugins: [
@@ -113,9 +117,34 @@ export default defineConfig({
       },
       maximumUploadSize: 10000000
       // number - maximum file size (in bytes) that can be uploaded through the plugin interface
+      components: {
+        details: CustomDetails
+        // Custom component for asset details (see below)
+      }
+      // Custom components to override default UI (see below)
     })
   ],
 })
+```
+
+#### Custom Asset Details Component
+
+Custom React component for the asset details form via the plugin config. This allows you to override or extend the default asset details UI.
+
+Your component will receive all form props and a `renderDefaultDetails(props)` function for fallback or composition.
+
+```tsx
+// Example custom details component
+export function CustomDetails(props) {
+  // You can render the default details, or add your own fields
+  return (
+    <>
+      <h3>Custom header</h3>
+      {/* Change the UI as you see fit */}
+      {props.renderDefaultDetails(props)}
+    </>
+  )
+}
 ```
 
 ## Known issues

@@ -254,7 +254,9 @@ const assetsSlice = createSlice({
               originalFilename,
               size,
               source {
-                name
+                name,
+                id,
+                url,
               },
               title,
               url
