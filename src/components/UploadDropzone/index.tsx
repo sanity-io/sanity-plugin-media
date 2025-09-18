@@ -64,7 +64,8 @@ const UploadDropzone = (props: Props) => {
   const {children} = props
 
   const {
-    dropzone: {maxSize}
+    dropzone: {maxSize},
+    directUploads
   } = useToolOptions()
 
   const {onSelect} = useAssetSourceActions()
@@ -143,7 +144,8 @@ const UploadDropzone = (props: Props) => {
     noDrag: !!onSelect,
     onDrop: handleDrop,
     maxSize,
-    onDropRejected: handleDropRejected
+    onDropRejected: handleDropRejected,
+    disabled: !directUploads
   })
 
   return (

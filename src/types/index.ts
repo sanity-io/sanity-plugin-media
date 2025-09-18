@@ -16,6 +16,7 @@ export type MediaToolOptions = {
     enabled: boolean
     excludeSources?: string | string[]
   }
+  directUploads?: boolean
 }
 
 type CustomFields = {

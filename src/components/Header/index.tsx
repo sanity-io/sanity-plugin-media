@@ -5,6 +5,7 @@ import pluralize from 'pluralize'
 import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import {useDropzoneActions} from '../../contexts/DropzoneDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
+import {useToolOptions} from '../../contexts/ToolOptionsContext'
 
 type Props = {
   onClose?: () => void
@@ -19,6 +20,8 @@ const Header = (props: Props) => {
   // Redux
   const assetTypes = useTypedSelector(state => state.assets.assetTypes)
   const selectedDocument = useTypedSelector(state => state.selected.document)
+
+  const {directUploads} = useToolOptions()
 
   // Row: Current document / close button
   return (
@@ -46,14 +49,15 @@ const Header = (props: Props) => {
 
         <Flex marginX={2}>
           {/* Upload */}
-          <Button
-            fontSize={1}
-            icon={UploadIcon}
-            mode="bleed"
-            onClick={open}
-            text={`Upload ${assetTypes.length === 1 ? pluralize(assetTypes[0]) : 'assets'}`}
-            tone="primary"
-          />
+          {directUploads && (
+            <Button
+              fontSize={1}
+              icon={UploadIcon}
+              mode="bleed"
+              onClick={open}
+              text={`Upload ${assetTypes.length === 1 ? pluralize(assetTypes[0]) : 'assets'}`}
+            />
+          )}
 
           {/* Close */}
           {onClose && (
