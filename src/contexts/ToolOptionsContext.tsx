@@ -5,6 +5,7 @@ import type {DropzoneOptions} from 'react-dropzone'
 type ContextProps = {
   dropzone: Pick<DropzoneOptions, 'maxSize'>
   creditLine: MediaToolOptions['creditLine']
+  directUploads: MediaToolOptions['directUploads']
 }
 
 const ToolOptionsContext = createContext<ContextProps | null>(null)
@@ -28,12 +29,14 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
       creditLine: {
         enabled: options?.creditLine?.enabled || false,
         excludeSources: creditLineExcludeSources
-      }
+      },
+      directUploads: options?.directUploads ?? true
     }
   }, [
     options?.creditLine?.enabled,
     options?.creditLine?.excludeSources,
-    options?.maximumUploadSize
+    options?.maximumUploadSize,
+    options?.directUploads
   ])
 
   return <ToolOptionsContext.Provider value={value}>{children}</ToolOptionsContext.Provider>

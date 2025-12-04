@@ -113,6 +113,8 @@ export default defineConfig({
       },
       maximumUploadSize: 10000000
       // number - maximum file size (in bytes) that can be uploaded through the plugin interface
+      directUploads: true
+      // boolean - enable / disable direct uploads through the plugin interface (default true)
     })
   ],
 })
