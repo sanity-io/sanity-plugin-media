@@ -115,8 +115,10 @@ export default defineConfig({
         // string | string[] - when used with 3rd party asset sources, you may
         // wish to prevent users overwriting the creditLine based on the `source.name`
       },
-      maximumUploadSize: 10000000
+      maximumUploadSize: 10000000,
       // number - maximum file size (in bytes) that can be uploaded through the plugin interface
+      directUploads: true,
+      // boolean - enable / disable direct uploads through the plugin interface (default true)
       components: {
         details: CustomDetails
         // Custom component for asset details (see below)

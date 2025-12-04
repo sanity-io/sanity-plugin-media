@@ -6,6 +6,7 @@ type ContextProps = {
   dropzone: Pick<DropzoneOptions, 'maxSize'>
   components: MediaToolOptions['components']
   creditLine: MediaToolOptions['creditLine']
+  directUploads: MediaToolOptions['directUploads']
 }
 
 const ToolOptionsContext = createContext<ContextProps | null>(null)
@@ -32,13 +33,15 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
       creditLine: {
         enabled: options?.creditLine?.enabled || false,
         excludeSources: creditLineExcludeSources
-      }
+      },
+      directUploads: options?.directUploads ?? true
     }
   }, [
     options?.creditLine?.enabled,
     options?.components,
     options?.creditLine?.excludeSources,
-    options?.maximumUploadSize
+    options?.maximumUploadSize,
+    options?.directUploads
   ])
 
   return <ToolOptionsContext.Provider value={value}>{children}</ToolOptionsContext.Provider>
