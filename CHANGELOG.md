@@ -5,6 +5,17 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.0](https://github.com/sanity-io/sanity-plugin-media/compare/v4.0.0...v4.1.0) (2025-12-04)
+
+### Features
+
+- allow 'directUploads' option on the tool ([#266](https://github.com/sanity-io/sanity-plugin-media/issues/266)) ([aabaf2c](https://github.com/sanity-io/sanity-plugin-media/commit/aabaf2cb706fc3631f3a6b49403fc443a7c9bceb))
+- create ability to define a custom compoenent to present details ([#267](https://github.com/sanity-io/sanity-plugin-media/issues/267)) ([d334712](https://github.com/sanity-io/sanity-plugin-media/commit/d334712b2bab248d2e142152cf5060be0fee1db6))
+
+### Bug Fixes
+
+- update date-fns imports to v4 syntax ([#263](https://github.com/sanity-io/sanity-plugin-media/issues/263)) ([fb82858](https://github.com/sanity-io/sanity-plugin-media/commit/fb8285837b0423a6ce67801b935aee519f1c7003)), closes [#262](https://github.com/sanity-io/sanity-plugin-media/issues/262)
+
 ## [4.0.0](https://github.com/sanity-io/sanity-plugin-media/compare/v3.0.5...v4.0.0) (2025-07-31)
 
 ### ⚠ BREAKING CHANGES
