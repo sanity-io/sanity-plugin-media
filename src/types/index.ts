@@ -5,13 +5,20 @@ import type {
   SanityDocument,
   SanityImageAssetDocument
 } from '@sanity/client'
+import type {ComponentType, JSX} from 'react'
 import type {Epic} from 'redux-observable'
 import * as z from 'zod'
 import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
 import type {RootReducerState} from '../modules/types'
+import type {DetailsProps} from '../components/DialogAssetEdit/Details'
 
 export type MediaToolOptions = {
   maximumUploadSize?: number
+  components?: {
+    details?: ComponentType<
+      DetailsProps & {renderDefaultDetails: (props: DetailsProps) => JSX.Element}
+    >
+  }
   creditLine: {
     enabled: boolean
     excludeSources?: string | string[]
