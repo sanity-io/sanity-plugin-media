@@ -11,6 +11,7 @@ import {initialState as assetsInitialState} from '../../modules/assets'
 // import {uploadsActions} from '../../modules/uploads'
 import type {RootReducerState} from '../../modules/types'
 import getDocumentAssetIds from '../../utils/getDocumentAssetIds'
+import {isSupportedAssetType} from '../../utils/isSupportedAssetType'
 
 type Props = {
   assetType?: AssetSourceComponentProps['assetType']
@@ -53,7 +54,7 @@ class ReduxProvider extends Component<Props> {
       preloadedState: {
         assets: {
           ...assetsInitialState,
-          assetTypes: props?.assetType ? [props.assetType] : ['file', 'image']
+          assetTypes: isSupportedAssetType(props?.assetType) ? [props.assetType] : ['file', 'image']
         },
         debug: {
           badConnection: false,

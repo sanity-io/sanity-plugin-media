@@ -11,6 +11,9 @@ import * as z from 'zod'
 import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
 import type {RootReducerState} from '../modules/types'
 import type {DetailsProps} from '../components/DialogAssetEdit/Details'
+import type {SUPPORTED_ASSET_TYPES} from '../constants'
+
+export type AssetTypes = (typeof SUPPORTED_ASSET_TYPES)[number]
 
 export type MediaToolOptions = {
   maximumUploadSize?: number

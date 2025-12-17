@@ -1,3 +1,4 @@
+import type {AssetSourceComponentProps} from 'sanity'
 import type {
   SearchFacetInputProps,
   SearchFacetDivider,
@@ -5,6 +6,11 @@ import type {
   OrderDirection
 } from './types'
 import {divider, inputs} from './config/searchFacets'
+
+export const SUPPORTED_ASSET_TYPES = [
+  'file',
+  'image'
+] as const satisfies AssetSourceComponentProps['assetType'][]
 
 // Sort order dropdown options
 // null values are represented as menu dividers
