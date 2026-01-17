@@ -19,6 +19,7 @@ export type DetailsProps = {
     enabled: boolean
     excludeSources?: string | string[] | undefined
   }
+  locales?: {id: string; title: string}[]
 }
 
 export default function Details({
@@ -30,8 +31,10 @@ export default function Details({
   allTagOptions,
   assetTagOptions,
   currentAsset,
-  creditLine
+  creditLine,
+  locales
 }: DetailsProps) {
+  const hasLocales = locales && locales.length > 0
   return (
     <Stack space={3}>
       {/* Tags */}
@@ -56,46 +59,104 @@ export default function Details({
         value={currentAsset?.originalFilename}
       />
       {/* Title */}
-      <FormFieldInputText
-        {...register('title')}
-        disabled={formUpdating}
-        error={errors?.title?.message}
-        label="Title"
-        name="title"
-        value={currentAsset?.title}
-      />
-      {/* Alt text */}
-      <FormFieldInputText
-        {...register('altText')}
-        disabled={formUpdating}
-        error={errors?.altText?.message}
-        label="Alt Text"
-        name="altText"
-        value={currentAsset?.altText}
-      />
-      {/* Description */}
-      <FormFieldInputTextarea
-        {...register('description')}
-        disabled={formUpdating}
-        error={errors?.description?.message}
-        label="Description"
-        name="description"
-        rows={5}
-        value={currentAsset?.description}
-      />
-      {/* CreditLine */}
-      {creditLine?.enabled && (
+      {hasLocales ? (
+        locales.map(locale => (
+          <FormFieldInputText
+            key={locale.id}
+            {...register(`title.${locale.id}` as const)}
+            disabled={formUpdating}
+            error={errors?.title?.[locale.id]?.message}
+            label={`Title (${locale.title})`}
+            name={`title.${locale.id}`}
+            value={currentAsset?.title?.[locale.id]}
+          />
+        ))
+      ) : (
         <FormFieldInputText
-          {...register('creditLine')}
-          error={errors?.creditLine?.message}
-          label="Credit"
-          name="creditLine"
-          value={currentAsset?.creditLine}
-          disabled={
-            formUpdating || creditLine?.excludeSources?.includes(currentAsset?.source?.name)
-          }
+          {...register('title')}
+          disabled={formUpdating}
+          error={errors?.title?.message}
+          label="Title"
+          name="title"
+          value={currentAsset?.title}
         />
       )}
+      {/* Alt text */}
+      {hasLocales ? (
+        locales.map(locale => (
+          <FormFieldInputText
+            key={locale.id}
+            {...register(`altText.${locale.id}` as const)}
+            disabled={formUpdating}
+            error={errors?.altText?.[locale.id]?.message}
+            label={`Alt Text (${locale.title})`}
+            name={`altText.${locale.id}`}
+            value={currentAsset?.altText?.[locale.id]}
+          />
+        ))
+      ) : (
+        <FormFieldInputText
+          {...register('altText')}
+          disabled={formUpdating}
+          error={errors?.altText?.message}
+          label="Alt Text"
+          name="altText"
+          value={currentAsset?.altText}
+        />
+      )}
+      {/* Description */}
+      {hasLocales ? (
+        locales.map(locale => (
+          <FormFieldInputTextarea
+            key={locale.id}
+            {...register(`description.${locale.id}` as const)}
+            disabled={formUpdating}
+            error={errors?.description?.[locale.id]?.message}
+            label={`Description (${locale.title})`}
+            name={`description.${locale.id}`}
+            rows={5}
+            value={currentAsset?.description?.[locale.id]}
+          />
+        ))
+      ) : (
+        <FormFieldInputTextarea
+          {...register('description')}
+          disabled={formUpdating}
+          error={errors?.description?.message}
+          label="Description"
+          name="description"
+          rows={5}
+          value={currentAsset?.description}
+        />
+      )}
+      {/* CreditLine */}
+      {creditLine?.enabled &&
+        (hasLocales ? (
+          locales.map(locale => (
+            <FormFieldInputText
+              key={locale.id}
+              {...register(`creditLine.${locale.id}` as const)}
+              error={errors?.creditLine?.[locale.id]?.message}
+              label={`Credit (${locale.title})`}
+              name={`creditLine.${locale.id}`}
+              value={currentAsset?.creditLine?.[locale.id]}
+              disabled={
+                formUpdating || creditLine?.excludeSources?.includes(currentAsset?.source?.name)
+              }
+            />
+          ))
+        ) : (
+          <FormFieldInputText
+            {...register('creditLine')}
+            error={errors?.creditLine?.message}
+            label="Credit"
+            name="creditLine"
+            value={currentAsset?.creditLine}
+            disabled={
+              formUpdating || creditLine?.excludeSources?.includes(currentAsset?.source?.name)
+            }
+          />
+        ))}
     </Stack>
   )
 }

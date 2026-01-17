@@ -7,7 +7,7 @@ import {type ReactNode, useCallback, useEffect, useRef, useState} from 'react'
 import {type SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {WithReferringDocuments, useColorSchemeValue, useDocumentStore} from 'sanity'
-import {assetFormSchema} from '../../formSchema'
+import {getAssetFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions, selectAssetById} from '../../modules/assets'
@@ -63,10 +63,33 @@ const DialogAssetEdit = (props: Props) => {
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
 
   // Check if credit line options are configured
-  const {creditLine, components: {details: CustomDetails} = {}} = useToolOptions()
+  const {creditLine, components: {details: CustomDetails} = {}, locales} = useToolOptions()
 
   const generateDefaultValues = useCallback(
     (asset?: Asset): AssetFormData => {
+      if (locales && locales.length > 0) {
+        const makeLocaleObj = (field?: Record<string, string> | string) => {
+          const obj: Record<string, string> = {}
+          for (const locale of locales) {
+            if (typeof field === 'object' && field && field[locale.id]) {
+              obj[locale.id] = field[locale.id]
+            } else if (typeof field === 'string') {
+              obj[locale.id] = field
+            } else {
+              obj[locale.id] = ''
+            }
+          }
+          return obj
+        }
+        return {
+          altText: makeLocaleObj(asset?.altText),
+          creditLine: makeLocaleObj(asset?.creditLine),
+          description: makeLocaleObj(asset?.description),
+          originalFilename: asset?.originalFilename || '',
+          opt: {media: {tags: assetTagOptions}},
+          title: makeLocaleObj(asset?.title)
+        }
+      }
       return {
         altText: asset?.altText || '',
         creditLine: asset?.creditLine || '',
@@ -76,7 +99,7 @@ const DialogAssetEdit = (props: Props) => {
         title: asset?.title || ''
       }
     },
-    [assetTagOptions]
+    [assetTagOptions, locales]
   )
 
   const {
@@ -91,7 +114,7 @@ const DialogAssetEdit = (props: Props) => {
   } = useForm<AssetFormData>({
     defaultValues: generateDefaultValues(assetItem?.asset),
     mode: 'onChange',
-    resolver: zodResolver(assetFormSchema)
+    resolver: zodResolver(getAssetFormSchema(locales))
   })
 
   const formUpdating = !assetItem || assetItem?.updating
@@ -251,7 +274,8 @@ const DialogAssetEdit = (props: Props) => {
     allTagOptions,
     handleCreateTag,
     currentAsset,
-    creditLine
+    creditLine,
+    locales
   }
 
   return (

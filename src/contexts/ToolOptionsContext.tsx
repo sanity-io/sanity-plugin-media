@@ -1,4 +1,4 @@
-import type {MediaToolOptions} from '../types'
+import type {MediaToolOptions, Locale} from '../types'
 import {type PropsWithChildren, createContext, useContext, useMemo} from 'react'
 import type {DropzoneOptions} from 'react-dropzone'
 
@@ -7,6 +7,7 @@ type ContextProps = {
   components: MediaToolOptions['components']
   creditLine: MediaToolOptions['creditLine']
   directUploads: MediaToolOptions['directUploads']
+  locales?: Locale[]
 }
 
 const ToolOptionsContext = createContext<ContextProps | null>(null)
@@ -34,7 +35,8 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
         enabled: options?.creditLine?.enabled || false,
         excludeSources: creditLineExcludeSources
       },
-      directUploads: options?.directUploads ?? true
+      directUploads: options?.directUploads ?? true,
+      locales: options?.locales
     }
   }, [
     options?.creditLine?.enabled,

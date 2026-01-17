@@ -22,11 +22,21 @@ export type MediaToolOptions = {
       DetailsProps & {renderDefaultDetails: (props: DetailsProps) => JSX.Element}
     >
   }
-  creditLine: {
+  creditLine?: {
     enabled: boolean
     excludeSources?: string | string[]
   }
   directUploads?: boolean
+  /**
+   * Optional locales following Sanity recommended scheme: [{ id, title }]
+   * https://www.sanity.io/docs/studio/localization#k4da239411955
+   */
+  locales?: Locale[]
+}
+
+export type Locale = {
+  title: string
+  id: string
 }
 
 type CustomFields = {

@@ -95,10 +95,9 @@ export default defineConfig({
 })
 ```
 
-
 ### Plugin Config
 
-```ts
+````ts
 // sanity.config.ts
 import {media} from 'sanity-plugin-media'
 import {CustomDetails} from './MyCustomDetails'
@@ -124,10 +123,32 @@ export default defineConfig({
         // Custom component for asset details (see below)
       }
       // Custom components to override default UI (see below)
+      // Optional: Enable localization support (see https://www.sanity.io/docs/studio/localization#k4da239411955)
+      // locales: [
+      //   { id: 'en', title: 'English' },
+      //   { id: 'no', title: 'Norwegian' },
+      //   { id: 'fr', title: 'French' }
+      // ],
     })
   ],
 })
-```
+### Localization (Optional)
+
+You can enable localization support by passing a `locales` array to the plugin config, following the [Sanity recommended scheme](https://www.sanity.io/docs/studio/localization#k4da239411955):
+
+```js
+media({
+  locales: [
+    { id: 'en', title: 'English' },
+    { id: 'no', title: 'Norwegian' },
+    { id: 'fr', title: 'French' }
+  ]
+})
+````
+
+If omitted, localization features will be disabled and the plugin will work as usual.
+
+````
 
 #### Custom Asset Details Component
 
@@ -147,7 +168,7 @@ export function CustomDetails(props) {
     </>
   )
 }
-```
+````
 
 ## Known issues
 
