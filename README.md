@@ -97,7 +97,7 @@ export default defineConfig({
 
 ### Plugin Config
 
-````ts
+```ts
 // sanity.config.ts
 import {media} from 'sanity-plugin-media'
 import {CustomDetails} from './MyCustomDetails'
@@ -110,7 +110,7 @@ export default defineConfig({
         enabled: true,
         // boolean - enables an optional "Credit Line" field in the plugin.
         // Used to store credits e.g. photographer, licence information
-        excludeSources: ['unsplash'],
+        excludeSources: ['unsplash']
         // string | string[] - when used with 3rd party asset sources, you may
         // wish to prevent users overwriting the creditLine based on the `source.name`
       },
@@ -121,34 +121,45 @@ export default defineConfig({
       components: {
         details: CustomDetails
         // Custom component for asset details (see below)
-      }
+      },
       // Custom components to override default UI (see below)
-      // Optional: Enable localization support (see https://www.sanity.io/docs/studio/localization#k4da239411955)
-      // locales: [
-      //   { id: 'en', title: 'English' },
-      //   { id: 'no', title: 'Norwegian' },
-      //   { id: 'fr', title: 'French' }
-      // ],
+      locales: [
+        // { id: string, title: string, ...extra }[] - enable localization for asset fields. Each object must have a unique id and a human-readable title.
+        // You may include extra keys (e.g. isDefault) for compatibility with Sanity's recommended pattern; only id and title are used by the plugin, all other keys are ignored.
+        // When set, all localizable fields (title, altText, description, creditLine) will be shown in tabs by language.
+        {id: 'en', title: 'English', isDefault: true},
+        {id: 'it', title: 'Italian'},
+        {id: 'es', title: 'Spanish'},
+        {id: 'fr', title: 'French'},
+        {id: 'de', title: 'German'},
+        {id: 'pt', title: 'Portuguese'},
+        {id: 'ja', title: 'Japanese'},
+        {id: 'zh', title: 'Chinese'},
+        {id: 'ru', title: 'Russian'},
+        {id: 'ar', title: 'Arabic'}
+      ]
     })
-  ],
+  ]
 })
+```
+
 ### Localization (Optional)
 
 You can enable localization support by passing a `locales` array to the plugin config, following the [Sanity recommended scheme](https://www.sanity.io/docs/studio/localization#k4da239411955):
 
-```js
-media({
-  locales: [
-    { id: 'en', title: 'English' },
-    { id: 'no', title: 'Norwegian' },
-    { id: 'fr', title: 'French' }
-  ]
-})
-````
-
 If omitted, localization features will be disabled and the plugin will work as usual.
 
-````
+**Fallback for missing translations:**
+The plugin does not apply any automatic fallback for missing translations. You can decide how to handle this in your queries or frontend logic. For example, to show the default language if a translation is missing, you can use GROQ's `coalesce()`:
+
+```
+coalesce(altText.it, altText.en)
+```
+
+**UI note:**
+When `locales` are provided, all localized fields (title, altText, description, creditLine) are grouped by language in tabs. Each tab shows all fields for a single language, making it easy to edit translations for many languages in a compact interface.
+
+This will return the Italian value if present, otherwise English, otherwise French, etc. Adjust the order as needed for your project.
 
 #### Custom Asset Details Component
 
@@ -168,7 +179,7 @@ export function CustomDetails(props) {
     </>
   )
 }
-````
+```
 
 ## Known issues
 

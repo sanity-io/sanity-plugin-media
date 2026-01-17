@@ -1,4 +1,5 @@
-import {Stack} from '@sanity/ui'
+import {Card, Stack, Tab, TabList, TabPanel} from '@sanity/ui'
+import {useState} from 'react'
 import type {Asset, AssetFormData, TagSelectOption} from '../../types'
 import {type Control, type FieldErrors, type UseFormRegister} from 'react-hook-form'
 
@@ -35,6 +36,7 @@ export default function Details({
   locales
 }: DetailsProps) {
   const hasLocales = locales && locales.length > 0
+  const [activeLocaleTab, setActiveLocaleTab] = useState(0)
   return (
     <Stack space={3}>
       {/* Tags */}
@@ -58,105 +60,114 @@ export default function Details({
         name="originalFilename"
         value={currentAsset?.originalFilename}
       />
-      {/* Title */}
+      {/* Localized fields grouped by language */}
       {hasLocales ? (
-        locales.map(locale => (
-          <FormFieldInputText
-            key={locale.id}
-            {...register(`title.${locale.id}` as const)}
-            disabled={formUpdating}
-            error={errors?.title?.[locale.id]?.message}
-            label={`Title (${locale.title})`}
-            name={`title.${locale.id}`}
-            value={currentAsset?.title?.[locale.id]}
-          />
-        ))
+        <Card marginTop={2} shadow={1} padding={3} radius={1}>
+          <Stack space={2}>
+            <TabList space={2}>
+              {locales.map((locale, idx) => (
+                <Tab
+                  key={locale.id}
+                  id={`locale-tab-${locale.id}`}
+                  aria-controls={`locale-panel-${locale.id}`}
+                  selected={activeLocaleTab === idx}
+                  onClick={() => setActiveLocaleTab(idx)}
+                  label={locale.title}
+                />
+              ))}
+            </TabList>
+            {locales.map((locale, idx) => (
+              <TabPanel
+                key={locale.id}
+                id={`locale-panel-${locale.id}`}
+                aria-labelledby={`locale-tab-${locale.id}`}
+                hidden={activeLocaleTab !== idx}
+              >
+                <Stack space={3}>
+                  <FormFieldInputText
+                    {...register(`title.${locale.id}` as const)}
+                    disabled={formUpdating}
+                    error={errors?.title?.[locale.id]?.message}
+                    label="Title"
+                    name={`title.${locale.id}`}
+                    value={currentAsset?.title?.[locale.id]}
+                  />
+                  <FormFieldInputText
+                    {...register(`altText.${locale.id}` as const)}
+                    disabled={formUpdating}
+                    error={errors?.altText?.[locale.id]?.message}
+                    label="Alt Text"
+                    name={`altText.${locale.id}`}
+                    value={currentAsset?.altText?.[locale.id]}
+                  />
+                  <FormFieldInputTextarea
+                    {...register(`description.${locale.id}` as const)}
+                    disabled={formUpdating}
+                    error={errors?.description?.[locale.id]?.message}
+                    label="Description"
+                    name={`description.${locale.id}`}
+                    rows={5}
+                    value={currentAsset?.description?.[locale.id]}
+                  />
+                  {creditLine?.enabled && (
+                    <FormFieldInputText
+                      {...register(`creditLine.${locale.id}` as const)}
+                      error={errors?.creditLine?.[locale.id]?.message}
+                      label="Credit"
+                      name={`creditLine.${locale.id}`}
+                      value={currentAsset?.creditLine?.[locale.id]}
+                      disabled={
+                        formUpdating ||
+                        creditLine?.excludeSources?.includes(currentAsset?.source?.name)
+                      }
+                    />
+                  )}
+                </Stack>
+              </TabPanel>
+            ))}
+          </Stack>
+        </Card>
       ) : (
-        <FormFieldInputText
-          {...register('title')}
-          disabled={formUpdating}
-          error={errors?.title?.message}
-          label="Title"
-          name="title"
-          value={currentAsset?.title}
-        />
-      )}
-      {/* Alt text */}
-      {hasLocales ? (
-        locales.map(locale => (
+        <>
           <FormFieldInputText
-            key={locale.id}
-            {...register(`altText.${locale.id}` as const)}
+            {...register('title')}
             disabled={formUpdating}
-            error={errors?.altText?.[locale.id]?.message}
-            label={`Alt Text (${locale.title})`}
-            name={`altText.${locale.id}`}
-            value={currentAsset?.altText?.[locale.id]}
+            error={errors?.title?.message}
+            label="Title"
+            name="title"
+            value={currentAsset?.title}
           />
-        ))
-      ) : (
-        <FormFieldInputText
-          {...register('altText')}
-          disabled={formUpdating}
-          error={errors?.altText?.message}
-          label="Alt Text"
-          name="altText"
-          value={currentAsset?.altText}
-        />
-      )}
-      {/* Description */}
-      {hasLocales ? (
-        locales.map(locale => (
+          <FormFieldInputText
+            {...register('altText')}
+            disabled={formUpdating}
+            error={errors?.altText?.message}
+            label="Alt Text"
+            name="altText"
+            value={currentAsset?.altText}
+          />
           <FormFieldInputTextarea
-            key={locale.id}
-            {...register(`description.${locale.id}` as const)}
+            {...register('description')}
             disabled={formUpdating}
-            error={errors?.description?.[locale.id]?.message}
-            label={`Description (${locale.title})`}
-            name={`description.${locale.id}`}
+            error={errors?.description?.message}
+            label="Description"
+            name="description"
             rows={5}
-            value={currentAsset?.description?.[locale.id]}
+            value={currentAsset?.description}
           />
-        ))
-      ) : (
-        <FormFieldInputTextarea
-          {...register('description')}
-          disabled={formUpdating}
-          error={errors?.description?.message}
-          label="Description"
-          name="description"
-          rows={5}
-          value={currentAsset?.description}
-        />
-      )}
-      {/* CreditLine */}
-      {creditLine?.enabled &&
-        (hasLocales ? (
-          locales.map(locale => (
+          {creditLine?.enabled && (
             <FormFieldInputText
-              key={locale.id}
-              {...register(`creditLine.${locale.id}` as const)}
-              error={errors?.creditLine?.[locale.id]?.message}
-              label={`Credit (${locale.title})`}
-              name={`creditLine.${locale.id}`}
-              value={currentAsset?.creditLine?.[locale.id]}
+              {...register('creditLine')}
+              error={errors?.creditLine?.message}
+              label="Credit"
+              name="creditLine"
+              value={currentAsset?.creditLine}
               disabled={
                 formUpdating || creditLine?.excludeSources?.includes(currentAsset?.source?.name)
               }
             />
-          ))
-        ) : (
-          <FormFieldInputText
-            {...register('creditLine')}
-            error={errors?.creditLine?.message}
-            label="Credit"
-            name="creditLine"
-            value={currentAsset?.creditLine}
-            disabled={
-              formUpdating || creditLine?.excludeSources?.includes(currentAsset?.source?.name)
-            }
-          />
-        ))}
+          )}
+        </>
+      )}
     </Stack>
   )
 }

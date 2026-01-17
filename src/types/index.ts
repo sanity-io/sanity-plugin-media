@@ -37,6 +37,7 @@ export type MediaToolOptions = {
 export type Locale = {
   title: string
   id: string
+  [key: string]: any // Allow extra keys (e.g. isDefault)
 }
 
 type CustomFields = {
