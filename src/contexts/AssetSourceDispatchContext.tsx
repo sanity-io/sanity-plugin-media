@@ -3,20 +3,23 @@ import type {AssetSourceComponentProps} from 'sanity'
 
 type ContextProps = {
   onSelect?: AssetSourceComponentProps['onSelect']
+  schemaType?: AssetSourceComponentProps['schemaType']
 }
 
 type Props = {
   children: ReactNode
   onSelect?: AssetSourceComponentProps['onSelect']
+  schemaType?: AssetSourceComponentProps['schemaType']
 }
 
 const AssetSourceDispatchContext = createContext<ContextProps | undefined>(undefined)
 
 export const AssetBrowserDispatchProvider = (props: Props) => {
-  const {children, onSelect} = props
+  const {children, onSelect, schemaType} = props
 
   const contextValue: ContextProps = {
-    onSelect
+    onSelect,
+    schemaType
   }
 
   return (

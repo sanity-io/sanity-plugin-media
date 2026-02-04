@@ -27,6 +27,7 @@ type Props = {
   document?: SanityDocument
   onClose?: AssetSourceComponentProps['onClose']
   onSelect?: AssetSourceComponentProps['onSelect']
+  schemaType?: AssetSourceComponentProps['schemaType']
   selectedAssets?: AssetSourceComponentProps['selectedAssets']
 }
 
@@ -135,7 +136,7 @@ const Browser = (props: Props) => {
       document={props?.document}
       selectedAssets={props?.selectedAssets}
     >
-      <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
+      <AssetBrowserDispatchProvider onSelect={props?.onSelect} schemaType={props?.schemaType}>
         <GlobalStyle />
         <BrowserContent onClose={props?.onClose} />
       </AssetBrowserDispatchProvider>

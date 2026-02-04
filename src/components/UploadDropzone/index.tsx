@@ -68,7 +68,12 @@ const UploadDropzone = (props: Props) => {
     directUploads
   } = useToolOptions()
 
-  const {onSelect} = useAssetSourceActions()
+  const {onSelect, schemaType} = useAssetSourceActions()
+
+  // Extract mediaTags from field options if available
+  const mediaTags = (schemaType?.options as {mediaTags?: string[]} | undefined)?.mediaTags
+
+  const {createTagsOnUpload} = useToolOptions()
 
   // Redux
   const dispatch = useDispatch()
@@ -81,8 +86,10 @@ const UploadDropzone = (props: Props) => {
     acceptedFiles.forEach(file =>
       dispatch(
         uploadsActions.uploadRequest({
+          createTagsOnUpload,
           file,
-          forceAsAssetType: assetTypes.length === 1 ? assetTypes[0] : undefined
+          forceAsAssetType: assetTypes.length === 1 ? assetTypes[0] : undefined,
+          mediaTags
         })
       )
     )
