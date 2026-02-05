@@ -308,7 +308,7 @@ defineField({
   options: {
     hotspot: true,
     mediaTags: ['employee', 'portrait']
-  } satisfies ImageOptions & MediaTagsFieldOptions
+  } as ImageOptions & MediaTagsFieldOptions
 })
 ```
 
