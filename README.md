@@ -34,6 +34,7 @@ _Individual asset view_
 
 - Refine your search with any combination of search facets such as filtering by tag name, asset usage, file size, orientation, type (and more)
 - Use text search for a quick lookup by title, description and alt text
+- Auto-filter assets by tags when opening from fields with `mediaTags` configured
 
 #### Built for large datasets and collaborative editing in mind
 
@@ -292,6 +293,8 @@ export default defineType({
 When a user uploads an image through this field, the asset will automatically be tagged with "employee" and "portrait". If these tags don't exist yet, they will be created automatically (this behavior can be disabled with the `createTagsOnUpload: false` plugin option).
 
 Auto-tagging works with both the Media Browser and the native Sanity upload button (including drag-and-drop).
+
+**Auto-filtering:** When you open the Media Browser from a field with `mediaTags` configured, the browser will automatically filter to show only assets that have **all** of those tags. This makes it easy to find relevant assets for that specific field context.
 
 **Note:** The `mediaTags` option is not typed in Sanity's core field definitions. TypeScript users can use type assertion or extend the field options type:
 
