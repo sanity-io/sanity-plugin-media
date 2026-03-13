@@ -164,6 +164,7 @@ const FolderView = () => {
   const folderTree = useTypedSelector(selectFolderTree)
   const totalAssets = useTypedSelector(state => state.folders.assignedPaths.length)
   const homeSelected = !currentFolderPath
+  const showHeaderLabel = !(currentFolderPath && canDeleteFolder)
 
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
 
@@ -201,14 +202,18 @@ const FolderView = () => {
           height: `${PANEL_HEIGHT}px`
         }}
       >
-        <Inline space={2}>
-          <Label size={0}>Folders</Label>
-          {fetching && (
-            <Label size={0} style={{opacity: 0.3}}>
-              Loading...
-            </Label>
+        <Box flex={1}>
+          {showHeaderLabel && (
+            <Inline space={2}>
+              <Label size={0}>Folders</Label>
+              {fetching && (
+                <Label size={0} style={{opacity: 0.3}}>
+                  Loading...
+                </Label>
+              )}
+            </Inline>
           )}
-        </Inline>
+        </Box>
 
         <Inline space={1}>
           {currentFolderPath && (
