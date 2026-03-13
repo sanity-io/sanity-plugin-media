@@ -10,6 +10,22 @@ import {dialogActions} from '../../modules/dialog'
 import {selectFolderTree} from '../../modules/folders'
 import Dialog from '../Dialog'
 
+const getExpandedPathSet = (folderPath: string | null) => {
+  if (!folderPath) {
+    return new Set<string>()
+  }
+
+  const expandedPaths = new Set<string>()
+
+  folderPath.split('/').reduce((previousPath, segment) => {
+    const nextPath = previousPath ? `${previousPath}/${segment}` : segment
+    expandedPaths.add(nextPath)
+    return nextPath
+  }, '')
+
+  return expandedPaths
+}
+
 type Props = {
   children: ReactNode
   dialog: DialogFolderMoveProps
@@ -114,20 +130,7 @@ const DialogFolderMove = ({children, dialog}: Props) => {
   const [selectedPath, setSelectedPath] = useState<string | null>(folderPath || null)
 
   useEffect(() => {
-    setExpandedPaths(previous => {
-      const next = new Set(previous)
-      folderTree.forEach(node => next.add(node.path))
-
-      if (selectedPath) {
-        selectedPath.split('/').reduce((acc, segment) => {
-          const nextPath = acc ? `${acc}/${segment}` : segment
-          next.add(nextPath)
-          return nextPath
-        }, '')
-      }
-
-      return next
-    })
+    setExpandedPaths(getExpandedPathSet(selectedPath))
   }, [folderTree, selectedPath])
 
   const handleClose = () => {

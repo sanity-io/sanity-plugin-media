@@ -15,6 +15,22 @@ import type {FolderTreeNode} from '../../types'
 import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 import {foldersActions, selectCanDeleteFolder, selectFolderTree} from '../../modules/folders'
 
+const getExpandedPathSet = (folderPath: string | null) => {
+  if (!folderPath) {
+    return new Set<string>()
+  }
+
+  const expandedPaths = new Set<string>()
+
+  folderPath.split('/').reduce((previousPath, segment) => {
+    const nextPath = previousPath ? `${previousPath}/${segment}` : segment
+    expandedPaths.add(nextPath)
+    return nextPath
+  }, '')
+
+  return expandedPaths
+}
+
 type FolderNodeProps = {
   currentFolderPath: string | null
   expandedPaths: Set<string>
@@ -152,20 +168,7 @@ const FolderView = () => {
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    setExpandedPaths(previous => {
-      const next = new Set(previous)
-      folderTree.forEach(node => next.add(node.path))
-
-      if (currentFolderPath) {
-        currentFolderPath.split('/').reduce((acc, segment) => {
-          const nextPath = acc ? `${acc}/${segment}` : segment
-          next.add(nextPath)
-          return nextPath
-        }, '')
-      }
-
-      return next
-    })
+    setExpandedPaths(getExpandedPathSet(currentFolderPath))
   }, [currentFolderPath, folderTree])
 
   const hasFolders = folderTree.length > 0
