@@ -118,6 +118,7 @@ const Controls = () => {
 
                 <Button
                   fontSize={1}
+                  icon={FolderIcon}
                   mode="ghost"
                   onClick={() =>
                     dispatch(
@@ -125,12 +126,7 @@ const Controls = () => {
                     )
                   }
                   tone="primary"
-                >
-                  <Inline space={1}>
-                    <AddIcon />
-                    <FolderIcon />
-                  </Inline>
-                </Button>
+                />
               </Inline>
             </Box>
           </Flex>
