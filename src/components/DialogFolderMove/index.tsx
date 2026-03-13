@@ -60,18 +60,31 @@ const FolderNode = ({expandedPaths, node, onSelect, onToggle, selectedPath}: Fol
             <Box style={{width: '1.75rem'}} />
           )}
 
-          <Text
-            size={1}
-            style={{color: selectedTextColor, flex: 1, minWidth: 0}}
-            textOverflow="ellipsis"
-            weight="semibold"
+          <Box
+            as="span"
+            style={{
+              color: selectedTextColor,
+              flex: 1,
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              minWidth: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
           >
             {node.name}
-          </Text>
+          </Box>
 
-          <Text size={0} style={{color: selectedSecondaryColor}}>
+          <Box
+            as="span"
+            style={{
+              color: selectedSecondaryColor,
+              fontSize: '0.75rem'
+            }}
+          >
             {node.totalCount}
-          </Text>
+          </Box>
         </Flex>
       </Card>
 
@@ -181,13 +194,15 @@ const DialogFolderMove = ({children, dialog}: Props) => {
             }}
           >
             <Flex align="center" gap={2}>
-              <FolderIcon />
-              <Text size={1} weight="semibold">
+              <Box as="span" style={{display: 'inline-flex', lineHeight: 0}}>
+                <FolderIcon />
+              </Box>
+              <Box as="span" style={{fontSize: '0.875rem', fontWeight: 600}}>
                 Home
-              </Text>
-              <Text muted size={0}>
+              </Box>
+              <Box as="span" style={{color: 'var(--card-muted-fg-color)', fontSize: '0.75rem'}}>
                 Root
-              </Text>
+              </Box>
             </Flex>
           </Card>
 

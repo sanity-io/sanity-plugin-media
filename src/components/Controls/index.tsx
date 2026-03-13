@@ -1,4 +1,4 @@
-import {AddIcon} from '@sanity/icons'
+import {AddIcon, FolderIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -124,9 +124,13 @@ const Controls = () => {
                       DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null})
                     )
                   }
-                  text="New folder"
                   tone="primary"
-                />
+                >
+                  <Inline space={1}>
+                    <AddIcon />
+                    <FolderIcon />
+                  </Inline>
+                </Button>
               </Inline>
             </Box>
           </Flex>

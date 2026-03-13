@@ -83,15 +83,40 @@ const FolderNode = ({
             }}
             type="button"
           >
-            <Text size={1} style={{color: selectedSecondaryColor}}>
+            <Box
+              as="span"
+              style={{
+                color: selectedSecondaryColor,
+                display: 'inline-flex',
+                lineHeight: 0
+              }}
+            >
               <FolderIcon />
-            </Text>
-            <Text size={1} style={{flex: 1, minWidth: 0}} textOverflow="ellipsis" weight="semibold">
+            </Box>
+            <Box
+              as="span"
+              style={{
+                color: selectedTextColor,
+                flex: 1,
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}
+            >
               {node.name}
-            </Text>
-            <Text size={0} style={{color: selectedSecondaryColor}}>
+            </Box>
+            <Box
+              as="span"
+              style={{
+                color: selectedSecondaryColor,
+                fontSize: '0.75rem'
+              }}
+            >
               {node.totalCount}
-            </Text>
+            </Box>
           </button>
         </Flex>
       </Card>
@@ -231,15 +256,37 @@ const FolderView = () => {
             }}
             type="button"
           >
-            <Text size={1} style={{color: homeSelected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'}}>
+            <Box
+              as="span"
+              style={{
+                color: homeSelected ? 'rgba(255, 255, 255, 0.78)' : 'inherit',
+                display: 'inline-flex',
+                lineHeight: 0
+              }}
+            >
               <FolderIcon />
-            </Text>
-            <Text size={1} style={{flex: 1, minWidth: 0}} weight="semibold">
+            </Box>
+            <Box
+              as="span"
+              style={{
+                color: homeSelected ? '#fff' : 'inherit',
+                flex: 1,
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                minWidth: 0
+              }}
+            >
               Home
-            </Text>
-            <Text size={0} style={{color: homeSelected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'}}>
+            </Box>
+            <Box
+              as="span"
+              style={{
+                color: homeSelected ? 'rgba(255, 255, 255, 0.78)' : 'inherit',
+                fontSize: '0.75rem'
+              }}
+            >
               {totalAssets}
-            </Text>
+            </Box>
           </button>
         </Card>
 

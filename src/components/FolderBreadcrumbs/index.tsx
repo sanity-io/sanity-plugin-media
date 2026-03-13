@@ -13,7 +13,7 @@ const FolderBreadcrumbs = () => {
   }
 
   return (
-    <Box marginTop={2} paddingX={2}>
+    <Box display={['block', 'block', 'none']} marginTop={2} paddingX={2}>
       <Inline space={1}>
         <Button
           fontSize={1}
