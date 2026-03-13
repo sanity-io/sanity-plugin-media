@@ -397,6 +397,7 @@ export type TagSelectOption = z.infer<typeof tagOptionSchema>
 export type UploadItem = {
   _type: 'upload'
   assetType: AssetType
+  folderPath?: string | null
   hash: string
   name: string
   objectUrl?: string
