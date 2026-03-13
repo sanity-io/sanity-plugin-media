@@ -4,7 +4,7 @@ import groq from 'groq'
 import {of} from 'rxjs'
 import {catchError, debounceTime, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
 import normalizeFolderPath from '../../utils/normalizeFolderPath'
-import type {FolderTreeItem, HttpError, MyEpic} from '../../types'
+import type {FolderTreeItem, FolderTreeNode, HttpError, MyEpic} from '../../types'
 import debugThrottle from '../../operators/debugThrottle'
 import {assetsActions} from '../assets'
 import type {RootReducerState} from '../types'
@@ -193,17 +193,31 @@ export const selectFolderTree = createSelector([selectAssignedPaths], assignedPa
     }, '')
   })
 
-  return Array.from(pathSet)
+  const nodes = new Map<string, FolderTreeNode>()
+  const rootNodes: FolderTreeNode[] = []
+
+  Array.from(pathSet)
     .sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}))
-    .map(
-      (path): FolderTreeItem => ({
-        depth: path.split('/').length - 1,
+    .forEach(path => {
+      const node: FolderTreeNode = {
+        children: [],
         exactCount: exactCount.get(path) || 0,
         name: path.split('/').pop() || path,
         path,
         totalCount: totalCount.get(path) || 0
-      })
-    )
+      }
+
+      nodes.set(path, node)
+
+      const parentPath = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : null
+      if (parentPath && nodes.has(parentPath)) {
+        nodes.get(parentPath)?.children.push(node)
+      } else {
+        rootNodes.push(node)
+      }
+    })
+
+  return rootNodes
 })
 
 export const selectCurrentFolderSegments = createSelector(

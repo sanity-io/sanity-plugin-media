@@ -1,7 +1,13 @@
 import {Stack} from '@sanity/ui'
 import type {Asset, AssetFormData, TagSelectOption} from '../../types'
-import {type Control, type FieldErrors, type UseFormRegister} from 'react-hook-form'
+import {
+  type Control,
+  type FieldErrors,
+  type UseFormRegister,
+  type UseFormSetValue
+} from 'react-hook-form'
 
+import FormFieldInputFolder from '../FormFieldInputFolder'
 import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
@@ -12,6 +18,7 @@ export type DetailsProps = {
   control: Control<AssetFormData>
   errors: FieldErrors<AssetFormData>
   register: UseFormRegister<AssetFormData>
+  setValue: UseFormSetValue<AssetFormData>
   allTagOptions: TagSelectOption[]
   assetTagOptions: TagSelectOption[] | null
   currentAsset: Asset
@@ -27,6 +34,7 @@ export default function Details({
   control,
   errors,
   register,
+  setValue,
   allTagOptions,
   assetTagOptions,
   currentAsset,
@@ -47,15 +55,12 @@ export default function Details({
         value={assetTagOptions}
       />
       {/* Folder */}
-      <FormFieldInputText
-        {...register('opt.media.folder')}
-        description="Use slash-delimited paths like marketing/launches/2026."
+      <FormFieldInputFolder
+        control={control}
         disabled={formUpdating}
         error={errors?.opt?.media?.folder?.message}
-        label="Folder"
         name="opt.media.folder"
-        placeholder="folder/subfolder"
-        value={currentAsset?.opt?.media?.folder}
+        setValue={setValue}
       />
       {/* Filename */}
       <FormFieldInputText

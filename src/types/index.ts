@@ -173,6 +173,10 @@ export type FolderTreeItem = {
   totalCount: number
 }
 
+export type FolderTreeNode = Omit<FolderTreeItem, 'depth'> & {
+  children: FolderTreeNode[]
+}
+
 export type ImageAsset = SanityImageAssetDocument &
   CustomFields & {
     _type: 'sanity.imageAsset'

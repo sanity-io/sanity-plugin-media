@@ -25,7 +25,7 @@ const FolderBreadcrumbs = () => {
           fontSize={1}
           mode={!currentFolderPath && !currentFolderUnfiled ? 'default' : 'bleed'}
           onClick={() => dispatch(foldersActions.currentFolderClear())}
-          text="All assets"
+          text="Home"
         />
 
         {currentFolderUnfiled && (
