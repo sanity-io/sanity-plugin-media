@@ -32,6 +32,8 @@ const FolderNode = ({
   const expanded = expandedPaths.has(node.path)
   const hasChildren = node.children.length > 0
   const selected = currentFolderPath === node.path
+  const selectedTextColor = selected ? '#fff' : 'inherit'
+  const selectedSecondaryColor = selected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'
 
   const handleToggle = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
@@ -49,17 +51,18 @@ const FolderNode = ({
         }}
       >
         <Flex align="center" gap={1}>
-          <Button
-            aria-label={expanded ? `Collapse ${node.name}` : `Expand ${node.name}`}
-            disabled={!hasChildren}
-            fontSize={1}
-            icon={hasChildren ? (expanded ? ChevronDownIcon : ChevronRightIcon) : FolderIcon}
-            mode="bleed"
-            onClick={hasChildren ? handleToggle : undefined}
-            style={{
-              opacity: hasChildren ? 1 : 0.45
-            }}
-          />
+          {hasChildren ? (
+            <Button
+              aria-label={expanded ? `Collapse ${node.name}` : `Expand ${node.name}`}
+              fontSize={1}
+              icon={expanded ? ChevronDownIcon : ChevronRightIcon}
+              mode="bleed"
+              onClick={handleToggle}
+              style={{color: selectedTextColor}}
+            />
+          ) : (
+            <Box style={{width: '1.75rem'}} />
+          )}
 
           <button
             onClick={() => onSelect(node.path)}
@@ -68,7 +71,6 @@ const FolderNode = ({
               appearance: 'none',
               background: 'transparent',
               border: 0,
-              color: 'inherit',
               cursor: 'pointer',
               display: 'flex',
               flex: 1,
@@ -76,17 +78,18 @@ const FolderNode = ({
               justifyContent: 'space-between',
               minWidth: 0,
               padding: '0.25rem 0.5rem 0.25rem 0.25rem',
+              color: selectedTextColor,
               textAlign: 'left'
             }}
             type="button"
           >
-            <Text muted size={1}>
+            <Text size={1} style={{color: selectedSecondaryColor}}>
               <FolderIcon />
             </Text>
             <Text size={1} style={{flex: 1, minWidth: 0}} textOverflow="ellipsis" weight="semibold">
               {node.name}
             </Text>
-            <Text muted size={0}>
+            <Text size={0} style={{color: selectedSecondaryColor}}>
               {node.totalCount}
             </Text>
           </button>
@@ -118,6 +121,7 @@ const FolderView = () => {
   const fetching = useTypedSelector(state => state.folders.fetching)
   const folderTree = useTypedSelector(selectFolderTree)
   const totalAssets = useTypedSelector(state => state.folders.assignedPaths.length)
+  const homeSelected = !currentFolderPath
 
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
 
@@ -206,7 +210,7 @@ const FolderView = () => {
           padding={1}
           radius={2}
           style={{
-            background: !currentFolderPath ? 'var(--card-focus-ring-color)' : 'transparent',
+            background: homeSelected ? 'var(--card-focus-ring-color)' : 'transparent',
             border: '1px solid transparent'
           }}
         >
@@ -217,23 +221,23 @@ const FolderView = () => {
               appearance: 'none',
               background: 'transparent',
               border: 0,
-              color: 'inherit',
               cursor: 'pointer',
               display: 'flex',
               gap: '0.5rem',
               justifyContent: 'space-between',
               padding: '0.5rem',
+              color: homeSelected ? '#fff' : 'inherit',
               width: '100%'
             }}
             type="button"
           >
-            <Text muted size={1}>
+            <Text size={1} style={{color: homeSelected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'}}>
               <FolderIcon />
             </Text>
             <Text size={1} style={{flex: 1, minWidth: 0}} weight="semibold">
               Home
             </Text>
-            <Text muted size={0}>
+            <Text size={0} style={{color: homeSelected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'}}>
               {totalAssets}
             </Text>
           </button>

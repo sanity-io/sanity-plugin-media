@@ -27,6 +27,8 @@ const FolderNode = ({expandedPaths, node, onSelect, onToggle, selectedPath}: Fol
   const expanded = expandedPaths.has(node.path)
   const hasChildren = node.children.length > 0
   const selected = selectedPath === node.path
+  const selectedTextColor = selected ? '#fff' : 'inherit'
+  const selectedSecondaryColor = selected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'
 
   const handleToggle = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
@@ -46,20 +48,28 @@ const FolderNode = ({expandedPaths, node, onSelect, onToggle, selectedPath}: Fol
         }}
       >
         <Flex align="center" gap={2}>
-          <Button
-            disabled={!hasChildren}
-            fontSize={1}
-            icon={hasChildren ? (expanded ? ChevronDownIcon : ChevronRightIcon) : FolderIcon}
-            mode="bleed"
-            onClick={hasChildren ? handleToggle : undefined}
-            style={{opacity: hasChildren ? 1 : 0.45}}
-          />
+          {hasChildren ? (
+            <Button
+              fontSize={1}
+              icon={expanded ? ChevronDownIcon : ChevronRightIcon}
+              mode="bleed"
+              onClick={handleToggle}
+              style={{color: selectedTextColor}}
+            />
+          ) : (
+            <Box style={{width: '1.75rem'}} />
+          )}
 
-          <Text size={1} style={{flex: 1, minWidth: 0}} textOverflow="ellipsis" weight="semibold">
+          <Text
+            size={1}
+            style={{color: selectedTextColor, flex: 1, minWidth: 0}}
+            textOverflow="ellipsis"
+            weight="semibold"
+          >
             {node.name}
           </Text>
 
-          <Text muted size={0}>
+          <Text size={0} style={{color: selectedSecondaryColor}}>
             {node.totalCount}
           </Text>
         </Flex>
