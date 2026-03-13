@@ -9,11 +9,14 @@ import {TAG_DOCUMENT_NAME} from '../../constants'
 import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions} from '../../modules/assets'
+import {foldersActions} from '../../modules/folders'
 import {tagsActions} from '../../modules/tags'
 import GlobalStyle from '../../styled/GlobalStyles'
 import Controls from '../Controls'
 import DebugControls from '../DebugControls'
 import Dialogs from '../Dialogs'
+import FolderBreadcrumbs from '../FolderBreadcrumbs'
+import FolderPanel from '../FolderPanel'
 import Header from '../Header'
 import Items from '../Items'
 import Notifications from '../Notifications'
@@ -71,6 +74,9 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
     // Fetch assets: first page
     dispatch(assetsActions.loadPageIndex({pageIndex: 0}))
 
+    // Fetch all folder paths
+    dispatch(foldersActions.fetchRequest())
+
     // Fetch all tags
     dispatch(tagsActions.fetchRequest())
 
@@ -108,7 +114,10 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
             {/* Browser Controls */}
             <Controls />
 
+            <FolderBreadcrumbs />
+
             <Flex flex={1}>
+              <FolderPanel />
               <Flex align="flex-end" direction="column" flex={1} style={{position: 'relative'}}>
                 <PickedBar />
                 <Items />

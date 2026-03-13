@@ -2,6 +2,7 @@ import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
+import {foldersActions} from '../../modules/folders'
 import {tagsActions} from '../../modules/tags'
 import ButtonViewGroup from '../ButtonViewGroup'
 import OrderSelect from '../OrderSelect'
@@ -15,6 +16,7 @@ const Controls = () => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
+  const foldersPanelVisible = useTypedSelector(state => state.folders.panelVisible)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.search.facets)
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
@@ -28,6 +30,10 @@ const Controls = () => {
 
   const handleShowTagsDialog = () => {
     dispatch(dialogActions.showTags())
+  }
+
+  const toggleFoldersPanel = () => {
+    dispatch(foldersActions.panelVisibleSet({panelVisible: !foldersPanelVisible}))
   }
 
   const toggleTagsPanelToggle = () => {
@@ -108,6 +114,15 @@ const Controls = () => {
           <Flex marginX={2}>
             {/* Orders */}
             <OrderSelect />
+            {/* Folders panel toggle */}
+            <Box display={['none', 'none', 'block']} marginLeft={2}>
+              <Button
+                fontSize={1}
+                onClick={toggleFoldersPanel}
+                mode={foldersPanelVisible ? 'default' : 'ghost'}
+                text="Folders"
+              />
+            </Box>
             {/* Tags panel toggle */}
             <Box display={['none', 'none', 'block']} marginLeft={2}>
               <Button

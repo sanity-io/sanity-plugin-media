@@ -165,6 +165,14 @@ export type FileAsset = SanityAssetDocument &
     _type: 'sanity.fileAsset'
   }
 
+export type FolderTreeItem = {
+  depth: number
+  exactCount: number
+  name: string
+  path: string
+  totalCount: number
+}
+
 export type ImageAsset = SanityImageAssetDocument &
   CustomFields & {
     _type: 'sanity.imageAsset'

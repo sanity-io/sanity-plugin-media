@@ -24,7 +24,7 @@ _Individual asset view_
 
 - Support for batch uploads with drag and drop support
 - Edit text fields native to Sanity's asset documents, such as `title`, `description`, `altText` and `originalFilename`
-- Assign slash-delimited folder paths directly on assets
+- Browse folder paths in a dedicated sidebar and assign slash-delimited folder paths directly on assets
 - View asset metadata and a limited subset of EXIF data, if present
 - Tag your assets individually or in bulk
 - Manage tags directly within the plugin
@@ -240,7 +240,9 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 <summary>How do folders work?</summary>
 
 - Folders are stored as a slash-delimited string at `opt.media.folder` on the asset document
-- This first-pass implementation does not create separate folder documents or a nested tree UI; it gives you a consistent path you can edit, query, sort and filter on
+- Folder browsing is driven by the folder paths already assigned to assets, and the sidebar includes derived parent folders for nested paths
+- You can move selected assets into the currently open folder from the selection bar, or edit the folder path directly on an individual asset
+- This implementation does not create separate folder documents; folders exist when assets are assigned to a path
 - Folder paths are normalized before save, so input like `/marketing\\launches/2026/` is stored as `marketing/launches/2026`
 
 </details>

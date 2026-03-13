@@ -10,6 +10,8 @@ import assetsReducer, {
   assetsDeleteEpic,
   assetsFetchAfterDeleteAllEpic,
   assetsFetchEpic,
+  assetsFolderSetEpic,
+  assetsFolderSetRefreshEpic,
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
   assetsListenerCreateQueueEpic,
@@ -29,6 +31,11 @@ import dialogReducer, {
   dialogTagCreateEpic,
   dialogTagDeleteEpic
 } from './dialog'
+import foldersReducer, {
+  foldersCurrentFolderEpic,
+  foldersFetchEpic,
+  foldersRefreshEpic
+} from './folders'
 import selectedReducer from './selected'
 import notificationsReducer, {
   notificationsAssetsDeleteErrorEpic,
@@ -65,6 +72,8 @@ export const rootEpic = combineEpics(
   assetsFetchAfterDeleteAllEpic,
   assetsFetchNextPageEpic,
   assetsFetchPageIndexEpic,
+  assetsFolderSetEpic,
+  assetsFolderSetRefreshEpic,
   assetsListenerCreateQueueEpic,
   assetsListenerDeleteQueueEpic,
   assetsListenerUpdateQueueEpic,
@@ -78,6 +87,9 @@ export const rootEpic = combineEpics(
   dialogClearOnAssetUpdateEpic,
   dialogTagCreateEpic,
   dialogTagDeleteEpic,
+  foldersCurrentFolderEpic,
+  foldersFetchEpic,
+  foldersRefreshEpic,
   notificationsAssetsDeleteErrorEpic,
   notificationsAssetsDeleteCompleteEpic,
   notificationsAssetsTagsAddCompleteEpic,
@@ -106,6 +118,7 @@ const reducers = {
   assets: assetsReducer,
   debug: debugReducer,
   dialog: dialogReducer,
+  folders: foldersReducer,
   notifications: notificationsReducer,
   search: searchReducer,
   selected: selectedReducer,

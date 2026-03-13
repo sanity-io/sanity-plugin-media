@@ -5,10 +5,14 @@ import {operators} from '../config/searchFacets'
 
 const constructFilter = ({
   assetTypes,
+  currentFolderPath,
+  currentFolderUnfiled,
   searchFacets,
   searchQuery
 }: {
   assetTypes: AssetType[]
+  currentFolderPath?: string | null
+  currentFolderUnfiled?: boolean
   searchFacets: SearchFacetInputProps[]
   searchQuery?: string
 }): string => {
@@ -75,6 +79,14 @@ const constructFilter = ({
     return acc
   }, [])
 
+  let folderFilter: string | undefined
+
+  if (currentFolderUnfiled) {
+    folderFilter = groq`(!defined(opt.media.folder) || opt.media.folder == null || opt.media.folder == "")`
+  } else if (currentFolderPath) {
+    folderFilter = `opt.media.folder == ${JSON.stringify(currentFolderPath)}`
+  }
+
   // Join separate filter fragments
   const constructedQuery = [
     // Base filter
@@ -88,6 +100,7 @@ const constructFilter = ({
           groq`[_id, altText, assetId, creditLine, description, originalFilename, opt.media.folder, title, url] match '*${searchQuery.trim()}*'`
         ]
       : []),
+    ...(folderFilter ? [folderFilter] : []),
     // Search facets
     ...searchFacetFragments
   ].join(' && ')

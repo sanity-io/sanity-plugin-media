@@ -14,6 +14,8 @@ const PickedBar = () => {
   // Redux
   const dispatch = useDispatch()
   const assetsPicked = useTypedSelector(selectAssetsPicked)
+  const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
+  const currentFolderUnfiled = useTypedSelector(state => state.folders.currentFolderUnfiled)
 
   // Callbacks
   const handlePickClear = () => {
@@ -22,6 +24,15 @@ const PickedBar = () => {
 
   const handleDeletePicked = () => {
     dispatch(dialogActions.showConfirmDeleteAssets({assets: assetsPicked}))
+  }
+
+  const handleMovePicked = () => {
+    dispatch(
+      assetsActions.folderSetRequest({
+        assets: assetsPicked,
+        folderPath: currentFolderUnfiled ? null : currentFolderPath
+      })
+    )
   }
 
   if (assetsPicked.length === 0) {
@@ -68,6 +79,20 @@ const PickedBar = () => {
         >
           <Label size={0}>Delete</Label>
         </Button>
+
+        {(currentFolderPath || currentFolderUnfiled) && (
+          <Button
+            mode="bleed"
+            onClick={handleMovePicked}
+            padding={2}
+            style={{background: 'none', boxShadow: 'none'}}
+            tone="primary"
+          >
+            <Label size={0}>
+              {currentFolderUnfiled ? 'Remove folder' : `Move to ${currentFolderPath}`}
+            </Label>
+          </Button>
+        )}
       </Flex>
     </Flex>
   )
