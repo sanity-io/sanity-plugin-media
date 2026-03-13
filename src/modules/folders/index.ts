@@ -710,30 +710,31 @@ export const selectCurrentFolderChildren = createSelector(
 )
 
 export const selectCanDeleteFolder = createSelector(
-  [selectAssignedPaths, selectPersistedPaths, selectCurrentFolderPath],
-  (assignedPaths, persistedPaths, currentFolderPath) => {
+  [selectFolderTree, selectCurrentFolderPath],
+  (folderTree, currentFolderPath) => {
     if (!currentFolderPath) {
       return false
     }
 
-    const normalizedPath = normalizeFolderPath(currentFolderPath)
-    const persistedPathSet = new Set(persistedPaths.map(path => normalizeFolderPath(path)))
+    const queue = [...folderTree]
+    while (queue.length > 0) {
+      const currentNode = queue.shift()
+      if (!currentNode) {
+        continue
+      }
 
-    if (!persistedPathSet.has(normalizedPath)) {
-      return false
+      if (currentNode.path === currentFolderPath) {
+        return (
+          !!currentNode.persisted &&
+          currentNode.exactCount === 0 &&
+          currentNode.children.length === 0
+        )
+      }
+
+      queue.push(...currentNode.children)
     }
 
-    const hasAssignedDescendants = assignedPaths.some(folderPath => {
-      const nextPath = normalizeFolderPath(folderPath)
-      return nextPath === normalizedPath || nextPath.startsWith(`${normalizedPath}/`)
-    })
-
-    const hasPersistedDescendants = persistedPaths.some(folderPath => {
-      const nextPath = normalizeFolderPath(folderPath)
-      return nextPath !== normalizedPath && nextPath.startsWith(`${normalizedPath}/`)
-    })
-
-    return !hasAssignedDescendants && !hasPersistedDescendants
+    return false
   }
 )
 
