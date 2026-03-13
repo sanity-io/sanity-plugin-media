@@ -1,4 +1,5 @@
 import {createAction} from '@reduxjs/toolkit'
+import type {AssetItem} from '../../types'
 
 export const DIALOG_ACTIONS = {
   showFolderCreate: createAction(
@@ -6,6 +7,14 @@ export const DIALOG_ACTIONS = {
     function prepare({folderPath}: {folderPath?: string | null} = {}) {
       return {
         payload: {folderPath}
+      }
+    }
+  ),
+  showFolderMove: createAction(
+    'dialog/showFolderMove',
+    function prepare({assets, folderPath}: {assets: AssetItem[]; folderPath?: string | null}) {
+      return {
+        payload: {assets, folderPath}
       }
     }
   ),

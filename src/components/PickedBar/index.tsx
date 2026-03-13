@@ -6,6 +6,7 @@ import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 
 const PickedBar = () => {
@@ -15,8 +16,6 @@ const PickedBar = () => {
   const dispatch = useDispatch()
   const assetsPicked = useTypedSelector(selectAssetsPicked)
   const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
-  const currentFolderUnfiled = useTypedSelector(state => state.folders.currentFolderUnfiled)
-
   // Callbacks
   const handlePickClear = () => {
     dispatch(assetsActions.pickClear())
@@ -26,14 +25,8 @@ const PickedBar = () => {
     dispatch(dialogActions.showConfirmDeleteAssets({assets: assetsPicked}))
   }
 
-  const handleMovePicked = () => {
-    dispatch(
-      assetsActions.folderSetRequest({
-        assets: assetsPicked,
-        folderPath: currentFolderUnfiled ? null : currentFolderPath
-      })
-    )
-  }
+  const handleMovePicked = () =>
+    dispatch(DIALOG_ACTIONS.showFolderMove({assets: assetsPicked, folderPath: currentFolderPath}))
 
   if (assetsPicked.length === 0) {
     return null
@@ -80,19 +73,15 @@ const PickedBar = () => {
           <Label size={0}>Delete</Label>
         </Button>
 
-        {(currentFolderPath || currentFolderUnfiled) && (
-          <Button
-            mode="bleed"
-            onClick={handleMovePicked}
-            padding={2}
-            style={{background: 'none', boxShadow: 'none'}}
-            tone="primary"
-          >
-            <Label size={0}>
-              {currentFolderUnfiled ? 'Remove folder' : `Move to ${currentFolderPath}`}
-            </Label>
-          </Button>
-        )}
+        <Button
+          mode="bleed"
+          onClick={handleMovePicked}
+          padding={2}
+          style={{background: 'none', boxShadow: 'none'}}
+          tone="primary"
+        >
+          <Label size={0}>Move to folder</Label>
+        </Button>
       </Flex>
     </Flex>
   )

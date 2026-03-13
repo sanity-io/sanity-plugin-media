@@ -4,6 +4,7 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import DialogAssetEdit from '../DialogAssetEdit'
 import DialogConfirm from '../DialogConfirm'
 import DialogFolderCreate from '../DialogFolderCreate'
+import DialogFolderMove from '../DialogFolderMove'
 import DialogSearchFacets from '../DialogSearchFacets'
 import DialogTagCreate from '../DialogTagCreate'
 import DialogTagEdit from '../DialogTagEdit'
@@ -42,6 +43,14 @@ const Dialogs = () => {
         <DialogFolderCreate dialog={dialog} key={index}>
           {childDialogs}
         </DialogFolderCreate>
+      )
+    }
+
+    if (dialog.type === 'folderMove') {
+      return (
+        <DialogFolderMove dialog={dialog} key={index}>
+          {childDialogs}
+        </DialogFolderMove>
       )
     }
 

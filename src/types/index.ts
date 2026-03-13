@@ -98,6 +98,7 @@ export type Dialog =
   | DialogAssetEditProps
   | DialogConfirmProps
   | DialogFolderCreateProps
+  | DialogFolderMoveProps
   | DialogSearchFacetsProps
   | DialogTagCreateProps
   | DialogTagEditProps
@@ -134,6 +135,14 @@ export type DialogFolderCreateProps = {
   folderPath?: string | null
   id: string
   type: 'folderCreate'
+}
+
+export type DialogFolderMoveProps = {
+  assets: AssetItem[]
+  closeDialogId?: string
+  folderPath?: string | null
+  id: string
+  type: 'folderMove'
 }
 
 export type DialogSearchFacetsProps = {

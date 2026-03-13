@@ -31,6 +31,15 @@ const dialogSlice = createSlice({
           type: 'folderCreate'
         })
       })
+      .addCase(DIALOG_ACTIONS.showFolderMove, (state, action) => {
+        const {assets, folderPath} = action.payload
+        state.items.push({
+          assets,
+          folderPath,
+          id: 'folderMove',
+          type: 'folderMove'
+        })
+      })
       .addCase(DIALOG_ACTIONS.showTagCreate, state => {
         state.items.push({
           id: 'tagCreate',
@@ -199,6 +208,7 @@ export const dialogClearOnAssetUpdateEpic: MyEpic = action$ =>
   action$.pipe(
     ofType(
       assetsActions.deleteComplete.type,
+      assetsActions.folderSetComplete.type,
       assetsActions.updateComplete.type,
       tagsActions.deleteComplete.type,
       tagsActions.updateComplete.type

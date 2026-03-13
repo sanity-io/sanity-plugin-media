@@ -6,7 +6,7 @@ import {
   TrashIcon
 } from '@sanity/icons'
 import {Box, Button, Card, Flex, Inline, Label, Text} from '@sanity/ui'
-import {type MouseEvent, useEffect, useMemo, useState} from 'react'
+import {type MouseEvent, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -61,27 +61,35 @@ const FolderNode = ({
             }}
           />
 
-          <Button
-            fontSize={1}
-            icon={FolderIcon}
-            mode="bleed"
+          <button
             onClick={() => onSelect(node.path)}
             style={{
               alignItems: 'center',
+              appearance: 'none',
+              background: 'transparent',
+              border: 0,
+              color: 'inherit',
+              cursor: 'pointer',
               display: 'flex',
               flex: 1,
+              gap: '0.5rem',
               justifyContent: 'space-between',
               minWidth: 0,
-              paddingLeft: '0.25rem'
+              padding: '0.25rem 0.5rem 0.25rem 0.25rem',
+              textAlign: 'left'
             }}
+            type="button"
           >
-            <Text size={1} style={{minWidth: 0}} textOverflow="ellipsis" weight="semibold">
+            <Text muted size={1}>
+              <FolderIcon />
+            </Text>
+            <Text size={1} style={{flex: 1, minWidth: 0}} textOverflow="ellipsis" weight="semibold">
               {node.name}
             </Text>
             <Text muted size={0}>
               {node.totalCount}
             </Text>
-          </Button>
+          </button>
         </Flex>
       </Card>
 
@@ -148,10 +156,6 @@ const FolderView = () => {
     })
   }
 
-  const homeTone = useMemo(() => {
-    return !currentFolderPath ? 'default' : 'bleed'
-  }, [currentFolderPath])
-
   return (
     <Flex direction="column" flex={1} height="fill">
       <Flex
@@ -202,29 +206,37 @@ const FolderView = () => {
           padding={1}
           radius={2}
           style={{
-            background: homeTone === 'default' ? 'var(--card-focus-ring-color)' : 'transparent',
+            background: !currentFolderPath ? 'var(--card-focus-ring-color)' : 'transparent',
             border: '1px solid transparent'
           }}
         >
-          <Button
-            fontSize={1}
-            icon={FolderIcon}
-            mode="bleed"
+          <button
             onClick={() => dispatch(foldersActions.currentFolderClear())}
             style={{
               alignItems: 'center',
+              appearance: 'none',
+              background: 'transparent',
+              border: 0,
+              color: 'inherit',
+              cursor: 'pointer',
               display: 'flex',
+              gap: '0.5rem',
               justifyContent: 'space-between',
+              padding: '0.5rem',
               width: '100%'
             }}
+            type="button"
           >
-            <Text size={1} weight="semibold">
+            <Text muted size={1}>
+              <FolderIcon />
+            </Text>
+            <Text size={1} style={{flex: 1, minWidth: 0}} weight="semibold">
               Home
             </Text>
             <Text muted size={0}>
               {totalAssets}
             </Text>
-          </Button>
+          </button>
         </Card>
 
         <Box marginTop={2} paddingLeft={3}>
