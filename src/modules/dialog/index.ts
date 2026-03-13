@@ -173,6 +173,23 @@ const dialogSlice = createSlice({
         type: 'confirm'
       })
     },
+    showConfirmDeleteFolder(state, action: PayloadAction<{closeDialogId?: string; path: string}>) {
+      const {closeDialogId, path} = action.payload
+      const folderName = path.split('/').pop() || path
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: foldersActions.deleteRequest({path}),
+        confirmText: `Yes, delete folder`,
+        description:
+          'This deletes the selected folder, all nested folders, and every asset inside that subtree. This operation cannot be reversed.',
+        title: `Permanently delete ${folderName} and all contents?`,
+        id: 'confirm',
+        headerTitle: 'Confirm folder deletion',
+        tone: 'critical',
+        type: 'confirm'
+      })
+    },
     showConfirmDeleteTag(state, action: PayloadAction<{closeDialogId?: string; tag: Tag}>) {
       const {closeDialogId, tag} = action.payload
 

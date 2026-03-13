@@ -6,12 +6,13 @@ import {
   FolderIcon,
   TrashIcon
 } from '@sanity/icons'
-import {Box, Button, Card, Flex, Inline, Label, Text} from '@sanity/ui'
-import {type MouseEvent, useEffect, useState} from 'react'
+import {Box, Button, Card, Container, Flex, Inline, Label, Text, Tooltip} from '@sanity/ui'
+import {type MouseEvent, type ReactNode, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import type {FolderTreeNode} from '../../types'
+import {dialogActions} from '../../modules/dialog'
 import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 import {foldersActions, selectCanDeleteFolder, selectFolderTree} from '../../modules/folders'
 
@@ -38,6 +39,47 @@ type FolderNodeProps = {
   onSelect: (folderPath: string) => void
   onToggle: (folderPath: string) => void
 }
+
+type FolderHeaderActionProps = {
+  disabled?: boolean
+  icon: ReactNode
+  onClick: () => void
+  tone?: 'critical' | 'primary'
+  tooltip: string
+}
+
+const FolderHeaderAction = ({
+  disabled,
+  icon,
+  onClick,
+  tone,
+  tooltip
+}: FolderHeaderActionProps) => (
+  <Tooltip
+    animate
+    content={
+      <Container padding={2} width={0}>
+        <Text muted size={1}>
+          {tooltip}
+        </Text>
+      </Container>
+    }
+    disabled={'ontouchstart' in window}
+    placement="top"
+    portal
+  >
+    <Button
+      aria-label={tooltip}
+      disabled={disabled}
+      fontSize={1}
+      icon={icon}
+      mode="bleed"
+      onClick={onClick}
+      padding={2}
+      tone={tone}
+    />
+  </Tooltip>
+)
 
 const FolderNode = ({
   currentFolderPath,
@@ -164,7 +206,6 @@ const FolderView = () => {
   const folderTree = useTypedSelector(selectFolderTree)
   const totalAssets = useTypedSelector(state => state.folders.assignedPaths.length)
   const homeSelected = !currentFolderPath
-  const showHeaderLabel = !(currentFolderPath && canDeleteFolder)
 
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
 
@@ -190,6 +231,18 @@ const FolderView = () => {
     })
   }
 
+  const handleFolderDelete = () => {
+    if (!currentFolderPath) {
+      return
+    }
+
+    dispatch(
+      dialogActions.showConfirmDeleteFolder({
+        path: currentFolderPath
+      })
+    )
+  }
+
   return (
     <Flex direction="column" flex={1} height="fill">
       <Flex
@@ -203,47 +256,41 @@ const FolderView = () => {
         }}
       >
         <Box flex={1}>
-          {showHeaderLabel && (
-            <Inline space={2}>
-              <Label size={0}>Folders</Label>
-              {fetching && (
-                <Label size={0} style={{opacity: 0.3}}>
-                  Loading...
-                </Label>
-              )}
-            </Inline>
-          )}
+          <Inline space={2}>
+            <Label size={0}>Folders</Label>
+            {fetching && (
+              <Label size={0} style={{opacity: 0.3}}>
+                Loading...
+              </Label>
+            )}
+          </Inline>
         </Box>
 
         <Inline space={1}>
           {currentFolderPath && (
-            <Button
-              fontSize={1}
-              icon={EditIcon}
-              mode="bleed"
+            <FolderHeaderAction
+              icon={<EditIcon />}
               onClick={() => dispatch(DIALOG_ACTIONS.showFolderRename({folderPath: currentFolderPath}))}
-              text="Rename"
+              tone="primary"
+              tooltip="Rename folder"
             />
           )}
 
-          <Button
-            fontSize={1}
-            icon={AddIcon}
-            mode="bleed"
+          <FolderHeaderAction
+            icon={<AddIcon />}
             onClick={() =>
               dispatch(DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null}))
             }
-            text="New"
+            tone="primary"
+            tooltip="Create folder"
           />
 
           {currentFolderPath && canDeleteFolder && (
-            <Button
-              fontSize={1}
-              icon={TrashIcon}
-              mode="bleed"
-              onClick={() => dispatch(foldersActions.deleteRequest({path: currentFolderPath}))}
-              text="Delete"
+            <FolderHeaderAction
+              icon={<TrashIcon />}
+              onClick={handleFolderDelete}
               tone="critical"
+              tooltip="Delete folder and contents"
             />
           )}
         </Inline>

@@ -1,8 +1,16 @@
 import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, Patch, Transaction} from '@sanity/client'
 import groq from 'groq'
-import {of} from 'rxjs'
-import {catchError, debounceTime, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
+import {from, of} from 'rxjs'
+import {
+  catchError,
+  debounceTime,
+  filter,
+  map,
+  mergeMap,
+  switchMap,
+  withLatestFrom
+} from 'rxjs/operators'
 import {nanoid} from 'nanoid'
 import {FOLDER_DOCUMENT_NAME} from '../../constants'
 import normalizeFolderPath from '../../utils/normalizeFolderPath'
@@ -134,10 +142,25 @@ const foldersSlice = createSlice({
       state.currentFolderPath = null
       state.currentFolderUnfiled = true
     },
-    deleteComplete(state, action: PayloadAction<{path: string}>) {
+    deleteComplete(state, action: PayloadAction<{deletedPaths: string[]; path: string}>) {
       state.deletingPath = undefined
-      state.persistedPaths = state.persistedPaths.filter(path => path !== action.payload.path)
-      if (state.currentFolderPath === action.payload.path) {
+      state.assignedPaths = state.assignedPaths.filter(folderPath => {
+        const normalizedPath = normalizeFolderPath(folderPath)
+        return !(
+          normalizedPath === action.payload.path ||
+          normalizedPath.startsWith(`${action.payload.path}/`)
+        )
+      })
+      state.persistedPaths = state.persistedPaths.filter(
+        path =>
+          !action.payload.deletedPaths.includes(path) &&
+          path !== action.payload.path &&
+          !path.startsWith(`${action.payload.path}/`)
+      )
+      if (
+        state.currentFolderPath === action.payload.path ||
+        state.currentFolderPath?.startsWith(`${action.payload.path}/`)
+      ) {
         state.currentFolderPath = null
       }
     },
@@ -374,36 +397,57 @@ export const foldersDeleteEpic: MyEpic = (action$, state$, {client}) =>
     mergeMap(([action, state]) => {
       const path = action.payload.path
       const normalizedPath = normalizeFolderPath(path)
-      const hasAssignedDescendants = state.folders.assignedPaths.some(folderPath => {
-        const nextPath = normalizeFolderPath(folderPath)
-        return nextPath === normalizedPath || nextPath.startsWith(`${normalizedPath}/`)
-      })
-      const hasPersistedDescendants = state.folders.persistedPaths.some(folderPath => {
-        const nextPath = normalizeFolderPath(folderPath)
-        return nextPath !== normalizedPath && nextPath.startsWith(`${normalizedPath}/`)
-      })
-
-      if (hasAssignedDescendants || hasPersistedDescendants) {
-        return of(
-          foldersSlice.actions.deleteError({
-            error: {
-              message: 'Only empty folders can be deleted',
-              statusCode: 400
-            },
-            path: normalizedPath
-          })
-        )
-      }
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() =>
-          client.observable.delete({
-            query: groq`*[_type == "${FOLDER_DOCUMENT_NAME}" && path == $path]`,
-            params: {path: normalizedPath}
-          })
+          client.observable.fetch<{
+            assets: {_id: string}[]
+            folders: {_id: string; path: string}[]
+          }>(
+            groq`{
+              "assets": *[
+                _type in ${JSON.stringify(
+                  state.assets.assetTypes.map(type => `sanity.${type}Asset`)
+                )}
+                && !(_id in path("drafts.**"))
+                && defined(opt.media.folder)
+                && (opt.media.folder == $path || opt.media.folder match $pathMatch)
+              ] {
+                _id
+              },
+              "folders": *[
+                _type == "${FOLDER_DOCUMENT_NAME}"
+                && !(_id in path("drafts.**"))
+                && (path == $path || path match $pathMatch)
+              ] {
+                _id,
+                path
+              }
+            }`,
+            {path: normalizedPath, pathMatch: `${normalizedPath}/**`}
+          )
         ),
-        mergeMap(() => of(foldersSlice.actions.deleteComplete({path: normalizedPath}))),
+        mergeMap(result => {
+          const deletedPaths = result.folders.map(folder => folder.path)
+          const transactionWithAssets = result.assets.reduce(
+            (tx, asset) => tx.delete(asset._id),
+            client.transaction()
+          )
+          const transaction = result.folders.reduce(
+            (tx, folder) => tx.delete(folder._id),
+            transactionWithAssets
+          )
+
+          return from(transaction.commit()).pipe(
+            map(() =>
+              foldersSlice.actions.deleteComplete({
+                deletedPaths,
+                path: normalizedPath
+              })
+            )
+          )
+        }),
         catchError((error: ClientError) =>
           of(
             foldersSlice.actions.deleteError({
@@ -710,32 +754,8 @@ export const selectCurrentFolderChildren = createSelector(
 )
 
 export const selectCanDeleteFolder = createSelector(
-  [selectFolderTree, selectCurrentFolderPath],
-  (folderTree, currentFolderPath) => {
-    if (!currentFolderPath) {
-      return false
-    }
-
-    const queue = [...folderTree]
-    while (queue.length > 0) {
-      const currentNode = queue.shift()
-      if (!currentNode) {
-        continue
-      }
-
-      if (currentNode.path === currentFolderPath) {
-        return (
-          !!currentNode.persisted &&
-          currentNode.exactCount === 0 &&
-          currentNode.children.length === 0
-        )
-      }
-
-      queue.push(...currentNode.children)
-    }
-
-    return false
-  }
+  [selectCurrentFolderPath],
+  currentFolderPath => !!currentFolderPath
 )
 
 export const foldersActions = {...foldersSlice.actions}
