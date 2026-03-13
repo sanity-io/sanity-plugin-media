@@ -1,4 +1,4 @@
-import {Box, Flex, Grid, Text, useMediaIndex} from '@sanity/ui'
+import {Box, Flex, Grid, Stack, Text, useMediaIndex} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import {useColorSchemeValue} from 'sanity'
 import {styled, css} from 'styled-components'
@@ -73,12 +73,14 @@ const TableRowFolder = ({name, path, totalCount}: Props) => {
         marginLeft={mediaIndex < 3 ? 3 : 0}
         style={{gridColumn: mediaIndex < 3 ? 3 : 3, gridRow: mediaIndex < 3 ? '2/4' : 'auto'}}
       >
-        <Text size={1} textOverflow="ellipsis" weight="semibold">
-          {name}
-        </Text>
-        <Text muted size={1}>
-          Folder
-        </Text>
+        <Stack space={2}>
+          <Text size={1} style={{lineHeight: '1.2em'}} textOverflow="ellipsis" weight="semibold">
+            {name}
+          </Text>
+          <Text muted size={0} style={{lineHeight: '1.1em'}}>
+            Folder
+          </Text>
+        </Stack>
       </Box>
       <Box style={{display: mediaIndex < 3 ? 'none' : 'block', gridColumn: 7}}>
         <Text muted size={1}>
