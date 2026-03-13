@@ -18,6 +18,14 @@ export const DIALOG_ACTIONS = {
       }
     }
   ),
+  showFolderRename: createAction(
+    'dialog/showFolderRename',
+    function prepare({folderPath}: {folderPath: string}) {
+      return {
+        payload: {folderPath}
+      }
+    }
+  ),
   showTagCreate: createAction('dialog/showTagCreate'),
   showTagEdit: createAction('dialog/showTagEdit', function prepare({tagId}: {tagId: string}) {
     return {

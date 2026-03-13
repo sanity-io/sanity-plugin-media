@@ -36,7 +36,8 @@ import foldersReducer, {
   foldersCreateEpic,
   foldersDeleteEpic,
   foldersFetchEpic,
-  foldersRefreshEpic
+  foldersRefreshEpic,
+  foldersRenameEpic
 } from './folders'
 import selectedReducer from './selected'
 import notificationsReducer, {
@@ -47,6 +48,7 @@ import notificationsReducer, {
   notificationsAssetsUpdateCompleteEpic,
   notificationsFolderCreateCompleteEpic,
   notificationsFolderDeleteCompleteEpic,
+  notificationsFolderRenameCompleteEpic,
   notificationsGenericErrorEpic,
   notificationsTagCreateCompleteEpic,
   notificationsTagDeleteCompleteEpic,
@@ -96,6 +98,7 @@ export const rootEpic = combineEpics(
   foldersDeleteEpic,
   foldersFetchEpic,
   foldersRefreshEpic,
+  foldersRenameEpic,
   notificationsAssetsDeleteErrorEpic,
   notificationsAssetsDeleteCompleteEpic,
   notificationsAssetsTagsAddCompleteEpic,
@@ -103,6 +106,7 @@ export const rootEpic = combineEpics(
   notificationsAssetsUpdateCompleteEpic,
   notificationsFolderCreateCompleteEpic,
   notificationsFolderDeleteCompleteEpic,
+  notificationsFolderRenameCompleteEpic,
   notificationsGenericErrorEpic,
   notificationsTagCreateCompleteEpic,
   notificationsTagDeleteCompleteEpic,

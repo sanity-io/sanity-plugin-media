@@ -1,5 +1,5 @@
 import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
-import type {ClientError} from '@sanity/client'
+import type {ClientError, Patch, Transaction} from '@sanity/client'
 import groq from 'groq'
 import {of} from 'rxjs'
 import {catchError, debounceTime, filter, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators'
@@ -24,6 +24,8 @@ type FoldersReducerState = {
   fetchingError?: HttpError
   panelVisible: boolean
   persistedPaths: string[]
+  renameError?: HttpError
+  renaming: boolean
 }
 
 const initialState: FoldersReducerState = {
@@ -37,7 +39,9 @@ const initialState: FoldersReducerState = {
   fetching: false,
   fetchingError: undefined,
   panelVisible: true,
-  persistedPaths: []
+  persistedPaths: [],
+  renameError: undefined,
+  renaming: false
 }
 
 const getAvailableFolderPaths = (folderPaths: (string | null)[]) => {
@@ -58,6 +62,47 @@ const getAvailableFolderPaths = (folderPaths: (string | null)[]) => {
 
   return availablePaths
 }
+
+const replaceFolderPrefix = ({
+  nextPath,
+  path,
+  previousPath
+}: {
+  nextPath: string
+  path: string | null
+  previousPath: string
+}) => {
+  const normalizedPath = normalizeFolderPath(path)
+  const normalizedPreviousPath = normalizeFolderPath(previousPath)
+  const normalizedNextPath = normalizeFolderPath(nextPath)
+
+  if (!normalizedPath) {
+    return path
+  }
+
+  if (normalizedPath === normalizedPreviousPath) {
+    return normalizedNextPath
+  }
+
+  if (normalizedPath.startsWith(`${normalizedPreviousPath}/`)) {
+    return `${normalizedNextPath}${normalizedPath.slice(normalizedPreviousPath.length)}`
+  }
+
+  return normalizedPath
+}
+
+const patchOperationAssetFolderSet =
+  ({folderPath}: {folderPath: string}) =>
+  (patch: Patch) =>
+    patch
+      .setIfMissing({opt: {}})
+      .setIfMissing({'opt.media': {}})
+      .set({'opt.media.folder': folderPath})
+
+const patchOperationFolderPathSet =
+  ({path}: {path: string}) =>
+  (patch: Patch) =>
+    patch.set({path})
 
 const foldersSlice = createSlice({
   name: 'folders',
@@ -138,6 +183,42 @@ const foldersSlice = createSlice({
     },
     panelVisibleSet(state, action: PayloadAction<{panelVisible: boolean}>) {
       state.panelVisible = action.payload.panelVisible
+    },
+    renameComplete(state, action: PayloadAction<{nextPath: string; previousPath: string}>) {
+      state.renaming = false
+      state.assignedPaths = state.assignedPaths.map(
+        path =>
+          replaceFolderPrefix({
+            nextPath: action.payload.nextPath,
+            path,
+            previousPath: action.payload.previousPath
+          }) || null
+      )
+      state.persistedPaths = state.persistedPaths.map(
+        path =>
+          replaceFolderPrefix({
+            nextPath: action.payload.nextPath,
+            path,
+            previousPath: action.payload.previousPath
+          }) || path
+      )
+
+      if (state.currentFolderPath) {
+        state.currentFolderPath =
+          replaceFolderPrefix({
+            nextPath: action.payload.nextPath,
+            path: state.currentFolderPath,
+            previousPath: action.payload.previousPath
+          }) || null
+      }
+    },
+    renameError(state, action: PayloadAction<{error: HttpError}>) {
+      state.renaming = false
+      state.renameError = action.payload.error
+    },
+    renameRequest(state, _action: PayloadAction<{name: string; path: string}>) {
+      state.renaming = true
+      delete state.renameError
     }
   }
 })
@@ -199,6 +280,7 @@ export const foldersRefreshEpic: MyEpic = action$ =>
         assetsActions.folderSetComplete.match(action) ||
         foldersSlice.actions.createComplete.match(action) ||
         foldersSlice.actions.deleteComplete.match(action) ||
+        foldersSlice.actions.renameComplete.match(action) ||
         assetsActions.listenerCreateQueueComplete.match(action) ||
         assetsActions.listenerDeleteQueueComplete.match(action) ||
         assetsActions.listenerUpdateQueueComplete.match(action) ||
@@ -215,7 +297,8 @@ export const foldersCurrentFolderEpic: MyEpic = action$ =>
       action =>
         foldersSlice.actions.currentFolderClear.match(action) ||
         foldersSlice.actions.currentFolderSet.match(action) ||
-        foldersSlice.actions.currentFolderShowUnfiled.match(action)
+        foldersSlice.actions.currentFolderShowUnfiled.match(action) ||
+        foldersSlice.actions.renameComplete.match(action)
     ),
     mergeMap(() =>
       of(
@@ -329,6 +412,148 @@ export const foldersDeleteEpic: MyEpic = (action$, state$, {client}) =>
                 statusCode: error?.statusCode || 500
               },
               path: normalizedPath
+            })
+          )
+        )
+      )
+    })
+  )
+
+export const foldersRenameEpic: MyEpic = (action$, state$, {client}) =>
+  action$.pipe(
+    filter(foldersSlice.actions.renameRequest.match),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const previousPath = normalizeFolderPath(action.payload.path)
+      const nextName = normalizeFolderPath(action.payload.name)
+      const parentPath = previousPath.includes('/')
+        ? previousPath.slice(0, previousPath.lastIndexOf('/'))
+        : ''
+      const nextPath = parentPath ? `${parentPath}/${nextName}` : nextName
+      const existingPaths = Array.from(
+        getAvailableFolderPaths([...state.folders.assignedPaths, ...state.folders.persistedPaths])
+      )
+
+      if (!nextName) {
+        return of(
+          foldersSlice.actions.renameError({
+            error: {message: 'Folder name cannot be empty', statusCode: 400}
+          })
+        )
+      }
+
+      if (nextPath === previousPath) {
+        return of(
+          foldersSlice.actions.renameError({
+            error: {message: 'Folder name has not changed', statusCode: 400}
+          })
+        )
+      }
+
+      if (nextPath.startsWith(`${previousPath}/`)) {
+        return of(
+          foldersSlice.actions.renameError({
+            error: {message: 'Folder cannot be renamed inside itself', statusCode: 400}
+          })
+        )
+      }
+
+      if (
+        existingPaths.some(
+          path =>
+            path === nextPath ||
+            (path.startsWith(`${nextPath}/`) && !path.startsWith(`${previousPath}/`))
+        )
+      ) {
+        return of(
+          foldersSlice.actions.renameError({
+            error: {message: 'A folder with this path already exists', statusCode: 409}
+          })
+        )
+      }
+
+      return of(action).pipe(
+        debugThrottle(state.debug.badConnection),
+        mergeMap(() =>
+          client.observable.fetch<{
+            assets: {_id: string; folder: string | null}[]
+            folders: {_id: string; path: string}[]
+          }>(
+            groq`{
+              "assets": *[
+                _type in ${JSON.stringify(
+                  state.assets.assetTypes.map(type => `sanity.${type}Asset`)
+                )}
+                && !(_id in path("drafts.**"))
+                && defined(opt.media.folder)
+                && (opt.media.folder == $path || opt.media.folder match $pathMatch)
+              ] {
+                _id,
+                "folder": opt.media.folder
+              },
+              "folders": *[
+                _type == "${FOLDER_DOCUMENT_NAME}"
+                && !(_id in path("drafts.**"))
+                && (path == $path || path match $pathMatch)
+              ] {
+                _id,
+                path
+              }
+            }`,
+            {path: previousPath, pathMatch: `${previousPath}/**`}
+          )
+        ),
+        mergeMap(result => {
+          const transaction: Transaction = result.assets.reduce((tx, asset) => {
+            const folderPath =
+              replaceFolderPrefix({
+                nextPath,
+                path: asset.folder,
+                previousPath
+              }) || null
+
+            if (!folderPath) {
+              return tx
+            }
+
+            return tx.patch(asset._id, patchOperationAssetFolderSet({folderPath}))
+          }, client.transaction())
+
+          const patchedTransaction = result.folders.reduce((tx, folder) => {
+            const path = replaceFolderPrefix({
+              nextPath,
+              path: folder.path,
+              previousPath
+            })
+
+            return path ? tx.patch(folder._id, patchOperationFolderPathSet({path})) : tx
+          }, transaction)
+
+          if (result.folders.length === 0) {
+            patchedTransaction.create({
+              _id: `${FOLDER_DOCUMENT_NAME}.${nanoid()}`,
+              _type: FOLDER_DOCUMENT_NAME,
+              path: nextPath
+            })
+          }
+
+          return patchedTransaction.commit()
+        }),
+        mergeMap(() =>
+          of(
+            foldersSlice.actions.renameComplete({
+              nextPath,
+              previousPath
+            })
+          )
+        ),
+        catchError((error: ClientError) =>
+          of(
+            foldersSlice.actions.renameError({
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              }
             })
           )
         )

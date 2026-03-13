@@ -40,6 +40,14 @@ const dialogSlice = createSlice({
           type: 'folderMove'
         })
       })
+      .addCase(DIALOG_ACTIONS.showFolderRename, (state, action) => {
+        const {folderPath} = action.payload
+        state.items.push({
+          folderPath,
+          id: 'folderRename',
+          type: 'folderRename'
+        })
+      })
       .addCase(DIALOG_ACTIONS.showTagCreate, state => {
         state.items.push({
           id: 'tagCreate',
@@ -56,6 +64,9 @@ const dialogSlice = createSlice({
       })
       .addCase(foldersActions.createComplete, state => {
         state.items = state.items.filter(item => item.id !== 'folderCreate')
+      })
+      .addCase(foldersActions.renameComplete, state => {
+        state.items = state.items.filter(item => item.id !== 'folderRename')
       })
   },
   reducers: {

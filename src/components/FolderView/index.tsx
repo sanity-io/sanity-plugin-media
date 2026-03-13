@@ -2,6 +2,7 @@ import {
   AddIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  EditIcon,
   FolderIcon,
   TrashIcon
 } from '@sanity/icons'
@@ -207,6 +208,16 @@ const FolderView = () => {
         </Inline>
 
         <Inline space={1}>
+          {currentFolderPath && (
+            <Button
+              fontSize={1}
+              icon={EditIcon}
+              mode="bleed"
+              onClick={() => dispatch(DIALOG_ACTIONS.showFolderRename({folderPath: currentFolderPath}))}
+              text="Rename"
+            />
+          )}
+
           <Button
             fontSize={1}
             icon={AddIcon}

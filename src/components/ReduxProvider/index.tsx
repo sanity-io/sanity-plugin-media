@@ -70,7 +70,8 @@ class ReduxProvider extends Component<Props> {
           fetchCount: -1,
           fetching: false,
           persistedPaths: [],
-          panelVisible: true
+          panelVisible: true,
+          renaming: false
         },
         notifications: {items: []},
         search: {facets: [], query: ''},

@@ -145,6 +145,7 @@ export const notificationsGenericErrorEpic: MyEpic = action$ =>
       tagsActions.updateError.type,
       foldersActions.createError.type,
       foldersActions.deleteError.type,
+      foldersActions.renameError.type,
       uploadsActions.uploadError.type
     ),
     mergeMap((action: {payload: {error: {message: string}}}) => {
@@ -186,6 +187,12 @@ export const notificationsFolderDeleteCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(foldersActions.deleteComplete.match),
     mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Folder deleted`})))
+  )
+
+export const notificationsFolderRenameCompleteEpic: MyEpic = action$ =>
+  action$.pipe(
+    filter(foldersActions.renameComplete.match),
+    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Folder renamed`})))
   )
 
 export const notificationsActions = {...notificationsSlice.actions}
