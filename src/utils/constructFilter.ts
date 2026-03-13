@@ -81,9 +81,9 @@ const constructFilter = ({
 
   let folderFilter: string | undefined
 
-  if (currentFolderUnfiled) {
+  if (currentFolderUnfiled || !currentFolderPath) {
     folderFilter = groq`(!defined(opt.media.folder) || opt.media.folder == null || opt.media.folder == "")`
-  } else if (currentFolderPath) {
+  } else {
     folderFilter = `opt.media.folder == ${JSON.stringify(currentFolderPath)}`
   }
 

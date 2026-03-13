@@ -171,6 +171,8 @@ export const foldersCurrentFolderEpic: MyEpic = action$ =>
   )
 
 const selectAssignedPaths = (state: RootReducerState) => state.folders.assignedPaths
+const selectCurrentFolderPath = (state: RootReducerState) => state.folders.currentFolderPath
+const selectCurrentFolderUnfiled = (state: RootReducerState) => state.folders.currentFolderUnfiled
 
 export const selectFolderTree = createSelector([selectAssignedPaths], assignedPaths => {
   const exactCount = new Map<string, number>()
@@ -247,6 +249,62 @@ export const selectCurrentFolderSegments = createSelector(
 export const selectUnfiledCount = createSelector([selectAssignedPaths], assignedPaths => {
   return assignedPaths.filter(path => !normalizeFolderPath(path)).length
 })
+
+export const selectCurrentFolderChildren = createSelector(
+  [selectAssignedPaths, selectCurrentFolderPath, selectCurrentFolderUnfiled],
+  (assignedPaths, currentFolderPath, currentFolderUnfiled) => {
+    if (currentFolderUnfiled) {
+      return [] as FolderTreeItem[]
+    }
+
+    const childCounts = new Map<string, number>()
+
+    assignedPaths.forEach(path => {
+      const normalizedPath = normalizeFolderPath(path)
+      if (!normalizedPath) {
+        return
+      }
+
+      if (currentFolderPath) {
+        const prefix = `${currentFolderPath}/`
+        if (!normalizedPath.startsWith(prefix)) {
+          return
+        }
+
+        const remainder = normalizedPath.slice(prefix.length)
+        const [firstSegment] = remainder.split('/')
+        if (!firstSegment || !remainder.includes('/')) {
+          return
+        }
+
+        const childPath = `${currentFolderPath}/${firstSegment}`
+        childCounts.set(childPath, (childCounts.get(childPath) || 0) + 1)
+        return
+      }
+
+      const [topLevelSegment, ...rest] = normalizedPath.split('/')
+      if (!topLevelSegment || rest.length === 0) {
+        return
+      }
+
+      childCounts.set(topLevelSegment, (childCounts.get(topLevelSegment) || 0) + 1)
+    })
+
+    return Array.from(childCounts.entries())
+      .sort(([pathA], [pathB]) =>
+        pathA.localeCompare(pathB, undefined, {numeric: true, sensitivity: 'base'})
+      )
+      .map(
+        ([path, totalCount]): FolderTreeItem => ({
+          depth: currentFolderPath ? currentFolderPath.split('/').length : 0,
+          exactCount: 0,
+          name: path.split('/').pop() || path,
+          path,
+          totalCount
+        })
+      )
+  }
+)
 
 export const foldersActions = {...foldersSlice.actions}
 

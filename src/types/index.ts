@@ -81,6 +81,14 @@ export type CardAssetData = {
   type: 'asset'
 }
 
+export type CardFolderData = {
+  id: string
+  name: string
+  path: string
+  totalCount: number
+  type: 'folder'
+}
+
 export type CardUploadData = {
   id: string
   type: 'upload'

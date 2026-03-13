@@ -1,23 +1,38 @@
-import type {CardAssetData, CardUploadData} from '../../types'
+import type {CardAssetData, CardFolderData, CardUploadData} from '../../types'
 import {Box} from '@sanity/ui'
 import {memo} from 'react'
 import {GroupedVirtuoso} from 'react-virtuoso'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import TableHeader from '../TableHeader'
 import TableRowAsset from '../TableRowAsset'
+import TableRowFolder from '../TableRowFolder'
 import TableRowUpload from '../TableRowUpload'
 
 type Props = {
-  items: (CardAssetData | CardUploadData)[]
+  items: (CardAssetData | CardFolderData | CardUploadData)[]
   onLoadMore?: () => void
 }
 
 const VirtualRow = memo(
-  ({item, selected}: {item: CardAssetData | CardUploadData; selected: boolean}) => {
+  ({
+    item,
+    selected
+  }: {
+    item: CardAssetData | CardFolderData | CardUploadData
+    selected: boolean
+  }) => {
     if (item?.type === 'asset') {
       return (
         <Box style={{height: '100px'}}>
           <TableRowAsset id={item.id} selected={selected} />
+        </Box>
+      )
+    }
+
+    if (item?.type === 'folder') {
+      return (
+        <Box style={{height: '100px'}}>
+          <TableRowFolder name={item.name} path={item.path} totalCount={item.totalCount} />
         </Box>
       )
     }
