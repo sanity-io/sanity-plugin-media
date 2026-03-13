@@ -6,6 +6,7 @@ import {EMPTY, of} from 'rxjs'
 import {filter, mergeMap} from 'rxjs/operators'
 import {assetsActions} from '../assets'
 import {ASSETS_ACTIONS} from '../assets/actions'
+import {foldersActions} from '../folders'
 import {tagsActions} from '../tags'
 import {DIALOG_ACTIONS} from './actions'
 
@@ -21,20 +22,32 @@ const dialogSlice = createSlice({
   name: 'dialog',
   initialState,
   extraReducers: builder => {
-    builder.addCase(DIALOG_ACTIONS.showTagCreate, state => {
-      state.items.push({
-        id: 'tagCreate',
-        type: 'tagCreate'
+    builder
+      .addCase(DIALOG_ACTIONS.showFolderCreate, (state, action) => {
+        const {folderPath} = action.payload
+        state.items.push({
+          folderPath,
+          id: 'folderCreate',
+          type: 'folderCreate'
+        })
       })
-    })
-    builder.addCase(DIALOG_ACTIONS.showTagEdit, (state, action) => {
-      const {tagId} = action.payload
-      state.items.push({
-        id: tagId,
-        tagId,
-        type: 'tagEdit'
+      .addCase(DIALOG_ACTIONS.showTagCreate, state => {
+        state.items.push({
+          id: 'tagCreate',
+          type: 'tagCreate'
+        })
       })
-    })
+      .addCase(DIALOG_ACTIONS.showTagEdit, (state, action) => {
+        const {tagId} = action.payload
+        state.items.push({
+          id: tagId,
+          tagId,
+          type: 'tagEdit'
+        })
+      })
+      .addCase(foldersActions.createComplete, state => {
+        state.items = state.items.filter(item => item.id !== 'folderCreate')
+      })
   },
   reducers: {
     // Clear all dialogs

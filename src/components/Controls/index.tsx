@@ -1,7 +1,9 @@
+import {AddIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 import {foldersActions} from '../../modules/folders'
 import {tagsActions} from '../../modules/tags'
 import ButtonViewGroup from '../ButtonViewGroup'
@@ -16,6 +18,7 @@ const Controls = () => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
+  const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
   const foldersPanelVisible = useTypedSelector(state => state.folders.panelVisible)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.search.facets)
@@ -76,7 +79,21 @@ const Controls = () => {
               <SearchFacets />
 
               {/* Search Facets Control (add / clear) */}
-              <SearchFacetsControl />
+              <Inline space={2}>
+                <SearchFacetsControl />
+                <Button
+                  fontSize={1}
+                  icon={AddIcon}
+                  mode="bleed"
+                  onClick={() =>
+                    dispatch(
+                      DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null})
+                    )
+                  }
+                  text="New folder"
+                  tone="primary"
+                />
+              </Inline>
             </Box>
 
             <Box display={['block', 'block', 'none']} marginX={2}>
@@ -96,6 +113,18 @@ const Controls = () => {
                   mode="ghost"
                   onClick={handleShowTagsDialog}
                   text={`Tags`}
+                  tone="primary"
+                />
+
+                <Button
+                  fontSize={1}
+                  mode="ghost"
+                  onClick={() =>
+                    dispatch(
+                      DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null})
+                    )
+                  }
+                  text="New folder"
                   tone="primary"
                 />
               </Inline>

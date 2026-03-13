@@ -1,4 +1,4 @@
-import {Box, Card, Flex, Text} from '@sanity/ui'
+import {Box, Card, Flex, Stack, Text} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import {useColorSchemeValue} from 'sanity'
 import {styled, css} from 'styled-components'
@@ -79,14 +79,18 @@ const CardFolder = ({name, path, totalCount}: Props) => {
             <FolderGlyph />
           </Flex>
 
-          <Box marginTop={3}>
-            <Text size={1} textOverflow="ellipsis" weight="semibold">
+          <Stack space={2}>
+            <Text
+              size={1}
+              style={{lineHeight: '1.35em', minHeight: '2.7em', wordBreak: 'break-word'}}
+              weight="semibold"
+            >
               {name}
             </Text>
-            <Text muted size={0}>
+            <Text muted size={0} style={{lineHeight: '1.2em'}}>
               {totalCount} item{totalCount === 1 ? '' : 's'}
             </Text>
-          </Box>
+          </Stack>
         </Flex>
       </FolderCard>
     </CardWrapper>

@@ -33,6 +33,8 @@ import dialogReducer, {
 } from './dialog'
 import foldersReducer, {
   foldersCurrentFolderEpic,
+  foldersCreateEpic,
+  foldersDeleteEpic,
   foldersFetchEpic,
   foldersRefreshEpic
 } from './folders'
@@ -43,6 +45,8 @@ import notificationsReducer, {
   notificationsAssetsTagsAddCompleteEpic,
   notificationsAssetsTagsRemoveCompleteEpic,
   notificationsAssetsUpdateCompleteEpic,
+  notificationsFolderCreateCompleteEpic,
+  notificationsFolderDeleteCompleteEpic,
   notificationsGenericErrorEpic,
   notificationsTagCreateCompleteEpic,
   notificationsTagDeleteCompleteEpic,
@@ -88,6 +92,8 @@ export const rootEpic = combineEpics(
   dialogTagCreateEpic,
   dialogTagDeleteEpic,
   foldersCurrentFolderEpic,
+  foldersCreateEpic,
+  foldersDeleteEpic,
   foldersFetchEpic,
   foldersRefreshEpic,
   notificationsAssetsDeleteErrorEpic,
@@ -95,6 +101,8 @@ export const rootEpic = combineEpics(
   notificationsAssetsTagsAddCompleteEpic,
   notificationsAssetsTagsRemoveCompleteEpic,
   notificationsAssetsUpdateCompleteEpic,
+  notificationsFolderCreateCompleteEpic,
+  notificationsFolderDeleteCompleteEpic,
   notificationsGenericErrorEpic,
   notificationsTagCreateCompleteEpic,
   notificationsTagDeleteCompleteEpic,

@@ -6,6 +6,7 @@ import {of} from 'rxjs'
 import {bufferTime, filter, mergeMap} from 'rxjs/operators'
 import {assetsActions} from '../assets'
 import {ASSETS_ACTIONS} from '../assets/actions'
+import {foldersActions} from '../folders'
 import {tagsActions} from '../tags'
 import {uploadsActions} from '../uploads'
 
@@ -142,6 +143,8 @@ export const notificationsGenericErrorEpic: MyEpic = action$ =>
       tagsActions.deleteError.type,
       tagsActions.fetchError.type,
       tagsActions.updateError.type,
+      foldersActions.createError.type,
+      foldersActions.deleteError.type,
       uploadsActions.uploadError.type
     ),
     mergeMap((action: {payload: {error: {message: string}}}) => {
@@ -171,6 +174,18 @@ export const notificationsTagUpdateCompleteEpic: MyEpic = action$ =>
   action$.pipe(
     filter(tagsActions.updateComplete.match),
     mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Tag updated`})))
+  )
+
+export const notificationsFolderCreateCompleteEpic: MyEpic = action$ =>
+  action$.pipe(
+    filter(foldersActions.createComplete.match),
+    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Folder created`})))
+  )
+
+export const notificationsFolderDeleteCompleteEpic: MyEpic = action$ =>
+  action$.pipe(
+    filter(foldersActions.deleteComplete.match),
+    mergeMap(() => of(notificationsSlice.actions.add({status: 'info', title: `Folder deleted`})))
   )
 
 export const notificationsActions = {...notificationsSlice.actions}

@@ -8,7 +8,7 @@ import type {
 import type {ComponentType, JSX} from 'react'
 import type {Epic} from 'redux-observable'
 import * as z from 'zod'
-import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
+import {assetFormSchema, folderFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
 import type {RootReducerState} from '../modules/types'
 import type {DetailsProps} from '../components/DialogAssetEdit/Details'
 import type {SUPPORTED_ASSET_TYPES} from '../constants'
@@ -97,6 +97,7 @@ export type CardUploadData = {
 export type Dialog =
   | DialogAssetEditProps
   | DialogConfirmProps
+  | DialogFolderCreateProps
   | DialogSearchFacetsProps
   | DialogTagCreateProps
   | DialogTagEditProps
@@ -126,6 +127,13 @@ export type DialogConfirmProps = {
   title: string
   tone: 'critical' | 'primary'
   type: 'confirm'
+}
+
+export type DialogFolderCreateProps = {
+  closeDialogId?: string
+  folderPath?: string | null
+  id: string
+  type: 'folderCreate'
 }
 
 export type DialogSearchFacetsProps = {
@@ -178,6 +186,7 @@ export type FolderTreeItem = {
   exactCount: number
   name: string
   path: string
+  persisted?: boolean
   totalCount: number
 }
 
@@ -353,6 +362,8 @@ export type Tag = SanityDocument & {
 }
 
 export type TagActions = 'applyAll' | 'delete' | 'edit' | 'removeAll' | 'search'
+
+export type FolderFormData = z.infer<typeof folderFormSchema>
 
 export type TagFormData = z.infer<typeof tagFormSchema>
 

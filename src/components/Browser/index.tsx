@@ -5,7 +5,7 @@ import groq from 'groq'
 import {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {type AssetSourceComponentProps, type SanityDocument} from 'sanity'
-import {TAG_DOCUMENT_NAME} from '../../constants'
+import {FOLDER_DOCUMENT_NAME, TAG_DOCUMENT_NAME} from '../../constants'
 import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions} from '../../modules/assets'
@@ -71,6 +71,10 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
       }
     }
 
+    const handleFolderUpdate = (_update: MutationEvent) => {
+      dispatch(foldersActions.fetchRequest())
+    }
+
     // Fetch assets: first page
     dispatch(assetsActions.loadPageIndex({pageIndex: 0}))
 
@@ -94,8 +98,13 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
       .listen(groq`*[_type == "${TAG_DOCUMENT_NAME}" && !(_id in path("drafts.**"))]`)
       .subscribe(handleTagUpdate)
 
+    const subscriptionFolder = client
+      .listen(groq`*[_type == "${FOLDER_DOCUMENT_NAME}" && !(_id in path("drafts.**"))]`)
+      .subscribe(handleFolderUpdate)
+
     return () => {
       subscriptionAsset?.unsubscribe()
+      subscriptionFolder?.unsubscribe()
       subscriptionTag?.unsubscribe()
     }
   }, [client, dispatch])

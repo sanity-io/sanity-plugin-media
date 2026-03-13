@@ -22,3 +22,7 @@ export const assetFormSchema = z.object({
 export const tagFormSchema = z.object({
   name: z.string().min(1, {message: 'Name cannot be empty'})
 })
+
+export const folderFormSchema = z.object({
+  name: z.string().trim().min(1, {message: 'Name cannot be empty'})
+})

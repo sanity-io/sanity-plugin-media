@@ -1,20 +1,14 @@
 import {Box, Button, Inline, Text} from '@sanity/ui'
 import useTypedSelector from '../../hooks/useTypedSelector'
-import {
-  foldersActions,
-  selectCurrentFolderSegments,
-  selectUnfiledCount
-} from '../../modules/folders'
+import {foldersActions, selectCurrentFolderSegments} from '../../modules/folders'
 import {useDispatch} from 'react-redux'
 
 const FolderBreadcrumbs = () => {
   const dispatch = useDispatch()
   const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
-  const currentFolderUnfiled = useTypedSelector(state => state.folders.currentFolderUnfiled)
   const segments = useTypedSelector(selectCurrentFolderSegments)
-  const unfiledCount = useTypedSelector(selectUnfiledCount)
 
-  if (!currentFolderPath && !currentFolderUnfiled && unfiledCount === 0) {
+  if (!currentFolderPath) {
     return null
   }
 
@@ -23,19 +17,10 @@ const FolderBreadcrumbs = () => {
       <Inline space={1}>
         <Button
           fontSize={1}
-          mode={!currentFolderPath && !currentFolderUnfiled ? 'default' : 'bleed'}
+          mode={!currentFolderPath ? 'default' : 'bleed'}
           onClick={() => dispatch(foldersActions.currentFolderClear())}
           text="Home"
         />
-
-        {currentFolderUnfiled && (
-          <Button
-            fontSize={1}
-            mode="default"
-            onClick={() => dispatch(foldersActions.currentFolderShowUnfiled())}
-            text={`Unfiled (${unfiledCount})`}
-          />
-        )}
 
         {segments.map(segment => (
           <Inline key={segment.path} space={1}>

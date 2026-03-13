@@ -1,10 +1,18 @@
-import {Box, Button, Flex, Inline, Label, Text} from '@sanity/ui'
+import {
+  AddIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  FolderIcon,
+  TrashIcon
+} from '@sanity/icons'
+import {Box, Button, Card, Flex, Inline, Label, Text} from '@sanity/ui'
 import {type MouseEvent, useEffect, useMemo, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import type {FolderTreeNode} from '../../types'
-import {foldersActions, selectFolderTree, selectUnfiledCount} from '../../modules/folders'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
+import {foldersActions, selectCanDeleteFolder, selectFolderTree} from '../../modules/folders'
 
 type FolderNodeProps = {
   currentFolderPath: string | null
@@ -31,25 +39,54 @@ const FolderNode = ({
   }
 
   return (
-    <Box>
-      <Flex align="center">
-        <Box style={{width: 24}}>
-          {hasChildren ? (
-            <Button fontSize={1} mode="bleed" onClick={handleToggle} text={expanded ? 'v' : '>'} />
-          ) : null}
-        </Box>
+    <Box marginTop={1}>
+      <Card
+        padding={1}
+        radius={2}
+        style={{
+          background: selected ? 'var(--card-focus-ring-color)' : 'transparent',
+          border: '1px solid transparent'
+        }}
+      >
+        <Flex align="center" gap={1}>
+          <Button
+            aria-label={expanded ? `Collapse ${node.name}` : `Expand ${node.name}`}
+            disabled={!hasChildren}
+            fontSize={1}
+            icon={hasChildren ? (expanded ? ChevronDownIcon : ChevronRightIcon) : FolderIcon}
+            mode="bleed"
+            onClick={hasChildren ? handleToggle : undefined}
+            style={{
+              opacity: hasChildren ? 1 : 0.45
+            }}
+          />
 
-        <Button
-          fontSize={1}
-          mode={selected ? 'default' : 'bleed'}
-          onClick={() => onSelect(node.path)}
-          style={{justifyContent: 'flex-start', width: '100%'}}
-          text={`${node.name} (${node.totalCount})`}
-        />
-      </Flex>
+          <Button
+            fontSize={1}
+            icon={FolderIcon}
+            mode="bleed"
+            onClick={() => onSelect(node.path)}
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              flex: 1,
+              justifyContent: 'space-between',
+              minWidth: 0,
+              paddingLeft: '0.25rem'
+            }}
+          >
+            <Text size={1} style={{minWidth: 0}} textOverflow="ellipsis" weight="semibold">
+              {node.name}
+            </Text>
+            <Text muted size={0}>
+              {node.totalCount}
+            </Text>
+          </Button>
+        </Flex>
+      </Card>
 
       {hasChildren && expanded && (
-        <Box paddingLeft={3}>
+        <Box paddingLeft={4}>
           {node.children.map(childNode => (
             <FolderNode
               currentFolderPath={currentFolderPath}
@@ -69,11 +106,10 @@ const FolderNode = ({
 const FolderView = () => {
   const dispatch = useDispatch()
   const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
-  const currentFolderUnfiled = useTypedSelector(state => state.folders.currentFolderUnfiled)
+  const canDeleteFolder = useTypedSelector(selectCanDeleteFolder)
   const fetching = useTypedSelector(state => state.folders.fetching)
   const folderTree = useTypedSelector(selectFolderTree)
   const totalAssets = useTypedSelector(state => state.folders.assignedPaths.length)
-  const unfiledCount = useTypedSelector(selectUnfiledCount)
 
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
 
@@ -113,15 +149,15 @@ const FolderView = () => {
   }
 
   const homeTone = useMemo(() => {
-    return !currentFolderPath && !currentFolderUnfiled ? 'default' : 'bleed'
-  }, [currentFolderPath, currentFolderUnfiled])
+    return !currentFolderPath ? 'default' : 'bleed'
+  }, [currentFolderPath])
 
   return (
     <Flex direction="column" flex={1} height="fill">
       <Flex
         align="center"
         justify="space-between"
-        paddingLeft={3}
+        paddingX={3}
         style={{
           borderBottom: '1px solid var(--card-border-color)',
           flexShrink: 0,
@@ -136,35 +172,62 @@ const FolderView = () => {
             </Label>
           )}
         </Inline>
+
+        <Inline space={1}>
+          <Button
+            fontSize={1}
+            icon={AddIcon}
+            mode="bleed"
+            onClick={() =>
+              dispatch(DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null}))
+            }
+            text="New"
+          />
+
+          {currentFolderPath && canDeleteFolder && (
+            <Button
+              fontSize={1}
+              icon={TrashIcon}
+              mode="bleed"
+              onClick={() => dispatch(foldersActions.deleteRequest({path: currentFolderPath}))}
+              text="Delete"
+              tone="critical"
+            />
+          )}
+        </Inline>
       </Flex>
 
       <Box padding={2}>
-        <Flex align="center">
-          <Box style={{width: 24}}>
-            <Text muted size={1}>
-              /
-            </Text>
-          </Box>
+        <Card
+          padding={1}
+          radius={2}
+          style={{
+            background: homeTone === 'default' ? 'var(--card-focus-ring-color)' : 'transparent',
+            border: '1px solid transparent'
+          }}
+        >
           <Button
             fontSize={1}
-            mode={homeTone}
+            icon={FolderIcon}
+            mode="bleed"
             onClick={() => dispatch(foldersActions.currentFolderClear())}
-            style={{justifyContent: 'flex-start', width: '100%'}}
-            text={`Home (${totalAssets})`}
-          />
-        </Flex>
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%'
+            }}
+          >
+            <Text size={1} weight="semibold">
+              Home
+            </Text>
+            <Text muted size={0}>
+              {totalAssets}
+            </Text>
+          </Button>
+        </Card>
 
-        <Box paddingLeft={3}>
-          {(unfiledCount > 0 || currentFolderUnfiled) && (
-            <Button
-              fontSize={1}
-              mode={currentFolderUnfiled ? 'default' : 'bleed'}
-              onClick={() => dispatch(foldersActions.currentFolderShowUnfiled())}
-              style={{justifyContent: 'flex-start', width: '100%'}}
-              text={`Unfiled (${unfiledCount})`}
-            />
-          )}
-
+        <Box marginTop={2} paddingLeft={3}>
           {!hasFolders && !fetching && (
             <Box padding={3}>
               <Text muted size={1}>
