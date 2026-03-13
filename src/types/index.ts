@@ -34,6 +34,7 @@ type CustomFields = {
   description?: string
   opt?: {
     media?: {
+      folder?: string
       tags?: SanityReference[]
     }
   }
@@ -256,6 +257,7 @@ export type SearchFacetName =
   | 'altText'
   | 'creditLine'
   | 'description'
+  | 'folder'
   | 'fileName'
   | 'height'
   | 'inCurrentDocument'

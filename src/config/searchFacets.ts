@@ -39,6 +39,16 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     type: 'string',
     value: ''
   },
+  folder: {
+    assetTypes: ['file', 'image'],
+    field: 'opt.media.folder',
+    name: 'folder',
+    operatorType: 'empty',
+    operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
+    title: 'Folder',
+    type: 'string',
+    value: ''
+  },
   fileName: {
     assetTypes: ['file', 'image'],
     field: 'originalFilename',

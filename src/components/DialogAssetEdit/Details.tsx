@@ -46,6 +46,17 @@ export default function Details({
         placeholder="Select or create..."
         value={assetTagOptions}
       />
+      {/* Folder */}
+      <FormFieldInputText
+        {...register('opt.media.folder')}
+        description="Use slash-delimited paths like marketing/launches/2026."
+        disabled={formUpdating}
+        error={errors?.opt?.media?.folder?.message}
+        label="Folder"
+        name="opt.media.folder"
+        placeholder="folder/subfolder"
+        value={currentAsset?.opt?.media?.folder}
+      />
       {/* Filename */}
       <FormFieldInputText
         {...register('originalFilename')}

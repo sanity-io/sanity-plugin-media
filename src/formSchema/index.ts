@@ -11,6 +11,7 @@ export const assetFormSchema = z.object({
   description: z.string().trim().optional(),
   opt: z.object({
     media: z.object({
+      folder: z.string().trim().optional(),
       tags: z.array(tagOptionSchema).nullable()
     })
   }),

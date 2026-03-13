@@ -24,6 +24,7 @@ _Individual asset view_
 
 - Support for batch uploads with drag and drop support
 - Edit text fields native to Sanity's asset documents, such as `title`, `description`, `altText` and `originalFilename`
+- Assign slash-delimited folder paths directly on assets
 - View asset metadata and a limited subset of EXIF data, if present
 - Tag your assets individually or in bulk
 - Manage tags directly within the plugin
@@ -32,8 +33,8 @@ _Individual asset view_
 
 #### Granular search tools
 
-- Refine your search with any combination of search facets such as filtering by tag name, asset usage, file size, orientation, type (and more)
-- Use text search for a quick lookup by title, description and alt text
+- Refine your search with any combination of search facets such as filtering by tag name, folder path, asset usage, file size, orientation, type (and more)
+- Use text search for a quick lookup by title, description, alt text and folder path
 
 #### Built for large datasets and collaborative editing in mind
 
@@ -95,7 +96,6 @@ export default defineConfig({
 })
 ```
 
-
 ### Plugin Config
 
 ```ts
@@ -111,7 +111,7 @@ export default defineConfig({
         enabled: true,
         // boolean - enables an optional "Credit Line" field in the plugin.
         // Used to store credits e.g. photographer, licence information
-        excludeSources: ['unsplash'],
+        excludeSources: ['unsplash']
         // string | string[] - when used with 3rd party asset sources, you may
         // wish to prevent users overwriting the creditLine based on the `source.name`
       },
@@ -125,7 +125,7 @@ export default defineConfig({
       }
       // Custom components to override default UI (see below)
     })
-  ],
+  ]
 })
 ```
 
@@ -182,6 +182,7 @@ export function CustomDetails(props) {
 <summary>Limitations when using Sanity's GraphQL endpoints</summary>
 
 - Currently, `opt.media.tags` on assets aren't accessible via GraphQL. This is because `opt` is a custom object used by this plugin and not part of Sanity's asset schema.
+- The same limitation applies to `opt.media.folder`.
 
 </details>
 
@@ -203,7 +204,7 @@ export function CustomDetails(props) {
 <details>
 <summary>How can I query asset fields I've set in this plugin?</summary>
 
-The following GROQ query will return an image with additional asset text fields as well as an array of tag names.
+The following GROQ query will return an image with additional asset text fields, its folder path, and an array of tag names.
 
 Note that tags are namespaced within `opt.media` and tag names are accessed via the `current` property (as they're defined as slugs on the `tag.media` document schema).
 
@@ -215,6 +216,7 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
       _type,
       altText,
       description,
+      "folder": opt.media.folder,
       "tags": opt.media.tags[]->name.current,
       title
     }
@@ -231,6 +233,15 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 - By default, Sanity won't automatically extract EXIF data unless you explicitly tell it to
 - Manually tell Sanity to process EXIF metadata by [updating your image field options accordingly](https://www.sanity.io/docs/image-type#metadata-5fe564e516d8)
 - Note that all images uploaded directly within the plugin will include all metadata by default
+
+</details>
+
+<details>
+<summary>How do folders work?</summary>
+
+- Folders are stored as a slash-delimited string at `opt.media.folder` on the asset document
+- This first-pass implementation does not create separate folder documents or a nested tree UI; it gives you a consistent path you can edit, query, sort and filter on
+- Folder paths are normalized before save, so input like `/marketing\\launches/2026/` is stored as `marketing/launches/2026`
 
 </details>
 
