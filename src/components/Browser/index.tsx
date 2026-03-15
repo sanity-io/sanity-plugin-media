@@ -28,6 +28,7 @@ import UploadDropzone from '../UploadDropzone'
 type Props = {
   assetType?: AssetSourceComponentProps['assetType']
   document?: SanityDocument
+  isMultiSelect?: boolean
   onClose?: AssetSourceComponentProps['onClose']
   onSelect?: AssetSourceComponentProps['onSelect']
   selectedAssets?: AssetSourceComponentProps['selectedAssets']
@@ -153,7 +154,7 @@ const Browser = (props: Props) => {
       document={props?.document}
       selectedAssets={props?.selectedAssets}
     >
-      <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
+      <AssetBrowserDispatchProvider isMultiSelect={props?.isMultiSelect} onSelect={props?.onSelect}>
         <GlobalStyle />
         <BrowserContent onClose={props?.onClose} />
       </AssetBrowserDispatchProvider>

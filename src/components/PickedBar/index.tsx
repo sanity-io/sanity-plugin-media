@@ -3,6 +3,7 @@ import pluralize from 'pluralize'
 import {useDispatch} from 'react-redux'
 import {useColorSchemeValue} from 'sanity'
 import {PANEL_HEIGHT} from '../../constants'
+import {useAssetSourceActions} from '../../contexts/AssetSourceDispatchContext'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {assetsActions, selectAssetsPicked} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
@@ -16,6 +17,7 @@ const PickedBar = () => {
   const dispatch = useDispatch()
   const assetsPicked = useTypedSelector(selectAssetsPicked)
   const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
+  const {isMultiSelect, onSelect} = useAssetSourceActions()
   // Callbacks
   const handlePickClear = () => {
     dispatch(assetsActions.pickClear())
@@ -27,6 +29,23 @@ const PickedBar = () => {
 
   const handleMovePicked = () =>
     dispatch(DIALOG_ACTIONS.showFolderMove({assets: assetsPicked, folderPath: currentFolderPath}))
+
+  const handleInsertPicked = () => {
+    if (!onSelect) {
+      return
+    }
+
+    const pickedAssetIds = assetsPicked.map(item => ({
+      kind: 'assetDocumentId' as const,
+      value: item.asset._id
+    }))
+
+    if (pickedAssetIds.length === 0) {
+      return
+    }
+
+    onSelect(pickedAssetIds)
+  }
 
   if (assetsPicked.length === 0) {
     return null
@@ -62,26 +81,39 @@ const PickedBar = () => {
           <Label size={0}>Deselect</Label>
         </Button>
 
-        {/* Delete button */}
-        <Button
-          mode="bleed"
-          onClick={handleDeletePicked}
-          padding={2}
-          style={{background: 'none', boxShadow: 'none'}}
-          tone="critical"
-        >
-          <Label size={0}>Delete</Label>
-        </Button>
+        {onSelect && isMultiSelect ? (
+          <Button
+            mode="bleed"
+            onClick={handleInsertPicked}
+            padding={2}
+            style={{background: 'none', boxShadow: 'none'}}
+            tone="primary"
+          >
+            <Label size={0}>Insert selected</Label>
+          </Button>
+        ) : (
+          <Button
+            mode="bleed"
+            onClick={handleDeletePicked}
+            padding={2}
+            style={{background: 'none', boxShadow: 'none'}}
+            tone="critical"
+          >
+            <Label size={0}>Delete</Label>
+          </Button>
+        )}
 
-        <Button
-          mode="bleed"
-          onClick={handleMovePicked}
-          padding={2}
-          style={{background: 'none', boxShadow: 'none'}}
-          tone="primary"
-        >
-          <Label size={0}>Move to folder</Label>
-        </Button>
+        {!onSelect && (
+          <Button
+            mode="bleed"
+            onClick={handleMovePicked}
+            padding={2}
+            style={{background: 'none', boxShadow: 'none'}}
+            tone="primary"
+          >
+            <Label size={0}>Move to folder</Label>
+          </Button>
+        )}
       </Flex>
     </Flex>
   )
