@@ -239,8 +239,13 @@ const TableRowAsset = (props: Props) => {
               <Image
                 draggable={false}
                 $scheme={scheme}
-                $showCheckerboard={!isOpaque}
-                src={imageDprUrl(asset, {height: 100, width: 100})}
+                $showCheckerboard={asset.mimeType !== 'image/svg+xml' && !isOpaque}
+                src={
+                  asset.mimeType === 'image/svg+xml'
+                    ? asset.url
+                    : imageDprUrl(asset, {height: 100, width: 100})
+                }
+                style={asset.mimeType === 'image/svg+xml' ? {backgroundColor: 'white'} : undefined}
               />
             )}
           </Box>

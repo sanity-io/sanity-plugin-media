@@ -170,9 +170,14 @@ const CardAsset = (props: Props) => {
               <Image
                 draggable={false}
                 $scheme={scheme}
-                $showCheckerboard={!isOpaque}
-                src={imageDprUrl(asset, {height: 250, width: 250})}
+                $showCheckerboard={asset.mimeType !== 'image/svg+xml' && !isOpaque}
+                src={
+                  asset.mimeType === 'image/svg+xml'
+                    ? asset.url
+                    : imageDprUrl(asset, {height: 250, width: 250})
+                }
                 style={{
+                  ...(asset.mimeType === 'image/svg+xml' && {backgroundColor: 'white'}),
                   draggable: false,
                   transition: 'opacity 1000ms'
                 }}
