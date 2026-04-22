@@ -35,7 +35,10 @@ describe('imageDprUrl', () => {
   })
 
   it('uses multiplier 1 when devicePixelRatio is missing', () => {
-    Object.defineProperty(window, 'devicePixelRatio', {value: undefined as unknown as number, configurable: true})
+    Object.defineProperty(window, 'devicePixelRatio', {
+      value: undefined as unknown as number,
+      configurable: true
+    })
     const url = imageDprUrl(asset, {width: 100})
     expect(url).toBe('https://cdn.test/image.png?fit=max&w=100')
   })

@@ -257,7 +257,15 @@ describe('notificationsGenericErrorEpic', () => {
 
   it('maps tags.createError to error notification title', async () => {
     const store = createEpicTestStore(notificationsGenericErrorEpic, createMockSanityClient({}), {
-      tags: {creating: true, creatingError: undefined, allIds: [], byIds: {}, fetchCount: -1, fetching: false, panelVisible: true} as any
+      tags: {
+        creating: true,
+        creatingError: undefined,
+        allIds: [],
+        byIds: {},
+        fetchCount: -1,
+        fetching: false,
+        panelVisible: true
+      } as any
     })
     store.dispatch(
       tagsActions.createError({

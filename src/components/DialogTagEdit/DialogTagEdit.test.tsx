@@ -81,9 +81,14 @@ describe('DialogTagEdit', () => {
     await user.click(dlg.getByRole('button', {name: /save and close/i}))
 
     await waitFor(() => {
-      const updateAction = dispatchSpy.mock.calls
-        .map(([a]) => a)
-        .find(tagsActions.updateRequest.match)
+      let updateAction
+      for (const call of dispatchSpy.mock.calls) {
+        const action = call[0]
+        if (tagsActions.updateRequest.match(action)) {
+          updateAction = action
+          break
+        }
+      }
       expect(updateAction).toBeDefined()
       expect(updateAction?.payload).toMatchObject({
         closeDialogId: 't1',

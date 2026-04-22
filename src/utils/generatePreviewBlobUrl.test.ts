@@ -10,7 +10,12 @@ describe('generatePreviewBlobUrl$', () => {
       onload: (() => void) | null = null
       width = 400
       height = 200
-      set src(_v: string) {
+      private _src = ''
+      get src() {
+        return this._src
+      }
+      set src(v: string) {
+        this._src = v
         queueMicrotask(() => this.onload?.())
       }
     }
@@ -22,9 +27,13 @@ describe('generatePreviewBlobUrl$', () => {
         vi.spyOn(el, 'getContext').mockReturnValue({
           drawImage: vi.fn()
         } as unknown as CanvasRenderingContext2D)
-        el.toBlob = cb => {
-          cb?.(new Blob(['x'], {type: 'image/jpeg'}))
+        /* eslint-disable callback-return, consistent-return -- HTMLCanvasElement#toBlob sync test stub */
+        el.toBlob = function toBlob(cb: ((blob: Blob | null) => void) | null | undefined) {
+          if (cb) {
+            cb(new Blob(['x'], {type: 'image/jpeg'}))
+          }
         }
+        /* eslint-enable callback-return, consistent-return */
         return el
       }
       return origCreateElement(tagName)
@@ -32,8 +41,16 @@ describe('generatePreviewBlobUrl$', () => {
 
     const createObjectURL = vi.fn(() => 'blob:mock-preview')
     const revokeObjectURL = vi.fn()
-    Object.defineProperty(URL, 'createObjectURL', {configurable: true, writable: true, value: createObjectURL})
-    Object.defineProperty(URL, 'revokeObjectURL', {configurable: true, writable: true, value: revokeObjectURL})
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      writable: true,
+      value: createObjectURL
+    })
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      writable: true,
+      value: revokeObjectURL
+    })
   })
 
   afterEach(() => {

@@ -33,6 +33,7 @@ module.exports = {
         beforeEach: 'readonly',
         describe: 'readonly',
         expect: 'readonly',
+        globalThis: 'readonly',
         it: 'readonly',
         test: 'readonly',
         vi: 'readonly'

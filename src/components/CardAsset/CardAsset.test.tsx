@@ -24,7 +24,7 @@ vi.mock('../../hooks/useKeyPress', () => ({
       get current() {
         return Boolean((globalThis as unknown as Record<string, unknown>)[SHIFT_FLAG])
       }
-    }) as RefObject<boolean>
+    } as RefObject<boolean>)
 }))
 
 vi.mock('../Image', () => ({
@@ -159,9 +159,9 @@ describe('CardAsset', () => {
 
     await user.click(clickPreview())
 
-    expect(store.getState().dialog.items.some(d => d.type === 'assetEdit' && d.assetId === 'img-1')).toBe(
-      true
-    )
+    expect(
+      store.getState().dialog.items.some(d => d.type === 'assetEdit' && d.assetId === 'img-1')
+    ).toBe(true)
   })
 
   it('calls onSelect with the asset document id when the preview is clicked in picker mode', async () => {
@@ -210,9 +210,9 @@ describe('CardAsset', () => {
     await user.click(clickFooterFilename('photo.png'))
 
     expect(onSelect).not.toHaveBeenCalled()
-    expect(store.getState().dialog.items.some(d => d.type === 'assetEdit' && d.assetId === 'img-1')).toBe(
-      true
-    )
+    expect(
+      store.getState().dialog.items.some(d => d.type === 'assetEdit' && d.assetId === 'img-1')
+    ).toBe(true)
   })
 
   it('shift-clicks on preview to unpick when the asset is already picked', async () => {
@@ -255,7 +255,11 @@ describe('CardAsset', () => {
 
   it('shift-clicks on footer to pick a range when not picked', async () => {
     const user = userEvent.setup()
-    const anchorAsset = {...imageAsset, _id: 'anchor-9', originalFilename: 'anchor.png'} as ImageAsset
+    const anchorAsset = {
+      ...imageAsset,
+      _id: 'anchor-9',
+      originalFilename: 'anchor.png'
+    } as ImageAsset
     const {store} = renderWithProviders(<CardAsset id="img-1" selected={false} />, {
       preloaded: {
         assets: assetsState(
@@ -282,7 +286,9 @@ describe('CardAsset', () => {
         assets: assetsState({'img-1': assetItem(imageAsset, {updating: false})})
       }
     })
-    expect(container.querySelectorAll('[data-sanity-icon="checkmark-circle"]').length).toBeGreaterThan(0)
+    expect(
+      container.querySelectorAll('[data-sanity-icon="checkmark-circle"]').length
+    ).toBeGreaterThan(0)
   })
 
   it('does not show the checkmark overlay while updating even if selected', () => {
@@ -309,6 +315,8 @@ describe('CardAsset', () => {
         assets: assetsState({'img-1': assetItem(imageAsset, {error: 'Upload failed'})})
       }
     })
-    expect(container.querySelectorAll('[data-sanity-icon="warning-filled"]').length).toBeGreaterThan(0)
+    expect(
+      container.querySelectorAll('[data-sanity-icon="warning-filled"]').length
+    ).toBeGreaterThan(0)
   })
 })

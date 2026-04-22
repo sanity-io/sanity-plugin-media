@@ -117,7 +117,14 @@ describe('DialogAssetEdit', () => {
     expect(store.getState().assets.byIds.a1.updating).toBe(true)
 
     await waitFor(() => {
-      const updateAction = dispatchSpy.mock.calls.map(([a]) => a).find(assetsActions.updateRequest.match)
+      let updateAction
+      for (const call of dispatchSpy.mock.calls) {
+        const action = call[0]
+        if (assetsActions.updateRequest.match(action)) {
+          updateAction = action
+          break
+        }
+      }
       expect(updateAction).toBeDefined()
       expect(updateAction?.payload).toMatchObject({
         asset,
@@ -175,7 +182,13 @@ describe('DialogAssetEdit', () => {
     fireEvent.click(dlg.getByRole('button', {name: /^delete$/i}))
 
     await waitFor(() => {
-      const confirm = store.getState().dialog.items.find(d => d.type === 'confirm')
+      let confirm
+      for (const d of store.getState().dialog.items) {
+        if (d.type === 'confirm') {
+          confirm = d
+          break
+        }
+      }
       expect(confirm).toBeDefined()
       expect(confirm?.title).toMatch(/permanently delete/i)
       expect(confirm?.headerTitle).toBe('Confirm deletion')

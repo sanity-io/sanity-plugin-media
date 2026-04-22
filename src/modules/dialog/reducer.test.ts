@@ -43,7 +43,7 @@ function dialogState() {
 
 describe('dialog slice reducers', () => {
   it('clear removes all items', () => {
-    let state = dialogReducer(
+    const state = dialogReducer(
       {...dialogState(), items: [{id: 'x', type: 'tags'}]},
       dialogActions.clear()
     )
@@ -51,7 +51,7 @@ describe('dialog slice reducers', () => {
   })
 
   it('remove filters out the dialog with the given id', () => {
-    let state = dialogReducer(
+    const state = dialogReducer(
       {
         ...dialogState(),
         items: [
@@ -65,7 +65,7 @@ describe('dialog slice reducers', () => {
   })
 
   it('showAssetEdit appends an asset edit dialog', () => {
-    let state = dialogReducer(dialogState(), dialogActions.showAssetEdit({assetId: 'a1'}))
+    const state = dialogReducer(dialogState(), dialogActions.showAssetEdit({assetId: 'a1'}))
     expect(state.items).toEqual([{assetId: 'a1', id: 'a1', type: 'assetEdit'}])
   })
 
@@ -79,7 +79,7 @@ describe('dialog slice reducers', () => {
   })
 
   it('inlineTagCreate sets lastCreatedTag on matching assetEdit items', () => {
-    let state = dialogReducer(
+    const state = dialogReducer(
       {
         ...dialogState(),
         items: [
@@ -100,7 +100,7 @@ describe('dialog slice reducers', () => {
   })
 
   it('inlineTagRemove sets lastRemovedTagIds on all assetEdit items', () => {
-    let state = dialogReducer(
+    const state = dialogReducer(
       {
         ...dialogState(),
         items: [
@@ -118,7 +118,7 @@ describe('dialog slice reducers', () => {
 
   it('showConfirmDeleteAssets pushes a confirm dialog wired to assets deleteRequest', () => {
     const item = assetItem()
-    let state = dialogReducer(
+    const state = dialogReducer(
       dialogState(),
       dialogActions.showConfirmDeleteAssets({assets: [item], closeDialogId: 'a1'})
     )
@@ -130,7 +130,7 @@ describe('dialog slice reducers', () => {
   })
 
   it('showConfirmDeleteTag pushes a confirm dialog wired to tags deleteRequest', () => {
-    let state = dialogReducer(
+    const state = dialogReducer(
       dialogState(),
       dialogActions.showConfirmDeleteTag({closeDialogId: 't1', tag: sampleTag})
     )
@@ -143,7 +143,7 @@ describe('dialog slice reducers', () => {
 
   it('showConfirmAssetsTagAdd uses plural copy for multiple assets', () => {
     const a2 = {...sampleAsset, _id: 'a2', originalFilename: 'y.png'} as ImageAsset
-    let state = dialogReducer(
+    const state = dialogReducer(
       dialogState(),
       dialogActions.showConfirmAssetsTagAdd({
         assetsPicked: [assetItem(), assetItem(a2)],
@@ -159,7 +159,7 @@ describe('dialog slice reducers', () => {
   })
 
   it('showConfirmAssetsTagRemove pushes removal confirm with tagsRemoveRequest', () => {
-    let state = dialogReducer(
+    const state = dialogReducer(
       dialogState(),
       dialogActions.showConfirmAssetsTagRemove({
         assetsPicked: [assetItem()],
@@ -173,12 +173,12 @@ describe('dialog slice reducers', () => {
   })
 
   it('DIALOG_ACTIONS.showTagCreate appends tag create dialog', () => {
-    let state = dialogReducer(dialogState(), DIALOG_ACTIONS.showTagCreate())
+    const state = dialogReducer(dialogState(), DIALOG_ACTIONS.showTagCreate())
     expect(state.items).toEqual([{id: 'tagCreate', type: 'tagCreate'}])
   })
 
   it('DIALOG_ACTIONS.showTagEdit appends tag edit dialog with tag id', () => {
-    let state = dialogReducer(dialogState(), DIALOG_ACTIONS.showTagEdit({tagId: 't9'}))
+    const state = dialogReducer(dialogState(), DIALOG_ACTIONS.showTagEdit({tagId: 't9'}))
     expect(state.items).toEqual([{id: 't9', tagId: 't9', type: 'tagEdit'}])
   })
 })

@@ -37,7 +37,14 @@ describe('DialogTagCreate', () => {
     await user.click(dlg.getByRole('button', {name: /save and close/i}))
 
     await waitFor(() => {
-      const createAction = dispatchSpy.mock.calls.map(([a]) => a).find(tagsActions.createRequest.match)
+      let createAction
+      for (const call of dispatchSpy.mock.calls) {
+        const action = call[0]
+        if (tagsActions.createRequest.match(action)) {
+          createAction = action
+          break
+        }
+      }
       expect(createAction).toBeDefined()
       expect(createAction?.payload).toEqual({name: 'spaced'})
     })
