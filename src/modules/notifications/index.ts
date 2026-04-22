@@ -1,5 +1,6 @@
 import {type PayloadAction, createSlice} from '@reduxjs/toolkit'
-import type {ImageAsset, MyEpic} from '../../types'
+import type {AnyAction} from 'redux'
+import type {HttpError, ImageAsset, MyEpic} from '../../types'
 import pluralize from 'pluralize'
 import {ofType} from 'redux-observable'
 import {of} from 'rxjs'
@@ -17,6 +18,25 @@ type Notification = {
 
 type NotificationsReducerState = {
   items: Notification[]
+}
+
+function messageFromGenericErrorPayload(payload: unknown): string {
+  if (!payload || typeof payload !== 'object') {
+    return 'Unknown error'
+  }
+  if (
+    'error' in payload &&
+    payload.error &&
+    typeof payload.error === 'object' &&
+    payload.error !== null &&
+    'message' in payload.error
+  ) {
+    return String((payload.error as HttpError).message)
+  }
+  if ('message' in payload && typeof (payload as HttpError).message === 'string') {
+    return String((payload as HttpError).message)
+  }
+  return 'Unknown error'
 }
 
 const initialState = {
@@ -144,12 +164,12 @@ export const notificationsGenericErrorEpic: MyEpic = action$ =>
       tagsActions.updateError.type,
       uploadsActions.uploadError.type
     ),
-    mergeMap((action: {payload: {error: {message: string}}}) => {
-      const error = action.payload?.error
+    mergeMap((action: AnyAction) => {
+      const title = `An error occurred: ${messageFromGenericErrorPayload(action.payload)}`
       return of(
         notificationsSlice.actions.add({
           status: 'error',
-          title: `An error occurred: ${error.message}`
+          title
         })
       )
     })

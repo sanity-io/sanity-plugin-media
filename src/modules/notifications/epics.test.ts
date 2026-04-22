@@ -255,6 +255,25 @@ describe('notificationsGenericErrorEpic', () => {
     })
   })
 
+  it('maps assets.fetchError (bare HttpError payload) to error notification title', async () => {
+    const store = createEpicTestStore(notificationsGenericErrorEpic, createMockSanityClient({}), {
+      assets: {
+        ...assetsInitialState,
+        assetTypes: ['image'] as AssetType[],
+        fetching: true
+      }
+    })
+    store.dispatch(
+      assetsActions.fetchError({
+        message: 'fetch failed',
+        statusCode: 503
+      })
+    )
+    await vi.waitFor(() => {
+      expect(store.getState().notifications.items[0].title).toBe('An error occurred: fetch failed')
+    })
+  })
+
   it('maps tags.createError to error notification title', async () => {
     const store = createEpicTestStore(notificationsGenericErrorEpic, createMockSanityClient({}), {
       tags: {
