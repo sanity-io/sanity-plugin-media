@@ -48,6 +48,8 @@
     "format": "prettier --write --cache --ignore-unknown .",
     "link-watch": "plugin-kit link-watch",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
     "watch": "pkg-utils watch --strict"
@@ -87,6 +89,9 @@
     "@sanity/plugin-kit": "^4.0.19",
     "@sanity/semantic-release-preset": "^2.0.5",
     "@sanity/vision": "^3.80.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/is-hotkey": "^0.1.10",
     "@types/pluralize": "^0.0.33",
     "@types/react": "^19.0.12",
@@ -102,6 +107,7 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^4.6.2",
     "husky": "^8.0.2",
+    "jsdom": "^25.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.8.8",
     "prettier-plugin-packagejson": "^2.5.10",
@@ -112,7 +118,8 @@
     "sanity": "^3.80.1",
     "standard-version": "^9.5.0",
     "styled-components": "^6.1.16",
-    "typescript": "5.8.2"
+    "typescript": "5.8.2",
+    "vitest": "^3.0.5"
   },
   "peerDependencies": {
     "react": "^18.3 || ^19",
