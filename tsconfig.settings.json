@@ -4,7 +4,6 @@
     "rootDir": ".",
     "outDir": "dist",
     "noPropertyAccessFromIndexSignature": false,
-    "noUncheckedIndexedAccess": false,
-    "types": ["node", "@testing-library/jest-dom"]
+    "noUncheckedIndexedAccess": false
   }
 }

@@ -250,7 +250,7 @@ describe('notificationsGenericErrorEpic', () => {
     )
     await vi.waitFor(() => {
       expect(store.getState().notifications.items).toEqual([
-        {asset: undefined, status: 'error', title: 'An error occured: patch failed'}
+        {asset: undefined, status: 'error', title: 'An error occurred: patch failed'}
       ])
     })
   })
@@ -274,7 +274,7 @@ describe('notificationsGenericErrorEpic', () => {
       })
     )
     await vi.waitFor(() => {
-      expect(store.getState().notifications.items[0].title).toBe('An error occured: tag create')
+      expect(store.getState().notifications.items[0].title).toBe('An error occurred: tag create')
     })
   })
 
@@ -289,7 +289,7 @@ describe('notificationsGenericErrorEpic', () => {
       })
     )
     await vi.waitFor(() => {
-      expect(store.getState().notifications.items[0].title).toBe('An error occured: upload bad')
+      expect(store.getState().notifications.items[0].title).toBe('An error occurred: upload bad')
     })
   })
 })

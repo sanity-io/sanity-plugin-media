@@ -149,7 +149,7 @@ export const notificationsGenericErrorEpic: MyEpic = action$ =>
       return of(
         notificationsSlice.actions.add({
           status: 'error',
-          title: `An error occured: ${error.message}`
+          title: `An error occurred: ${error.message}`
         })
       )
     })
