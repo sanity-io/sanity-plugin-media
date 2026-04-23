@@ -1,6 +1,6 @@
 # Sanity Media (for Sanity Studio v3)
 
-> This plugin is for **Sanity Studio v3**.  
+> This plugin is for **Sanity Studio v3**.
 > The Sanity Studio v2 version of this plugin is no longer maintained, but still accessible on the [v2 branch](https://github.com/sanity-io/sanity-plugin-media/tree/studio-v2).
 
 ## What is it?
@@ -34,6 +34,7 @@ _Individual asset view_
 
 - Refine your search with any combination of search facets such as filtering by tag name, asset usage, file size, orientation, type (and more)
 - Use text search for a quick lookup by title, description and alt text
+- Auto-filter assets by tags when opening from fields with `mediaTags` configured
 
 #### Built for large datasets and collaborative editing in mind
 
@@ -119,6 +120,9 @@ export default defineConfig({
       // number - maximum file size (in bytes) that can be uploaded through the plugin interface
       directUploads: true,
       // boolean - enable / disable direct uploads through the plugin interface (default true)
+      createTagsOnUpload: true,
+      // boolean - when using the `mediaTags` field option, automatically create tags that
+      // don't exist yet. If false, only existing tags will be applied. (default true)
       components: {
         details: CustomDetails
         // Custom component for asset details (see below)
@@ -259,6 +263,54 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 - You can create, rename and delete tags from directly within the plugin itself
 - It is _strongly recommended_ that you manually delete tags directly from within the plugin – doing so will ensure that (weak) references are removed from any linked assets
 - Alternatively, you can delete tags either from the desk (if you're not using a custom desk) or via Sanity's API – just be mindful that any assets previously assigned to deleted tags will have 'hanging' weak references. This won't cause serious issues, but it may cause some false positives when searching. (E.g. a search for 'all assets where tags is not empty' will yield assets that have references to tags that no longer exist)
+
+</details>
+
+<details>
+<summary>Can I automatically tag assets when uploading through a specific field?</summary>
+
+Yes! You can use the `mediaTags` option on image or file fields to automatically apply tags when assets are uploaded through that field.
+
+```ts
+// In your schema definition
+import {defineField} from 'sanity'
+
+export default defineType({
+  name: 'employee',
+  type: 'document',
+  fields: [
+    defineField({
+      type: 'image',
+      name: 'portrait',
+      options: {
+        mediaTags: ['employee', 'portrait']
+      }
+    })
+  ]
+})
+```
+
+When a user uploads an image through this field, the asset will automatically be tagged with "employee" and "portrait". If these tags don't exist yet, they will be created automatically (this behavior can be disabled with the `createTagsOnUpload: false` plugin option).
+
+Auto-tagging works with both the Media Browser and the native Sanity upload button (including drag-and-drop).
+
+**Auto-filtering:** When you open the Media Browser from a field with `mediaTags` configured, the browser will automatically filter to show only assets that have **all** of those tags. This makes it easy to find relevant assets for that specific field context.
+
+**Note:** The `mediaTags` option is not typed in Sanity's core field definitions. TypeScript users can use type assertion or extend the field options type:
+
+```ts
+import {defineType, type ImageOptions} from 'sanity'
+import type {MediaTagsFieldOptions} from 'sanity-plugin-media'
+
+defineField({
+  type: 'image',
+  name: 'portrait',
+  options: {
+    hotspot: true,
+    mediaTags: ['employee', 'portrait']
+  } as ImageOptions & MediaTagsFieldOptions
+})
+```
 
 </details>
 

@@ -55,6 +55,7 @@ import tagsReducer, {
 import uploadsReducer, {
   uploadsAssetStartEpic,
   uploadsAssetUploadEpic,
+  uploadsAutoTagEpic,
   uploadsCheckRequestEpic,
   uploadsCompleteQueueEpic
 } from './uploads'
@@ -98,6 +99,7 @@ export const rootEpic = combineEpics(
   tagsUpdateEpic,
   uploadsAssetStartEpic,
   uploadsAssetUploadEpic,
+  uploadsAutoTagEpic,
   uploadsCheckRequestEpic,
   uploadsCompleteQueueEpic
 )

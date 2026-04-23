@@ -1,10 +1,12 @@
 import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
 import type {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@sanity/client'
-import type {HttpError, MyEpic, SanityUploadProgressEvent, UploadItem} from '../../types'
+import type {HttpError, MyEpic, SanityUploadProgressEvent, Tag, UploadItem} from '../../types'
 import groq from 'groq'
+import {nanoid} from 'nanoid'
 import type {Selector} from 'react-redux'
-import {empty, merge, of} from 'rxjs'
+import {empty, forkJoin, from, merge, of} from 'rxjs'
 import {catchError, delay, filter, mergeMap, takeUntil, withLatestFrom} from 'rxjs/operators'
+import {TAG_DOCUMENT_NAME} from '../../constants'
 import constructFilter from '../../utils/constructFilter'
 import {generatePreviewBlobUrl$} from '../../utils/generatePreviewBlobUrl'
 import {hashFile$, uploadAsset$} from '../../utils/uploadSanityAsset'
@@ -88,7 +90,12 @@ const uploadsSlice = createSlice({
     },
     uploadRequest(
       _state,
-      _action: PayloadAction<{file: File; forceAsAssetType?: 'file' | 'image'}>
+      _action: PayloadAction<{
+        createTagsOnUpload?: boolean
+        file: File
+        forceAsAssetType?: 'file' | 'image'
+        mediaTags?: string[]
+      }>
     ) {
       //
     },
@@ -145,7 +152,9 @@ export const uploadsAssetStartEpic: MyEpic = (action$, _state$, {client}) =>
             if (event?.type === 'complete') {
               return of(
                 UPLOADS_ACTIONS.uploadComplete({
-                  asset: event.asset
+                  asset: event.asset,
+                  createTagsOnUpload: uploadItem.createTagsOnUpload,
+                  mediaTags: uploadItem.mediaTags
                 })
               )
             }
@@ -180,7 +189,7 @@ export const uploadsAssetUploadEpic: MyEpic = (action$, state$) =>
     filter(uploadsActions.uploadRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const {file, forceAsAssetType} = action.payload
+      const {createTagsOnUpload, file, forceAsAssetType, mediaTags} = action.payload
 
       return of(action).pipe(
         // Generate SHA1 hash from local file
@@ -197,7 +206,9 @@ export const uploadsAssetUploadEpic: MyEpic = (action$, state$) =>
           const uploadItem = {
             _type: 'upload',
             assetType,
+            createTagsOnUpload,
             hash,
+            mediaTags,
             name: file.name,
             size: file.size,
             status: 'queued'
@@ -212,11 +223,27 @@ export const uploadsCompleteQueueEpic: MyEpic = action$ =>
   action$.pipe(
     filter(UPLOADS_ACTIONS.uploadComplete.match),
     mergeMap(action => {
-      return of(
+      const {asset, createTagsOnUpload, mediaTags} = action.payload
+      const actions: ReturnType<
+        typeof uploadsActions.checkRequest | typeof UPLOADS_ACTIONS.autoTagRequest
+      >[] = [
         uploadsActions.checkRequest({
-          assets: [action.payload.asset]
+          assets: [asset]
         })
-      )
+      ]
+
+      // If mediaTags are specified, dispatch auto-tag request
+      if (mediaTags && mediaTags.length > 0) {
+        actions.push(
+          UPLOADS_ACTIONS.autoTagRequest({
+            assetId: asset._id,
+            createTagsOnUpload: createTagsOnUpload ?? true,
+            mediaTags
+          })
+        )
+      }
+
+      return of(...actions)
     })
   )
 
@@ -253,6 +280,94 @@ export const uploadsCheckRequestEpic: MyEpic = (action$, state$, {client}) =>
             assetsActions.insertUploads({results: checkedResults})
           )
         })
+      )
+    })
+  )
+
+// Auto-tag epic: resolves tag names to references and applies them to the asset
+export const uploadsAutoTagEpic: MyEpic = (action$, _state$, {client}) =>
+  action$.pipe(
+    filter(UPLOADS_ACTIONS.autoTagRequest.match),
+    mergeMap(action => {
+      const {assetId, createTagsOnUpload, mediaTags} = action.payload
+
+      // For each tag name, find or optionally create the tag document
+      const resolveTag$ = (tagName: string) =>
+        from(
+          client.fetch<Tag | null>(
+            groq`*[_type == "${TAG_DOCUMENT_NAME}" && name.current == $tagName][0]`,
+            {tagName}
+          )
+        ).pipe(
+          mergeMap(existingTag => {
+            if (existingTag) {
+              return of(existingTag)
+            }
+            // If createTagsOnUpload is enabled, create the tag
+            if (createTagsOnUpload) {
+              return from(
+                client.create({
+                  _type: TAG_DOCUMENT_NAME,
+                  name: {
+                    _type: 'slug',
+                    current: tagName
+                  }
+                }) as Promise<Tag>
+              )
+            }
+            // Otherwise, return null to skip this tag
+            return of(null)
+          })
+        )
+
+      // Resolve all tags in parallel
+      return forkJoin(mediaTags.map(resolveTag$)).pipe(
+        mergeMap(tags => {
+          // Filter out null values (tags that weren't created)
+          const validTags = tags.filter((tag): tag is Tag => tag !== null)
+
+          // If no valid tags, skip patching
+          if (validTags.length === 0) {
+            return of(UPLOADS_ACTIONS.autoTagComplete({assetId}))
+          }
+
+          // Build tag references array
+          const tagReferences = validTags.map(tag => ({
+            _key: nanoid(),
+            _ref: tag._id,
+            _type: 'reference' as const,
+            _weak: true
+          }))
+
+          // Patch the asset to add tags
+          return from(
+            client
+              .patch(assetId)
+              .setIfMissing({opt: {}})
+              .setIfMissing({'opt.media': {}})
+              .setIfMissing({'opt.media.tags': []})
+              .append('opt.media.tags', tagReferences)
+              .commit()
+          ).pipe(
+            mergeMap(() => of(UPLOADS_ACTIONS.autoTagComplete({assetId}))),
+            catchError((error: ClientError) =>
+              of(
+                UPLOADS_ACTIONS.autoTagError({
+                  assetId,
+                  error: error?.message || 'Failed to apply tags'
+                })
+              )
+            )
+          )
+        }),
+        catchError((error: ClientError) =>
+          of(
+            UPLOADS_ACTIONS.autoTagError({
+              assetId,
+              error: error?.message || 'Failed to resolve tags'
+            })
+          )
+        )
       )
     })
   )

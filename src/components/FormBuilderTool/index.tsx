@@ -44,7 +44,7 @@ const FormBuilderTool = (props: AssetSourceComponentProps) => {
             zIndex
           }}
         >
-          <Browser document={currentDocument} {...props} />
+          <Browser document={currentDocument} schemaType={props.schemaType} {...props} />
         </Box>
       </Portal>
     </PortalProvider>

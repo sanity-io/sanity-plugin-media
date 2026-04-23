@@ -27,6 +27,12 @@ export type MediaToolOptions = {
     excludeSources?: string | string[]
   }
   directUploads?: boolean
+  /**
+   * When using the `mediaTags` field option, automatically create tags that don't exist yet.
+   * If set to `false`, only existing tags will be applied to uploaded assets.
+   * Defaults to `true`.
+   */
+  createTagsOnUpload?: boolean
 }
 
 type CustomFields = {
@@ -347,12 +353,31 @@ export type TagSelectOption = z.infer<typeof tagOptionSchema>
 export type UploadItem = {
   _type: 'upload'
   assetType: AssetType
+  createTagsOnUpload?: boolean
   hash: string
+  mediaTags?: string[]
   name: string
   objectUrl?: string
   percent?: number
   size: number
   status: 'complete' | 'queued' | 'uploading'
+}
+
+/**
+ * Options that can be added to image/file field options for auto-tagging.
+ * Usage:
+ * ```ts
+ * {
+ *   type: 'image',
+ *   name: 'employeePortrait',
+ *   options: {
+ *     mediaTags: ['employee', 'portrait']
+ *   }
+ * }
+ * ```
+ */
+export type MediaTagsFieldOptions = {
+  mediaTags?: string[]
 }
 
 export type WithId<T extends SearchFacetInputProps> = T & {
