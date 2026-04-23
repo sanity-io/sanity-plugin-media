@@ -1,13 +1,13 @@
 import {zodResolver} from '@hookform/resolvers/zod'
 import type {MutationEvent} from '@sanity/client'
-import {Box, Button, Card, Flex, Tab, TabList, TabPanel, Text} from '@sanity/ui'
+import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
 import type {Asset, AssetFormData, DialogAssetEditProps, TagSelectOption} from '../../types'
 import groq from 'groq'
-import {type ReactNode, useCallback, useEffect, useRef, useState} from 'react'
+import {type ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {type SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {WithReferringDocuments, useColorSchemeValue, useDocumentStore} from 'sanity'
-import {assetFormSchema} from '../../formSchema'
+import {getAssetFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions, selectAssetById} from '../../modules/assets'
@@ -63,20 +63,55 @@ const DialogAssetEdit = (props: Props) => {
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
 
   // Check if credit line options are configured
-  const {creditLine, components: {details: CustomDetails} = {}} = useToolOptions()
+  const {creditLine, components: {details: CustomDetails} = {}, locales} = useToolOptions()
 
   const generateDefaultValues = useCallback(
     (asset?: Asset): AssetFormData => {
+      if (locales && locales.length > 0) {
+        const makeLocaleObj = (field?: Record<string, string> | string) => {
+          const obj: Record<string, string> = {}
+          for (let i = 0; i < locales.length; i++) {
+            const locale = locales[i]
+            if (typeof field === 'object' && field && field[locale.id]) {
+              obj[locale.id] = field[locale.id]
+            } else if (typeof field === 'string') {
+              // Only populate the first locale to avoid spreading a legacy value
+              // across all languages; the user should fill in other translations manually
+              obj[locale.id] = i === 0 ? field : ''
+            } else {
+              obj[locale.id] = ''
+            }
+          }
+          return obj
+        }
+        return {
+          altText: makeLocaleObj(asset?.altText),
+          creditLine: makeLocaleObj(asset?.creditLine),
+          description: makeLocaleObj(asset?.description),
+          originalFilename: asset?.originalFilename || '',
+          opt: {media: {tags: assetTagOptions}},
+          title: makeLocaleObj(asset?.title)
+        }
+      }
+      // Normalize: if a field is a localized object but locales are disabled, pick first non-empty value
+      const flattenField = (field: unknown): string => {
+        if (typeof field === 'string') return field
+        if (typeof field === 'object' && field !== null) {
+          const values = Object.values(field as Record<string, string>)
+          return values.find(v => v) || ''
+        }
+        return ''
+      }
       return {
-        altText: asset?.altText || '',
-        creditLine: asset?.creditLine || '',
-        description: asset?.description || '',
+        altText: flattenField(asset?.altText),
+        creditLine: flattenField(asset?.creditLine),
+        description: flattenField(asset?.description),
         originalFilename: asset?.originalFilename || '',
         opt: {media: {tags: assetTagOptions}},
-        title: asset?.title || ''
+        title: flattenField(asset?.title)
       }
     },
-    [assetTagOptions]
+    [assetTagOptions, locales]
   )
 
   const {
@@ -91,7 +126,7 @@ const DialogAssetEdit = (props: Props) => {
   } = useForm<AssetFormData>({
     defaultValues: generateDefaultValues(assetItem?.asset),
     mode: 'onChange',
-    resolver: zodResolver(assetFormSchema)
+    resolver: zodResolver(getAssetFormSchema(locales))
   })
 
   const formUpdating = !assetItem || assetItem?.updating
@@ -133,6 +168,59 @@ const DialogAssetEdit = (props: Props) => {
     },
     [currentAsset?._id, dispatch]
   )
+
+  // Detect if asset has localized fields (objects) with keys not in the configured locales
+  const hasOrphanedLocales = useMemo(() => {
+    if (!currentAsset) return false
+    const isLocaleObj = (v: unknown) =>
+      typeof v === 'object' && v !== null && !Array.isArray(v)
+    const fields = [
+      currentAsset.title,
+      currentAsset.altText,
+      currentAsset.description,
+      ...(currentAsset._type === 'sanity.imageAsset' ? [currentAsset.creditLine] : [])
+    ]
+    const anyLocalized = fields.some(f => isLocaleObj(f))
+    if (!anyLocalized) return false
+    if (!locales || locales.length === 0) return true
+    const configuredIds = new Set(locales.map(l => l.id))
+    return fields.some(f => {
+      if (!isLocaleObj(f)) return false
+      return Object.keys(f as object).some(k => !configuredIds.has(k))
+    })
+  }, [currentAsset, locales])
+
+  const handleCleanupLocales = useCallback(async () => {
+    if (!currentAsset) return
+
+    const cleanField = (field: unknown): unknown => {
+      if (typeof field !== 'object' || field === null || Array.isArray(field)) return field
+      const obj = field as Record<string, string>
+      if (!locales || locales.length === 0) {
+        // Pick the first non-empty value sorted by key for determinism
+        const sorted = Object.keys(obj).sort()
+        return sorted.map(k => obj[k]).find(v => v) || ''
+      }
+      const configuredIds = new Set(locales.map(l => l.id))
+      const cleaned: Record<string, string> = {}
+      for (const [key, val] of Object.entries(obj)) {
+        if (configuredIds.has(key)) cleaned[key] = val
+      }
+      return cleaned
+    }
+
+    await client
+      .patch(currentAsset._id)
+      .set({
+        title: cleanField(currentAsset.title),
+        altText: cleanField(currentAsset.altText),
+        description: cleanField(currentAsset.description),
+        ...(currentAsset._type === 'sanity.imageAsset' && {
+          creditLine: cleanField(currentAsset.creditLine)
+        })
+      })
+      .commit()
+  }, [client, currentAsset, locales])
 
   // Submit react-hook-form
   const onSubmit: SubmitHandler<AssetFormData> = useCallback(
@@ -215,25 +303,44 @@ const DialogAssetEdit = (props: Props) => {
 
   const Footer = () => (
     <Box padding={3}>
-      <Flex justify="space-between">
-        {/* Delete button */}
-        <Button
-          disabled={formUpdating}
-          fontSize={1}
-          mode="bleed"
-          onClick={handleDelete}
-          text="Delete"
-          tone="critical"
-        />
+      <Stack space={3}>
+        {hasOrphanedLocales && (
+          <Card padding={3} radius={2} shadow={1} tone="caution">
+            <Flex align="center" justify="space-between" gap={3}>
+              <Text size={1}>
+                This asset has localized fields that are no longer configured. Clean them up to
+                avoid validation errors.
+              </Text>
+              <Button
+                fontSize={1}
+                mode="ghost"
+                onClick={handleCleanupLocales}
+                text="Cleanup localized fields"
+                tone="caution"
+              />
+            </Flex>
+          </Card>
+        )}
+        <Flex justify="space-between">
+          {/* Delete button */}
+          <Button
+            disabled={formUpdating}
+            fontSize={1}
+            mode="bleed"
+            onClick={handleDelete}
+            text="Delete"
+            tone="critical"
+          />
 
-        {/* Submit button */}
-        <FormSubmitButton
-          disabled={formUpdating || !isDirty || !isValid}
-          isValid={isValid}
-          lastUpdated={currentAsset?._updatedAt}
-          onClick={handleSubmit(onSubmit)}
-        />
-      </Flex>
+          {/* Submit button */}
+          <FormSubmitButton
+            disabled={formUpdating || !isDirty || !isValid || hasOrphanedLocales}
+            isValid={isValid}
+            lastUpdated={currentAsset?._updatedAt}
+            onClick={handleSubmit(onSubmit)}
+          />
+        </Flex>
+      </Stack>
     </Box>
   )
 
@@ -251,7 +358,8 @@ const DialogAssetEdit = (props: Props) => {
     allTagOptions,
     handleCreateTag,
     currentAsset,
-    creditLine
+    creditLine,
+    locales
   }
 
   return (

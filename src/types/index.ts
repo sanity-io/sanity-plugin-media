@@ -8,7 +8,7 @@ import type {
 import type {ComponentType, JSX} from 'react'
 import type {Epic} from 'redux-observable'
 import * as z from 'zod'
-import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
+import {getAssetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
 import type {RootReducerState} from '../modules/types'
 import type {DetailsProps} from '../components/DialogAssetEdit/Details'
 import type {SUPPORTED_ASSET_TYPES} from '../constants'
@@ -22,22 +22,35 @@ export type MediaToolOptions = {
       DetailsProps & {renderDefaultDetails: (props: DetailsProps) => JSX.Element}
     >
   }
-  creditLine: {
+  creditLine?: {
     enabled: boolean
     excludeSources?: string | string[]
   }
   directUploads?: boolean
+  /**
+   * Optional locales following Sanity recommended scheme: [{ id, title }]
+   * https://www.sanity.io/docs/studio/localization#k4da239411955
+   */
+  locales?: Locale[]
 }
 
+export type Locale = {
+  title: string
+  id: string
+  [key: string]: unknown
+}
+
+type LocalizedString = string | Record<string, string>
+
 type CustomFields = {
-  altText?: string
-  description?: string
+  altText?: LocalizedString
+  description?: LocalizedString
   opt?: {
     media?: {
       tags?: SanityReference[]
     }
   }
-  title?: string
+  title?: LocalizedString
 }
 
 type SearchFacetInputCommon = {
@@ -51,7 +64,7 @@ type SearchFacetInputCommon = {
 
 export type Asset = FileAsset | ImageAsset
 
-export type AssetFormData = z.infer<typeof assetFormSchema>
+export type AssetFormData = z.infer<ReturnType<typeof getAssetFormSchema>>
 
 export type AssetItem = {
   _type: 'asset'
@@ -167,7 +180,7 @@ export type FileAsset = SanityAssetDocument &
 export type ImageAsset = SanityImageAssetDocument &
   CustomFields & {
     _type: 'sanity.imageAsset'
-    creditLine?: string
+    creditLine?: LocalizedString
   }
 
 export type MarkDef = {_key: string; _type: string}

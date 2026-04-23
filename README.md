@@ -95,7 +95,6 @@ export default defineConfig({
 })
 ```
 
-
 ### Plugin Config
 
 ```ts
@@ -111,7 +110,7 @@ export default defineConfig({
         enabled: true,
         // boolean - enables an optional "Credit Line" field in the plugin.
         // Used to store credits e.g. photographer, licence information
-        excludeSources: ['unsplash'],
+        excludeSources: ['unsplash']
         // string | string[] - when used with 3rd party asset sources, you may
         // wish to prevent users overwriting the creditLine based on the `source.name`
       },
@@ -122,12 +121,65 @@ export default defineConfig({
       components: {
         details: CustomDetails
         // Custom component for asset details (see below)
-      }
+      },
       // Custom components to override default UI (see below)
+      locales: [
+        // { id: string, title: string, ...extra }[] - enable localization for asset fields. Each object must have a unique id and a human-readable title.
+        // When set, all localizable fields (title, altText, description, creditLine) will be shown in tabs by language.
+        {id: 'en', title: 'English'},
+        {id: 'it', title: 'Italian'},
+        {id: 'es', title: 'Spanish'},
+        {id: 'fr', title: 'French'},
+        {id: 'de', title: 'German'},
+        {id: 'pt', title: 'Portuguese'},
+        {id: 'ja', title: 'Japanese'},
+        {id: 'zh', title: 'Chinese'},
+        {id: 'ru', title: 'Russian'},
+        {id: 'ar', title: 'Arabic'}
+      ]
     })
-  ],
+  ]
 })
 ```
+
+### Localization (Optional)
+
+You can enable localization support by passing a `locales` array to the plugin config, following the [Sanity recommended scheme](https://www.sanity.io/docs/studio/localization#k4da239411955):
+
+If omitted, localization features will be disabled and the plugin will work as usual.
+
+**Fallback for missing translations:**
+The plugin does not apply any automatic fallback for missing translations. You can decide how to handle this in your queries or frontend logic. For example, to show the default language if a translation is missing, you can use GROQ's `coalesce()`:
+
+```
+coalesce(altText.it, altText.en)
+```
+
+**UI note:**
+When `locales` are provided, all localized fields (title, altText, description, creditLine) are grouped by language in tabs. Each tab shows all fields for a single language, making it easy to edit translations for many languages in a compact interface.
+
+This will return the Italian value if present, otherwise English, otherwise French, etc. Adjust the order as needed for your project.
+
+#### Migrating existing assets to localized format
+
+If you enable `locales` on a project that already has assets with plain string fields (e.g. `title: "My photo"`), you should run the provided migration script to convert those fields to the localized object format (e.g. `title: {en: "My photo"}`).
+
+**1. Edit the script** — open `scripts/migrate-to-localized-fields.ts` and set `DEFAULT_LOCALE_ID` to the locale id that your existing values should be mapped to.
+
+**2. Run the migration:**
+
+```sh
+npx sanity@latest migration run scripts/migrate-to-localized-fields.ts \
+  --project <projectId> --dataset <dataset>
+```
+
+The script targets `sanity.imageAsset` and `sanity.fileAsset` documents and converts any plain string value in `title`, `altText`, `description`, and `creditLine` to `{[DEFAULT_LOCALE_ID]: value}`. Fields that are already in object format are left untouched.
+
+> **Without migration:** Legacy string fields can also be migrated when an asset is edited and saved in the plugin. Running the script is still recommended to migrate all existing assets consistently before users start editing.
+
+#### Removing locales
+
+If you remove the `locales` option after assets have been saved in localized format, the plugin will show a warning in the asset edit dialog offering a **"Cleanup localized fields"** action. Clicking it removes locale keys that are no longer configured and, if no locales remain, flattens the fields back to plain strings.
 
 #### Custom Asset Details Component
 
