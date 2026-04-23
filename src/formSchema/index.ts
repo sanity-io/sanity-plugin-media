@@ -11,6 +11,7 @@ export const assetFormSchema = z.object({
   description: z.string().trim().optional(),
   opt: z.object({
     media: z.object({
+      folder: z.string().trim().optional(),
       tags: z.array(tagOptionSchema).nullable()
     })
   }),
@@ -20,4 +21,8 @@ export const assetFormSchema = z.object({
 
 export const tagFormSchema = z.object({
   name: z.string().min(1, {message: 'Name cannot be empty'})
+})
+
+export const folderFormSchema = z.object({
+  name: z.string().trim().min(1, {message: 'Name cannot be empty'})
 })

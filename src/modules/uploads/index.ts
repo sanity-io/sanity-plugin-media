@@ -3,10 +3,11 @@ import type {ClientError, SanityAssetDocument, SanityImageAssetDocument} from '@
 import type {HttpError, MyEpic, SanityUploadProgressEvent, UploadItem} from '../../types'
 import groq from 'groq'
 import type {Selector} from 'react-redux'
-import {empty, merge, of} from 'rxjs'
+import {empty, from, merge, of} from 'rxjs'
 import {catchError, delay, filter, mergeMap, takeUntil, withLatestFrom} from 'rxjs/operators'
 import constructFilter from '../../utils/constructFilter'
 import {generatePreviewBlobUrl$} from '../../utils/generatePreviewBlobUrl'
+import normalizeFolderPath from '../../utils/normalizeFolderPath'
 import {hashFile$, uploadAsset$} from '../../utils/uploadSanityAsset'
 import {assetsActions} from '../assets'
 import type {RootReducerState} from '../types'
@@ -143,10 +144,31 @@ export const uploadsAssetStartEpic: MyEpic = (action$, _state$, {client}) =>
           ),
           mergeMap(event => {
             if (event?.type === 'complete') {
-              return of(
-                UPLOADS_ACTIONS.uploadComplete({
-                  asset: event.asset
-                })
+              const folderPath = normalizeFolderPath(uploadItem.folderPath)
+
+              if (!folderPath) {
+                return of(
+                  UPLOADS_ACTIONS.uploadComplete({
+                    asset: event.asset
+                  })
+                )
+              }
+
+              return from(
+                client
+                  .patch(event.asset._id)
+                  .setIfMissing({opt: {}})
+                  .setIfMissing({'opt.media': {}})
+                  .set({'opt.media.folder': folderPath})
+                  .commit()
+              ).pipe(
+                mergeMap(asset =>
+                  of(
+                    UPLOADS_ACTIONS.uploadComplete({
+                      asset: asset as SanityAssetDocument | SanityImageAssetDocument
+                    })
+                  )
+                )
               )
             }
             if (event?.type === 'progress' && event?.stage === 'upload') {
@@ -197,6 +219,7 @@ export const uploadsAssetUploadEpic: MyEpic = (action$, state$) =>
           const uploadItem = {
             _type: 'upload',
             assetType,
+            folderPath: state.folders.currentFolderPath,
             hash,
             name: file.name,
             size: file.size,
@@ -231,6 +254,8 @@ export const uploadsCheckRequestEpic: MyEpic = (action$, state$, {client}) =>
 
       const constructedFilter = constructFilter({
         assetTypes: state.assets.assetTypes,
+        currentFolderPath: state.folders.currentFolderPath,
+        currentFolderUnfiled: state.folders.currentFolderUnfiled,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
       })

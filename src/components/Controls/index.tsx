@@ -1,7 +1,10 @@
+import {AddIcon, FolderIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
+import {foldersActions} from '../../modules/folders'
 import {tagsActions} from '../../modules/tags'
 import ButtonViewGroup from '../ButtonViewGroup'
 import OrderSelect from '../OrderSelect'
@@ -15,6 +18,8 @@ const Controls = () => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
+  const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
+  const foldersPanelVisible = useTypedSelector(state => state.folders.panelVisible)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.search.facets)
   const tagsPanelVisible = useTypedSelector(state => state.tags.panelVisible)
@@ -28,6 +33,10 @@ const Controls = () => {
 
   const handleShowTagsDialog = () => {
     dispatch(dialogActions.showTags())
+  }
+
+  const toggleFoldersPanel = () => {
+    dispatch(foldersActions.panelVisibleSet({panelVisible: !foldersPanelVisible}))
   }
 
   const toggleTagsPanelToggle = () => {
@@ -70,7 +79,21 @@ const Controls = () => {
               <SearchFacets />
 
               {/* Search Facets Control (add / clear) */}
-              <SearchFacetsControl />
+              <Inline space={2}>
+                <SearchFacetsControl />
+                <Button
+                  fontSize={1}
+                  icon={AddIcon}
+                  mode="bleed"
+                  onClick={() =>
+                    dispatch(
+                      DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null})
+                    )
+                  }
+                  text="New folder"
+                  tone="primary"
+                />
+              </Inline>
             </Box>
 
             <Box display={['block', 'block', 'none']} marginX={2}>
@@ -92,6 +115,18 @@ const Controls = () => {
                   text={`Tags`}
                   tone="primary"
                 />
+
+                <Button
+                  fontSize={1}
+                  icon={FolderIcon}
+                  mode="ghost"
+                  onClick={() =>
+                    dispatch(
+                      DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null})
+                    )
+                  }
+                  tone="primary"
+                />
               </Inline>
             </Box>
           </Flex>
@@ -108,6 +143,15 @@ const Controls = () => {
           <Flex marginX={2}>
             {/* Orders */}
             <OrderSelect />
+            {/* Folders panel toggle */}
+            <Box display={['none', 'none', 'block']} marginLeft={2}>
+              <Button
+                fontSize={1}
+                onClick={toggleFoldersPanel}
+                mode={foldersPanelVisible ? 'default' : 'ghost'}
+                text="Folders"
+              />
+            </Box>
             {/* Tags panel toggle */}
             <Box display={['none', 'none', 'block']} marginLeft={2}>
               <Button

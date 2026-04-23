@@ -17,6 +17,7 @@ import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
 import imageDprUrl from '../../utils/imageDprUrl'
 import sanitizeFormData from '../../utils/sanitizeFormData'
+import normalizeFolderPath from '../../utils/normalizeFolderPath'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import AssetMetadata from '../AssetMetadata'
 import Dialog from '../Dialog'
@@ -72,7 +73,12 @@ const DialogAssetEdit = (props: Props) => {
         creditLine: asset?.creditLine || '',
         description: asset?.description || '',
         originalFilename: asset?.originalFilename || '',
-        opt: {media: {tags: assetTagOptions}},
+        opt: {
+          media: {
+            folder: normalizeFolderPath(asset?.opt?.media?.folder),
+            tags: assetTagOptions
+          }
+        },
         title: asset?.title || ''
       }
     },
@@ -153,6 +159,7 @@ const DialogAssetEdit = (props: Props) => {
             opt: {
               media: {
                 ...sanitizedFormData.opt.media,
+                folder: normalizeFolderPath(sanitizedFormData.opt.media.folder) || null,
                 tags:
                   sanitizedFormData.opt.media.tags?.map((tag: TagSelectOption) => ({
                     _ref: tag.value,
