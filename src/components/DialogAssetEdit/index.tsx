@@ -90,13 +90,22 @@ const DialogAssetEdit = (props: Props) => {
           title: makeLocaleObj(asset?.title)
         }
       }
+      // Normalize: if a field is a localized object but locales are disabled, pick first non-empty value
+      const flattenField = (field: unknown): string => {
+        if (typeof field === 'string') return field
+        if (typeof field === 'object' && field !== null) {
+          const values = Object.values(field as Record<string, string>)
+          return values.find(v => v) || ''
+        }
+        return ''
+      }
       return {
-        altText: asset?.altText || '',
-        creditLine: asset?.creditLine || '',
-        description: asset?.description || '',
+        altText: flattenField(asset?.altText),
+        creditLine: flattenField(asset?.creditLine),
+        description: flattenField(asset?.description),
         originalFilename: asset?.originalFilename || '',
         opt: {media: {tags: assetTagOptions}},
-        title: asset?.title || ''
+        title: flattenField(asset?.title)
       }
     },
     [assetTagOptions, locales]
@@ -185,7 +194,9 @@ const DialogAssetEdit = (props: Props) => {
       if (typeof field !== 'object' || field === null || Array.isArray(field)) return field
       const obj = field as Record<string, string>
       if (!locales || locales.length === 0) {
-        return Object.values(obj)[0] || ''
+        // Pick the first non-empty value sorted by key for determinism
+        const sorted = Object.keys(obj).sort()
+        return sorted.map(k => obj[k]).find(v => v) || ''
       }
       const configuredIds = new Set(locales.map(l => l.id))
       const cleaned: Record<string, string> = {}
@@ -318,7 +329,7 @@ const DialogAssetEdit = (props: Props) => {
 
           {/* Submit button */}
           <FormSubmitButton
-            disabled={formUpdating || !isDirty || !isValid}
+            disabled={formUpdating || !isDirty || !isValid || hasOrphanedLocales}
             isValid={isValid}
             lastUpdated={currentAsset?._updatedAt}
             onClick={handleSubmit(onSubmit)}

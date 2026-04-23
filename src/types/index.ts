@@ -8,7 +8,7 @@ import type {
 import type {ComponentType, JSX} from 'react'
 import type {Epic} from 'redux-observable'
 import * as z from 'zod'
-import {assetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
+import {getAssetFormSchema, tagFormSchema, tagOptionSchema} from '../formSchema'
 import type {RootReducerState} from '../modules/types'
 import type {DetailsProps} from '../components/DialogAssetEdit/Details'
 import type {SUPPORTED_ASSET_TYPES} from '../constants'
@@ -40,15 +40,18 @@ export type Locale = {
   [key: string]: unknown
 }
 
+type LocalizedString = string | Record<string, string>
+
 type CustomFields = {
-  altText?: string
-  description?: string
+  altText?: LocalizedString
+  description?: LocalizedString
   opt?: {
     media?: {
       tags?: SanityReference[]
     }
   }
-  title?: string
+  title?: LocalizedString
+  creditLine?: LocalizedString
 }
 
 type SearchFacetInputCommon = {
@@ -62,7 +65,7 @@ type SearchFacetInputCommon = {
 
 export type Asset = FileAsset | ImageAsset
 
-export type AssetFormData = z.infer<typeof assetFormSchema>
+export type AssetFormData = z.infer<ReturnType<typeof getAssetFormSchema>>
 
 export type AssetItem = {
   _type: 'asset'

@@ -9,7 +9,7 @@ export function localizedStringSchema(locales?: {id: string}[]) {
   for (const locale of locales) {
     shape[locale.id] = z.string().trim().optional()
   }
-  return z.object(shape)
+  return z.object(shape).passthrough()
 }
 
 export const tagOptionSchema = z.object({

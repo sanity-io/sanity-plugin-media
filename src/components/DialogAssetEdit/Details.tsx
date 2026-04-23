@@ -5,6 +5,16 @@ import {type Control, type FieldErrors, type UseFormRegister} from 'react-hook-f
 
 type LocalizedErrors = Record<string, {message?: string} | undefined>
 
+// When locales are not configured, extract a plain string from a potentially localized field
+function toStringField(value: unknown): string | undefined {
+  if (typeof value === 'string') return value
+  if (typeof value === 'object' && value !== null) {
+    const found = Object.values(value as Record<string, string>).find(v => v)
+    return found || undefined
+  }
+  return undefined
+}
+
 import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
@@ -133,7 +143,7 @@ export default function Details({
             error={errors?.title?.message}
             label="Title"
             name="title"
-            value={currentAsset?.title}
+            value={toStringField(currentAsset?.title)}
           />
           <FormFieldInputText
             {...register('altText')}
@@ -141,7 +151,7 @@ export default function Details({
             error={errors?.altText?.message}
             label="Alt Text"
             name="altText"
-            value={currentAsset?.altText}
+            value={toStringField(currentAsset?.altText)}
           />
           <FormFieldInputTextarea
             {...register('description')}
@@ -150,7 +160,7 @@ export default function Details({
             label="Description"
             name="description"
             rows={5}
-            value={currentAsset?.description}
+            value={toStringField(currentAsset?.description)}
           />
           {creditLine?.enabled && (
             <FormFieldInputText
@@ -158,7 +168,7 @@ export default function Details({
               error={errors?.creditLine?.message}
               label="Credit"
               name="creditLine"
-              value={currentAsset?.creditLine}
+              value={toStringField(currentAsset?.creditLine)}
               disabled={
                 formUpdating || creditLine?.excludeSources?.includes(currentAsset?.source?.name)
               }

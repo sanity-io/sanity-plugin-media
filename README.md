@@ -176,7 +176,7 @@ npx sanity@latest migration run scripts/migrate-to-localized-fields.ts \
 
 The script targets `sanity.imageAsset` and `sanity.fileAsset` documents and converts any plain string value in `title`, `altText`, `description`, and `creditLine` to `{[DEFAULT_LOCALE_ID]: value}`. Fields that are already in object format are left untouched.
 
-> **Without migration:** Opening and saving an asset in the plugin will automatically migrate its fields on save. Running the script ensures all assets are consistent before users start editing.
+> **Without migration:** Legacy string fields can also be migrated when an asset is edited and saved in the plugin. Running the script is still recommended to migrate all existing assets consistently before users start editing.
 
 #### Removing locales
 
