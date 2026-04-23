@@ -161,6 +161,27 @@ When `locales` are provided, all localized fields (title, altText, description, 
 
 This will return the Italian value if present, otherwise English, otherwise French, etc. Adjust the order as needed for your project.
 
+#### Migrating existing assets to localized format
+
+If you enable `locales` on a project that already has assets with plain string fields (e.g. `title: "My photo"`), you should run the provided migration script to convert those fields to the localized object format (e.g. `title: {en: "My photo"}`).
+
+**1. Edit the script** — open `scripts/migrate-to-localized-fields.ts` and set `DEFAULT_LOCALE_ID` to the locale id that your existing values should be mapped to.
+
+**2. Run the migration:**
+
+```sh
+npx sanity@latest migration run scripts/migrate-to-localized-fields.ts \
+  --project <projectId> --dataset <dataset>
+```
+
+The script targets `sanity.imageAsset` and `sanity.fileAsset` documents and converts any plain string value in `title`, `altText`, `description`, and `creditLine` to `{[DEFAULT_LOCALE_ID]: value}`. Fields that are already in object format are left untouched.
+
+> **Without migration:** Opening and saving an asset in the plugin will automatically migrate its fields on save. Running the script ensures all assets are consistent before users start editing.
+
+#### Removing locales
+
+If you remove the `locales` option after assets have been saved in localized format, the plugin will show a warning in the asset edit dialog offering a **"Cleanup localized fields"** action. Clicking it removes locale keys that are no longer configured and, if no locales remain, flattens the fields back to plain strings.
+
 #### Custom Asset Details Component
 
 Custom React component for the asset details form via the plugin config. This allows you to override or extend the default asset details UI.

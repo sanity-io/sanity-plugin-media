@@ -32,6 +32,8 @@ export function getAssetFormSchema(locales?: {id: string}[]) {
   })
 }
 
+export const assetFormSchema = getAssetFormSchema()
+
 export const tagFormSchema = z.object({
   name: z.string().min(1, {message: 'Name cannot be empty'})
 })

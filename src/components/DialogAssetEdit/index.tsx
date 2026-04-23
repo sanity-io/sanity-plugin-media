@@ -1,9 +1,9 @@
 import {zodResolver} from '@hookform/resolvers/zod'
 import type {MutationEvent} from '@sanity/client'
-import {Box, Button, Card, Flex, Tab, TabList, TabPanel, Text} from '@sanity/ui'
+import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
 import type {Asset, AssetFormData, DialogAssetEditProps, TagSelectOption} from '../../types'
 import groq from 'groq'
-import {type ReactNode, useCallback, useEffect, useRef, useState} from 'react'
+import {type ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {type SubmitHandler, useForm} from 'react-hook-form'
 import {useDispatch} from 'react-redux'
 import {WithReferringDocuments, useColorSchemeValue, useDocumentStore} from 'sanity'
@@ -157,6 +157,55 @@ const DialogAssetEdit = (props: Props) => {
     [currentAsset?._id, dispatch]
   )
 
+  // Detect if asset has localized fields (objects) with keys not in the configured locales
+  const hasOrphanedLocales = useMemo(() => {
+    if (!currentAsset) return false
+    const isLocaleObj = (v: unknown) =>
+      typeof v === 'object' && v !== null && !Array.isArray(v)
+    const fields = [
+      currentAsset.title,
+      currentAsset.altText,
+      currentAsset.description,
+      currentAsset.creditLine
+    ]
+    const anyLocalized = fields.some(f => isLocaleObj(f))
+    if (!anyLocalized) return false
+    if (!locales || locales.length === 0) return true
+    const configuredIds = new Set(locales.map(l => l.id))
+    return fields.some(f => {
+      if (!isLocaleObj(f)) return false
+      return Object.keys(f as object).some(k => !configuredIds.has(k))
+    })
+  }, [currentAsset, locales])
+
+  const handleCleanupLocales = useCallback(async () => {
+    if (!currentAsset) return
+
+    const cleanField = (field: unknown): unknown => {
+      if (typeof field !== 'object' || field === null || Array.isArray(field)) return field
+      const obj = field as Record<string, string>
+      if (!locales || locales.length === 0) {
+        return Object.values(obj)[0] || ''
+      }
+      const configuredIds = new Set(locales.map(l => l.id))
+      const cleaned: Record<string, string> = {}
+      for (const [key, val] of Object.entries(obj)) {
+        if (configuredIds.has(key)) cleaned[key] = val
+      }
+      return cleaned
+    }
+
+    await client
+      .patch(currentAsset._id)
+      .set({
+        title: cleanField(currentAsset.title),
+        altText: cleanField(currentAsset.altText),
+        description: cleanField(currentAsset.description),
+        creditLine: cleanField(currentAsset.creditLine)
+      })
+      .commit()
+  }, [client, currentAsset, locales])
+
   // Submit react-hook-form
   const onSubmit: SubmitHandler<AssetFormData> = useCallback(
     formData => {
@@ -238,25 +287,44 @@ const DialogAssetEdit = (props: Props) => {
 
   const Footer = () => (
     <Box padding={3}>
-      <Flex justify="space-between">
-        {/* Delete button */}
-        <Button
-          disabled={formUpdating}
-          fontSize={1}
-          mode="bleed"
-          onClick={handleDelete}
-          text="Delete"
-          tone="critical"
-        />
+      <Stack space={3}>
+        {hasOrphanedLocales && (
+          <Card padding={3} radius={2} shadow={1} tone="caution">
+            <Flex align="center" justify="space-between" gap={3}>
+              <Text size={1}>
+                This asset has localized fields that are no longer configured. Clean them up to
+                avoid validation errors.
+              </Text>
+              <Button
+                fontSize={1}
+                mode="ghost"
+                onClick={handleCleanupLocales}
+                text="Cleanup localized fields"
+                tone="caution"
+              />
+            </Flex>
+          </Card>
+        )}
+        <Flex justify="space-between">
+          {/* Delete button */}
+          <Button
+            disabled={formUpdating}
+            fontSize={1}
+            mode="bleed"
+            onClick={handleDelete}
+            text="Delete"
+            tone="critical"
+          />
 
-        {/* Submit button */}
-        <FormSubmitButton
-          disabled={formUpdating || !isDirty || !isValid}
-          isValid={isValid}
-          lastUpdated={currentAsset?._updatedAt}
-          onClick={handleSubmit(onSubmit)}
-        />
-      </Flex>
+          {/* Submit button */}
+          <FormSubmitButton
+            disabled={formUpdating || !isDirty || !isValid}
+            isValid={isValid}
+            lastUpdated={currentAsset?._updatedAt}
+            onClick={handleSubmit(onSubmit)}
+          />
+        </Flex>
+      </Stack>
     </Box>
   )
 

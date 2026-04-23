@@ -43,7 +43,8 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
     options?.components,
     options?.creditLine?.excludeSources,
     options?.maximumUploadSize,
-    options?.directUploads
+    options?.directUploads,
+    options?.locales
   ])
 
   return <ToolOptionsContext.Provider value={value}>{children}</ToolOptionsContext.Provider>

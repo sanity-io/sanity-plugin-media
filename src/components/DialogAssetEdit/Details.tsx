@@ -3,6 +3,8 @@ import {useState} from 'react'
 import type {Asset, AssetFormData, TagSelectOption} from '../../types'
 import {type Control, type FieldErrors, type UseFormRegister} from 'react-hook-form'
 
+type LocalizedErrors = Record<string, {message?: string} | undefined>
+
 import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
@@ -87,35 +89,31 @@ export default function Details({
                   <FormFieldInputText
                     {...register(`title.${locale.id}` as const)}
                     disabled={formUpdating}
-                    error={errors?.title?.[locale.id]?.message}
+                    error={(errors?.title as LocalizedErrors)?.[locale.id]?.message}
                     label="Title"
                     name={`title.${locale.id}`}
-                    value={currentAsset?.title?.[locale.id]}
                   />
                   <FormFieldInputText
                     {...register(`altText.${locale.id}` as const)}
                     disabled={formUpdating}
-                    error={errors?.altText?.[locale.id]?.message}
+                    error={(errors?.altText as LocalizedErrors)?.[locale.id]?.message}
                     label="Alt Text"
                     name={`altText.${locale.id}`}
-                    value={currentAsset?.altText?.[locale.id]}
                   />
                   <FormFieldInputTextarea
                     {...register(`description.${locale.id}` as const)}
                     disabled={formUpdating}
-                    error={errors?.description?.[locale.id]?.message}
+                    error={(errors?.description as LocalizedErrors)?.[locale.id]?.message}
                     label="Description"
                     name={`description.${locale.id}`}
                     rows={5}
-                    value={currentAsset?.description?.[locale.id]}
                   />
                   {creditLine?.enabled && (
                     <FormFieldInputText
                       {...register(`creditLine.${locale.id}` as const)}
-                      error={errors?.creditLine?.[locale.id]?.message}
+                      error={(errors?.creditLine as LocalizedErrors)?.[locale.id]?.message}
                       label="Credit"
                       name={`creditLine.${locale.id}`}
-                      value={currentAsset?.creditLine?.[locale.id]}
                       disabled={
                         formUpdating ||
                         creditLine?.excludeSources?.includes(currentAsset?.source?.name)
