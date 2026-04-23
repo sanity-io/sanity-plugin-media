@@ -70,11 +70,14 @@ const DialogAssetEdit = (props: Props) => {
       if (locales && locales.length > 0) {
         const makeLocaleObj = (field?: Record<string, string> | string) => {
           const obj: Record<string, string> = {}
-          for (const locale of locales) {
+          for (let i = 0; i < locales.length; i++) {
+            const locale = locales[i]
             if (typeof field === 'object' && field && field[locale.id]) {
               obj[locale.id] = field[locale.id]
             } else if (typeof field === 'string') {
-              obj[locale.id] = field
+              // Only populate the first locale to avoid spreading a legacy value
+              // across all languages; the user should fill in other translations manually
+              obj[locale.id] = i === 0 ? field : ''
             } else {
               obj[locale.id] = ''
             }
@@ -175,7 +178,7 @@ const DialogAssetEdit = (props: Props) => {
       currentAsset.title,
       currentAsset.altText,
       currentAsset.description,
-      currentAsset.creditLine
+      ...(currentAsset._type === 'sanity.imageAsset' ? [currentAsset.creditLine] : [])
     ]
     const anyLocalized = fields.some(f => isLocaleObj(f))
     if (!anyLocalized) return false
@@ -212,7 +215,9 @@ const DialogAssetEdit = (props: Props) => {
         title: cleanField(currentAsset.title),
         altText: cleanField(currentAsset.altText),
         description: cleanField(currentAsset.description),
-        creditLine: cleanField(currentAsset.creditLine)
+        ...(currentAsset._type === 'sanity.imageAsset' && {
+          creditLine: cleanField(currentAsset.creditLine)
+        })
       })
       .commit()
   }, [client, currentAsset, locales])

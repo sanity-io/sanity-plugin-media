@@ -15,18 +15,24 @@ import {defineMigration, patch} from 'sanity/migrate'
 
 const DEFAULT_LOCALE_ID = 'en' // Change to your default locale id
 
-const LOCALIZED_FIELDS = ['title', 'altText', 'description', 'creditLine'] as const
-const ASSET_TYPES = ['sanity.imageAsset', 'sanity.fileAsset'] as const
+// Fields shared between image and file assets
+const COMMON_LOCALIZED_FIELDS = ['title', 'altText', 'description'] as const
+// creditLine only exists on sanity.imageAsset
+const IMAGE_ONLY_LOCALIZED_FIELDS = ['creditLine'] as const
 
 export default defineMigration({
   title: 'Convert flat asset fields to localized object format',
-  filter: `_type in ${JSON.stringify(ASSET_TYPES)}`,
+  filter: `_type in ["sanity.imageAsset", "sanity.fileAsset"]`,
 
   migrate: {
     document(doc) {
       const ops = []
+      const fields =
+        doc._type === 'sanity.imageAsset'
+          ? ([...COMMON_LOCALIZED_FIELDS, ...IMAGE_ONLY_LOCALIZED_FIELDS] as const)
+          : COMMON_LOCALIZED_FIELDS
 
-      for (const field of LOCALIZED_FIELDS) {
+      for (const field of fields) {
         const value = (doc as Record<string, unknown>)[field]
 
         if (typeof value === 'string') {

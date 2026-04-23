@@ -1,7 +1,10 @@
 import {Card, Stack, Tab, TabList, TabPanel} from '@sanity/ui'
 import {useState} from 'react'
-import type {Asset, AssetFormData, TagSelectOption} from '../../types'
 import {type Control, type FieldErrors, type UseFormRegister} from 'react-hook-form'
+import type {Asset, AssetFormData, Locale, TagSelectOption} from '../../types'
+import FormFieldInputTags from '../FormFieldInputTags'
+import FormFieldInputText from '../FormFieldInputText'
+import FormFieldInputTextarea from '../FormFieldInputTextarea'
 
 type LocalizedErrors = Record<string, {message?: string} | undefined>
 
@@ -14,10 +17,6 @@ function toStringField(value: unknown): string | undefined {
   }
   return undefined
 }
-
-import FormFieldInputTags from '../FormFieldInputTags'
-import FormFieldInputText from '../FormFieldInputText'
-import FormFieldInputTextarea from '../FormFieldInputTextarea'
 
 export type DetailsProps = {
   formUpdating: boolean
@@ -32,7 +31,7 @@ export type DetailsProps = {
     enabled: boolean
     excludeSources?: string | string[] | undefined
   }
-  locales?: {id: string; title: string}[]
+  locales?: Locale[]
 }
 
 export default function Details({
