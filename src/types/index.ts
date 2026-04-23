@@ -51,7 +51,6 @@ type CustomFields = {
     }
   }
   title?: LocalizedString
-  creditLine?: LocalizedString
 }
 
 type SearchFacetInputCommon = {
@@ -181,7 +180,7 @@ export type FileAsset = SanityAssetDocument &
 export type ImageAsset = SanityImageAssetDocument &
   CustomFields & {
     _type: 'sanity.imageAsset'
-    creditLine?: string
+    creditLine?: LocalizedString
   }
 
 export type MarkDef = {_key: string; _type: string}

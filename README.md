@@ -125,9 +125,8 @@ export default defineConfig({
       // Custom components to override default UI (see below)
       locales: [
         // { id: string, title: string, ...extra }[] - enable localization for asset fields. Each object must have a unique id and a human-readable title.
-        // You may include extra keys (e.g. isDefault) for compatibility with Sanity's recommended pattern; only id and title are used by the plugin, all other keys are ignored.
         // When set, all localizable fields (title, altText, description, creditLine) will be shown in tabs by language.
-        {id: 'en', title: 'English', isDefault: true},
+        {id: 'en', title: 'English'},
         {id: 'it', title: 'Italian'},
         {id: 'es', title: 'Spanish'},
         {id: 'fr', title: 'French'},
