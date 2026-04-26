@@ -11,7 +11,7 @@ type Props = {
   style?: any
 }
 
-const Image = styled.img<Props>`
+const Image = styled.img.attrs({crossOrigin: 'anonymous' as const})<Props>
   --checkerboard-color: ${props =>
     props.$scheme ? getSchemeColor(props.$scheme, 'bg2') : 'inherit'};
 
