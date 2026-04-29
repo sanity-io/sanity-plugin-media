@@ -28,6 +28,12 @@ export type MediaToolOptions = {
   }
   directUploads?: boolean
   /**
+   * Tag slugs (`media.tag.name.current`) whose assets are omitted from the main
+   * Media browser grid (and from the tag sidebar / tag search facet). Assets may
+   * still be edited via dialogs and still appear in the asset source when relevant.
+   */
+  excludeTags?: string[]
+  /**
    * Optional locales following Sanity recommended scheme: [{ id, title }]
    * https://www.sanity.io/docs/studio/localization#k4da239411955
    */

@@ -116,4 +116,16 @@ describe('constructFilter', () => {
 
     expect(q).not.toContain('match ')
   })
+
+  it('excludes assets tagged with any slug listed in excludeTagSlugs', () => {
+    const q = constructFilter({
+      assetTypes: ['image', 'file'],
+      excludeTagSlugs: ['internal', 'archived'],
+      searchFacets: [],
+      searchQuery: undefined
+    })
+
+    expect(q.replace(/\s+/g, ' ')).toContain('name.current in ["internal","archived"]')
+    expect(q.replace(/\s+/g, ' ')).toContain('opt.media.tags')
+  })
 })

@@ -7,6 +7,7 @@ type ContextProps = {
   components: MediaToolOptions['components']
   creditLine: MediaToolOptions['creditLine']
   directUploads: MediaToolOptions['directUploads']
+  excludeTagSlugs: string[]
   locales?: Locale[]
 }
 
@@ -36,12 +37,14 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
         excludeSources: creditLineExcludeSources
       },
       directUploads: options?.directUploads ?? true,
+      excludeTagSlugs: options?.excludeTags?.length ? [...options.excludeTags] : [],
       locales: options?.locales
     }
   }, [
     options?.creditLine?.enabled,
     options?.components,
     options?.creditLine?.excludeSources,
+    options?.excludeTags,
     options?.maximumUploadSize,
     options?.directUploads,
     options?.locales

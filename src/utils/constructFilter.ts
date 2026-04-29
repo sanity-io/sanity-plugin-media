@@ -1,14 +1,17 @@
 import type {AssetType, SearchFacetInputProps} from '../types'
 import groq from 'groq'
 
+import {TAG_DOCUMENT_NAME} from '../constants'
 import {operators} from '../config/searchFacets'
 
 const constructFilter = ({
   assetTypes,
+  excludeTagSlugs,
   searchFacets,
   searchQuery
 }: {
   assetTypes: AssetType[]
+  excludeTagSlugs?: string[]
   searchFacets: SearchFacetInputProps[]
   searchQuery?: string
 }): string => {
@@ -20,6 +23,14 @@ const constructFilter = ({
   const baseFilter = groq`
     _type in ${JSON.stringify(documentAssetTypes)} && !(_id in path("drafts.**"))
   `
+
+  const serializedExcludeTagSlugs = excludeTagSlugs?.length
+    ? JSON.stringify(excludeTagSlugs)
+    : undefined
+
+  const excludeTagsFragment = serializedExcludeTagSlugs
+    ? groq`!(defined(opt.media.tags) && count(opt.media.tags[@._ref in *[_type == "${TAG_DOCUMENT_NAME}" && name.current in ${serializedExcludeTagSlugs}]._id]) > 0)`
+    : undefined
 
   const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
     if (facet.type === 'number') {
@@ -79,6 +90,7 @@ const constructFilter = ({
   const constructedQuery = [
     // Base filter
     baseFilter,
+    ...(excludeTagsFragment ? [excludeTagsFragment] : []),
     // Search query (if present)
     // NOTE: Currently this only searches direct fields on sanity.fileAsset/sanity.imageAsset and NOT referenced tags
     // It's possible to add this by adding the following line to the searchQuery, but it's quite slow
