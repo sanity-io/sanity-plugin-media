@@ -24,9 +24,12 @@ const constructFilter = ({
     _type in ${JSON.stringify(documentAssetTypes)} && !(_id in path("drafts.**"))
   `
 
-  const excludeTagsFragment =
-    excludeTagSlugs?.length ?
-      groq`!(defined(opt.media.tags) && count(opt.media.tags[@._ref in *[_type == "${TAG_DOCUMENT_NAME}" && name.current in ${JSON.stringify(excludeTagSlugs)}]._id]) > 0)`
+  const serializedExcludeTagSlugs = excludeTagSlugs?.length
+    ? JSON.stringify(excludeTagSlugs)
+    : undefined
+
+  const excludeTagsFragment = serializedExcludeTagSlugs
+    ? groq`!(defined(opt.media.tags) && count(opt.media.tags[@._ref in *[_type == "${TAG_DOCUMENT_NAME}" && name.current in ${serializedExcludeTagSlugs}]._id]) > 0)`
     : undefined
 
   const searchFacetFragments = searchFacets.reduce((acc: string[], facet) => {
