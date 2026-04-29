@@ -44,6 +44,7 @@ export type AssetsReducerState = {
   allIds: string[]
   assetTypes: AssetType[]
   byIds: Record<string, AssetItem>
+  excludeTagSlugs: string[]
   fetchCount: number
   fetching: boolean
   fetchingError?: HttpError
@@ -76,6 +77,7 @@ export const initialState = {
   allIds: [],
   assetTypes: [],
   byIds: {},
+  excludeTagSlugs: [],
   fetchCount: -1,
   fetching: false,
   fetchingError: undefined,
@@ -460,6 +462,7 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
 
       const constructedFilter = constructFilter({
         assetTypes: state.assets.assetTypes,
+        excludeTagSlugs: state.assets.excludeTagSlugs,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
       })

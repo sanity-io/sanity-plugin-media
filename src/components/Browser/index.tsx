@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux'
 import {type AssetSourceComponentProps, type SanityDocument} from 'sanity'
 import {TAG_DOCUMENT_NAME} from '../../constants'
 import {AssetBrowserDispatchProvider} from '../../contexts/AssetSourceDispatchContext'
+import {useToolOptions} from '../../contexts/ToolOptionsContext'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions} from '../../modules/assets'
 import {tagsActions} from '../../modules/tags'
@@ -127,12 +128,14 @@ const BrowserContent = ({onClose}: {onClose?: AssetSourceComponentProps['onClose
 
 const Browser = (props: Props) => {
   const client = useVersionedClient()
+  const {excludeTagSlugs} = useToolOptions()
 
   return (
     <ReduxProvider
       assetType={props?.assetType}
       client={client}
       document={props?.document}
+      excludeTagSlugs={excludeTagSlugs}
       selectedAssets={props?.selectedAssets}
     >
       <AssetBrowserDispatchProvider onSelect={props?.onSelect}>
