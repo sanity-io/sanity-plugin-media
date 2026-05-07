@@ -4,25 +4,25 @@ import type {AssetItem} from '../../types'
 export const DIALOG_ACTIONS = {
   showFolderCreate: createAction(
     'dialog/showFolderCreate',
-    function prepare({folderPath}: {folderPath?: string | null} = {}) {
+    function prepare({parentFolderId}: {parentFolderId?: string | null} = {}) {
       return {
-        payload: {folderPath}
+        payload: {parentFolderId}
       }
     }
   ),
   showFolderMove: createAction(
     'dialog/showFolderMove',
-    function prepare({assets, folderPath}: {assets: AssetItem[]; folderPath?: string | null}) {
+    function prepare({assets, folderId}: {assets: AssetItem[]; folderId?: string | null}) {
       return {
-        payload: {assets, folderPath}
+        payload: {assets, folderId}
       }
     }
   ),
   showFolderRename: createAction(
     'dialog/showFolderRename',
-    function prepare({folderPath}: {folderPath: string}) {
+    function prepare({folderId}: {folderId: string}) {
       return {
-        payload: {folderPath}
+        payload: {folderId}
       }
     }
   ),

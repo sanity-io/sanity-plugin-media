@@ -18,7 +18,7 @@ const Controls = () => {
   // Redux
   const dispatch = useDispatch()
   const fetching = useTypedSelector(state => state.assets.fetching)
-  const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
+  const currentFolderId = useTypedSelector(state => state.folders.currentFolderId)
   const foldersPanelVisible = useTypedSelector(state => state.folders.panelVisible)
   const pageIndex = useTypedSelector(state => state.assets.pageIndex)
   const searchFacets = useTypedSelector(state => state.search.facets)
@@ -87,7 +87,7 @@ const Controls = () => {
                   mode="bleed"
                   onClick={() =>
                     dispatch(
-                      DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null})
+                      DIALOG_ACTIONS.showFolderCreate({parentFolderId: currentFolderId || null})
                     )
                   }
                   text="New folder"
@@ -122,7 +122,7 @@ const Controls = () => {
                   mode="ghost"
                   onClick={() =>
                     dispatch(
-                      DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null})
+                      DIALOG_ACTIONS.showFolderCreate({parentFolderId: currentFolderId || null})
                     )
                   }
                   tone="primary"

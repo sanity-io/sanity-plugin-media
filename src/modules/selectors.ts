@@ -15,7 +15,8 @@ export const selectCombinedItems = createSelector(
     const folderItems = folderChildren.map(
       folder =>
         ({
-          id: `folder:${folder.path}`,
+          id: `folder:${folder.id}`,
+          folderId: folder.id,
           name: folder.name,
           path: folder.path,
           totalCount: folder.totalCount,

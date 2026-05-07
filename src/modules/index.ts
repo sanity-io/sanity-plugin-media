@@ -36,6 +36,7 @@ import foldersReducer, {
   foldersCreateEpic,
   foldersDeleteEpic,
   foldersFetchEpic,
+  foldersMoveEpic,
   foldersRefreshEpic,
   foldersRenameEpic
 } from './folders'
@@ -97,6 +98,7 @@ export const rootEpic = combineEpics(
   foldersCreateEpic,
   foldersDeleteEpic,
   foldersFetchEpic,
+  foldersMoveEpic,
   foldersRefreshEpic,
   foldersRenameEpic,
   notificationsAssetsDeleteErrorEpic,

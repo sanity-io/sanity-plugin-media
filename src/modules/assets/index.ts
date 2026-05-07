@@ -213,15 +213,17 @@ const assetsSlice = createSlice({
     },
     folderSetComplete(
       state,
-      action: PayloadAction<{assetIds: string[]; folderPath: string | null; closeDialogId?: string}>
+      action: PayloadAction<{assetIds: string[]; folderId: string | null; closeDialogId?: string}>
     ) {
-      const {assetIds, folderPath} = action.payload
+      const {assetIds, folderId} = action.payload
 
       assetIds.forEach(assetId => {
         if (state.byIds[assetId]?.asset) {
           state.byIds[assetId].asset.opt = state.byIds[assetId].asset.opt || {}
           state.byIds[assetId].asset.opt.media = state.byIds[assetId].asset.opt.media || {}
-          state.byIds[assetId].asset.opt.media.folder = folderPath || undefined
+          state.byIds[assetId].asset.opt.media.folder = folderId
+            ? {_ref: folderId, _type: 'reference', _weak: true}
+            : undefined
           state.byIds[assetId].updating = false
         }
       })
@@ -240,7 +242,7 @@ const assetsSlice = createSlice({
       state,
       action: PayloadAction<{
         assets: AssetItem[]
-        folderPath: string | null
+        folderId: string | null
         closeDialogId?: string
       }>
     ) {
@@ -499,7 +501,7 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
 
       const constructedFilter = constructFilter({
         assetTypes: state.assets.assetTypes,
-        currentFolderPath: state.folders.currentFolderPath,
+        currentFolderId: state.folders.currentFolderId,
         currentFolderUnfiled: state.folders.currentFolderUnfiled,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
@@ -564,14 +566,16 @@ const patchOperationTagUnset =
     patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.tags[_ref == "${tag._id}"]`])
 
 const patchOperationFolderSet =
-  ({asset, folderPath}: {asset: AssetItem; folderPath: string | null}) =>
+  ({asset, folderId}: {asset: AssetItem; folderId: string | null}) =>
   (patch: Patch) => {
     const nextPatch = patch.ifRevisionId(asset?.asset?._rev).setIfMissing({opt: {}}).setIfMissing({
       'opt.media': {}
     })
 
-    if (folderPath) {
-      return nextPatch.set({'opt.media.folder': folderPath})
+    if (folderId) {
+      return nextPatch.set({
+        'opt.media.folder': {_ref: folderId, _type: 'reference', _weak: true}
+      })
     }
 
     return nextPatch.unset(['opt.media.folder'])
@@ -785,14 +789,14 @@ export const assetsFolderSetEpic: MyEpic = (action$, state$, {client}) =>
     filter(assetsActions.folderSetRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const {assets, closeDialogId, folderPath} = action.payload
+      const {assets, closeDialogId, folderId} = action.payload
       const assetIds = assets.map(asset => asset.asset._id)
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() => {
           const transaction: Transaction = assets.reduce(
-            (tx, asset) => tx.patch(asset.asset._id, patchOperationFolderSet({asset, folderPath})),
+            (tx, asset) => tx.patch(asset.asset._id, patchOperationFolderSet({asset, folderId})),
             client.transaction()
           )
 
@@ -803,7 +807,7 @@ export const assetsFolderSetEpic: MyEpic = (action$, state$, {client}) =>
             assetsActions.folderSetComplete({
               assetIds,
               closeDialogId,
-              folderPath
+              folderId
             })
           )
         ),

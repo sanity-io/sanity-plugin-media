@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux'
 import {folderFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
-import {foldersActions} from '../../modules/folders'
+import {foldersActions, selectFolderPathById} from '../../modules/folders'
 import sanitizeFormData from '../../utils/sanitizeFormData'
 import Dialog from '../Dialog'
 import FormFieldInputText from '../FormFieldInputText'
@@ -21,12 +21,13 @@ type Props = {
 const DialogFolderCreate = (props: Props) => {
   const {
     children,
-    dialog: {folderPath, id}
+    dialog: {parentFolderId, id}
   } = props
 
   const dispatch = useDispatch()
   const creating = useTypedSelector(state => state.folders.creating)
   const creatingError = useTypedSelector(state => state.folders.creatingError)
+  const parentPath = useTypedSelector(state => selectFolderPathById(state, parentFolderId))
 
   const {
     formState: {errors, isDirty, isValid},
@@ -50,7 +51,7 @@ const DialogFolderCreate = (props: Props) => {
     dispatch(
       foldersActions.createRequest({
         name: sanitizedFormData.name,
-        parentPath: folderPath || null
+        parentId: parentFolderId || null
       })
     )
   }
@@ -85,10 +86,10 @@ const DialogFolderCreate = (props: Props) => {
       <Box as="form" padding={4} onSubmit={handleSubmit(onSubmit)}>
         <button style={{display: 'none'}} tabIndex={-1} type="submit" />
 
-        {folderPath && (
+        {parentPath && (
           <Box marginBottom={3}>
             <Text muted size={1}>
-              Creating inside {folderPath}
+              Creating inside {parentPath}
             </Text>
           </Box>
         )}

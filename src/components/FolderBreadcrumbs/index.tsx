@@ -5,10 +5,10 @@ import {useDispatch} from 'react-redux'
 
 const FolderBreadcrumbs = () => {
   const dispatch = useDispatch()
-  const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
+  const currentFolderId = useTypedSelector(state => state.folders.currentFolderId)
   const segments = useTypedSelector(selectCurrentFolderSegments)
 
-  if (!currentFolderPath) {
+  if (!currentFolderId) {
     return null
   }
 
@@ -17,20 +17,20 @@ const FolderBreadcrumbs = () => {
       <Inline space={1}>
         <Button
           fontSize={1}
-          mode={!currentFolderPath ? 'default' : 'bleed'}
+          mode="bleed"
           onClick={() => dispatch(foldersActions.currentFolderClear())}
           text="Home"
         />
 
         {segments.map(segment => (
-          <Inline key={segment.path} space={1}>
+          <Inline key={segment.id} space={1}>
             <Text muted size={1}>
               /
             </Text>
             <Button
               fontSize={1}
-              mode={currentFolderPath === segment.path ? 'default' : 'bleed'}
-              onClick={() => dispatch(foldersActions.currentFolderSet({folderPath: segment.path}))}
+              mode={currentFolderId === segment.id ? 'default' : 'bleed'}
+              onClick={() => dispatch(foldersActions.currentFolderSet({folderId: segment.id}))}
               text={segment.name}
             />
           </Inline>

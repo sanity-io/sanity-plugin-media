@@ -10,20 +10,17 @@ import {dialogActions} from '../../modules/dialog'
 import {selectFolderTree} from '../../modules/folders'
 import Dialog from '../Dialog'
 
-const getExpandedPathSet = (folderPath: string | null) => {
-  if (!folderPath) {
-    return new Set<string>()
+const getExpandedIdSet = (
+  folderId: string | null,
+  byId: Record<string, {parentId: string | null}>
+) => {
+  const expanded = new Set<string>()
+  let cursor: string | null = folderId
+  while (cursor && byId[cursor]) {
+    expanded.add(cursor)
+    cursor = byId[cursor].parentId
   }
-
-  const expandedPaths = new Set<string>()
-
-  folderPath.split('/').reduce((previousPath, segment) => {
-    const nextPath = previousPath ? `${previousPath}/${segment}` : segment
-    expandedPaths.add(nextPath)
-    return nextPath
-  }, '')
-
-  return expandedPaths
+  return expanded
 }
 
 type Props = {
@@ -32,29 +29,29 @@ type Props = {
 }
 
 type FolderNodeProps = {
-  expandedPaths: Set<string>
+  expandedIds: Set<string>
   node: FolderTreeNode
-  onSelect: (folderPath: string) => void
-  onToggle: (folderPath: string) => void
-  selectedPath: string | null
+  onSelect: (folderId: string) => void
+  onToggle: (folderId: string) => void
+  selectedId: string | null
 }
 
-const FolderNode = ({expandedPaths, node, onSelect, onToggle, selectedPath}: FolderNodeProps) => {
-  const expanded = expandedPaths.has(node.path)
+const FolderNode = ({expandedIds, node, onSelect, onToggle, selectedId}: FolderNodeProps) => {
+  const expanded = expandedIds.has(node.id)
   const hasChildren = node.children.length > 0
-  const selected = selectedPath === node.path
+  const selected = selectedId === node.id
   const selectedTextColor = selected ? '#fff' : 'inherit'
   const selectedSecondaryColor = selected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'
 
   const handleToggle = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
-    onToggle(node.path)
+    onToggle(node.id)
   }
 
   return (
     <Box marginTop={1}>
       <Card
-        onClick={() => onSelect(node.path)}
+        onClick={() => onSelect(node.id)}
         padding={2}
         radius={2}
         style={{
@@ -108,12 +105,12 @@ const FolderNode = ({expandedPaths, node, onSelect, onToggle, selectedPath}: Fol
         <Box paddingLeft={4}>
           {node.children.map(childNode => (
             <FolderNode
-              expandedPaths={expandedPaths}
-              key={childNode.path}
+              expandedIds={expandedIds}
+              key={childNode.id}
               node={childNode}
               onSelect={onSelect}
               onToggle={onToggle}
-              selectedPath={selectedPath}
+              selectedId={selectedId}
             />
           ))}
         </Box>
@@ -125,13 +122,15 @@ const FolderNode = ({expandedPaths, node, onSelect, onToggle, selectedPath}: Fol
 const DialogFolderMove = ({children, dialog}: Props) => {
   const dispatch = useDispatch()
   const folderTree = useTypedSelector(selectFolderTree)
-  const {assets, folderPath, id} = dialog
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
-  const [selectedPath, setSelectedPath] = useState<string | null>(folderPath || null)
+  const byId = useTypedSelector(state => state.folders.byId)
+  const {assets, folderId, id} = dialog
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+  const [selectedId, setSelectedId] = useState<string | null>(folderId || null)
+  const selectedFolder = selectedId ? byId[selectedId] : null
 
   useEffect(() => {
-    setExpandedPaths(getExpandedPathSet(selectedPath))
-  }, [folderTree, selectedPath])
+    setExpandedIds(getExpandedIdSet(selectedId, byId))
+  }, [folderTree, byId, selectedId])
 
   const handleClose = () => {
     dispatch(dialogActions.remove({id}))
@@ -142,18 +141,18 @@ const DialogFolderMove = ({children, dialog}: Props) => {
       assetsActions.folderSetRequest({
         assets,
         closeDialogId: id,
-        folderPath: selectedPath
+        folderId: selectedId
       })
     )
   }
 
-  const handleToggle = (folderPathValue: string) => {
-    setExpandedPaths(previous => {
+  const handleToggle = (toggleId: string) => {
+    setExpandedIds(previous => {
       const next = new Set(previous)
-      if (next.has(folderPathValue)) {
-        next.delete(folderPathValue)
+      if (next.has(toggleId)) {
+        next.delete(toggleId)
       } else {
-        next.add(folderPathValue)
+        next.add(toggleId)
       }
       return next
     })
@@ -169,7 +168,7 @@ const DialogFolderMove = ({children, dialog}: Props) => {
             <Button
               mode="default"
               onClick={handleMove}
-              text={selectedPath ? 'Move assets' : 'Move to Home'}
+              text={selectedId ? 'Move assets' : 'Move to Home'}
               tone="primary"
             />
           </Flex>
@@ -187,11 +186,11 @@ const DialogFolderMove = ({children, dialog}: Props) => {
 
         <Box>
           <Card
-            onClick={() => setSelectedPath(null)}
+            onClick={() => setSelectedId(null)}
             padding={2}
             radius={2}
             style={{
-              background: !selectedPath ? 'var(--card-focus-ring-color)' : 'transparent',
+              background: !selectedId ? 'var(--card-focus-ring-color)' : 'transparent',
               border: '1px solid var(--card-border-color)',
               cursor: 'pointer'
             }}
@@ -212,12 +211,12 @@ const DialogFolderMove = ({children, dialog}: Props) => {
           <Box marginTop={2} style={{maxHeight: '22rem', overflowY: 'auto', paddingRight: '0.25rem'}}>
             {folderTree.map(node => (
               <FolderNode
-                expandedPaths={expandedPaths}
-                key={node.path}
+                expandedIds={expandedIds}
+                key={node.id}
                 node={node}
-                onSelect={setSelectedPath}
+                onSelect={setSelectedId}
                 onToggle={handleToggle}
-                selectedPath={selectedPath}
+                selectedId={selectedId}
               />
             ))}
           </Box>
@@ -236,7 +235,7 @@ const DialogFolderMove = ({children, dialog}: Props) => {
             Destination:
           </Text>
           <Text size={1} weight="semibold">
-            {selectedPath || 'Home'}
+            {selectedFolder?.name || 'Home'}
           </Text>
         </Inline>
       </Stack>

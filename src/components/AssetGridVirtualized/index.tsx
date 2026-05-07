@@ -28,7 +28,9 @@ const VirtualCell = memo(
     }
 
     if (item?.type === 'folder') {
-      return <CardFolder name={item.name} path={item.path} totalCount={item.totalCount} />
+      return (
+        <CardFolder folderId={item.folderId} name={item.name} totalCount={item.totalCount} />
+      )
     }
 
     if (item?.type === 'upload') {

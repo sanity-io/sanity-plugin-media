@@ -6,8 +6,8 @@ import {foldersActions} from '../../modules/folders'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 
 type Props = {
+  folderId: string
   name: string
-  path: string
   totalCount: number
 }
 
@@ -59,14 +59,14 @@ const FolderGlyph = styled(Box)(
   `
 )
 
-const CardFolder = ({name, path, totalCount}: Props) => {
+const CardFolder = ({folderId, name, totalCount}: Props) => {
   const dispatch = useDispatch()
   const scheme = useColorSchemeValue()
 
   return (
     <CardWrapper padding={1}>
       <FolderCard
-        onClick={() => dispatch(foldersActions.currentFolderSet({folderPath: path}))}
+        onClick={() => dispatch(foldersActions.currentFolderSet({folderId}))}
         padding={3}
         radius={2}
         style={{

@@ -7,8 +7,8 @@ import {foldersActions} from '../../modules/folders'
 import {getSchemeColor} from '../../utils/getSchemeColor'
 
 type Props = {
+  folderId: string
   name: string
-  path: string
   totalCount: number
 }
 
@@ -49,14 +49,14 @@ const FolderBadge = styled(Box)(
   `
 )
 
-const TableRowFolder = ({name, path, totalCount}: Props) => {
+const TableRowFolder = ({folderId, name, totalCount}: Props) => {
   const dispatch = useDispatch()
   const mediaIndex = useMediaIndex()
   const scheme = useColorSchemeValue()
 
   return (
     <ContainerGrid
-      onClick={() => dispatch(foldersActions.currentFolderSet({folderPath: path}))}
+      onClick={() => dispatch(foldersActions.currentFolderSet({folderId}))}
       style={{
         background: getSchemeColor(scheme, 'bg'),
         gridColumnGap: mediaIndex < 3 ? 0 : '16px',

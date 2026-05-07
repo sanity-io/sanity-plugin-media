@@ -32,7 +32,7 @@ const VirtualRow = memo(
     if (item?.type === 'folder') {
       return (
         <Box style={{height: '100px'}}>
-          <TableRowFolder name={item.name} path={item.path} totalCount={item.totalCount} />
+          <TableRowFolder folderId={item.folderId} name={item.name} totalCount={item.totalCount} />
         </Box>
       )
     }

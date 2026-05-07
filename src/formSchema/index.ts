@@ -24,7 +24,6 @@ export function getAssetFormSchema(locales?: {id: string}[]) {
     description: localizedStringSchema(locales),
     opt: z.object({
       media: z.object({
-        folder: z.string().trim().optional(),
         tags: z.array(tagOptionSchema).nullable()
       })
     }),

@@ -8,25 +8,33 @@ export default {
   type: 'document',
   fields: [
     {
-      title: 'Path',
-      name: 'path',
+      title: 'Name',
+      name: 'name',
       type: 'string'
+    },
+    {
+      title: 'Parent',
+      name: 'parent',
+      type: 'reference',
+      to: [{type: FOLDER_DOCUMENT_NAME}],
+      weak: true
     }
   ],
   preview: {
     select: {
-      path: 'path'
+      name: 'name',
+      parentName: 'parent.name'
     },
-    prepare(selection: {path?: string}): {
+    prepare(selection: {name?: string; parentName?: string}): {
       media: typeof FolderIcon
       subtitle?: string
       title: string
     } {
-      const {path} = selection
+      const {name, parentName} = selection
       return {
         media: FolderIcon,
-        title: path?.split('/').pop() || 'Folder',
-        subtitle: path
+        title: name || 'Folder',
+        subtitle: parentName ? `in ${parentName}` : undefined
       }
     }
   }

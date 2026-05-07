@@ -47,7 +47,7 @@ type CustomFields = {
   description?: LocalizedString
   opt?: {
     media?: {
-      folder?: string
+      folder?: SanityReference
       tags?: SanityReference[]
     }
   }
@@ -96,6 +96,7 @@ export type CardAssetData = {
 
 export type CardFolderData = {
   id: string
+  folderId: string
   name: string
   path: string
   totalCount: number
@@ -146,7 +147,7 @@ export type DialogConfirmProps = {
 
 export type DialogFolderCreateProps = {
   closeDialogId?: string
-  folderPath?: string | null
+  parentFolderId?: string | null
   id: string
   type: 'folderCreate'
 }
@@ -154,14 +155,14 @@ export type DialogFolderCreateProps = {
 export type DialogFolderMoveProps = {
   assets: AssetItem[]
   closeDialogId?: string
-  folderPath?: string | null
+  folderId?: string | null
   id: string
   type: 'folderMove'
 }
 
 export type DialogFolderRenameProps = {
   closeDialogId?: string
-  folderPath: string
+  folderId: string
   id: string
   type: 'folderRename'
 }
@@ -211,12 +212,19 @@ export type FileAsset = SanityAssetDocument &
     _type: 'sanity.fileAsset'
   }
 
+export type FolderDoc = {
+  _id: string
+  name: string
+  parentId: string | null
+}
+
 export type FolderTreeItem = {
   depth: number
   exactCount: number
+  id: string
   name: string
+  parentId: string | null
   path: string
-  persisted?: boolean
   totalCount: number
 }
 
@@ -410,7 +418,7 @@ export type TagSelectOption = z.infer<typeof tagOptionSchema>
 export type UploadItem = {
   _type: 'upload'
   assetType: AssetType
-  folderPath?: string | null
+  folderId?: string | null
   hash: string
   name: string
   objectUrl?: string

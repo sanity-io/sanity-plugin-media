@@ -16,7 +16,7 @@ const PickedBar = () => {
   // Redux
   const dispatch = useDispatch()
   const assetsPicked = useTypedSelector(selectAssetsPicked)
-  const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
+  const currentFolderId = useTypedSelector(state => state.folders.currentFolderId)
   const {isMultiSelect, onSelect} = useAssetSourceActions()
   // Callbacks
   const handlePickClear = () => {
@@ -28,7 +28,7 @@ const PickedBar = () => {
   }
 
   const handleMovePicked = () =>
-    dispatch(DIALOG_ACTIONS.showFolderMove({assets: assetsPicked, folderPath: currentFolderPath}))
+    dispatch(DIALOG_ACTIONS.showFolderMove({assets: assetsPicked, folderId: currentFolderId}))
 
   const handleInsertPicked = () => {
     if (!onSelect) {

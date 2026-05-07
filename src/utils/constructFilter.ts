@@ -5,13 +5,13 @@ import {operators} from '../config/searchFacets'
 
 const constructFilter = ({
   assetTypes,
-  currentFolderPath,
+  currentFolderId,
   currentFolderUnfiled,
   searchFacets,
   searchQuery
 }: {
   assetTypes: AssetType[]
-  currentFolderPath?: string | null
+  currentFolderId?: string | null
   currentFolderUnfiled?: boolean
   searchFacets: SearchFacetInputProps[]
   searchQuery?: string
@@ -81,10 +81,10 @@ const constructFilter = ({
 
   let folderFilter: string | undefined
 
-  if (currentFolderUnfiled || !currentFolderPath) {
-    folderFilter = groq`(!defined(opt.media.folder) || opt.media.folder == null || opt.media.folder == "")`
-  } else {
-    folderFilter = `opt.media.folder == ${JSON.stringify(currentFolderPath)}`
+  if (currentFolderUnfiled) {
+    folderFilter = groq`!defined(opt.media.folder._ref)`
+  } else if (currentFolderId) {
+    folderFilter = `opt.media.folder._ref == ${JSON.stringify(currentFolderId)}`
   }
 
   // Join separate filter fragments
@@ -97,7 +97,7 @@ const constructFilter = ({
     // references(*[_type == "media.tag" && name.current == "${searchQuery.trim()}"]._id)
     ...(searchQuery
       ? [
-          groq`[_id, altText, assetId, creditLine, description, originalFilename, opt.media.folder, title, url] match '*${searchQuery.trim()}*'`
+          groq`[_id, altText, assetId, creditLine, description, originalFilename, title, url] match '*${searchQuery.trim()}*'`
         ]
       : []),
     ...(folderFilter ? [folderFilter] : []),

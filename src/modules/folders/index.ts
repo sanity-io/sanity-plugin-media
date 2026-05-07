@@ -1,5 +1,5 @@
 import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
-import type {ClientError, Patch, Transaction} from '@sanity/client'
+import type {ClientError} from '@sanity/client'
 import groq from 'groq'
 import {from, of} from 'rxjs'
 import {
@@ -13,187 +13,189 @@ import {
 } from 'rxjs/operators'
 import {nanoid} from 'nanoid'
 import {FOLDER_DOCUMENT_NAME} from '../../constants'
-import normalizeFolderPath from '../../utils/normalizeFolderPath'
-import type {FolderTreeItem, FolderTreeNode, HttpError, MyEpic} from '../../types'
+import type {FolderDoc, FolderTreeItem, FolderTreeNode, HttpError, MyEpic} from '../../types'
 import debugThrottle from '../../operators/debugThrottle'
 import {assetsActions} from '../assets'
 import type {RootReducerState} from '../types'
 import {UPLOADS_ACTIONS} from '../uploads/actions'
 
 type FoldersReducerState = {
-  assignedPaths: (string | null)[]
+  byId: Record<string, FolderDoc>
+  childrenByParentId: Record<string, string[]>
+  rootIds: string[]
+  exactCountByFolderId: Record<string, number>
+  unfiledCount: number
+  currentFolderId: string | null
+  currentFolderUnfiled: boolean
+  panelVisible: boolean
+  fetching: boolean
+  fetchCount: number
+  fetchingError?: HttpError
   creating: boolean
   creatingError?: HttpError
-  currentFolderPath: string | null
-  currentFolderUnfiled: boolean
-  deletingPath?: string
-  fetchCount: number
-  fetching: boolean
-  fetchingError?: HttpError
-  panelVisible: boolean
-  persistedPaths: string[]
-  renameError?: HttpError
+  deletingId?: string
+  deleteError?: HttpError
   renaming: boolean
+  renameError?: HttpError
+  moving: boolean
+  moveError?: HttpError
 }
+
+const ROOT_KEY = '__root__'
 
 const initialState: FoldersReducerState = {
-  assignedPaths: [],
+  byId: {},
+  childrenByParentId: {},
+  rootIds: [],
+  exactCountByFolderId: {},
+  unfiledCount: 0,
+  currentFolderId: null,
+  currentFolderUnfiled: false,
+  panelVisible: true,
+  fetching: false,
+  fetchCount: -1,
+  fetchingError: undefined,
   creating: false,
   creatingError: undefined,
-  currentFolderPath: null,
-  currentFolderUnfiled: false,
-  deletingPath: undefined,
-  fetchCount: -1,
-  fetching: false,
-  fetchingError: undefined,
-  panelVisible: true,
-  persistedPaths: [],
+  deletingId: undefined,
+  deleteError: undefined,
+  renaming: false,
   renameError: undefined,
-  renaming: false
+  moving: false,
+  moveError: undefined
 }
 
-const getAvailableFolderPaths = (folderPaths: (string | null)[]) => {
-  const availablePaths = new Set<string>()
+const indexFolders = (folders: FolderDoc[]) => {
+  const byId: Record<string, FolderDoc> = {}
+  const childrenByParentId: Record<string, string[]> = {}
+  const rootIds: string[] = []
 
-  folderPaths.forEach(path => {
-    const normalizedPath = normalizeFolderPath(path)
-    if (!normalizedPath) {
-      return
-    }
-
-    normalizedPath.split('/').reduce((acc, segment) => {
-      const nextPath = acc ? `${acc}/${segment}` : segment
-      availablePaths.add(nextPath)
-      return nextPath
-    }, '')
+  folders.forEach(folder => {
+    byId[folder._id] = folder
   })
 
-  return availablePaths
+  // Resolve parent ids that reference unknown folders to null (defensive — orphan folders surface at root).
+  folders.forEach(folder => {
+    const parentKey = folder.parentId && byId[folder.parentId] ? folder.parentId : null
+    if (parentKey === null) {
+      rootIds.push(folder._id)
+    } else {
+      if (!childrenByParentId[parentKey]) {
+        childrenByParentId[parentKey] = []
+      }
+      childrenByParentId[parentKey].push(folder._id)
+    }
+  })
+
+  const sortByName = (ids: string[]) =>
+    ids.sort((a, b) =>
+      (byId[a]?.name || '').localeCompare(byId[b]?.name || '', undefined, {
+        numeric: true,
+        sensitivity: 'base'
+      })
+    )
+
+  sortByName(rootIds)
+  Object.keys(childrenByParentId).forEach(parentId => sortByName(childrenByParentId[parentId]))
+
+  return {byId, childrenByParentId, rootIds}
 }
 
-const replaceFolderPrefix = ({
-  nextPath,
-  path,
-  previousPath
-}: {
-  nextPath: string
-  path: string | null
-  previousPath: string
-}) => {
-  const normalizedPath = normalizeFolderPath(path)
-  const normalizedPreviousPath = normalizeFolderPath(previousPath)
-  const normalizedNextPath = normalizeFolderPath(nextPath)
-
-  if (!normalizedPath) {
-    return path
+const collectDescendantIds = (
+  folderId: string,
+  childrenByParentId: Record<string, string[]>
+): string[] => {
+  const stack = [...(childrenByParentId[folderId] || [])]
+  const out: string[] = []
+  while (stack.length) {
+    const id = stack.pop()!
+    out.push(id)
+    const children = childrenByParentId[id]
+    if (children) {
+      stack.push(...children)
+    }
   }
-
-  if (normalizedPath === normalizedPreviousPath) {
-    return normalizedNextPath
-  }
-
-  if (normalizedPath.startsWith(`${normalizedPreviousPath}/`)) {
-    return `${normalizedNextPath}${normalizedPath.slice(normalizedPreviousPath.length)}`
-  }
-
-  return normalizedPath
+  return out
 }
 
-const patchOperationAssetFolderSet =
-  ({folderPath}: {folderPath: string}) =>
-  (patch: Patch) =>
-    patch
-      .setIfMissing({opt: {}})
-      .setIfMissing({'opt.media': {}})
-      .set({'opt.media.folder': folderPath})
-
-const patchOperationFolderPathSet =
-  ({path}: {path: string}) =>
-  (patch: Patch) =>
-    patch.set({path})
+const isDescendant = (
+  ancestorId: string,
+  candidateId: string,
+  byId: Record<string, FolderDoc>
+): boolean => {
+  let cursor: string | null = candidateId
+  const seen = new Set<string>()
+  while (cursor) {
+    if (seen.has(cursor)) return false
+    seen.add(cursor)
+    if (cursor === ancestorId) return true
+    cursor = byId[cursor]?.parentId ?? null
+  }
+  return false
+}
 
 const foldersSlice = createSlice({
   name: 'folders',
   initialState,
   reducers: {
-    createComplete(state, action: PayloadAction<{path: string}>) {
+    createComplete(state, _action: PayloadAction<{folder: FolderDoc}>) {
       state.creating = false
-      if (!state.persistedPaths.includes(action.payload.path)) {
-        state.persistedPaths.push(action.payload.path)
-      }
     },
     createError(state, action: PayloadAction<{error: HttpError}>) {
       state.creating = false
       state.creatingError = action.payload.error
     },
-    createRequest(state, _action: PayloadAction<{name: string; parentPath?: string | null}>) {
+    createRequest(state, _action: PayloadAction<{name: string; parentId?: string | null}>) {
       state.creating = true
       delete state.creatingError
     },
     currentFolderClear(state) {
-      state.currentFolderPath = null
+      state.currentFolderId = null
       state.currentFolderUnfiled = false
     },
-    currentFolderSet(state, action: PayloadAction<{folderPath: string}>) {
-      state.currentFolderPath = normalizeFolderPath(action.payload.folderPath)
+    currentFolderSet(state, action: PayloadAction<{folderId: string}>) {
+      state.currentFolderId = action.payload.folderId
       state.currentFolderUnfiled = false
     },
     currentFolderShowUnfiled(state) {
-      state.currentFolderPath = null
+      state.currentFolderId = null
       state.currentFolderUnfiled = true
     },
-    deleteComplete(state, action: PayloadAction<{deletedPaths: string[]; path: string}>) {
-      state.deletingPath = undefined
-      state.assignedPaths = state.assignedPaths.filter(folderPath => {
-        const normalizedPath = normalizeFolderPath(folderPath)
-        return !(
-          normalizedPath === action.payload.path ||
-          normalizedPath.startsWith(`${action.payload.path}/`)
-        )
-      })
-      state.persistedPaths = state.persistedPaths.filter(
-        path =>
-          !action.payload.deletedPaths.includes(path) &&
-          path !== action.payload.path &&
-          !path.startsWith(`${action.payload.path}/`)
-      )
-      if (
-        state.currentFolderPath === action.payload.path ||
-        state.currentFolderPath?.startsWith(`${action.payload.path}/`)
-      ) {
-        state.currentFolderPath = null
+    deleteComplete(state, action: PayloadAction<{folderId: string; deletedIds: string[]}>) {
+      state.deletingId = undefined
+      const removed = new Set(action.payload.deletedIds)
+      if (state.currentFolderId && removed.has(state.currentFolderId)) {
+        state.currentFolderId = null
       }
     },
-    deleteError(state, _action: PayloadAction<{error: HttpError; path: string}>) {
-      state.deletingPath = undefined
+    deleteError(state, action: PayloadAction<{error: HttpError; folderId: string}>) {
+      state.deletingId = undefined
+      state.deleteError = action.payload.error
     },
-    deleteRequest(state, action: PayloadAction<{path: string}>) {
-      state.deletingPath = action.payload.path
+    deleteRequest(state, action: PayloadAction<{folderId: string}>) {
+      state.deletingId = action.payload.folderId
+      delete state.deleteError
     },
     fetchComplete(
       state,
-      action: PayloadAction<{assignedPaths: (string | null)[]; persistedPaths: string[]}>
+      action: PayloadAction<{
+        folders: FolderDoc[]
+        exactCountByFolderId: Record<string, number>
+        unfiledCount: number
+      }>
     ) {
-      const assignedPaths = action.payload.assignedPaths.map(path => {
-        const normalizedPath = normalizeFolderPath(path)
-        return normalizedPath || null
-      })
-      const persistedPaths = action.payload.persistedPaths
-        .map(path => normalizeFolderPath(path))
-        .filter(Boolean)
-
-      state.assignedPaths = assignedPaths
-      state.persistedPaths = persistedPaths
+      const {byId, childrenByParentId, rootIds} = indexFolders(action.payload.folders)
+      state.byId = byId
+      state.childrenByParentId = childrenByParentId
+      state.rootIds = rootIds
+      state.exactCountByFolderId = action.payload.exactCountByFolderId
+      state.unfiledCount = action.payload.unfiledCount
       state.fetching = false
-      state.fetchCount = assignedPaths.length + persistedPaths.length
+      state.fetchCount = action.payload.folders.length
       delete state.fetchingError
 
-      const availableFolderPaths = getAvailableFolderPaths([
-        ...assignedPaths,
-        ...state.persistedPaths
-      ])
-      if (state.currentFolderPath && !availableFolderPaths.has(state.currentFolderPath)) {
-        state.currentFolderPath = null
+      if (state.currentFolderId && !byId[state.currentFolderId]) {
+        state.currentFolderId = null
       }
     },
     fetchError(state, action: PayloadAction<{error: HttpError}>) {
@@ -204,42 +206,28 @@ const foldersSlice = createSlice({
       state.fetching = true
       delete state.fetchingError
     },
+    moveComplete(state, _action: PayloadAction<{folderId: string; parentId: string | null}>) {
+      state.moving = false
+    },
+    moveError(state, action: PayloadAction<{error: HttpError; folderId: string}>) {
+      state.moving = false
+      state.moveError = action.payload.error
+    },
+    moveRequest(state, _action: PayloadAction<{folderId: string; parentId: string | null}>) {
+      state.moving = true
+      delete state.moveError
+    },
     panelVisibleSet(state, action: PayloadAction<{panelVisible: boolean}>) {
       state.panelVisible = action.payload.panelVisible
     },
-    renameComplete(state, action: PayloadAction<{nextPath: string; previousPath: string}>) {
+    renameComplete(state, _action: PayloadAction<{folderId: string; name: string}>) {
       state.renaming = false
-      state.assignedPaths = state.assignedPaths.map(
-        path =>
-          replaceFolderPrefix({
-            nextPath: action.payload.nextPath,
-            path,
-            previousPath: action.payload.previousPath
-          }) || null
-      )
-      state.persistedPaths = state.persistedPaths.map(
-        path =>
-          replaceFolderPrefix({
-            nextPath: action.payload.nextPath,
-            path,
-            previousPath: action.payload.previousPath
-          }) || path
-      )
-
-      if (state.currentFolderPath) {
-        state.currentFolderPath =
-          replaceFolderPrefix({
-            nextPath: action.payload.nextPath,
-            path: state.currentFolderPath,
-            previousPath: action.payload.previousPath
-          }) || null
-      }
     },
     renameError(state, action: PayloadAction<{error: HttpError}>) {
       state.renaming = false
       state.renameError = action.payload.error
     },
-    renameRequest(state, _action: PayloadAction<{name: string; path: string}>) {
+    renameRequest(state, _action: PayloadAction<{folderId: string; name: string}>) {
       state.renaming = true
       delete state.renameError
     }
@@ -253,34 +241,58 @@ export const foldersFetchEpic: MyEpic = (action$, state$, {client}) =>
     switchMap(([action, state]) =>
       of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        mergeMap(() =>
-          client.observable.fetch<{assets: {folder: string | null}[]; folders: {path: string}[]}>(
+        mergeMap(() => {
+          const assetTypes = state.assets.assetTypes.map(type => `sanity.${type}Asset`)
+          return client.observable.fetch<{
+            folders: {_id: string; name?: string; parentId?: string | null}[]
+            assetCounts: {folderId: string; count: number}[]
+            unfiledCount: number
+          }>(
             groq`{
-              "assets": *[
-                _type in ${JSON.stringify(
-                  state.assets.assetTypes.map(type => `sanity.${type}Asset`)
-                )}
-                && !(_id in path("drafts.**"))
-              ] {
-                "folder": opt.media.folder
-              },
               "folders": *[
                 _type == "${FOLDER_DOCUMENT_NAME}"
                 && !(_id in path("drafts.**"))
               ] {
-                path
-              }
+                _id,
+                name,
+                "parentId": parent._ref
+              },
+              "assetCounts": *[
+                _type in ${JSON.stringify(assetTypes)}
+                && !(_id in path("drafts.**"))
+                && defined(opt.media.folder._ref)
+              ] {
+                "folderId": opt.media.folder._ref
+              } | {
+                "folderId": folderId,
+                "count": count(*[_id == ^.folderId])
+              },
+              "unfiledCount": count(*[
+                _type in ${JSON.stringify(assetTypes)}
+                && !(_id in path("drafts.**"))
+                && !defined(opt.media.folder._ref)
+              ])
             }`
           )
-        ),
-        mergeMap(result =>
-          of(
+        }),
+        mergeMap(result => {
+          const folders: FolderDoc[] = result.folders.map(f => ({
+            _id: f._id,
+            name: f.name || '',
+            parentId: f.parentId || null
+          }))
+          const exactCountByFolderId: Record<string, number> = {}
+          result.assetCounts.forEach(({folderId, count}) => {
+            exactCountByFolderId[folderId] = (exactCountByFolderId[folderId] || 0) + count
+          })
+          return of(
             foldersSlice.actions.fetchComplete({
-              assignedPaths: result.assets.map(item => item.folder || null),
-              persistedPaths: result.folders.map(item => item.path)
+              folders,
+              exactCountByFolderId,
+              unfiledCount: result.unfiledCount
             })
           )
-        ),
+        }),
         catchError((error: ClientError) =>
           of(
             foldersSlice.actions.fetchError({
@@ -303,6 +315,7 @@ export const foldersRefreshEpic: MyEpic = action$ =>
         assetsActions.folderSetComplete.match(action) ||
         foldersSlice.actions.createComplete.match(action) ||
         foldersSlice.actions.deleteComplete.match(action) ||
+        foldersSlice.actions.moveComplete.match(action) ||
         foldersSlice.actions.renameComplete.match(action) ||
         assetsActions.listenerCreateQueueComplete.match(action) ||
         assetsActions.listenerDeleteQueueComplete.match(action) ||
@@ -320,8 +333,7 @@ export const foldersCurrentFolderEpic: MyEpic = action$ =>
       action =>
         foldersSlice.actions.currentFolderClear.match(action) ||
         foldersSlice.actions.currentFolderSet.match(action) ||
-        foldersSlice.actions.currentFolderShowUnfiled.match(action) ||
-        foldersSlice.actions.renameComplete.match(action)
+        foldersSlice.actions.currentFolderShowUnfiled.match(action)
     ),
     mergeMap(() =>
       of(
@@ -337,15 +349,10 @@ export const foldersCreateEpic: MyEpic = (action$, state$, {client}) =>
     filter(foldersSlice.actions.createRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const parentPath = normalizeFolderPath(action.payload.parentPath)
-      const folderName = normalizeFolderPath(action.payload.name)
-      const path = parentPath ? `${parentPath}/${folderName}` : folderName
-      const existingPaths = getAvailableFolderPaths([
-        ...state.folders.assignedPaths,
-        ...state.folders.persistedPaths
-      ])
+      const name = action.payload.name.trim()
+      const parentId = action.payload.parentId || null
 
-      if (!folderName) {
+      if (!name) {
         return of(
           foldersSlice.actions.createError({
             error: {message: 'Folder name cannot be empty', statusCode: 400}
@@ -353,27 +360,42 @@ export const foldersCreateEpic: MyEpic = (action$, state$, {client}) =>
         )
       }
 
-      if (existingPaths.has(path)) {
+      const siblingIds = parentId
+        ? state.folders.childrenByParentId[parentId] || []
+        : state.folders.rootIds
+      const collision = siblingIds.some(
+        id => state.folders.byId[id]?.name.toLowerCase() === name.toLowerCase()
+      )
+      if (collision) {
         return of(
           foldersSlice.actions.createError({
-            error: {message: 'A folder with this path already exists', statusCode: 409}
+            error: {message: 'A folder with this name already exists here', statusCode: 409}
           })
         )
       }
 
+      const newId = `${FOLDER_DOCUMENT_NAME}.${nanoid()}`
+      const doc: {
+        _id: string
+        _type: string
+        name: string
+        parent?: {_ref: string; _type: 'reference'; _weak: true}
+      } = {
+        _id: newId,
+        _type: FOLDER_DOCUMENT_NAME,
+        name
+      }
+      if (parentId) {
+        doc.parent = {_ref: parentId, _type: 'reference', _weak: true}
+      }
+
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        mergeMap(() =>
-          client.observable.create({
-            _id: `${FOLDER_DOCUMENT_NAME}.${nanoid()}`,
-            _type: FOLDER_DOCUMENT_NAME,
-            path
-          })
-        ),
+        mergeMap(() => client.observable.create(doc)),
         mergeMap(() =>
           of(
-            foldersSlice.actions.createComplete({path}),
-            foldersSlice.actions.currentFolderSet({folderPath: path})
+            foldersSlice.actions.createComplete({folder: {_id: newId, name, parentId}}),
+            foldersSlice.actions.currentFolderSet({folderId: newId})
           )
         ),
         catchError((error: ClientError) =>
@@ -395,55 +417,41 @@ export const foldersDeleteEpic: MyEpic = (action$, state$, {client}) =>
     filter(foldersSlice.actions.deleteRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const path = action.payload.path
-      const normalizedPath = normalizeFolderPath(path)
+      const folderId = action.payload.folderId
+      const descendantIds = collectDescendantIds(folderId, state.folders.childrenByParentId)
+      const folderIds = [folderId, ...descendantIds]
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
         mergeMap(() =>
-          client.observable.fetch<{
-            assets: {_id: string}[]
-            folders: {_id: string; path: string}[]
-          }>(
+          client.observable.fetch<{assets: {_id: string}[]}>(
             groq`{
               "assets": *[
                 _type in ${JSON.stringify(
                   state.assets.assetTypes.map(type => `sanity.${type}Asset`)
                 )}
                 && !(_id in path("drafts.**"))
-                && defined(opt.media.folder)
-                && (opt.media.folder == $path || opt.media.folder match $pathMatch)
+                && opt.media.folder._ref in $folderIds
               ] {
                 _id
-              },
-              "folders": *[
-                _type == "${FOLDER_DOCUMENT_NAME}"
-                && !(_id in path("drafts.**"))
-                && (path == $path || path match $pathMatch)
-              ] {
-                _id,
-                path
               }
             }`,
-            {path: normalizedPath, pathMatch: `${normalizedPath}/**`}
+            {folderIds}
           )
         ),
         mergeMap(result => {
-          const deletedPaths = result.folders.map(folder => folder.path)
-          const transactionWithAssets = result.assets.reduce(
-            (tx, asset) => tx.delete(asset._id),
-            client.transaction()
-          )
-          const transaction = result.folders.reduce(
-            (tx, folder) => tx.delete(folder._id),
-            transactionWithAssets
-          )
+          const tx = client.transaction()
+          // Unset folder ref on referencing assets first (weak refs are forgiving but we still
+          // delete the assets here to match v1 recursive-delete semantics — assets in a folder
+          // are removed with the folder).
+          result.assets.forEach(asset => tx.delete(asset._id))
+          folderIds.forEach(id => tx.delete(id))
 
-          return from(transaction.commit()).pipe(
+          return from(tx.commit()).pipe(
             map(() =>
               foldersSlice.actions.deleteComplete({
-                deletedPaths,
-                path: normalizedPath
+                folderId,
+                deletedIds: folderIds
               })
             )
           )
@@ -455,7 +463,7 @@ export const foldersDeleteEpic: MyEpic = (action$, state$, {client}) =>
                 message: error?.message || 'Internal error',
                 statusCode: error?.statusCode || 500
               },
-              path: normalizedPath
+              folderId
             })
           )
         )
@@ -468,17 +476,19 @@ export const foldersRenameEpic: MyEpic = (action$, state$, {client}) =>
     filter(foldersSlice.actions.renameRequest.match),
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
-      const previousPath = normalizeFolderPath(action.payload.path)
-      const nextName = normalizeFolderPath(action.payload.name)
-      const parentPath = previousPath.includes('/')
-        ? previousPath.slice(0, previousPath.lastIndexOf('/'))
-        : ''
-      const nextPath = parentPath ? `${parentPath}/${nextName}` : nextName
-      const existingPaths = Array.from(
-        getAvailableFolderPaths([...state.folders.assignedPaths, ...state.folders.persistedPaths])
-      )
+      const {folderId} = action.payload
+      const name = action.payload.name.trim()
+      const folder = state.folders.byId[folderId]
 
-      if (!nextName) {
+      if (!folder) {
+        return of(
+          foldersSlice.actions.renameError({
+            error: {message: 'Folder not found', statusCode: 404}
+          })
+        )
+      }
+
+      if (!name) {
         return of(
           foldersSlice.actions.renameError({
             error: {message: 'Folder name cannot be empty', statusCode: 400}
@@ -486,7 +496,7 @@ export const foldersRenameEpic: MyEpic = (action$, state$, {client}) =>
         )
       }
 
-      if (nextPath === previousPath) {
+      if (name === folder.name) {
         return of(
           foldersSlice.actions.renameError({
             error: {message: 'Folder name has not changed', statusCode: 400}
@@ -494,103 +504,24 @@ export const foldersRenameEpic: MyEpic = (action$, state$, {client}) =>
         )
       }
 
-      if (nextPath.startsWith(`${previousPath}/`)) {
+      const siblingIds = folder.parentId
+        ? state.folders.childrenByParentId[folder.parentId] || []
+        : state.folders.rootIds
+      const collision = siblingIds.some(
+        id => id !== folderId && state.folders.byId[id]?.name.toLowerCase() === name.toLowerCase()
+      )
+      if (collision) {
         return of(
           foldersSlice.actions.renameError({
-            error: {message: 'Folder cannot be renamed inside itself', statusCode: 400}
-          })
-        )
-      }
-
-      if (
-        existingPaths.some(
-          path =>
-            path === nextPath ||
-            (path.startsWith(`${nextPath}/`) && !path.startsWith(`${previousPath}/`))
-        )
-      ) {
-        return of(
-          foldersSlice.actions.renameError({
-            error: {message: 'A folder with this path already exists', statusCode: 409}
+            error: {message: 'A folder with this name already exists here', statusCode: 409}
           })
         )
       }
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
-        mergeMap(() =>
-          client.observable.fetch<{
-            assets: {_id: string; folder: string | null}[]
-            folders: {_id: string; path: string}[]
-          }>(
-            groq`{
-              "assets": *[
-                _type in ${JSON.stringify(
-                  state.assets.assetTypes.map(type => `sanity.${type}Asset`)
-                )}
-                && !(_id in path("drafts.**"))
-                && defined(opt.media.folder)
-                && (opt.media.folder == $path || opt.media.folder match $pathMatch)
-              ] {
-                _id,
-                "folder": opt.media.folder
-              },
-              "folders": *[
-                _type == "${FOLDER_DOCUMENT_NAME}"
-                && !(_id in path("drafts.**"))
-                && (path == $path || path match $pathMatch)
-              ] {
-                _id,
-                path
-              }
-            }`,
-            {path: previousPath, pathMatch: `${previousPath}/**`}
-          )
-        ),
-        mergeMap(result => {
-          const transaction: Transaction = result.assets.reduce((tx, asset) => {
-            const folderPath =
-              replaceFolderPrefix({
-                nextPath,
-                path: asset.folder,
-                previousPath
-              }) || null
-
-            if (!folderPath) {
-              return tx
-            }
-
-            return tx.patch(asset._id, patchOperationAssetFolderSet({folderPath}))
-          }, client.transaction())
-
-          const patchedTransaction = result.folders.reduce((tx, folder) => {
-            const path = replaceFolderPrefix({
-              nextPath,
-              path: folder.path,
-              previousPath
-            })
-
-            return path ? tx.patch(folder._id, patchOperationFolderPathSet({path})) : tx
-          }, transaction)
-
-          if (result.folders.length === 0) {
-            patchedTransaction.create({
-              _id: `${FOLDER_DOCUMENT_NAME}.${nanoid()}`,
-              _type: FOLDER_DOCUMENT_NAME,
-              path: nextPath
-            })
-          }
-
-          return patchedTransaction.commit()
-        }),
-        mergeMap(() =>
-          of(
-            foldersSlice.actions.renameComplete({
-              nextPath,
-              previousPath
-            })
-          )
-        ),
+        mergeMap(() => client.observable.patch(folderId).set({name}).commit()),
+        mergeMap(() => of(foldersSlice.actions.renameComplete({folderId, name}))),
         catchError((error: ClientError) =>
           of(
             foldersSlice.actions.renameError({
@@ -605,158 +536,219 @@ export const foldersRenameEpic: MyEpic = (action$, state$, {client}) =>
     })
   )
 
-const selectAssignedPaths = (state: RootReducerState) => state.folders.assignedPaths
-const selectPersistedPaths = (state: RootReducerState) => state.folders.persistedPaths
-const selectCurrentFolderPath = (state: RootReducerState) => state.folders.currentFolderPath
-const selectCurrentFolderUnfiled = (state: RootReducerState) => state.folders.currentFolderUnfiled
+export const foldersMoveEpic: MyEpic = (action$, state$, {client}) =>
+  action$.pipe(
+    filter(foldersSlice.actions.moveRequest.match),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {folderId} = action.payload
+      const parentId = action.payload.parentId || null
+      const folder = state.folders.byId[folderId]
 
-export const selectFolderTree = createSelector(
-  [selectAssignedPaths, selectPersistedPaths],
-  (assignedPaths, persistedPaths) => {
-    const exactCount = new Map<string, number>()
-    const totalCount = new Map<string, number>()
-    const pathSet = getAvailableFolderPaths([...assignedPaths, ...persistedPaths])
-    const persistedPathSet = new Set(persistedPaths.map(path => normalizeFolderPath(path)))
-
-    assignedPaths.forEach(path => {
-      const normalizedPath = normalizeFolderPath(path)
-      if (!normalizedPath) {
-        return
+      if (!folder) {
+        return of(
+          foldersSlice.actions.moveError({
+            error: {message: 'Folder not found', statusCode: 404},
+            folderId
+          })
+        )
       }
 
-      exactCount.set(normalizedPath, (exactCount.get(normalizedPath) || 0) + 1)
+      if (parentId === folder.parentId) {
+        return of(
+          foldersSlice.actions.moveError({
+            error: {message: 'Folder is already in this location', statusCode: 400},
+            folderId
+          })
+        )
+      }
 
-      normalizedPath.split('/').reduce((acc, segment) => {
-        const nextPath = acc ? `${acc}/${segment}` : segment
-        pathSet.add(nextPath)
-        totalCount.set(nextPath, (totalCount.get(nextPath) || 0) + 1)
-        return nextPath
-      }, '')
+      if (
+        parentId === folderId ||
+        (parentId && isDescendant(folderId, parentId, state.folders.byId))
+      ) {
+        return of(
+          foldersSlice.actions.moveError({
+            error: {
+              message: 'Cannot move a folder into itself or its descendants',
+              statusCode: 400
+            },
+            folderId
+          })
+        )
+      }
+
+      const siblingIds = parentId
+        ? state.folders.childrenByParentId[parentId] || []
+        : state.folders.rootIds
+      const collision = siblingIds.some(
+        id =>
+          id !== folderId &&
+          state.folders.byId[id]?.name.toLowerCase() === folder.name.toLowerCase()
+      )
+      if (collision) {
+        return of(
+          foldersSlice.actions.moveError({
+            error: {message: 'A folder with this name already exists here', statusCode: 409},
+            folderId
+          })
+        )
+      }
+
+      const patch = client.observable.patch(folderId)
+      const committed = parentId
+        ? patch.set({parent: {_ref: parentId, _type: 'reference', _weak: true}}).commit()
+        : patch.unset(['parent']).commit()
+
+      return of(action).pipe(
+        debugThrottle(state.debug.badConnection),
+        mergeMap(() => committed),
+        mergeMap(() => of(foldersSlice.actions.moveComplete({folderId, parentId}))),
+        catchError((error: ClientError) =>
+          of(
+            foldersSlice.actions.moveError({
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              },
+              folderId
+            })
+          )
+        )
+      )
     })
+  )
 
-    const nodes = new Map<string, FolderTreeNode>()
-    const rootNodes: FolderTreeNode[] = []
+const selectById = (state: RootReducerState) => state.folders.byId
+const selectChildrenByParentId = (state: RootReducerState) => state.folders.childrenByParentId
+const selectRootIds = (state: RootReducerState) => state.folders.rootIds
+const selectExactCountByFolderId = (state: RootReducerState) => state.folders.exactCountByFolderId
+const selectCurrentFolderId = (state: RootReducerState) => state.folders.currentFolderId
+const selectCurrentFolderUnfiled = (state: RootReducerState) => state.folders.currentFolderUnfiled
 
-    Array.from(pathSet)
-      .sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}))
-      .forEach(path => {
-        const node: FolderTreeNode = {
-          children: [],
-          exactCount: exactCount.get(path) || 0,
-          name: path.split('/').pop() || path,
-          path,
-          persisted: persistedPathSet.has(path),
-          totalCount: totalCount.get(path) || 0
-        }
+const buildFolderPath = (folderId: string, byId: Record<string, FolderDoc>): string => {
+  const segments: string[] = []
+  let cursor: string | null = folderId
+  const seen = new Set<string>()
+  while (cursor && byId[cursor] && !seen.has(cursor)) {
+    seen.add(cursor)
+    segments.unshift(byId[cursor].name)
+    cursor = byId[cursor].parentId
+  }
+  return segments.join('/')
+}
 
-        nodes.set(path, node)
+export const selectFolderPathById = createSelector(
+  [selectById, (_state: RootReducerState, folderId: string | null | undefined) => folderId],
+  (byId, folderId) => (folderId ? buildFolderPath(folderId, byId) : '')
+)
 
-        const parentPath = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : null
-        if (parentPath && nodes.has(parentPath)) {
-          nodes.get(parentPath)?.children.push(node)
-        } else {
-          rootNodes.push(node)
-        }
-      })
+export const selectFolderTree = createSelector(
+  [selectById, selectChildrenByParentId, selectRootIds, selectExactCountByFolderId],
+  (byId, childrenByParentId, rootIds, exactCountByFolderId): FolderTreeNode[] => {
+    const buildNode = (folderId: string): FolderTreeNode => {
+      const folder = byId[folderId]
+      const children = (childrenByParentId[folderId] || []).map(buildNode)
+      const exactCount = exactCountByFolderId[folderId] || 0
+      const totalCount = children.reduce((sum, child) => sum + child.totalCount, exactCount)
+      return {
+        children,
+        exactCount,
+        id: folderId,
+        name: folder?.name || '',
+        parentId: folder?.parentId ?? null,
+        path: buildFolderPath(folderId, byId),
+        totalCount
+      }
+    }
 
-    return rootNodes
+    return rootIds.map(buildNode)
   }
 )
 
 export const selectCurrentFolderSegments = createSelector(
-  [(state: RootReducerState) => state.folders.currentFolderPath],
-  currentFolderPath => {
-    if (!currentFolderPath) {
-      return []
+  [selectById, selectCurrentFolderId],
+  (byId, currentFolderId): FolderTreeItem[] => {
+    if (!currentFolderId) return []
+    const chain: string[] = []
+    let cursor: string | null = currentFolderId
+    const seen = new Set<string>()
+    while (cursor && byId[cursor] && !seen.has(cursor)) {
+      seen.add(cursor)
+      chain.unshift(cursor)
+      cursor = byId[cursor].parentId
     }
-
-    return currentFolderPath.split('/').reduce((acc: FolderTreeItem[], segment) => {
-      const previousPath = acc[acc.length - 1]?.path
-      const path = previousPath ? `${previousPath}/${segment}` : segment
-
-      acc.push({
-        depth: acc.length,
-        exactCount: 0,
-        name: segment,
-        path,
-        totalCount: 0
-      })
-
-      return acc
-    }, [])
+    return chain.map((id, depth) => ({
+      depth,
+      exactCount: 0,
+      id,
+      name: byId[id]?.name || '',
+      parentId: byId[id]?.parentId ?? null,
+      path: buildFolderPath(id, byId),
+      totalCount: 0
+    }))
   }
 )
 
-export const selectUnfiledCount = createSelector([selectAssignedPaths], assignedPaths => {
-  return assignedPaths.filter(path => !normalizeFolderPath(path)).length
-})
+export const selectUnfiledCount = (state: RootReducerState) => state.folders.unfiledCount
+
+type FoldersIndex = {
+  byId: Record<string, FolderDoc>
+  childrenByParentId: Record<string, string[]>
+  rootIds: string[]
+  exactCountByFolderId: Record<string, number>
+}
+
+const selectFoldersIndex = createSelector(
+  [selectById, selectChildrenByParentId, selectRootIds, selectExactCountByFolderId],
+  (byId, childrenByParentId, rootIds, exactCountByFolderId): FoldersIndex => ({
+    byId,
+    childrenByParentId,
+    rootIds,
+    exactCountByFolderId
+  })
+)
 
 export const selectCurrentFolderChildren = createSelector(
-  [selectAssignedPaths, selectPersistedPaths, selectCurrentFolderPath, selectCurrentFolderUnfiled],
-  (assignedPaths, persistedPaths, currentFolderPath, currentFolderUnfiled) => {
-    if (currentFolderUnfiled) {
-      return [] as FolderTreeItem[]
-    }
-
-    const childCounts = new Map<string, number>()
-    const availablePaths = Array.from(
-      getAvailableFolderPaths([...assignedPaths, ...persistedPaths])
-    )
-    const persistedPathSet = new Set(persistedPaths.map(path => normalizeFolderPath(path)))
-
-    assignedPaths.forEach(path => {
-      const normalizedPath = normalizeFolderPath(path)
-      if (!normalizedPath) {
-        return
+  [selectFoldersIndex, selectCurrentFolderId, selectCurrentFolderUnfiled],
+  (
+    {byId, childrenByParentId, rootIds, exactCountByFolderId},
+    currentFolderId,
+    currentFolderUnfiled
+  ): FolderTreeItem[] => {
+    if (currentFolderUnfiled) return []
+    const ids = currentFolderId ? childrenByParentId[currentFolderId] || [] : rootIds
+    const depth = currentFolderId ? buildFolderPath(currentFolderId, byId).split('/').length : 0
+    return ids.map(id => {
+      const folder = byId[id]
+      // Sum totalCount over the subtree.
+      const stack = [id]
+      let totalCount = 0
+      while (stack.length) {
+        const cur = stack.pop()!
+        totalCount += exactCountByFolderId[cur] || 0
+        const kids = childrenByParentId[cur]
+        if (kids) stack.push(...kids)
       }
-
-      availablePaths.forEach(folderPath => {
-        const isCurrentLevelChild = currentFolderPath
-          ? folderPath.startsWith(`${currentFolderPath}/`) &&
-            folderPath.slice(currentFolderPath.length + 1).split('/').length === 1
-          : !folderPath.includes('/')
-
-        if (
-          (normalizedPath === folderPath || normalizedPath.startsWith(`${folderPath}/`)) &&
-          isCurrentLevelChild
-        ) {
-          childCounts.set(folderPath, (childCounts.get(folderPath) || 0) + 1)
-        }
-      })
+      return {
+        depth,
+        exactCount: exactCountByFolderId[id] || 0,
+        id,
+        name: folder?.name || '',
+        parentId: folder?.parentId ?? null,
+        path: buildFolderPath(id, byId),
+        totalCount
+      }
     })
-
-    return availablePaths
-      .filter(folderPath => {
-        if (!currentFolderPath) {
-          return !folderPath.includes('/')
-        }
-
-        if (!folderPath.startsWith(`${currentFolderPath}/`)) {
-          return false
-        }
-
-        return folderPath.slice(currentFolderPath.length + 1).split('/').length === 1
-      })
-      .sort((pathA, pathB) =>
-        pathA.localeCompare(pathB, undefined, {numeric: true, sensitivity: 'base'})
-      )
-      .map(
-        (path): FolderTreeItem => ({
-          depth: currentFolderPath ? currentFolderPath.split('/').length : 0,
-          exactCount: 0,
-          name: path.split('/').pop() || path,
-          path,
-          persisted: persistedPathSet.has(path),
-          totalCount: childCounts.get(path) || 0
-        })
-      )
   }
 )
 
 export const selectCanDeleteFolder = createSelector(
-  [selectCurrentFolderPath],
-  currentFolderPath => !!currentFolderPath
+  [selectCurrentFolderId],
+  currentFolderId => !!currentFolderId
 )
+
+export {ROOT_KEY}
 
 export const foldersActions = {...foldersSlice.actions}
 

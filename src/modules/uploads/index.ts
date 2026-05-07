@@ -7,7 +7,6 @@ import {empty, from, merge, of} from 'rxjs'
 import {catchError, delay, filter, mergeMap, takeUntil, withLatestFrom} from 'rxjs/operators'
 import constructFilter from '../../utils/constructFilter'
 import {generatePreviewBlobUrl$} from '../../utils/generatePreviewBlobUrl'
-import normalizeFolderPath from '../../utils/normalizeFolderPath'
 import {hashFile$, uploadAsset$} from '../../utils/uploadSanityAsset'
 import {assetsActions} from '../assets'
 import type {RootReducerState} from '../types'
@@ -144,9 +143,9 @@ export const uploadsAssetStartEpic: MyEpic = (action$, _state$, {client}) =>
           ),
           mergeMap(event => {
             if (event?.type === 'complete') {
-              const folderPath = normalizeFolderPath(uploadItem.folderPath)
+              const folderId = uploadItem.folderId || null
 
-              if (!folderPath) {
+              if (!folderId) {
                 return of(
                   UPLOADS_ACTIONS.uploadComplete({
                     asset: event.asset
@@ -159,7 +158,9 @@ export const uploadsAssetStartEpic: MyEpic = (action$, _state$, {client}) =>
                   .patch(event.asset._id)
                   .setIfMissing({opt: {}})
                   .setIfMissing({'opt.media': {}})
-                  .set({'opt.media.folder': folderPath})
+                  .set({
+                    'opt.media.folder': {_ref: folderId, _type: 'reference', _weak: true}
+                  })
                   .commit()
               ).pipe(
                 mergeMap(asset =>
@@ -219,7 +220,7 @@ export const uploadsAssetUploadEpic: MyEpic = (action$, state$) =>
           const uploadItem = {
             _type: 'upload',
             assetType,
-            folderPath: state.folders.currentFolderPath,
+            folderId: state.folders.currentFolderId,
             hash,
             name: file.name,
             size: file.size,
@@ -254,7 +255,7 @@ export const uploadsCheckRequestEpic: MyEpic = (action$, state$, {client}) =>
 
       const constructedFilter = constructFilter({
         assetTypes: state.assets.assetTypes,
-        currentFolderPath: state.folders.currentFolderPath,
+        currentFolderId: state.folders.currentFolderId,
         currentFolderUnfiled: state.folders.currentFolderUnfiled,
         searchFacets: state.search.facets,
         searchQuery: state.search.query

@@ -16,28 +16,25 @@ import {dialogActions} from '../../modules/dialog'
 import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
 import {foldersActions, selectCanDeleteFolder, selectFolderTree} from '../../modules/folders'
 
-const getExpandedPathSet = (folderPath: string | null) => {
-  if (!folderPath) {
-    return new Set<string>()
+const getExpandedIdSet = (
+  folderId: string | null,
+  byId: Record<string, {parentId: string | null}>
+) => {
+  const expanded = new Set<string>()
+  let cursor: string | null = folderId
+  while (cursor && byId[cursor]) {
+    expanded.add(cursor)
+    cursor = byId[cursor].parentId
   }
-
-  const expandedPaths = new Set<string>()
-
-  folderPath.split('/').reduce((previousPath, segment) => {
-    const nextPath = previousPath ? `${previousPath}/${segment}` : segment
-    expandedPaths.add(nextPath)
-    return nextPath
-  }, '')
-
-  return expandedPaths
+  return expanded
 }
 
 type FolderNodeProps = {
-  currentFolderPath: string | null
-  expandedPaths: Set<string>
+  currentFolderId: string | null
+  expandedIds: Set<string>
   node: FolderTreeNode
-  onSelect: (folderPath: string) => void
-  onToggle: (folderPath: string) => void
+  onSelect: (folderId: string) => void
+  onToggle: (folderId: string) => void
 }
 
 type FolderHeaderActionProps = {
@@ -82,21 +79,21 @@ const FolderHeaderAction = ({
 )
 
 const FolderNode = ({
-  currentFolderPath,
-  expandedPaths,
+  currentFolderId,
+  expandedIds,
   node,
   onSelect,
   onToggle
 }: FolderNodeProps) => {
-  const expanded = expandedPaths.has(node.path)
+  const expanded = expandedIds.has(node.id)
   const hasChildren = node.children.length > 0
-  const selected = currentFolderPath === node.path
+  const selected = currentFolderId === node.id
   const selectedTextColor = selected ? '#fff' : 'inherit'
   const selectedSecondaryColor = selected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'
 
   const handleToggle = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
-    onToggle(node.path)
+    onToggle(node.id)
   }
 
   return (
@@ -124,7 +121,7 @@ const FolderNode = ({
           )}
 
           <button
-            onClick={() => onSelect(node.path)}
+            onClick={() => onSelect(node.id)}
             style={{
               alignItems: 'center',
               appearance: 'none',
@@ -184,9 +181,9 @@ const FolderNode = ({
         <Box paddingLeft={4}>
           {node.children.map(childNode => (
             <FolderNode
-              currentFolderPath={currentFolderPath}
-              expandedPaths={expandedPaths}
-              key={childNode.path}
+              currentFolderId={currentFolderId}
+              expandedIds={expandedIds}
+              key={childNode.id}
               node={childNode}
               onSelect={onSelect}
               onToggle={onToggle}
@@ -200,45 +197,53 @@ const FolderNode = ({
 
 const FolderView = () => {
   const dispatch = useDispatch()
-  const currentFolderPath = useTypedSelector(state => state.folders.currentFolderPath)
+  const currentFolderId = useTypedSelector(state => state.folders.currentFolderId)
+  const byId = useTypedSelector(state => state.folders.byId)
   const canDeleteFolder = useTypedSelector(selectCanDeleteFolder)
   const fetching = useTypedSelector(state => state.folders.fetching)
   const folderTree = useTypedSelector(selectFolderTree)
-  const totalAssets = useTypedSelector(state => state.folders.assignedPaths.length)
-  const homeSelected = !currentFolderPath
+  const totalAssets = useTypedSelector(state => {
+    return (
+      state.folders.unfiledCount +
+      Object.values(state.folders.exactCountByFolderId).reduce((sum, n) => sum + n, 0)
+    )
+  })
+  const homeSelected = !currentFolderId
+  const currentFolder = currentFolderId ? byId[currentFolderId] : null
 
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    setExpandedPaths(getExpandedPathSet(currentFolderPath))
-  }, [currentFolderPath, folderTree])
+    setExpandedIds(getExpandedIdSet(currentFolderId, byId))
+  }, [currentFolderId, byId, folderTree])
 
   const hasFolders = folderTree.length > 0
 
-  const handleFolderSelect = (folderPath: string) => {
-    dispatch(foldersActions.currentFolderSet({folderPath}))
+  const handleFolderSelect = (folderId: string) => {
+    dispatch(foldersActions.currentFolderSet({folderId}))
   }
 
-  const handleFolderToggle = (folderPath: string) => {
-    setExpandedPaths(previous => {
+  const handleFolderToggle = (folderId: string) => {
+    setExpandedIds(previous => {
       const next = new Set(previous)
-      if (next.has(folderPath)) {
-        next.delete(folderPath)
+      if (next.has(folderId)) {
+        next.delete(folderId)
       } else {
-        next.add(folderPath)
+        next.add(folderId)
       }
       return next
     })
   }
 
   const handleFolderDelete = () => {
-    if (!currentFolderPath) {
+    if (!currentFolderId || !currentFolder) {
       return
     }
 
     dispatch(
       dialogActions.showConfirmDeleteFolder({
-        path: currentFolderPath
+        folderId: currentFolderId,
+        folderName: currentFolder.name
       })
     )
   }
@@ -267,10 +272,12 @@ const FolderView = () => {
         </Box>
 
         <Inline space={1}>
-          {currentFolderPath && (
+          {currentFolderId && (
             <FolderHeaderAction
               icon={<EditIcon />}
-              onClick={() => dispatch(DIALOG_ACTIONS.showFolderRename({folderPath: currentFolderPath}))}
+              onClick={() =>
+                dispatch(DIALOG_ACTIONS.showFolderRename({folderId: currentFolderId}))
+              }
               tone="primary"
               tooltip="Rename folder"
             />
@@ -279,13 +286,15 @@ const FolderView = () => {
           <FolderHeaderAction
             icon={<AddIcon />}
             onClick={() =>
-              dispatch(DIALOG_ACTIONS.showFolderCreate({folderPath: currentFolderPath || null}))
+              dispatch(
+                DIALOG_ACTIONS.showFolderCreate({parentFolderId: currentFolderId || null})
+              )
             }
             tone="primary"
             tooltip="Create folder"
           />
 
-          {currentFolderPath && canDeleteFolder && (
+          {currentFolderId && canDeleteFolder && (
             <FolderHeaderAction
               icon={<TrashIcon />}
               onClick={handleFolderDelete}
@@ -367,9 +376,9 @@ const FolderView = () => {
 
           {folderTree.map(node => (
             <FolderNode
-              currentFolderPath={currentFolderPath}
-              expandedPaths={expandedPaths}
-              key={node.path}
+              currentFolderId={currentFolderId}
+              expandedIds={expandedIds}
+              key={node.id}
               node={node}
               onSelect={handleFolderSelect}
               onToggle={handleFolderToggle}

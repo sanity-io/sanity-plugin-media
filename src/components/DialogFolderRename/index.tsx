@@ -7,7 +7,7 @@ import type {DialogFolderRenameProps, FolderFormData} from '../../types'
 import {folderFormSchema} from '../../formSchema'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {dialogActions} from '../../modules/dialog'
-import {foldersActions} from '../../modules/folders'
+import {foldersActions, selectFolderPathById} from '../../modules/folders'
 import sanitizeFormData from '../../utils/sanitizeFormData'
 import Dialog from '../Dialog'
 import FormFieldInputText from '../FormFieldInputText'
@@ -19,11 +19,13 @@ type Props = {
 }
 
 const DialogFolderRename = ({children, dialog}: Props) => {
-  const {folderPath, id} = dialog
+  const {folderId, id} = dialog
   const dispatch = useDispatch()
   const renaming = useTypedSelector(state => state.folders.renaming)
   const renameError = useTypedSelector(state => state.folders.renameError)
-  const currentName = folderPath.split('/').pop() || folderPath
+  const folder = useTypedSelector(state => state.folders.byId[folderId])
+  const folderPath = useTypedSelector(state => selectFolderPathById(state, folderId))
+  const currentName = folder?.name || ''
   const parentPath = folderPath.includes('/') ? folderPath.slice(0, folderPath.lastIndexOf('/')) : null
 
   const {
@@ -48,7 +50,7 @@ const DialogFolderRename = ({children, dialog}: Props) => {
     dispatch(
       foldersActions.renameRequest({
         name: sanitizedFormData.name,
-        path: folderPath
+        folderId
       })
     )
   }

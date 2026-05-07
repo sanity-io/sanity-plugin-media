@@ -17,7 +17,6 @@ import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
 import imageDprUrl from '../../utils/imageDprUrl'
 import sanitizeFormData from '../../utils/sanitizeFormData'
-import normalizeFolderPath from '../../utils/normalizeFolderPath'
 import {isFileAsset, isImageAsset} from '../../utils/typeGuards'
 import AssetMetadata from '../AssetMetadata'
 import Dialog from '../Dialog'
@@ -110,7 +109,6 @@ const DialogAssetEdit = (props: Props) => {
         originalFilename: asset?.originalFilename || '',
         opt: {
           media: {
-            folder: normalizeFolderPath(asset?.opt?.media?.folder),
             tags: assetTagOptions
           }
         },
@@ -247,7 +245,6 @@ const DialogAssetEdit = (props: Props) => {
             opt: {
               media: {
                 ...sanitizedFormData.opt.media,
-                folder: normalizeFolderPath(sanitizedFormData.opt.media.folder) || null,
                 tags:
                   sanitizedFormData.opt.media.tags?.map((tag: TagSelectOption) => ({
                     _ref: tag.value,
@@ -360,7 +357,6 @@ const DialogAssetEdit = (props: Props) => {
     errors,
     formUpdating,
     register,
-    setValue,
     assetTagOptions,
     allTagOptions,
     handleCreateTag,

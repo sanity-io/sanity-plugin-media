@@ -24,26 +24,26 @@ const dialogSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(DIALOG_ACTIONS.showFolderCreate, (state, action) => {
-        const {folderPath} = action.payload
+        const {parentFolderId} = action.payload
         state.items.push({
-          folderPath,
+          parentFolderId,
           id: 'folderCreate',
           type: 'folderCreate'
         })
       })
       .addCase(DIALOG_ACTIONS.showFolderMove, (state, action) => {
-        const {assets, folderPath} = action.payload
+        const {assets, folderId} = action.payload
         state.items.push({
           assets,
-          folderPath,
+          folderId,
           id: 'folderMove',
           type: 'folderMove'
         })
       })
       .addCase(DIALOG_ACTIONS.showFolderRename, (state, action) => {
-        const {folderPath} = action.payload
+        const {folderId} = action.payload
         state.items.push({
-          folderPath,
+          folderId,
           id: 'folderRename',
           type: 'folderRename'
         })
@@ -173,13 +173,15 @@ const dialogSlice = createSlice({
         type: 'confirm'
       })
     },
-    showConfirmDeleteFolder(state, action: PayloadAction<{closeDialogId?: string; path: string}>) {
-      const {closeDialogId, path} = action.payload
-      const folderName = path.split('/').pop() || path
+    showConfirmDeleteFolder(
+      state,
+      action: PayloadAction<{closeDialogId?: string; folderId: string; folderName: string}>
+    ) {
+      const {closeDialogId, folderId, folderName} = action.payload
 
       state.items.push({
         closeDialogId,
-        confirmCallbackAction: foldersActions.deleteRequest({path}),
+        confirmCallbackAction: foldersActions.deleteRequest({folderId}),
         confirmText: `Yes, delete folder`,
         description:
           'This deletes the selected folder, all nested folders, and every asset inside that subtree. This operation cannot be reversed.',
