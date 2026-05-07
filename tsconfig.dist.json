@@ -4,7 +4,11 @@
   "exclude": [
     "./src/**/__fixtures__",
     "./src/**/__mocks__",
+    "./src/**/__tests__",
     "./src/**/*.test.ts",
-    "./src/**/*.test.tsx"
+    "./src/**/*.test.tsx",
+    "./vitest.config.ts",
+    "./vitest.setup.ts",
+    "./tsconfig.vitest.json"
   ]
 }
