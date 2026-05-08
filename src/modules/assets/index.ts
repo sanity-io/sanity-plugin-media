@@ -502,7 +502,6 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
       const constructedFilter = constructFilter({
         assetTypes: state.assets.assetTypes,
         currentFolderId: state.folders.currentFolderId,
-        currentFolderUnfiled: state.folders.currentFolderUnfiled,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
       })

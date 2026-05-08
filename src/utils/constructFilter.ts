@@ -6,13 +6,11 @@ import {operators} from '../config/searchFacets'
 const constructFilter = ({
   assetTypes,
   currentFolderId,
-  currentFolderUnfiled,
   searchFacets,
   searchQuery
 }: {
   assetTypes: AssetType[]
   currentFolderId?: string | null
-  currentFolderUnfiled?: boolean
   searchFacets: SearchFacetInputProps[]
   searchQuery?: string
 }): string => {
@@ -79,13 +77,12 @@ const constructFilter = ({
     return acc
   }, [])
 
-  let folderFilter: string | undefined
-
-  if (currentFolderUnfiled) {
-    folderFilter = groq`!defined(opt.media.folder._ref)`
-  } else if (currentFolderId) {
-    folderFilter = `opt.media.folder._ref == ${JSON.stringify(currentFolderId)}`
-  }
+  // Home (no folder selected) and Unfiled both show only assets without a folder ref;
+  // a specific folder shows only assets pointing at it. This matches the path-string
+  // version's behavior, where Home was treated the same as Unfiled.
+  const folderFilter: string = currentFolderId
+    ? `opt.media.folder._ref == ${JSON.stringify(currentFolderId)}`
+    : groq`!defined(opt.media.folder._ref)`
 
   // Join separate filter fragments
   const constructedQuery = [
