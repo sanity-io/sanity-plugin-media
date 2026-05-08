@@ -6,6 +6,7 @@ import {EMPTY, of} from 'rxjs'
 import {filter, mergeMap} from 'rxjs/operators'
 import {assetsActions} from '../assets'
 import {ASSETS_ACTIONS} from '../assets/actions'
+import {foldersActions} from '../folders'
 import {tagsActions} from '../tags'
 import {DIALOG_ACTIONS} from './actions'
 
@@ -21,20 +22,52 @@ const dialogSlice = createSlice({
   name: 'dialog',
   initialState,
   extraReducers: builder => {
-    builder.addCase(DIALOG_ACTIONS.showTagCreate, state => {
-      state.items.push({
-        id: 'tagCreate',
-        type: 'tagCreate'
+    builder
+      .addCase(DIALOG_ACTIONS.showFolderCreate, (state, action) => {
+        const {parentFolderId} = action.payload
+        state.items.push({
+          parentFolderId,
+          id: 'folderCreate',
+          type: 'folderCreate'
+        })
       })
-    })
-    builder.addCase(DIALOG_ACTIONS.showTagEdit, (state, action) => {
-      const {tagId} = action.payload
-      state.items.push({
-        id: tagId,
-        tagId,
-        type: 'tagEdit'
+      .addCase(DIALOG_ACTIONS.showFolderMove, (state, action) => {
+        const {assets, folderId} = action.payload
+        state.items.push({
+          assets,
+          folderId,
+          id: 'folderMove',
+          type: 'folderMove'
+        })
       })
-    })
+      .addCase(DIALOG_ACTIONS.showFolderRename, (state, action) => {
+        const {folderId} = action.payload
+        state.items.push({
+          folderId,
+          id: 'folderRename',
+          type: 'folderRename'
+        })
+      })
+      .addCase(DIALOG_ACTIONS.showTagCreate, state => {
+        state.items.push({
+          id: 'tagCreate',
+          type: 'tagCreate'
+        })
+      })
+      .addCase(DIALOG_ACTIONS.showTagEdit, (state, action) => {
+        const {tagId} = action.payload
+        state.items.push({
+          id: tagId,
+          tagId,
+          type: 'tagEdit'
+        })
+      })
+      .addCase(foldersActions.createComplete, state => {
+        state.items = state.items.filter(item => item.id !== 'folderCreate')
+      })
+      .addCase(foldersActions.renameComplete, state => {
+        state.items = state.items.filter(item => item.id !== 'folderRename')
+      })
   },
   reducers: {
     // Clear all dialogs
@@ -140,6 +173,25 @@ const dialogSlice = createSlice({
         type: 'confirm'
       })
     },
+    showConfirmDeleteFolder(
+      state,
+      action: PayloadAction<{closeDialogId?: string; folderId: string; folderName: string}>
+    ) {
+      const {closeDialogId, folderId, folderName} = action.payload
+
+      state.items.push({
+        closeDialogId,
+        confirmCallbackAction: foldersActions.deleteRequest({folderId}),
+        confirmText: `Yes, delete folder`,
+        description:
+          'This deletes the selected folder, all nested folders, and every asset inside that subtree. This operation cannot be reversed.',
+        title: `Permanently delete ${folderName} and all contents?`,
+        id: 'confirm',
+        headerTitle: 'Confirm folder deletion',
+        tone: 'critical',
+        type: 'confirm'
+      })
+    },
     showConfirmDeleteTag(state, action: PayloadAction<{closeDialogId?: string; tag: Tag}>) {
       const {closeDialogId, tag} = action.payload
 
@@ -186,6 +238,7 @@ export const dialogClearOnAssetUpdateEpic: MyEpic = action$ =>
   action$.pipe(
     ofType(
       assetsActions.deleteComplete.type,
+      assetsActions.folderSetComplete.type,
       assetsActions.updateComplete.type,
       tagsActions.deleteComplete.type,
       tagsActions.updateComplete.type

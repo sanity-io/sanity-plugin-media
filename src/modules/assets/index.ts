@@ -211,6 +211,47 @@ const assetsSlice = createSlice({
       state.fetching = false
       state.fetchingError = error
     },
+    folderSetComplete(
+      state,
+      action: PayloadAction<{assetIds: string[]; folderId: string | null; closeDialogId?: string}>
+    ) {
+      const {assetIds, folderId} = action.payload
+
+      assetIds.forEach(assetId => {
+        if (state.byIds[assetId]?.asset) {
+          state.byIds[assetId].asset.opt = state.byIds[assetId].asset.opt || {}
+          state.byIds[assetId].asset.opt.media = state.byIds[assetId].asset.opt.media || {}
+          state.byIds[assetId].asset.opt.media.folder = folderId
+            ? {_ref: folderId, _type: 'reference', _weak: true}
+            : undefined
+          state.byIds[assetId].updating = false
+        }
+      })
+    },
+    folderSetError(state, action: PayloadAction<{assetIds: string[]; error: HttpError}>) {
+      const {assetIds, error} = action.payload
+
+      assetIds.forEach(assetId => {
+        if (state.byIds[assetId]) {
+          state.byIds[assetId].error = error.message
+          state.byIds[assetId].updating = false
+        }
+      })
+    },
+    folderSetRequest(
+      state,
+      action: PayloadAction<{
+        assets: AssetItem[]
+        folderId: string | null
+        closeDialogId?: string
+      }>
+    ) {
+      action.payload.assets.forEach(asset => {
+        if (state.byIds[asset.asset._id]) {
+          state.byIds[asset.asset._id].updating = true
+        }
+      })
+    },
     fetchRequest: {
       reducer: (state, _action: PayloadAction<{params: Record<string, any>; query: string}>) => {
         state.fetching = true
@@ -460,6 +501,7 @@ export const assetsFetchPageIndexEpic: MyEpic = (action$, state$) =>
 
       const constructedFilter = constructFilter({
         assetTypes: state.assets.assetTypes,
+        currentFolderId: state.folders.currentFolderId,
         searchFacets: state.search.facets,
         searchQuery: state.search.query
       })
@@ -521,6 +563,22 @@ const patchOperationTagUnset =
   ({asset, tag}: {asset: AssetItem; tag: Tag}) =>
   (patch: Patch) =>
     patch.ifRevisionId(asset?.asset?._rev).unset([`opt.media.tags[_ref == "${tag._id}"]`])
+
+const patchOperationFolderSet =
+  ({asset, folderId}: {asset: AssetItem; folderId: string | null}) =>
+  (patch: Patch) => {
+    const nextPatch = patch.ifRevisionId(asset?.asset?._rev).setIfMissing({opt: {}}).setIfMissing({
+      'opt.media': {}
+    })
+
+    if (folderId) {
+      return nextPatch.set({
+        'opt.media.folder': {_ref: folderId, _type: 'reference', _weak: true}
+      })
+    }
+
+    return nextPatch.unset(['opt.media.folder'])
+  }
 
 export const assetsRemoveTagsEpic: MyEpic = (action$, state$, {client}) => {
   return action$.pipe(
@@ -724,6 +782,60 @@ export const assetsTagsRemoveEpic: MyEpic = (action$, state$, {client}) => {
     })
   )
 }
+
+export const assetsFolderSetEpic: MyEpic = (action$, state$, {client}) =>
+  action$.pipe(
+    filter(assetsActions.folderSetRequest.match),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => {
+      const {assets, closeDialogId, folderId} = action.payload
+      const assetIds = assets.map(asset => asset.asset._id)
+
+      return of(action).pipe(
+        debugThrottle(state.debug.badConnection),
+        mergeMap(() => {
+          const transaction: Transaction = assets.reduce(
+            (tx, asset) => tx.patch(asset.asset._id, patchOperationFolderSet({asset, folderId})),
+            client.transaction()
+          )
+
+          return from(transaction.commit())
+        }),
+        mergeMap(() =>
+          of(
+            assetsActions.folderSetComplete({
+              assetIds,
+              closeDialogId,
+              folderId
+            })
+          )
+        ),
+        catchError((error: ClientError) =>
+          of(
+            assetsActions.folderSetError({
+              assetIds,
+              error: {
+                message: error?.message || 'Internal error',
+                statusCode: error?.statusCode || 500
+              }
+            })
+          )
+        )
+      )
+    })
+  )
+
+export const assetsFolderSetRefreshEpic: MyEpic = action$ =>
+  action$.pipe(
+    filter(assetsActions.folderSetComplete.match),
+    mergeMap(() =>
+      of(
+        assetsActions.pickClear(),
+        assetsActions.clear(),
+        assetsActions.loadPageIndex({pageIndex: 0})
+      )
+    )
+  )
 
 export const assetsUnpickEpic: MyEpic = action$ =>
   action$.pipe(

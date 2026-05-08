@@ -2,20 +2,23 @@ import {type ReactNode, createContext, useContext} from 'react'
 import type {AssetSourceComponentProps} from 'sanity'
 
 type ContextProps = {
+  isMultiSelect: boolean
   onSelect?: AssetSourceComponentProps['onSelect']
 }
 
 type Props = {
   children: ReactNode
+  isMultiSelect?: boolean
   onSelect?: AssetSourceComponentProps['onSelect']
 }
 
 const AssetSourceDispatchContext = createContext<ContextProps | undefined>(undefined)
 
 export const AssetBrowserDispatchProvider = (props: Props) => {
-  const {children, onSelect} = props
+  const {children, isMultiSelect = false, onSelect} = props
 
   const contextValue: ContextProps = {
+    isMultiSelect,
     onSelect
   }
 

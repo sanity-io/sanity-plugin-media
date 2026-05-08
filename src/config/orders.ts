@@ -13,6 +13,10 @@ const ORDER_DICTIONARY: Record<string, {asc: string; desc: string}> = {
     asc: 'MIME type: A to Z',
     desc: 'MIME type: Z to A'
   },
+  'opt.media.folder': {
+    asc: 'Folder: A to Z',
+    desc: 'Folder: Z to A'
+  },
   originalFilename: {
     asc: 'File name: A to Z',
     desc: 'File name: Z to A'

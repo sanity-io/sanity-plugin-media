@@ -103,7 +103,7 @@ describe('constructFilter', () => {
     const normalized = q.replace(/\s+/g, ' ').trim()
 
     expect(normalized).toBe(
-      '_type in ["sanity.fileAsset","sanity.imageAsset"] && !(_id in path("drafts.**")) && [_id, altText, assetId, creditLine, description, originalFilename, title, url] match \'*portrait*\' && round(size / 1000) > 100 && references(\'abc123\')'
+      '_type in ["sanity.fileAsset","sanity.imageAsset"] && !(_id in path("drafts.**")) && [_id, altText, assetId, creditLine, description, originalFilename, title, url] match \'*portrait*\' && !defined(opt.media.folder._ref) && round(size / 1000) > 100 && references(\'abc123\')'
     )
   })
 

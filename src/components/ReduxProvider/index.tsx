@@ -61,6 +61,21 @@ class ReduxProvider extends Component<Props> {
           enabled: false
         },
         dialog: {items: []},
+        folders: {
+          byId: {},
+          childrenByParentId: {},
+          rootIds: [],
+          exactCountByFolderId: {},
+          unfiledCount: 0,
+          currentFolderId: null,
+          currentFolderUnfiled: false,
+          panelVisible: true,
+          fetching: false,
+          fetchCount: -1,
+          creating: false,
+          renaming: false,
+          moving: false
+        },
         notifications: {items: []},
         search: {facets: [], query: ''},
         selected: {

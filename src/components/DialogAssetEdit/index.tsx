@@ -107,7 +107,11 @@ const DialogAssetEdit = (props: Props) => {
         creditLine: flattenField(asset?.creditLine),
         description: flattenField(asset?.description),
         originalFilename: asset?.originalFilename || '',
-        opt: {media: {tags: assetTagOptions}},
+        opt: {
+          media: {
+            tags: assetTagOptions
+          }
+        },
         title: flattenField(asset?.title)
       }
     },
@@ -353,7 +357,6 @@ const DialogAssetEdit = (props: Props) => {
     errors,
     formUpdating,
     register,
-    setValue,
     assetTagOptions,
     allTagOptions,
     handleCreateTag,
