@@ -1,3 +1,4 @@
+import {useToast} from '@sanity/ui'
 import {useEffect, useRef} from 'react'
 import {type InputProps} from 'sanity'
 import {applyMediaTags} from '../../utils/applyMediaTags'
@@ -37,6 +38,7 @@ export type AutoTagInputProps = InputProps & {
  */
 export function AutoTagInput(props: AutoTagInputProps) {
   const {renderDefault, schemaType, value, mediaTags: mediaTagsProp} = props
+  const toast = useToast()
 
   // Prop takes precedence; fall back to schemaType.options.mediaTags (set for browser pre-filtering)
   const mediaTags =
@@ -69,6 +71,8 @@ export function AutoTagInput(props: AutoTagInputProps) {
       createTagsOnUpload
     }).catch(err => {
       console.error('[sanity-plugin-media] Failed to apply auto-tags:', err)
+      const label = mediaTags.length === 1 ? 'tag' : 'tags'
+      toast.push({closable: true, status: 'error', title: `Failed to apply the media ${label} ${mediaTags.join(', ')}`})
     })
   }, [currentAssetRef, mediaTags, client, createTagsOnUpload])
 
