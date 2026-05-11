@@ -142,6 +142,58 @@ export default defineConfig({
 })
 ```
 
+### Auto-tagging (Optional)
+
+You can automatically apply tags to an asset when it is selected via an image or file field. Import `mediaField` to define a field with both auto-tagging and browser pre-filtering wired up in one call:
+
+```ts
+import {mediaField} from 'sanity-plugin-media'
+
+defineType({
+  name: 'product',
+  type: 'document',
+  fields: [
+    mediaField({
+      name: 'image',
+      type: 'image',
+      mediaTags: ['product'],
+    }),
+  ],
+})
+```
+
+The `mediaTags` array serves double duty: it pre-filters the media browser to show only assets with those tags, and it applies those tags to the asset when one is selected.
+
+For more control, import `AutoTagInput` directly and apply it to individual fields:
+
+```ts
+import {AutoTagInput} from 'sanity-plugin-media'
+
+defineField({
+  name: 'image',
+  type: 'image',
+  options: {mediaTags: ['product']},  // pre-filters the browser
+  components: {input: AutoTagInput},  // applies tags on select
+})
+
+// Or pass mediaTags as a prop to override the field options:
+defineField({
+  name: 'image',
+  type: 'image',
+  components: {
+    input: (props) => <AutoTagInput {...props} mediaTags={['product']} />,
+  },
+})
+```
+
+By default, tags that don't already exist will be created when an asset is selected. To disable this, set `createTagsOnUpload: false` in the plugin config:
+
+```ts
+media({
+  createTagsOnUpload: false,
+})
+```
+
 ### Localization (Optional)
 
 You can enable localization support by passing a `locales` array to the plugin config, following the [Sanity recommended scheme](https://www.sanity.io/docs/studio/localization#k4da239411955):
