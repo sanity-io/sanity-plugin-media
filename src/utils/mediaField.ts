@@ -61,6 +61,6 @@ export function mediaField(
   return {
     ...rest,
     options: {...options, mediaTags},
-    components: {...components, input: AutoTagInput},
+    components: {...components, input: AutoTagInput}
   } as unknown as MediaFieldResult<ImageMediaFieldConfig>
 }

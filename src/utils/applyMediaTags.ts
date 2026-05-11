@@ -20,9 +20,11 @@ export function applyMediaTags(options: ApplyMediaTagsOptions): Promise<void> {
   const chain = (pendingByAsset.get(assetId) ?? Promise.resolve()).then(() =>
     doApplyMediaTags(options)
   )
-  const cleanup = chain.catch(() => {}).finally(() => {
-    if (pendingByAsset.get(assetId) === cleanup) pendingByAsset.delete(assetId)
-  })
+  const cleanup = chain
+    .catch(() => {})
+    .finally(() => {
+      if (pendingByAsset.get(assetId) === cleanup) pendingByAsset.delete(assetId)
+    })
   pendingByAsset.set(assetId, cleanup)
   return chain
 }
