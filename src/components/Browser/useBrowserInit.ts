@@ -13,7 +13,14 @@ import type {RootReducerState} from '../../modules/types'
 import type {Asset, Tag} from '../../types'
 import {assetsActions} from '../../modules/assets'
 
-import {getMediaTagNames} from './prefilterByMediaTags'
+function getMediaTagNames(schemaType?: AssetSourceComponentProps['schemaType']): string[] {
+  const mediaTags = (schemaType?.options as {mediaTags?: string[]} | undefined)?.mediaTags
+  if (!mediaTags?.length) return []
+  const unique = new Set(
+    mediaTags.map(t => t?.trim()).filter((t): t is string => Boolean(t?.length))
+  )
+  return Array.from(unique)
+}
 
 function createAssetHandler(dispatch: Dispatch) {
   return (update: MutationEvent) => {
