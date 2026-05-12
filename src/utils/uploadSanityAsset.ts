@@ -74,7 +74,7 @@ const uploadSanityAsset$ = (
       // Begin upload if no existing asset found
       return client.observable.assets
         .upload(assetType, file, {
-          extract: ['blurhash', 'exif', 'location', 'lqip', 'palette'],
+          extract: ['blurhash', 'exif', 'image', 'location', 'lqip', 'palette'],
           preserveFilename: true
         })
         .pipe(
