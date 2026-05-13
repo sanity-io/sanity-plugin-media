@@ -15,7 +15,7 @@ import type {SUPPORTED_ASSET_TYPES} from '../constants'
 
 export type AssetTypes = (typeof SUPPORTED_ASSET_TYPES)[number]
 
-export type MediaTagsFieldOptions = {
+export type MediaTagsOptions = {
   mediaTags?: string[]
 }
 
