@@ -5,6 +5,7 @@ import type {DropzoneOptions} from 'react-dropzone'
 type ContextProps = {
   dropzone: Pick<DropzoneOptions, 'maxSize'>
   components: MediaToolOptions['components']
+  createTagsOnUpload: boolean
   creditLine: MediaToolOptions['creditLine']
   directUploads: MediaToolOptions['directUploads']
   locales?: Locale[]
@@ -31,6 +32,7 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
       components: {
         details: options?.components?.details
       },
+      createTagsOnUpload: options?.createTagsOnUpload ?? true,
       creditLine: {
         enabled: options?.creditLine?.enabled || false,
         excludeSources: creditLineExcludeSources
@@ -41,6 +43,7 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
   }, [
     options?.creditLine?.enabled,
     options?.components,
+    options?.createTagsOnUpload,
     options?.creditLine?.excludeSources,
     options?.maximumUploadSize,
     options?.directUploads,
