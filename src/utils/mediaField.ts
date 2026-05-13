@@ -1,9 +1,7 @@
 import type {
   FieldDefinitionBase,
   FileDefinition,
-  FileOptions,
   ImageDefinition,
-  ImageOptions,
   WidenInitialValue,
   WidenValidation
 } from 'sanity'
@@ -13,20 +11,28 @@ type ImageMediaFieldConfig = Omit<ImageDefinition, 'options'> &
   FieldDefinitionBase & {
     name: string
     mediaTags: string[]
-    options?: Omit<ImageOptions, 'mediaTags'>
+    options?: ImageDefinition['options']
   }
 
 type FileMediaFieldConfig = Omit<FileDefinition, 'options'> &
   FieldDefinitionBase & {
     name: string
     mediaTags: string[]
-    options?: Omit<FileOptions, 'mediaTags'>
+    options?: FileDefinition['options']
   }
 
-type MediaFieldResult<T extends {mediaTags: string[]}> = Omit<T, 'mediaTags'> & {
-  options: {mediaTags: string[]}
-  components: {input: typeof AutoTagInput}
-} & WidenValidation &
+type ImageMediaFieldResult = Omit<ImageDefinition, 'options'> &
+  FieldDefinitionBase & {
+    options?: ImageDefinition['options'] & {mediaTags: string[]}
+    components: {input: typeof AutoTagInput}
+  } & WidenValidation &
+  WidenInitialValue
+
+type FileMediaFieldResult = Omit<FileDefinition, 'options'> &
+  FieldDefinitionBase & {
+    options?: FileDefinition['options'] & {mediaTags: string[]}
+    components: {input: typeof AutoTagInput}
+  } & WidenValidation &
   WidenInitialValue
 
 /**
@@ -50,17 +56,17 @@ type MediaFieldResult<T extends {mediaTags: string[]}> = Omit<T, 'mediaTags'> & 
  * mediaField({ name: 'drawing', type: 'file', mediaTags: ['model-drawing'] })
  * ```
  */
-export function mediaField(config: ImageMediaFieldConfig): MediaFieldResult<ImageMediaFieldConfig>
-export function mediaField(config: FileMediaFieldConfig): MediaFieldResult<FileMediaFieldConfig>
+export function mediaField(config: ImageMediaFieldConfig): ImageMediaFieldResult
+export function mediaField(config: FileMediaFieldConfig): FileMediaFieldResult
 export function mediaField(
   config: ImageMediaFieldConfig | FileMediaFieldConfig
-): MediaFieldResult<ImageMediaFieldConfig> | MediaFieldResult<FileMediaFieldConfig> {
+): ImageMediaFieldResult | FileMediaFieldResult {
   const {mediaTags, options, components, ...rest} = config as ImageMediaFieldConfig & {
     components?: Record<string, unknown>
   }
   return {
     ...rest,
     options: {...options, mediaTags},
-    components: {...components, input: AutoTagInput}
-  } as unknown as MediaFieldResult<ImageMediaFieldConfig>
+    components: {...components, input: AutoTagInput},
+  } as unknown as ImageMediaFieldResult
 }
