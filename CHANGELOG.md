@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.3.0](https://github.com/sanity-io/sanity-plugin-media/compare/v4.2.0...v4.3.0) (2026-05-13)
+
+### Features
+
+- Auto-tag images on upload ([#274](https://github.com/sanity-io/sanity-plugin-media/issues/274)) ([d454ae0](https://github.com/sanity-io/sanity-plugin-media/commit/d454ae0e56404041b9b60ea97fc94bd10e037260))
+
 ## [4.2.0](https://github.com/sanity-io/sanity-plugin-media/compare/v4.1.1...v4.2.0) (2026-04-23)
 
 ### Features
