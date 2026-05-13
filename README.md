@@ -118,6 +118,11 @@ export default defineConfig({
       // number - maximum file size (in bytes) that can be uploaded through the plugin interface
       directUploads: true,
       // boolean - enable / disable direct uploads through the plugin interface (default true)
+      excludeTags: ['internal', 'archived'],
+      // string[] (optional) - tag slugs (`media.tag` `name.current`). Assets that reference
+      // any of these tags are omitted from the Media browser grid and asset picker queries,
+      // and those tags are hidden in the tag sidebar and tag search facet. The asset edit
+      // dialog still lists all tags so you can assign or remove them on an open asset.
       components: {
         details: CustomDetails
         // Custom component for asset details (see below)

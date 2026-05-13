@@ -8,6 +8,7 @@ type ContextProps = {
   createTagsOnUpload: boolean
   creditLine: MediaToolOptions['creditLine']
   directUploads: MediaToolOptions['directUploads']
+  excludeTagSlugs: string[]
   locales?: Locale[]
 }
 
@@ -38,6 +39,7 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
         excludeSources: creditLineExcludeSources
       },
       directUploads: options?.directUploads ?? true,
+      excludeTagSlugs: options?.excludeTags?.length ? [...options.excludeTags] : [],
       locales: options?.locales
     }
   }, [
@@ -45,6 +47,7 @@ export const ToolOptionsProvider = ({options, children}: PropsWithChildren<Props
     options?.components,
     options?.createTagsOnUpload,
     options?.creditLine?.excludeSources,
+    options?.excludeTags,
     options?.maximumUploadSize,
     options?.directUploads,
     options?.locales

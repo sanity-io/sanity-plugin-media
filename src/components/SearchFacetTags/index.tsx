@@ -12,6 +12,7 @@ import {useColorSchemeValue} from 'sanity'
 import {operators} from '../../config/searchFacets'
 import {usePortalPopoverProps} from '../../hooks/usePortalPopoverProps'
 import useTypedSelector from '../../hooks/useTypedSelector'
+import {useToolOptions} from '../../contexts/ToolOptionsContext'
 import {searchActions} from '../../modules/search'
 import {selectTags} from '../../modules/tags'
 import {reactSelectComponents, reactSelectStyles} from '../../styled/react-select/single'
@@ -27,7 +28,12 @@ const SearchFacetTags = ({facet}: Props) => {
 
   // Redux
   const dispatch = useDispatch()
-  const tags = useTypedSelector(state => selectTags(state))
+  const {excludeTagSlugs} = useToolOptions()
+  const tagsAll = useTypedSelector(state => selectTags(state))
+  const tags =
+    excludeTagSlugs.length > 0 ?
+      tagsAll.filter(t => !excludeTagSlugs.includes(t.tag.name.current))
+    : tagsAll
   const tagsFetching = useTypedSelector(state => state.tags.fetching)
   const allTagOptions = getTagSelectOptions(tags)
 

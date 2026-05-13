@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [Unreleased]
+
+### Features
+
+- add `excludeTags` option (`media.tag` slug / `name.current` values): assets that reference any listed tag are omitted from Media browser and asset-picker queries; those tags are hidden in the tag sidebar and tag search facet; the asset edit dialog still lists all tags for assignment.
+
 ## [4.2.0](https://github.com/sanity-io/sanity-plugin-media/compare/v4.1.1...v4.2.0) (2026-04-23)
 
 ### Features

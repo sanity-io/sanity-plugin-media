@@ -5,7 +5,6 @@ import {Virtuoso} from 'react-virtuoso'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
 import {selectAssetsPicked} from '../../modules/assets'
-import {selectTags} from '../../modules/tags'
 import Tag from '../Tag'
 
 const VirtualRow = memo(
@@ -40,9 +39,8 @@ const VirtualRow = memo(
   }
 )
 
-const TagsVirtualized = () => {
+const TagsVirtualized = ({tags}: {tags: TagItem[]}) => {
   const assetsPicked = useTypedSelector(selectAssetsPicked)
-  const tags = useTypedSelector(selectTags)
 
   // State
   const [isScrolling, setIsScrolling] = useState(false)
