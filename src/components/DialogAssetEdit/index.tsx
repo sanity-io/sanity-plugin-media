@@ -12,6 +12,8 @@ import useTypedSelector from '../../hooks/useTypedSelector'
 import useVersionedClient from '../../hooks/useVersionedClient'
 import {assetsActions, selectAssetById} from '../../modules/assets'
 import {dialogActions} from '../../modules/dialog'
+import {DIALOG_ACTIONS} from '../../modules/dialog/actions'
+import {selectFolderPathById} from '../../modules/folders'
 import {selectTags, selectTagSelectOptions, tagsActions} from '../../modules/tags'
 import getTagSelectOptions from '../../utils/getTagSelectOptions'
 import {getUniqueDocuments} from '../../utils/getUniqueDocuments'
@@ -61,6 +63,8 @@ const DialogAssetEdit = (props: Props) => {
   const allTagOptions = getTagSelectOptions(tags)
 
   const assetTagOptions = useTypedSelector(selectTagSelectOptions(currentAsset))
+  const currentFolderId = currentAsset?.opt?.media?.folder?._ref ?? null
+  const currentFolderPath = useTypedSelector(state => selectFolderPathById(state, currentFolderId))
 
   // Check if credit line options are configured
   const {creditLine, components: {details: CustomDetails} = {}, locales} = useToolOptions()
@@ -173,11 +177,18 @@ const DialogAssetEdit = (props: Props) => {
     [currentAsset?._id, dispatch]
   )
 
+  const handleChangeFolder = useCallback(() => {
+    if (!assetItem) {
+      return
+    }
+
+    dispatch(DIALOG_ACTIONS.showFolderMove({assets: [assetItem], folderId: currentFolderId}))
+  }, [assetItem, currentFolderId, dispatch])
+
   // Detect if asset has localized fields (objects) with keys not in the configured locales
   const hasOrphanedLocales = useMemo(() => {
     if (!currentAsset) return false
-    const isLocaleObj = (v: unknown) =>
-      typeof v === 'object' && v !== null && !Array.isArray(v)
+    const isLocaleObj = (v: unknown) => typeof v === 'object' && v !== null && !Array.isArray(v)
     const fields = [
       currentAsset.title,
       currentAsset.altText,
@@ -361,6 +372,9 @@ const DialogAssetEdit = (props: Props) => {
     allTagOptions,
     handleCreateTag,
     currentAsset,
+    folderPath: currentFolderPath,
+    folderMissing: !!currentFolderId && !currentFolderPath,
+    onChangeFolder: handleChangeFolder,
     creditLine,
     locales
   }

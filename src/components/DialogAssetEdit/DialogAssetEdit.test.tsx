@@ -195,6 +195,72 @@ describe('DialogAssetEdit', () => {
     })
   })
 
+  it('shows the current folder path and opens folder move dialog', async () => {
+    const user = userEvent.setup()
+    const assetInFolder = {
+      ...asset,
+      opt: {media: {folder: {_ref: 'folder.products', _type: 'reference' as const, _weak: true}}}
+    } as ImageAsset
+    const {store} = renderAssetDialog(
+      {
+        id: 'dlg-1',
+        type: 'assetEdit',
+        assetId: 'a1'
+      },
+      {
+        preloaded: {
+          assets: {
+            ...assetsPreloaded,
+            byIds: {
+              a1: {_type: 'asset', asset: assetInFolder, picked: false, updating: false}
+            }
+          },
+          folders: {
+            byId: {
+              'folder.parent': {_id: 'folder.parent', name: 'Parent', parentId: null},
+              'folder.section': {_id: 'folder.section', name: 'Section', parentId: 'folder.parent'},
+              'folder.nested': {_id: 'folder.nested', name: 'Nested', parentId: 'folder.section'},
+              'folder.products': {
+                _id: 'folder.products',
+                name: 'Products',
+                parentId: 'folder.nested'
+              }
+            },
+            childrenByParentId: {
+              'folder.parent': ['folder.section'],
+              'folder.section': ['folder.nested'],
+              'folder.nested': ['folder.products']
+            },
+            rootIds: ['folder.parent'],
+            exactCountByFolderId: {},
+            unfiledCount: 0,
+            currentFolderId: null,
+            currentFolderUnfiled: false,
+            panelVisible: false,
+            fetching: false,
+            fetchCount: -1,
+            creating: false,
+            renaming: false,
+            moving: false
+          }
+        }
+      }
+    )
+
+    const dlg = withinDialog(/asset details/i, screen)
+    expect(dlg.getByText('Parent/.../Nested/Products')).toBeInTheDocument()
+
+    await user.click(dlg.getByRole('button', {name: /change folder/i}))
+
+    const moveDialog = store.getState().dialog.items.find(item => item.type === 'folderMove')
+    expect(moveDialog).toMatchObject({
+      assets: [store.getState().assets.byIds.a1],
+      folderId: 'folder.products',
+      id: 'folderMove',
+      type: 'folderMove'
+    })
+  })
+
   it('switches to the References tab when that tab is activated', async () => {
     const user = userEvent.setup()
     renderAssetDialog({

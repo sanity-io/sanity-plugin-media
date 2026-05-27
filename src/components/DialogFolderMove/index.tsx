@@ -145,7 +145,7 @@ const DialogFolderMove = ({children, dialog}: Props) => {
           Move {assets.length} {pluralize('asset', assets.length)} to a folder.
         </Text>
 
-        <Box style={{maxHeight: '22rem', overflowY: 'auto', paddingRight: '0.25rem'}}>
+        <Box style={{maxHeight: '22rem', overflowY: 'auto'}} paddingY={2}>
           <FolderTree
             expandedIds={expandedIds}
             folderTree={folderTree}
@@ -156,7 +156,7 @@ const DialogFolderMove = ({children, dialog}: Props) => {
           {folderTree.length === 0 && (
             <Box marginTop={3}>
               <Text muted size={1}>
-                No folders yet. Create one first, or remove the assets from folders.
+                No folders yet.
               </Text>
             </Box>
           )}
