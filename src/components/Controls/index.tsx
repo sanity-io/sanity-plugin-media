@@ -1,4 +1,4 @@
-import {AddIcon, FolderIcon} from '@sanity/icons'
+import {FolderIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, useMediaIndex} from '@sanity/ui'
 import {useDispatch} from 'react-redux'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -81,18 +81,6 @@ const Controls = () => {
               {/* Search Facets Control (add / clear) */}
               <Inline space={2}>
                 <SearchFacetsControl />
-                <Button
-                  fontSize={1}
-                  icon={AddIcon}
-                  mode="bleed"
-                  onClick={() =>
-                    dispatch(
-                      DIALOG_ACTIONS.showFolderCreate({parentFolderId: currentFolderId || null})
-                    )
-                  }
-                  text="New folder"
-                  tone="primary"
-                />
               </Inline>
             </Box>
 
@@ -135,23 +123,23 @@ const Controls = () => {
 
       <Box>
         <Flex align="center" justify={['space-between']}>
-          {/* Views */}
+          {/* Folders + Views */}
           <Box marginX={2}>
-            <ButtonViewGroup />
+            <Inline space={2} style={{whiteSpace: 'nowrap'}}>
+              <Button
+                aria-label="Toggle folders panel"
+                fontSize={1}
+                icon={FolderIcon}
+                mode={foldersPanelVisible ? 'default' : 'ghost'}
+                onClick={toggleFoldersPanel}
+              />
+              <ButtonViewGroup />
+            </Inline>
           </Box>
 
           <Flex marginX={2}>
             {/* Orders */}
             <OrderSelect />
-            {/* Folders panel toggle */}
-            <Box display={['none', 'none', 'block']} marginLeft={2}>
-              <Button
-                fontSize={1}
-                onClick={toggleFoldersPanel}
-                mode={foldersPanelVisible ? 'default' : 'ghost'}
-                text="Folders"
-              />
-            </Box>
             {/* Tags panel toggle */}
             <Box display={['none', 'none', 'block']} marginLeft={2}>
               <Button
