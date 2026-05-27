@@ -24,7 +24,7 @@ _Individual asset view_
 
 - Support for batch uploads with drag and drop support
 - Edit text fields native to Sanity's asset documents, such as `title`, `description`, `altText` and `originalFilename`
-- Browse folder paths in a dedicated sidebar and assign slash-delimited folder paths directly on assets
+- Browse folder documents in a dedicated sidebar and assign assets to folders individually or in bulk
 - View asset metadata and a limited subset of EXIF data, if present
 - Tag your assets individually or in bulk
 - Manage tags directly within the plugin
@@ -33,8 +33,8 @@ _Individual asset view_
 
 #### Granular search tools
 
-- Refine your search with any combination of search facets such as filtering by tag name, folder path, asset usage, file size, orientation, type (and more)
-- Use text search for a quick lookup by title, description, alt text and folder path
+- Refine your search with any combination of search facets such as filtering by tag name, folder assignment, asset usage, file size, orientation, type (and more)
+- Use text search for a quick lookup by title, description and alt text
 
 #### Built for large datasets and collaborative editing in mind
 
@@ -257,7 +257,7 @@ export function CustomDetails(props) {
 <details>
 <summary>How can I query asset fields I've set in this plugin?</summary>
 
-The following GROQ query will return an image with additional asset text fields, its folder path, and an array of tag names.
+The following GROQ query will return an image with additional asset text fields, its folder reference, resolved folder name, and an array of tag names.
 
 Note that tags are namespaced within `opt.media` and tag names are accessed via the `current` property (as they're defined as slugs on the `tag.media` document schema).
 
@@ -270,6 +270,7 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
       altText,
       description,
       "folder": opt.media.folder,
+      "folderName": opt.media.folder->name,
       "tags": opt.media.tags[]->name.current,
       title
     }
@@ -292,11 +293,12 @@ Note that tags are namespaced within `opt.media` and tag names are accessed via 
 <details>
 <summary>How do folders work?</summary>
 
-- Folders are stored as a slash-delimited string at `opt.media.folder` on the asset document
-- Folder browsing is driven by the folder paths already assigned to assets, and the sidebar includes derived parent folders for nested paths
-- You can move selected assets into the currently open folder from the selection bar, or edit the folder path directly on an individual asset
-- This implementation does not create separate folder documents; folders exist when assets are assigned to a path
-- Folder paths are normalized before save, so input like `/marketing\\launches/2026/` is stored as `marketing/launches/2026`
+- This plugin defines the document type `media.folder`
+- Folder hierarchy is stored on folder documents using a `parent` reference to another `media.folder` document
+- Asset folder assignment is stored as a weak reference at `opt.media.folder`
+- The default asset browser view shows all assets. Opening a folder filters the asset list to assets assigned to that folder.
+- You can move selected assets to a folder from the selection bar, remove selected assets from the current folder, or change/remove an individual asset's folder from the asset details dialog
+- Deleting a folder deletes only the folder document. Assets assigned to it stay in the library and have their folder assignment removed; nested folders move up one level.
 
 </details>
 
