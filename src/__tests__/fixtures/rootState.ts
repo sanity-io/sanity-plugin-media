@@ -17,7 +17,7 @@ export function createTestRootState(overrides: Partial<RootReducerState> = {}): 
       unfiledCount: 0,
       currentFolderId: null,
       currentFolderUnfiled: false,
-      panelVisible: true,
+      panelVisible: false,
       fetching: false,
       fetchCount: -1,
       creating: false,

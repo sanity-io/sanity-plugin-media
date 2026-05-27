@@ -44,7 +44,7 @@ export const inputs: Record<SearchFacetName, SearchFacetInputProps> = {
     field: 'opt.media.folder',
     name: 'folder',
     operatorType: 'empty',
-    operatorTypes: ['empty', 'notEmpty', null, 'includes', 'doesNotInclude'],
+    operatorTypes: ['empty', 'notEmpty'],
     title: 'Folder',
     type: 'string',
     value: ''

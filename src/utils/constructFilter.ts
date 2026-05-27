@@ -77,12 +77,11 @@ const constructFilter = ({
     return acc
   }, [])
 
-  // Home (no folder selected) and Unfiled both show only assets without a folder ref;
-  // a specific folder shows only assets pointing at it. This matches the path-string
-  // version's behavior, where Home was treated the same as Unfiled.
-  const folderFilter: string = currentFolderId
+  // All assets (no folder selected) should not apply a folder filter. A specific
+  // folder shows only assets pointing at it.
+  const folderFilter: string | undefined = currentFolderId
     ? `opt.media.folder._ref == ${JSON.stringify(currentFolderId)}`
-    : groq`!defined(opt.media.folder._ref)`
+    : undefined
 
   // Join separate filter fragments
   const constructedQuery = [

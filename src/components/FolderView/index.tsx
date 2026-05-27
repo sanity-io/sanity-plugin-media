@@ -1,13 +1,17 @@
+import {AddIcon, EditIcon, FolderIcon, TrashIcon} from '@sanity/icons'
 import {
-  AddIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  EditIcon,
-  FolderIcon,
-  TrashIcon
-} from '@sanity/icons'
-import {Box, Button, Card, Container, Flex, Inline, Label, Text, Tooltip} from '@sanity/ui'
-import {type MouseEvent, type ReactNode, useEffect, useState} from 'react'
+  Box,
+  Button,
+  Container,
+  Flex,
+  Inline,
+  Label,
+  Text,
+  Tooltip,
+  Tree,
+  TreeItem
+} from '@sanity/ui'
+import {type ReactNode, useMemo} from 'react'
 import {useDispatch} from 'react-redux'
 import {PANEL_HEIGHT} from '../../constants'
 import useTypedSelector from '../../hooks/useTypedSelector'
@@ -34,22 +38,21 @@ type FolderNodeProps = {
   expandedIds: Set<string>
   node: FolderTreeNode
   onSelect: (folderId: string) => void
-  onToggle: (folderId: string) => void
 }
 
 type FolderHeaderActionProps = {
   disabled?: boolean
   icon: ReactNode
   onClick: () => void
-  tone?: 'critical' | 'primary'
+  tone?: 'critical' | 'default' | 'primary'
   tooltip: string
 }
 
 const FolderHeaderAction = ({
-  disabled,
+  disabled = false,
   icon,
   onClick,
-  tone,
+  tone = 'default',
   tooltip
 }: FolderHeaderActionProps) => (
   <Tooltip
@@ -78,120 +81,92 @@ const FolderHeaderAction = ({
   </Tooltip>
 )
 
-const FolderNode = ({
-  currentFolderId,
-  expandedIds,
-  node,
-  onSelect,
-  onToggle
-}: FolderNodeProps) => {
-  const expanded = expandedIds.has(node.id)
-  const hasChildren = node.children.length > 0
-  const selected = currentFolderId === node.id
-  const selectedTextColor = selected ? '#fff' : 'inherit'
-  const selectedSecondaryColor = selected ? 'rgba(255, 255, 255, 0.78)' : 'inherit'
+type FolderItemTextProps = {
+  name: string
+  totalCount: number
+}
 
-  const handleToggle = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation()
-    onToggle(node.id)
-  }
-
-  return (
-    <Box marginTop={1}>
-      <Card
-        padding={1}
-        radius={2}
+/**
+ * this uses some hacky css to get the desired layout
+ * The tree item is a text container, so we need to use a span to wrap the content
+ */
+const FolderItemText = ({name, totalCount}: FolderItemTextProps) => (
+  <span
+    style={{
+      boxSizing: 'border-box',
+      display: 'block',
+      maxWidth: '100%',
+      minWidth: 0,
+      overflow: 'hidden',
+      paddingRight: '2rem',
+      position: 'relative',
+      width: '100%'
+    }}
+  >
+    <span
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        paddingLeft: '0.25rem',
+        gap: '0.5rem',
+        minWidth: 0,
+        overflow: 'hidden'
+      }}
+    >
+      <span style={{display: 'inline-flex', flexShrink: 0, lineHeight: 0}}>
+        <FolderIcon />
+      </span>
+      <span
         style={{
-          background: selected ? 'var(--card-focus-ring-color)' : 'transparent',
-          border: '1px solid transparent'
+          display: 'block',
+          minWidth: 0,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
         }}
       >
-        <Flex align="center" gap={1}>
-          {hasChildren ? (
-            <Button
-              aria-label={expanded ? `Collapse ${node.name}` : `Expand ${node.name}`}
-              fontSize={1}
-              icon={expanded ? ChevronDownIcon : ChevronRightIcon}
-              mode="bleed"
-              onClick={handleToggle}
-              style={{color: selectedTextColor}}
-            />
-          ) : (
-            <Box style={{width: '1.75rem'}} />
-          )}
+        {name}
+      </span>
+    </span>
+    <span
+      style={{
+        fontSize: '0.75rem',
+        opacity: 0.78,
+        position: 'absolute',
+        right: 0,
+        top: '50%',
+        transform: 'translateY(-50%)'
+      }}
+    >
+      {totalCount}
+    </span>
+  </span>
+)
 
-          <button
-            onClick={() => onSelect(node.id)}
-            style={{
-              alignItems: 'center',
-              appearance: 'none',
-              background: 'transparent',
-              border: 0,
-              cursor: 'pointer',
-              display: 'flex',
-              flex: 1,
-              gap: '0.5rem',
-              justifyContent: 'space-between',
-              minWidth: 0,
-              padding: '0.25rem 0.5rem 0.25rem 0.25rem',
-              color: selectedTextColor,
-              textAlign: 'left'
-            }}
-            type="button"
-          >
-            <Box
-              as="span"
-              style={{
-                color: selectedSecondaryColor,
-                display: 'inline-flex',
-                lineHeight: 0
-              }}
-            >
-              <FolderIcon />
-            </Box>
-            <Box
-              as="span"
-              style={{
-                color: selectedTextColor,
-                flex: 1,
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                minWidth: 0,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {node.name}
-            </Box>
-            <Box
-              as="span"
-              style={{
-                color: selectedSecondaryColor,
-                fontSize: '0.75rem'
-              }}
-            >
-              {node.totalCount}
-            </Box>
-          </button>
-        </Flex>
-      </Card>
+const FolderNode = ({currentFolderId, expandedIds, node, onSelect}: FolderNodeProps) => {
+  const hasChildren = node.children.length > 0
+  const selected = currentFolderId === node.id
 
-      {hasChildren && expanded && (
-        <Box paddingLeft={4}>
-          {node.children.map(childNode => (
-            <FolderNode
-              currentFolderId={currentFolderId}
-              expandedIds={expandedIds}
-              key={childNode.id}
-              node={childNode}
-              onSelect={onSelect}
-              onToggle={onToggle}
-            />
-          ))}
-        </Box>
-      )}
-    </Box>
+  return (
+    <TreeItem
+      expanded={expandedIds.has(node.id)}
+      id={node.id}
+      onClick={() => onSelect(node.id)}
+      selected={selected}
+      text={<FolderItemText name={node.name} totalCount={node.totalCount} />}
+      weight={selected ? 'semibold' : 'medium'}
+    >
+      {hasChildren &&
+        node.children.map(childNode => (
+          <FolderNode
+            currentFolderId={currentFolderId}
+            expandedIds={expandedIds}
+            key={childNode.id}
+            node={childNode}
+            onSelect={onSelect}
+          />
+        ))}
+    </TreeItem>
   )
 }
 
@@ -202,37 +177,17 @@ const FolderView = () => {
   const canDeleteFolder = useTypedSelector(selectCanDeleteFolder)
   const fetching = useTypedSelector(state => state.folders.fetching)
   const folderTree = useTypedSelector(selectFolderTree)
-  const totalAssets = useTypedSelector(state => {
-    return (
-      state.folders.unfiledCount +
-      Object.values(state.folders.exactCountByFolderId).reduce((sum, n) => sum + n, 0)
-    )
-  })
-  const homeSelected = !currentFolderId
   const currentFolder = currentFolderId ? byId[currentFolderId] : null
-
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
-
-  useEffect(() => {
-    setExpandedIds(getExpandedIdSet(currentFolderId, byId))
-  }, [currentFolderId, byId, folderTree])
+  const expandedIds = useMemo(
+    () => getExpandedIdSet(currentFolderId, byId),
+    [byId, currentFolderId]
+  )
+  const treeKey = useMemo(() => Array.from(expandedIds).join('|') || 'root', [expandedIds])
 
   const hasFolders = folderTree.length > 0
 
   const handleFolderSelect = (folderId: string) => {
     dispatch(foldersActions.currentFolderSet({folderId}))
-  }
-
-  const handleFolderToggle = (folderId: string) => {
-    setExpandedIds(previous => {
-      const next = new Set(previous)
-      if (next.has(folderId)) {
-        next.delete(folderId)
-      } else {
-        next.add(folderId)
-      }
-      return next
-    })
   }
 
   const handleFolderDelete = () => {
@@ -275,9 +230,7 @@ const FolderView = () => {
           {currentFolderId && (
             <FolderHeaderAction
               icon={<EditIcon />}
-              onClick={() =>
-                dispatch(DIALOG_ACTIONS.showFolderRename({folderId: currentFolderId}))
-              }
+              onClick={() => dispatch(DIALOG_ACTIONS.showFolderRename({folderId: currentFolderId}))}
               tone="primary"
               tooltip="Rename folder"
             />
@@ -286,9 +239,7 @@ const FolderView = () => {
           <FolderHeaderAction
             icon={<AddIcon />}
             onClick={() =>
-              dispatch(
-                DIALOG_ACTIONS.showFolderCreate({parentFolderId: currentFolderId || null})
-              )
+              dispatch(DIALOG_ACTIONS.showFolderCreate({parentFolderId: currentFolderId || null}))
             }
             tone="primary"
             tooltip="Create folder"
@@ -306,84 +257,34 @@ const FolderView = () => {
       </Flex>
 
       <Box padding={2}>
-        <Card
-          padding={1}
-          radius={2}
-          style={{
-            background: homeSelected ? 'var(--card-focus-ring-color)' : 'transparent',
-            border: '1px solid transparent'
-          }}
-        >
-          <button
-            onClick={() => dispatch(foldersActions.currentFolderClear())}
-            style={{
-              alignItems: 'center',
-              appearance: 'none',
-              background: 'transparent',
-              border: 0,
-              cursor: 'pointer',
-              display: 'flex',
-              gap: '0.5rem',
-              justifyContent: 'space-between',
-              padding: '0.5rem',
-              color: homeSelected ? '#fff' : 'inherit',
-              width: '100%'
-            }}
-            type="button"
-          >
-            <Box
-              as="span"
-              style={{
-                color: homeSelected ? 'rgba(255, 255, 255, 0.78)' : 'inherit',
-                display: 'inline-flex',
-                lineHeight: 0
-              }}
-            >
-              <FolderIcon />
-            </Box>
-            <Box
-              as="span"
-              style={{
-                color: homeSelected ? '#fff' : 'inherit',
-                flex: 1,
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                minWidth: 0
-              }}
-            >
-              Home
-            </Box>
-            <Box
-              as="span"
-              style={{
-                color: homeSelected ? 'rgba(255, 255, 255, 0.78)' : 'inherit',
-                fontSize: '0.75rem'
-              }}
-            >
-              {totalAssets}
-            </Box>
-          </button>
-        </Card>
+        <Box>
+          <Tree gap={1} key={treeKey}>
+            <TreeItem
+              id="__all-assets"
+              onClick={() => dispatch(foldersActions.currentFolderClear())}
+              selected={currentFolderId === null}
+              text="All assets"
+              weight={currentFolderId === null ? 'semibold' : 'medium'}
+            />
 
-        <Box marginTop={2} paddingLeft={3}>
+            {folderTree.map(node => (
+              <FolderNode
+                currentFolderId={currentFolderId}
+                expandedIds={expandedIds}
+                key={node.id}
+                node={node}
+                onSelect={handleFolderSelect}
+              />
+            ))}
+          </Tree>
+
           {!hasFolders && !fetching && (
-            <Box padding={3}>
+            <Box marginTop={3} paddingX={1}>
               <Text muted size={1}>
                 <em>No folders</em>
               </Text>
             </Box>
           )}
-
-          {folderTree.map(node => (
-            <FolderNode
-              currentFolderId={currentFolderId}
-              expandedIds={expandedIds}
-              key={node.id}
-              node={node}
-              onSelect={handleFolderSelect}
-              onToggle={handleFolderToggle}
-            />
-          ))}
         </Box>
       </Box>
     </Flex>

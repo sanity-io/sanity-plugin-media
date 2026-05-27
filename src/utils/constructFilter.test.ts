@@ -103,8 +103,29 @@ describe('constructFilter', () => {
     const normalized = q.replace(/\s+/g, ' ').trim()
 
     expect(normalized).toBe(
-      '_type in ["sanity.fileAsset","sanity.imageAsset"] && !(_id in path("drafts.**")) && [_id, altText, assetId, creditLine, description, originalFilename, title, url] match \'*portrait*\' && !defined(opt.media.folder._ref) && round(size / 1000) > 100 && references(\'abc123\')'
+      '_type in ["sanity.fileAsset","sanity.imageAsset"] && !(_id in path("drafts.**")) && [_id, altText, assetId, creditLine, description, originalFilename, title, url] match \'*portrait*\' && round(size / 1000) > 100 && references(\'abc123\')'
     )
+  })
+
+  it('does not apply a folder filter in the all assets view', () => {
+    const q = constructFilter({
+      assetTypes: ['image', 'file'],
+      searchFacets: [],
+      searchQuery: undefined
+    })
+
+    expect(q).not.toContain('opt.media.folder._ref')
+  })
+
+  it('filters to the current folder when a folder is selected', () => {
+    const q = constructFilter({
+      assetTypes: ['image', 'file'],
+      currentFolderId: 'media.folder.products',
+      searchFacets: [],
+      searchQuery: undefined
+    })
+
+    expect(q).toContain('opt.media.folder._ref == "media.folder.products"')
   })
 
   it('omits text search fragment when searchQuery is undefined', () => {

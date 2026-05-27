@@ -51,7 +51,7 @@ const initialState: FoldersReducerState = {
   unfiledCount: 0,
   currentFolderId: null,
   currentFolderUnfiled: false,
-  panelVisible: true,
+  panelVisible: false,
   fetching: false,
   fetchCount: -1,
   fetchingError: undefined,
@@ -716,7 +716,7 @@ export const selectCurrentFolderChildren = createSelector(
     currentFolderId,
     currentFolderUnfiled
   ): FolderTreeItem[] => {
-    if (currentFolderUnfiled) return []
+    if (currentFolderUnfiled || !currentFolderId) return []
     const ids = currentFolderId ? childrenByParentId[currentFolderId] || [] : rootIds
     const depth = currentFolderId ? buildFolderPath(currentFolderId, byId).split('/').length : 0
     return ids.map(id => {

@@ -26,7 +26,9 @@ const DialogFolderRename = ({children, dialog}: Props) => {
   const folder = useTypedSelector(state => state.folders.byId[folderId])
   const folderPath = useTypedSelector(state => selectFolderPathById(state, folderId))
   const currentName = folder?.name || ''
-  const parentPath = folderPath.includes('/') ? folderPath.slice(0, folderPath.lastIndexOf('/')) : null
+  const parentPath = folderPath.includes('/')
+    ? folderPath.slice(0, folderPath.lastIndexOf('/'))
+    : null
 
   const {
     formState: {errors, isDirty, isValid},
@@ -85,7 +87,7 @@ const DialogFolderRename = ({children, dialog}: Props) => {
 
         <Box marginBottom={3}>
           <Text muted size={1}>
-            {parentPath ? `Renaming inside ${parentPath}` : 'Renaming at Home'}
+            {parentPath ? `Renaming inside ${parentPath}` : 'Renaming at root'}
           </Text>
         </Box>
 

@@ -69,7 +69,7 @@ class ReduxProvider extends Component<Props> {
           unfiledCount: 0,
           currentFolderId: null,
           currentFolderUnfiled: false,
-          panelVisible: true,
+          panelVisible: false,
           fetching: false,
           fetchCount: -1,
           creating: false,

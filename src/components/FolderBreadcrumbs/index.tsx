@@ -7,19 +7,19 @@ const FolderBreadcrumbs = () => {
   const dispatch = useDispatch()
   const currentFolderId = useTypedSelector(state => state.folders.currentFolderId)
   const segments = useTypedSelector(selectCurrentFolderSegments)
-
   if (!currentFolderId) {
     return null
   }
 
   return (
-    <Box display={['block', 'block', 'none']} marginTop={2} paddingX={2}>
+    <Box display={['block', 'block', 'none']} padding={2}>
       <Inline space={1}>
         <Button
           fontSize={1}
+          padding={2}
           mode="bleed"
           onClick={() => dispatch(foldersActions.currentFolderClear())}
-          text="Home"
+          text="All assets"
         />
 
         {segments.map(segment => (
@@ -29,6 +29,7 @@ const FolderBreadcrumbs = () => {
             </Text>
             <Button
               fontSize={1}
+              padding={2}
               mode={currentFolderId === segment.id ? 'default' : 'bleed'}
               onClick={() => dispatch(foldersActions.currentFolderSet({folderId: segment.id}))}
               text={segment.name}
