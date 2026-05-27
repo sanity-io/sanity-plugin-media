@@ -250,7 +250,7 @@ const FolderView = () => {
               icon={<TrashIcon />}
               onClick={handleFolderDelete}
               tone="critical"
-              tooltip="Delete folder and contents"
+              tooltip="Delete folder"
             />
           )}
         </Inline>

@@ -1,5 +1,5 @@
 import {createSelector, createSlice, type PayloadAction} from '@reduxjs/toolkit'
-import type {ClientError} from '@sanity/client'
+import type {ClientError, Patch} from '@sanity/client'
 import groq from 'groq'
 import {from, of} from 'rxjs'
 import {
@@ -99,23 +99,6 @@ const indexFolders = (folders: FolderDoc[]) => {
   Object.keys(childrenByParentId).forEach(parentId => sortByName(childrenByParentId[parentId]))
 
   return {byId, childrenByParentId, rootIds}
-}
-
-const collectDescendantIds = (
-  folderId: string,
-  childrenByParentId: Record<string, string[]>
-): string[] => {
-  const stack = [...(childrenByParentId[folderId] || [])]
-  const out: string[] = []
-  while (stack.length) {
-    const id = stack.pop()!
-    out.push(id)
-    const children = childrenByParentId[id]
-    if (children) {
-      stack.push(...children)
-    }
-  }
-  return out
 }
 
 const isDescendant = (
@@ -344,6 +327,18 @@ export const foldersCurrentFolderEpic: MyEpic = action$ =>
     )
   )
 
+const patchOperationAssetFolderUnset = (patch: Patch) => patch.unset(['opt.media.folder'])
+
+const patchOperationFolderParentSet =
+  ({parentId}: {parentId: string | null}) =>
+  (patch: Patch) => {
+    if (parentId) {
+      return patch.set({parent: {_ref: parentId, _type: 'reference', _weak: true}})
+    }
+
+    return patch.unset(['parent'])
+  }
+
 export const foldersCreateEpic: MyEpic = (action$, state$, {client}) =>
   action$.pipe(
     filter(foldersSlice.actions.createRequest.match),
@@ -418,8 +413,8 @@ export const foldersDeleteEpic: MyEpic = (action$, state$, {client}) =>
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       const folderId = action.payload.folderId
-      const descendantIds = collectDescendantIds(folderId, state.folders.childrenByParentId)
-      const folderIds = [folderId, ...descendantIds]
+      const childFolderIds = state.folders.childrenByParentId[folderId] || []
+      const parentId = state.folders.byId[folderId]?.parentId ?? null
 
       return of(action).pipe(
         debugThrottle(state.debug.badConnection),
@@ -431,27 +426,27 @@ export const foldersDeleteEpic: MyEpic = (action$, state$, {client}) =>
                   state.assets.assetTypes.map(type => `sanity.${type}Asset`)
                 )}
                 && !(_id in path("drafts.**"))
-                && opt.media.folder._ref in $folderIds
+                && opt.media.folder._ref == $folderId
               ] {
                 _id
               }
             }`,
-            {folderIds}
+            {folderId}
           )
         ),
         mergeMap(result => {
           const tx = client.transaction()
-          // Unset folder ref on referencing assets first (weak refs are forgiving but we still
-          // delete the assets here to match v1 recursive-delete semantics — assets in a folder
-          // are removed with the folder).
-          result.assets.forEach(asset => tx.delete(asset._id))
-          folderIds.forEach(id => tx.delete(id))
+          result.assets.forEach(asset => tx.patch(asset._id, patchOperationAssetFolderUnset))
+          childFolderIds.forEach(childFolderId =>
+            tx.patch(childFolderId, patchOperationFolderParentSet({parentId}))
+          )
+          tx.delete(folderId)
 
           return from(tx.commit()).pipe(
             map(() =>
               foldersSlice.actions.deleteComplete({
                 folderId,
-                deletedIds: folderIds
+                deletedIds: [folderId]
               })
             )
           )

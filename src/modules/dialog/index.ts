@@ -184,8 +184,8 @@ const dialogSlice = createSlice({
         confirmCallbackAction: foldersActions.deleteRequest({folderId}),
         confirmText: `Yes, delete folder`,
         description:
-          'This deletes the selected folder, all nested folders, and every asset inside that subtree. This operation cannot be reversed.',
-        title: `Permanently delete ${folderName} and all contents?`,
+          'This deletes only the selected folder. Assets in this folder will stay in the library and have their folder assignment removed. Nested folders will move up one level.',
+        title: `Delete ${folderName}?`,
         id: 'confirm',
         headerTitle: 'Confirm folder deletion',
         tone: 'critical',
