@@ -1,4 +1,3 @@
-import {FolderIcon} from '@sanity/icons'
 import {Box, Button, Flex, Inline, Stack, Text, Tree, TreeItem} from '@sanity/ui'
 import {type ReactNode, useMemo, useState} from 'react'
 import pluralize from 'pluralize'
@@ -31,7 +30,7 @@ type Props = {
 type FolderNodeProps = {
   expandedIds: Set<string>
   node: FolderTreeNode
-  onSelect: (folderId: string | null) => void
+  onSelect: (folderId: string) => void
   selectedId: string | null
 }
 
@@ -65,36 +64,23 @@ const FolderNode = ({expandedIds, node, onSelect, selectedId}: FolderNodeProps) 
 type FolderTreeProps = {
   expandedIds: Set<string>
   folderTree: FolderTreeNode[]
-  onSelect: (folderId: string | null) => void
+  onSelect: (folderId: string) => void
   selectedId: string | null
 }
 
-const FolderTree = ({expandedIds, folderTree, onSelect, selectedId}: FolderTreeProps) => {
-  const noFolderSelected = selectedId === null
-
-  return (
-    <Tree gap={1}>
-      <TreeItem
-        icon={FolderIcon}
-        id="__no-folder"
-        onClick={() => onSelect(null)}
-        selected={noFolderSelected}
-        text="No folder"
-        weight={noFolderSelected ? 'semibold' : 'medium'}
+const FolderTree = ({expandedIds, folderTree, onSelect, selectedId}: FolderTreeProps) => (
+  <Tree gap={1}>
+    {folderTree.map(node => (
+      <FolderNode
+        expandedIds={expandedIds}
+        key={node.id}
+        node={node}
+        onSelect={onSelect}
+        selectedId={selectedId}
       />
-
-      {folderTree.map(node => (
-        <FolderNode
-          expandedIds={expandedIds}
-          key={node.id}
-          node={node}
-          onSelect={onSelect}
-          selectedId={selectedId}
-        />
-      ))}
-    </Tree>
-  )
-}
+    ))}
+  </Tree>
+)
 
 const DialogFolderMove = ({children, dialog}: Props) => {
   const dispatch = useDispatch()
@@ -110,6 +96,10 @@ const DialogFolderMove = ({children, dialog}: Props) => {
   }
 
   const handleMove = () => {
+    if (!selectedId) {
+      return
+    }
+
     dispatch(
       assetsActions.folderSetRequest({
         assets,
@@ -127,9 +117,10 @@ const DialogFolderMove = ({children, dialog}: Props) => {
           <Flex justify="flex-end" gap={2}>
             <Button mode="ghost" onClick={handleClose} text="Cancel" />
             <Button
+              disabled={!selectedId}
               mode="default"
               onClick={handleMove}
-              text={selectedId ? `Move ${pluralize('asset', assets.length)}` : 'Remove from folder'}
+              text={`Move ${assets.length} ${pluralize('asset', assets.length)}`}
               tone="primary"
             />
           </Flex>
@@ -162,14 +153,16 @@ const DialogFolderMove = ({children, dialog}: Props) => {
           )}
         </Box>
 
-        <Inline space={2}>
-          <Text muted size={1}>
-            Destination:
-          </Text>
-          <Text size={1} weight="semibold">
-            {selectedFolder?.name || 'No folder'}
-          </Text>
-        </Inline>
+        {selectedFolder && (
+          <Inline space={2}>
+            <Text muted size={1}>
+              Destination:
+            </Text>
+            <Text size={1} weight="semibold">
+              {selectedFolder.name}
+            </Text>
+          </Inline>
+        )}
       </Stack>
 
       {children}

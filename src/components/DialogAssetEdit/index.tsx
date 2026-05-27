@@ -185,6 +185,14 @@ const DialogAssetEdit = (props: Props) => {
     dispatch(DIALOG_ACTIONS.showFolderMove({assets: [assetItem], folderId: currentFolderId}))
   }, [assetItem, currentFolderId, dispatch])
 
+  const handleRemoveFolder = useCallback(() => {
+    if (!assetItem || !currentFolderId) {
+      return
+    }
+
+    dispatch(assetsActions.folderSetRequest({assets: [assetItem], folderId: null}))
+  }, [assetItem, currentFolderId, dispatch])
+
   // Detect if asset has localized fields (objects) with keys not in the configured locales
   const hasOrphanedLocales = useMemo(() => {
     if (!currentAsset) return false
@@ -375,6 +383,7 @@ const DialogAssetEdit = (props: Props) => {
     folderPath: currentFolderPath,
     folderMissing: !!currentFolderId && !currentFolderPath,
     onChangeFolder: handleChangeFolder,
+    onRemoveFolder: handleRemoveFolder,
     creditLine,
     locales
   }

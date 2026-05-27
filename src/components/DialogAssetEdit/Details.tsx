@@ -1,3 +1,4 @@
+import {FolderIcon, TrashIcon} from '@sanity/icons'
 import {Box, Button, Card, Flex, Stack, Tab, TabList, TabPanel, Text} from '@sanity/ui'
 import {useState} from 'react'
 import {type Control, type FieldErrors, type UseFormRegister} from 'react-hook-form'
@@ -6,7 +7,6 @@ import FormFieldInputTags from '../FormFieldInputTags'
 import FormFieldInputLabel from '../FormFieldInputLabel'
 import FormFieldInputText from '../FormFieldInputText'
 import FormFieldInputTextarea from '../FormFieldInputTextarea'
-import {FolderIcon} from '@sanity/icons'
 
 type LocalizedErrors = Record<string, {message?: string} | undefined>
 
@@ -38,6 +38,7 @@ export type DetailsProps = {
   folderPath?: string
   folderMissing?: boolean
   onChangeFolder: () => void
+  onRemoveFolder: () => void
   creditLine?: {
     enabled: boolean
     excludeSources?: string | string[] | undefined
@@ -57,6 +58,7 @@ export default function Details({
   folderPath,
   folderMissing,
   onChangeFolder,
+  onRemoveFolder,
   creditLine,
   locales
 }: DetailsProps) {
@@ -96,6 +98,19 @@ export default function Details({
                 {folderLabel}
               </Text>
             </Flex>
+            {folderId && (
+              <Button
+                aria-label="Remove from folder"
+                disabled={formUpdating}
+                fontSize={1}
+                icon={TrashIcon}
+                mode="bleed"
+                onClick={onRemoveFolder}
+                padding={2}
+                tone="critical"
+                type="button"
+              />
+            )}
             <Button
               padding={2}
               disabled={formUpdating}
@@ -105,6 +120,7 @@ export default function Details({
               text={folderId ? 'Change folder' : 'Add to folder'}
               type="button"
             />
+  
           </Flex>
         </Card>
       </Box>

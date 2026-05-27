@@ -261,6 +261,36 @@ describe('DialogAssetEdit', () => {
     })
   })
 
+  it('removes the current folder from the details view', async () => {
+    const user = userEvent.setup()
+    const assetInFolder = {
+      ...asset,
+      opt: {media: {folder: {_ref: 'folder.products', _type: 'reference' as const, _weak: true}}}
+    } as ImageAsset
+    const {store} = renderAssetDialog(
+      {
+        id: 'dlg-1',
+        type: 'assetEdit',
+        assetId: 'a1'
+      },
+      {
+        preloaded: {
+          assets: {
+            ...assetsPreloaded,
+            byIds: {
+              a1: {_type: 'asset', asset: assetInFolder, picked: false, updating: false}
+            }
+          }
+        }
+      }
+    )
+
+    const dlg = withinDialog(/asset details/i, screen)
+    await user.click(dlg.getByRole('button', {name: /remove from folder/i}))
+
+    expect(store.getState().assets.byIds.a1.updating).toBe(true)
+  })
+
   it('switches to the References tab when that tab is activated', async () => {
     const user = userEvent.setup()
     renderAssetDialog({
