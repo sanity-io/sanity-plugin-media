@@ -33,18 +33,6 @@ export const ORDER_OPTIONS: ({direction: OrderDirection; field: string} | null)[
     direction: 'asc' as OrderDirection,
     field: '_updatedAt'
   },
-  // Divider
-  null,
-  {
-    direction: 'asc',
-    field: 'opt.media.folder'
-  },
-  {
-    direction: 'desc',
-    field: 'opt.media.folder'
-  },
-  // Divider
-  null,
   {
     direction: 'asc',
     field: 'originalFilename'
