@@ -50,8 +50,7 @@ describe('foldersDeleteEpic', () => {
         fetching: false,
         fetchCount: -1,
         creating: false,
-        renaming: false,
-        moving: false
+        renaming: false
       }
     })
 
@@ -119,8 +118,7 @@ describe('foldersDeleteEpic', () => {
         fetching: false,
         fetchCount: -1,
         creating: false,
-        renaming: false,
-        moving: false
+        renaming: false
       }
     })
 

@@ -37,8 +37,6 @@ type FoldersReducerState = {
   deleteError?: HttpError
   renaming: boolean
   renameError?: HttpError
-  moving: boolean
-  moveError?: HttpError
 }
 
 const ROOT_KEY = '__root__'
@@ -60,9 +58,7 @@ const initialState: FoldersReducerState = {
   deletingId: undefined,
   deleteError: undefined,
   renaming: false,
-  renameError: undefined,
-  moving: false,
-  moveError: undefined
+  renameError: undefined
 }
 
 const indexFolders = (folders: FolderDoc[]) => {
@@ -99,22 +95,6 @@ const indexFolders = (folders: FolderDoc[]) => {
   Object.keys(childrenByParentId).forEach(parentId => sortByName(childrenByParentId[parentId]))
 
   return {byId, childrenByParentId, rootIds}
-}
-
-const isDescendant = (
-  ancestorId: string,
-  candidateId: string,
-  byId: Record<string, FolderDoc>
-): boolean => {
-  let cursor: string | null = candidateId
-  const seen = new Set<string>()
-  while (cursor) {
-    if (seen.has(cursor)) return false
-    seen.add(cursor)
-    if (cursor === ancestorId) return true
-    cursor = byId[cursor]?.parentId ?? null
-  }
-  return false
 }
 
 const foldersSlice = createSlice({
@@ -188,17 +168,6 @@ const foldersSlice = createSlice({
     fetchRequest(state) {
       state.fetching = true
       delete state.fetchingError
-    },
-    moveComplete(state, _action: PayloadAction<{folderId: string; parentId: string | null}>) {
-      state.moving = false
-    },
-    moveError(state, action: PayloadAction<{error: HttpError; folderId: string}>) {
-      state.moving = false
-      state.moveError = action.payload.error
-    },
-    moveRequest(state, _action: PayloadAction<{folderId: string; parentId: string | null}>) {
-      state.moving = true
-      delete state.moveError
     },
     panelVisibleSet(state, action: PayloadAction<{panelVisible: boolean}>) {
       state.panelVisible = action.payload.panelVisible
@@ -298,7 +267,6 @@ export const foldersRefreshEpic: MyEpic = action$ =>
         assetsActions.folderSetComplete.match(action) ||
         foldersSlice.actions.createComplete.match(action) ||
         foldersSlice.actions.deleteComplete.match(action) ||
-        foldersSlice.actions.moveComplete.match(action) ||
         foldersSlice.actions.renameComplete.match(action) ||
         assetsActions.listenerCreateQueueComplete.match(action) ||
         assetsActions.listenerDeleteQueueComplete.match(action) ||
@@ -524,89 +492,6 @@ export const foldersRenameEpic: MyEpic = (action$, state$, {client}) =>
                 message: error?.message || 'Internal error',
                 statusCode: error?.statusCode || 500
               }
-            })
-          )
-        )
-      )
-    })
-  )
-
-export const foldersMoveEpic: MyEpic = (action$, state$, {client}) =>
-  action$.pipe(
-    filter(foldersSlice.actions.moveRequest.match),
-    withLatestFrom(state$),
-    mergeMap(([action, state]) => {
-      const {folderId} = action.payload
-      const parentId = action.payload.parentId || null
-      const folder = state.folders.byId[folderId]
-
-      if (!folder) {
-        return of(
-          foldersSlice.actions.moveError({
-            error: {message: 'Folder not found', statusCode: 404},
-            folderId
-          })
-        )
-      }
-
-      if (parentId === folder.parentId) {
-        return of(
-          foldersSlice.actions.moveError({
-            error: {message: 'Folder is already in this location', statusCode: 400},
-            folderId
-          })
-        )
-      }
-
-      if (
-        parentId === folderId ||
-        (parentId && isDescendant(folderId, parentId, state.folders.byId))
-      ) {
-        return of(
-          foldersSlice.actions.moveError({
-            error: {
-              message: 'Cannot move a folder into itself or its descendants',
-              statusCode: 400
-            },
-            folderId
-          })
-        )
-      }
-
-      const siblingIds = parentId
-        ? state.folders.childrenByParentId[parentId] || []
-        : state.folders.rootIds
-      const collision = siblingIds.some(
-        id =>
-          id !== folderId &&
-          state.folders.byId[id]?.name.toLowerCase() === folder.name.toLowerCase()
-      )
-      if (collision) {
-        return of(
-          foldersSlice.actions.moveError({
-            error: {message: 'A folder with this name already exists here', statusCode: 409},
-            folderId
-          })
-        )
-      }
-
-      const patch = client.observable.patch(folderId)
-      const committed = parentId
-        ? patch.set({parent: {_ref: parentId, _type: 'reference', _weak: true}}).commit()
-        : patch.unset(['parent']).commit()
-
-      return of(action).pipe(
-        debugThrottle(state.debug.badConnection),
-        mergeMap(() => committed),
-        mergeMap(() => of(foldersSlice.actions.moveComplete({folderId, parentId}))),
-        catchError((error: ClientError) =>
-          of(
-            foldersSlice.actions.moveError({
-              error: {
-                message: error?.message || 'Internal error',
-                statusCode: error?.statusCode || 500
-              },
-              folderId
             })
           )
         )

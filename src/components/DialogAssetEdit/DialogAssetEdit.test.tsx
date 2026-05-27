@@ -240,8 +240,7 @@ describe('DialogAssetEdit', () => {
             fetching: false,
             fetchCount: -1,
             creating: false,
-            renaming: false,
-            moving: false
+            renaming: false
           }
         }
       }

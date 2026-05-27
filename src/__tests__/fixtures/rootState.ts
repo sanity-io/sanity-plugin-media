@@ -21,8 +21,7 @@ export function createTestRootState(overrides: Partial<RootReducerState> = {}): 
       fetching: false,
       fetchCount: -1,
       creating: false,
-      renaming: false,
-      moving: false
+      renaming: false
     },
     notifications: {items: []},
     search: {facets: [], query: ''},
