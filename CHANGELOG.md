@@ -5,6 +5,12 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.3.1](https://github.com/sanity-io/sanity-plugin-media/compare/v4.3.0...v4.3.1) (2026-06-09)
+
+### Bug Fixes
+
+- **deps:** add support for sanity v6 prerelease versions ([#297](https://github.com/sanity-io/sanity-plugin-media/issues/297)) ([dcd94e6](https://github.com/sanity-io/sanity-plugin-media/commit/dcd94e6450ddc54088af65f9bc9316b35b12f140))
+
 ## [4.3.0](https://github.com/sanity-io/sanity-plugin-media/compare/v4.2.0...v4.3.0) (2026-05-13)
 
 ### Features
